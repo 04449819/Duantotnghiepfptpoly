@@ -1,0 +1,20 @@
+@use "sass:map";
+@import "theme";
+html,
+body {
+  margin: 0px;
+}
+* {
+  font-family: Roboto;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+.container {
+  max-width: 1170px;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  //background-color: map-get($theme-color, "main");
+  margin: auto;
+}

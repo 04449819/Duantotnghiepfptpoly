@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShopOnlineModel.Data
 {
-	internal class ShopOnlineDBContext : DbContext
+	public class ShopOnlineDBContext : DbContext
 	{
         public ShopOnlineDBContext()
         {
@@ -43,7 +43,8 @@ namespace ShopOnlineModel.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True;TrustServerCertificate=True");
+			//optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True;TrustServerCertificate=True");
+			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True;TrustServerCertificate=True");
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

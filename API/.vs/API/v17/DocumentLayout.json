@@ -1,0 +1,1497 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\lichsutichdiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\lichsutichdiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\chitiethoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\chitiethoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\chitietgiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\chitietgiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\chitietkhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\chitietkhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\data\\shoponlinedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\data\\shoponlinedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\repositories\\contracts\\iallrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\repositories\\contracts\\iallrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\thongkeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\thongkeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\thongkesanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\thongkesanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\thongkekhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\thongkekhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\sanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\sanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\quydoidiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\quydoidiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\qlthuoctinhservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\qlthuoctinhservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\qlnguoidungservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\qlnguoidungservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\nhanvienservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\nhanvienservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\loaisanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\loaisanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\mailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\mailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\khuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\khuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\khachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\khachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\hoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\hoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\giohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\giohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\danhgiaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\danhgiaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\voucherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\voucherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\services\\vaitroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\services\\vaitroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\repositories\\allrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\repositories\\allrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\idanhgiaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\idanhgiaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ichitiethoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ichitiethoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ichitietgiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ichitietgiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\migrations\\shoponlinedbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\migrations\\shoponlinedbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\migrations\\20240520131551_khoitaodb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\migrations\\20240520131551_khoitaodb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\sanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\sanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\isanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\isanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\iquydoidiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\iquydoidiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\iqlnguoidungservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\iqlnguoidungservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ivoucherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ivoucherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ivaitroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ivaitroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ithongkeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ithongkeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ithongkesanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ithongkesanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ithongkekhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ithongkekhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\iqlthuoctinhservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\iqlthuoctinhservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\inhanvienservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\inhanvienservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\imailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\imailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\iloaisanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\iloaisanphamservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ilichsutichdiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ilichsutichdiemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ikhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ikhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ikhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ikhachhangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\igiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\igiohangservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ihoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ihoadonservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\iservices\\ichitietkhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\iservices\\ichitietkhuyenmaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\loaisanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\loaisanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\mausac.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\mausac.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\nhanvien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\nhanvien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\quydoidiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\quydoidiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\voucher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\voucher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\lichsutichdiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\lichsutichdiem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\kichco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\kichco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\khachhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\khachhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\hoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\hoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\giohang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\giohang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\danhgia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\danhgia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\chitiethoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\chitiethoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\chitietgiohang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\chitietgiohang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\chatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\chatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\anh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\anh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\api\\api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B3C6F982-E5CC-42F7-BF9E-19AAC7D7F274}|API\\API.csproj|solutionrelative:api\\api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\voucherconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\voucherconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\vaitroconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\vaitroconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\sanphamconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\sanphamconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\quydoidiemconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\quydoidiemconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\nhanvienconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\nhanvienconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\mausacconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\mausacconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\loaispconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\loaispconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\lichsutichdiemconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\lichsutichdiemconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\kichcoconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\kichcoconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\khuyenmaiconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\khuyenmaiconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\khachhangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\khachhangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\hoadonconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\hoadonconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\giohangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\giohangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\danhgiaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\danhgiaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\chitiethoadonconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\chitiethoadonconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\chitietsanphamconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\chitietsanphamconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\chitietgiohangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\chitietgiohangconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\chatlieuconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\chatlieuconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\configurations\\anhconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\configurations\\anhconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\shoponlinemodel.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\shoponlinemodel.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\vaitro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\vaitro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\khuyenmai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\khuyenmai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|c:\\users\\asus\\desktop\\da\\duantotnghiepfptpoly\\api\\shoponlinemodel\\entities\\chitietsanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D942BFC-B591-4FF5-8CCB-B65BB3B9423D}|ShopOnlineModel\\ShopOnlineModel.csproj|solutionrelative:shoponlinemodel\\entities\\chitietsanpham.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "SanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\SanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\SanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\SanPhamService.cs",
+              "RelativeToolTip": "API\\Services\\SanPhamService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADUAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:56:33.347Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ThongKeKhachHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeKhachHangService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ThongKeKhachHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeKhachHangService.cs",
+              "RelativeToolTip": "API\\Services\\ThongKeKhachHangService.cs",
+              "ViewState": "AQIAAB8AAAAAAAAAAAA5wD8AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:04:30.821Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ShopOnlineDBContext.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Data\\ShopOnlineDBContext.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Data\\ShopOnlineDBContext.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Data\\ShopOnlineDBContext.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Data\\ShopOnlineDBContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACYAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.327Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ChiTietKhuyenMaiService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietKhuyenMaiService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ChiTietKhuyenMaiService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietKhuyenMaiService.cs",
+              "RelativeToolTip": "API\\Services\\ChiTietKhuyenMaiService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:59:20.381Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ChiTietGioHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietGioHangService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ChiTietGioHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietGioHangService.cs",
+              "RelativeToolTip": "API\\Services\\ChiTietGioHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:58:58.122Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ChiTietHoaDonService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietHoaDonService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ChiTietHoaDonService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ChiTietHoaDonService.cs",
+              "RelativeToolTip": "API\\Services\\ChiTietHoaDonService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADEAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:59:08.477Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LichSuTichDiemService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\LichSuTichDiemService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\LichSuTichDiemService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\LichSuTichDiemService.cs",
+              "RelativeToolTip": "API\\Services\\LichSuTichDiemService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:01:33.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "QuyDoiDiemService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QuyDoiDiemService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\QuyDoiDiemService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QuyDoiDiemService.cs",
+              "RelativeToolTip": "API\\Services\\QuyDoiDiemService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:59:47.034Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "QLThuocTinhService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QLThuocTinhService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\QLThuocTinhService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QLThuocTinhService.cs",
+              "RelativeToolTip": "API\\Services\\QLThuocTinhService.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAAswJwAAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:04:08.715Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-24T15:29:19.495Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\appsettings.json",
+              "RelativeDocumentMoniker": "API\\appsettings.json",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\appsettings.json",
+              "RelativeToolTip": "API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-05-24T17:06:46.053Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "API\\WeatherForecast.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\WeatherForecast.cs",
+              "RelativeToolTip": "API\\WeatherForecast.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-24T17:06:50.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "QLNguoiDungService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QLNguoiDungService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\QLNguoiDungService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\QLNguoiDungService.cs",
+              "RelativeToolTip": "API\\Services\\QLNguoiDungService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:03:36.628Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ThongKeSanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeSanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ThongKeSanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeSanPhamService.cs",
+              "RelativeToolTip": "API\\Services\\ThongKeSanPhamService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:04:51.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ThongKeService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\ThongKeService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\ThongKeService.cs",
+              "RelativeToolTip": "API\\Services\\ThongKeService.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAA8AAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:05:00.257Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IAllRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Repositories\\Contracts\\IAllRepository.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Repositories\\Contracts\\IAllRepository.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Repositories\\Contracts\\IAllRepository.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Repositories\\Contracts\\IAllRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAwAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-22T02:02:40.549Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "NhanVienService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\NhanVienService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\NhanVienService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\NhanVienService.cs",
+              "RelativeToolTip": "API\\Services\\NhanVienService.cs",
+              "ViewState": "AQIAAFYAAAAAAAAAAAAAwHgAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:02:58.678Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "LoaiSanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\LoaiSanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\LoaiSanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\LoaiSanPhamService.cs",
+              "RelativeToolTip": "API\\Services\\LoaiSanPhamService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:02:37.275Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "MailService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\MailService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\MailService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\MailService.cs",
+              "RelativeToolTip": "API\\Services\\MailService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:02:49.608Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "KhuyenMaiService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\KhuyenMaiService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\KhuyenMaiService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\KhuyenMaiService.cs",
+              "RelativeToolTip": "API\\Services\\KhuyenMaiService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:00:57.002Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "KhachHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\KhachHangService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\KhachHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\KhachHangService.cs",
+              "RelativeToolTip": "API\\Services\\KhachHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAD8AAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:00:25.27Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "HoaDonService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\HoaDonService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\HoaDonService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\HoaDonService.cs",
+              "RelativeToolTip": "API\\Services\\HoaDonService.cs",
+              "ViewState": "AQIAAPMAAAAAAAAAAAA4wKYAAAA4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:00:15.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "GioHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\GioHangService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\GioHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\GioHangService.cs",
+              "RelativeToolTip": "API\\Services\\GioHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:00:04.354Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "EmailService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\EmailService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\EmailService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\EmailService.cs",
+              "RelativeToolTip": "API\\Services\\EmailService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:59:55.921Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "DanhGiaService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\DanhGiaService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\DanhGiaService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\DanhGiaService.cs",
+              "RelativeToolTip": "API\\Services\\DanhGiaService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:59:37.102Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "VoucherService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\VoucherService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\VoucherService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\VoucherService.cs",
+              "RelativeToolTip": "API\\Services\\VoucherService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:05:19.447Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "VaiTroService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\VaiTroService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\VaiTroService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\Services\\VaiTroService.cs",
+              "RelativeToolTip": "API\\Services\\VaiTroService.cs",
+              "ViewState": "AQIAAEAAAAAAAAAAAAAkwFwAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T02:05:10.631Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "AllRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Repositories\\AllRepository.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Repositories\\AllRepository.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Repositories\\AllRepository.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Repositories\\AllRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-22T02:05:19.081Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "IDanhGiaService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IDanhGiaService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IDanhGiaService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IDanhGiaService.cs",
+              "RelativeToolTip": "API\\IServices\\IDanhGiaService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:47:04.267Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "IChiTietHoaDonService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietHoaDonService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IChiTietHoaDonService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietHoaDonService.cs",
+              "RelativeToolTip": "API\\IServices\\IChiTietHoaDonService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:46:05.719Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "IChiTietGioHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietGioHangService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IChiTietGioHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietGioHangService.cs",
+              "RelativeToolTip": "API\\IServices\\IChiTietGioHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:45:36.861Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "ShopOnlineDBContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Migrations\\ShopOnlineDBContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Migrations\\ShopOnlineDBContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Migrations\\ShopOnlineDBContextModelSnapshot.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Migrations\\ShopOnlineDBContextModelSnapshot.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:11:56.939Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "20240520131551_khoitaodb.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Migrations\\20240520131551_khoitaodb.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Migrations\\20240520131551_khoitaodb.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Migrations\\20240520131551_khoitaodb.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Migrations\\20240520131551_khoitaodb.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAAAQwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.279Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "SanPham.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\SanPham.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\SanPham.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\SanPham.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\SanPham.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "ISanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ISanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\ISanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ISanPhamService.cs",
+              "RelativeToolTip": "API\\IServices\\ISanPhamService.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAA1wDgAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:43:46.739Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "IQuyDoiDiemService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQuyDoiDiemService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IQuyDoiDiemService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQuyDoiDiemService.cs",
+              "RelativeToolTip": "API\\IServices\\IQuyDoiDiemService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-24T02:27:37.59Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "IQLNguoiDungService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQLNguoiDungService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IQLNguoiDungService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQLNguoiDungService.cs",
+              "RelativeToolTip": "API\\IServices\\IQLNguoiDungService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:53:40.28Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "IEmailService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IEmailService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IEmailService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IEmailService.cs",
+              "RelativeToolTip": "API\\IServices\\IEmailService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:47:42.075Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "IVaiTroService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IVaiTroService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IVaiTroService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IVaiTroService.cs",
+              "RelativeToolTip": "API\\IServices\\IVaiTroService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAABFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:55:25.022Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "IThongKeService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IThongKeService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeService.cs",
+              "RelativeToolTip": "API\\IServices\\IThongKeService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:58:27.494Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "IThongKeSanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeSanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IThongKeSanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeSanPhamService.cs",
+              "RelativeToolTip": "API\\IServices\\IThongKeSanPhamService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:54:58.539Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "IThongKeKhachHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeKhachHangService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IThongKeKhachHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IThongKeKhachHangService.cs",
+              "RelativeToolTip": "API\\IServices\\IThongKeKhachHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:54:40.052Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "IVoucherService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IVoucherService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IVoucherService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IVoucherService.cs",
+              "RelativeToolTip": "API\\IServices\\IVoucherService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:52:13.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "IQLThuocTinhService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQLThuocTinhService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IQLThuocTinhService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IQLThuocTinhService.cs",
+              "RelativeToolTip": "API\\IServices\\IQLThuocTinhService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:53:21.618Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "INhanVienService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\INhanVienService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\INhanVienService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\INhanVienService.cs",
+              "RelativeToolTip": "API\\IServices\\INhanVienService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:50:58.436Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "IMailService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IMailService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IMailService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IMailService.cs",
+              "RelativeToolTip": "API\\IServices\\IMailService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:50:29.437Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "ILoaiSanPhamService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ILoaiSanPhamService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\ILoaiSanPhamService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ILoaiSanPhamService.cs",
+              "RelativeToolTip": "API\\IServices\\ILoaiSanPhamService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:49:54.59Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "ILichSuTichDiemService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ILichSuTichDiemService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\ILichSuTichDiemService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\ILichSuTichDiemService.cs",
+              "RelativeToolTip": "API\\IServices\\ILichSuTichDiemService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:49:05.799Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "IKhuyenMaiService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IKhuyenMaiService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IKhuyenMaiService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IKhuyenMaiService.cs",
+              "RelativeToolTip": "API\\IServices\\IKhuyenMaiService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:48:47.141Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "IKhachHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IKhachHangService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IKhachHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IKhachHangService.cs",
+              "RelativeToolTip": "API\\IServices\\IKhachHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:48:25.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "IGioHangService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IGioHangService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IGioHangService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IGioHangService.cs",
+              "RelativeToolTip": "API\\IServices\\IGioHangService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAA8AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:47:54.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "IHoaDonService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IHoaDonService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IHoaDonService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IHoaDonService.cs",
+              "RelativeToolTip": "API\\IServices\\IHoaDonService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:48:09.475Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "IChiTietKhuyenMaiService.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietKhuyenMaiService.cs",
+              "RelativeDocumentMoniker": "API\\IServices\\IChiTietKhuyenMaiService.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\IServices\\IChiTietKhuyenMaiService.cs",
+              "RelativeToolTip": "API\\IServices\\IChiTietKhuyenMaiService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-23T01:46:27.749Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "LoaiSanPham.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\LoaiSanPham.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\LoaiSanPham.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\LoaiSanPham.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\LoaiSanPham.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.302Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "HoaDon.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\HoaDon.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\HoaDon.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\HoaDon.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\HoaDon.cs",
+              "ViewState": "AQIAAAoAAAAAAAAAAAA1wAgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.315Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "KhachHang.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KhachHang.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\KhachHang.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KhachHang.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\KhachHang.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.317Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "Voucher.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\Voucher.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\Voucher.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\Voucher.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\Voucher.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "QuyDoiDiem.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\QuyDoiDiem.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\QuyDoiDiem.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\QuyDoiDiem.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\QuyDoiDiem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.434Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "NhanVien.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\NhanVien.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\NhanVien.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\NhanVien.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\NhanVien.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "MauSac.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\MauSac.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\MauSac.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\MauSac.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\MauSac.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.324Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "GioHang.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\GioHang.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\GioHang.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\GioHang.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\GioHang.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.313Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "DanhGia.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\DanhGia.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\DanhGia.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\DanhGia.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\DanhGia.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.311Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "ChiTietHoaDon.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietHoaDon.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\ChiTietHoaDon.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietHoaDon.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\ChiTietHoaDon.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "ChiTietGioHang.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietGioHang.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\ChiTietGioHang.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietGioHang.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\ChiTietGioHang.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.307Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "ChatLieu.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChatLieu.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\ChatLieu.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChatLieu.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\ChatLieu.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAA8AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.304Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "KichCo.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KichCo.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\KichCo.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KichCo.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\KichCo.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "LichSuTichDiem.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\LichSuTichDiem.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\LichSuTichDiem.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\LichSuTichDiem.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\LichSuTichDiem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.321Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "Anh.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\Anh.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\Anh.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\Anh.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\Anh.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.329Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "API.csproj",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\API.csproj",
+              "RelativeDocumentMoniker": "API\\API.csproj",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\API\\API.csproj",
+              "RelativeToolTip": "API\\API.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-05-20T16:03:04.332Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "VoucherConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\VoucherConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\VoucherConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\VoucherConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\VoucherConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.382Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "VaiTroConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\VaiTroConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\VaiTroConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\VaiTroConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\VaiTroConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAB9AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.386Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "SanPhamConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\SanPhamConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\SanPhamConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\SanPhamConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\SanPhamConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.388Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "QuyDoiDiemConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\QuyDoiDiemConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\QuyDoiDiemConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\QuyDoiDiemConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\QuyDoiDiemConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAACSAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.391Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "NhanVienConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\NhanVienConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\NhanVienConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\NhanVienConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\NhanVienConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAABNAQAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.393Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "MauSacConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\MauSacConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\MauSacConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\MauSacConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\MauSacConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAABIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.396Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 75,
+              "Title": "LoaiSPConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\LoaiSPConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\LoaiSPConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\LoaiSPConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\LoaiSPConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAABRAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.398Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 76,
+              "Title": "LichSuTichDiemConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\LichSuTichDiemConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\LichSuTichDiemConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\LichSuTichDiemConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\LichSuTichDiemConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAABhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.4Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 77,
+              "Title": "KichCoConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KichCoConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\KichCoConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KichCoConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\KichCoConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAABIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.402Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 78,
+              "Title": "KhuyenMaiConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KhuyenMaiConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\KhuyenMaiConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KhuyenMaiConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\KhuyenMaiConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 79,
+              "Title": "KhachHangConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KhachHangConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\KhachHangConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\KhachHangConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\KhachHangConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.406Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 80,
+              "Title": "HoaDonConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\HoaDonConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\HoaDonConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\HoaDonConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\HoaDonConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAABbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.408Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 81,
+              "Title": "GioHangConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\GioHangConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\GioHangConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\GioHangConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\GioHangConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAABXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.41Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 82,
+              "Title": "DanhgiaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\DanhgiaConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\DanhgiaConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\DanhgiaConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\DanhgiaConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAABfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.412Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 83,
+              "Title": "ChiTietHoaDonConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietHoaDonConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\ChiTietHoaDonConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietHoaDonConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\ChiTietHoaDonConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAABmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.414Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 84,
+              "Title": "ChiTietSanPhamConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietSanPhamConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\ChiTietSanPhamConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietSanPhamConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\ChiTietSanPhamConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAABnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 85,
+              "Title": "ChiTietGioHangConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietGioHangConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\ChiTietGioHangConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChiTietGioHangConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\ChiTietGioHangConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.418Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 86,
+              "Title": "ChatLieuConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChatLieuConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\ChatLieuConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\ChatLieuConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\ChatLieuConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.421Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 87,
+              "Title": "AnhConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\AnhConfiguration.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Configurations\\AnhConfiguration.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Configurations\\AnhConfiguration.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Configurations\\AnhConfiguration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 88,
+              "Title": "ShopOnlineModel.csproj",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\ShopOnlineModel.csproj",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\ShopOnlineModel.csproj",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\ShopOnlineModel.csproj",
+              "RelativeToolTip": "ShopOnlineModel\\ShopOnlineModel.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-05-20T16:03:04.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 89,
+              "Title": "VaiTro.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\VaiTro.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\VaiTro.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\VaiTro.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\VaiTro.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 90,
+              "Title": "KhuyenMai.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KhuyenMai.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\KhuyenMai.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\KhuyenMai.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\KhuyenMai.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.44Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 91,
+              "Title": "ChiTietSanPham.cs",
+              "DocumentMoniker": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietSanPham.cs",
+              "RelativeDocumentMoniker": "ShopOnlineModel\\Entities\\ChiTietSanPham.cs",
+              "ToolTip": "C:\\Users\\Asus\\Desktop\\DA\\Duantotnghiepfptpoly\\API\\ShopOnlineModel\\Entities\\ChiTietSanPham.cs",
+              "RelativeToolTip": "ShopOnlineModel\\Entities\\ChiTietSanPham.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-20T16:03:04.442Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

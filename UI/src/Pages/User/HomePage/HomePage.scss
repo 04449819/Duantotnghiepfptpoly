@@ -1,0 +1,70 @@
+.homepage-top {
+  height: 1200px;
+  position: relative;
+  background-color: rgb(241, 246, 246);
+  .hompage-img1 {
+    width: 900px;
+    height: 600px;
+    // background-color: aqua;
+    position: absolute;
+    top: 80px;
+    left: 300px;
+    img {
+      position: absolute;
+      height: 450px;
+      right: 0px;
+    }
+    .text1 {
+      position: absolute;
+      top: 200px;
+      left: 290px;
+    }
+  }
+  .hompage-img2 {
+    width: 800px;
+    height: 600px;
+    // background-color: red;
+    position: absolute;
+    top: 400px;
+    left: 150px;
+    img {
+      position: absolute;
+      height: 450px;
+    }
+    .text2 {
+      position: absolute;
+      top: 300px;
+      left: 560px;
+    }
+  }
+  .hompage-img3 {
+    width: 900px;
+    height: 600px;
+    // background-color: black;
+    position: absolute;
+    top: 600px;
+    left: 390px;
+    img {
+      position: absolute;
+      height: 450px;
+      right: 0px;
+    }
+    // background-color: red;
+    .text3 {
+      position: absolute;
+      top: 250px;
+      left: 0px;
+    }
+  }
+}
+.homepage-content {
+  text-align: center;
+  .sanphammoi {
+    height: 300px;
+    background-color: red;
+  }
+  .sanphamhot {
+    height: 300px;
+    background-color: green;
+  }
+}

@@ -1,0 +1,33 @@
+.Header {
+  .top-header {
+    background-color: black;
+    color: white;
+    text-align: center;
+    p {
+      margin: 0px;
+    }
+  }
+  .bot-header {
+    .bg-info {
+      background-color: white !important;
+    }
+
+    .buttonHeader {
+      border: none !important;
+      background: none;
+    }
+    svg {
+      width: 1.5em;
+      height: 1.5em;
+    }
+    span {
+      margin-left: 10px;
+      padding-top: 20px;
+    }
+  }
+  .content {
+    img {
+      width: 100%;
+    }
+  }
+}

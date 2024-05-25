@@ -1,0 +1,18 @@
+.adminpage {
+  display: flex;
+
+  .sidebar {
+    height: 100vw;
+    background-color: black;
+    .ps-sidebar-container.css-dip3t8 {
+      background-color: black;
+      color: white;
+      a:hover {
+        background-color: rgb(149, 156, 156);
+      }
+      .ps-submenu-content.ps-open.css-18unl23 {
+        background-color: black;
+      }
+    }
+  }
+}

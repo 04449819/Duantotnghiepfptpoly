@@ -1,8 +1,36 @@
 import "./HomePage.scss";
+import Carousel from "react-bootstrap/Carousel";
 import { Link } from "react-router-dom";
 const HomePage = () => {
   return (
     <>
+      <div className="content1">
+        <Carousel interval={4000}>
+          <Carousel.Item>
+            <img src="https://media3.coolmate.me/cdn-cgi/image/width=1000,quality=90,format=auto/uploads/May2024/SOMI_PREMIUM_XAM.png" />
+            <Carousel.Caption>
+              {/* <h3>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p> */}
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src="https://media3.coolmate.me/cdn-cgi/image/width=1000,quality=90,format=auto/uploads/May2024/SOMI_PREMIUM_XAM.png" />
+            <Carousel.Caption>
+              {/* <h3>Second slide label</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> */}
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src="https://media3.coolmate.me/cdn-cgi/image/width=1000,quality=90,format=auto/uploads/May2024/SOMI_PREMIUM_XAM.png" />
+            <Carousel.Caption>
+              {/* <h3>Third slide label</h3>
+              <p>
+                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+              </p> */}
+            </Carousel.Caption>
+          </Carousel.Item>
+        </Carousel>
+      </div>
       <div className=" homepage-top">
         <div className="hompage-img1">
           <div className="text1">

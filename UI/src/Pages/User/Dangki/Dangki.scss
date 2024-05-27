@@ -1,7 +1,12 @@
-.title {
-  text-align: center;
-}
-.content-dangki {
+.Formdangki {
+  // border: 1px solid black !important;
   width: 50%;
-  margin: auto;
+  margin-top: 20px;
+  .title {
+    text-align: center;
+  }
+  .content-dangki {
+    width: 50%;
+    margin: auto;
+  }
 }

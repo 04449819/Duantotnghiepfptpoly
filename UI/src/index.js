@@ -10,15 +10,36 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import HomePage from "./Pages/User/HomePage/HomePage";
 import AdminPage from "./Pages/Admin/AdminPage/AdminPage";
 import Dangki from "./Pages/User/Dangki/Dangki";
+import QuanLyNhanVienPage from "./Pages/Admin/QuanLyNhanVienPage/QuanLyNhanVienPage";
+import BanHangOfline from "./Pages/Admin/BanHangOfLine/BanHangOfline";
+import QuanLySanPham from "./Pages/Admin/QuanLySanPham/QuanLySanPham";
+import QuanLyKhachHang from "./Pages/Admin/QuanLyKhachHang/QuanLyKhachHang";
+import QuanLyDoiDiem from "./Pages/Admin/QuanLyDoiDiem/QuanLyDoiDiem";
+import QuanLyVoucher from "./Pages/Admin/QuanLyVoucher/QuanLyVoucher";
+import QuanLyKhuyenMai from "./Pages/Admin/QuanLyKhuyenMai/QuanLyKhuyenMai";
+import QuanLyHoaDon from "./Pages/Admin/QuanLyHoaDon/QuanLyHoaDon";
+import ThongKe from "./Pages/Admin/ThongKePage/ThongKe";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
       <Route path="" element={<App />}>
         <Route index element={<HomePage />} />
+        <Route path="/dangki" element={<Dangki />} />
       </Route>
-      <Route path="/dangki" element={<Dangki />} />
-      <Route path="/admin" element={<AdminPage />} />
+
+      <Route path="/admin" element={<AdminPage />}>
+        <Route index element={<BanHangOfline />} />
+        <Route path="/admin/banhangofline" element={<BanHangOfline />} />
+        <Route path="/admin/quanlynhanvien" element={<QuanLyNhanVienPage />} />
+        <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
+        <Route path="/admin/quanlykhachhang" element={<QuanLyKhachHang />} />
+        <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
+        <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
+        <Route path="/admin/quanlykhuyenmai" element={<QuanLyKhuyenMai />} />
+        <Route path="/admin/quanlyhoadon" element={<QuanLyHoaDon />} />
+        <Route path="/admin/thongke" element={<ThongKe />} />
+      </Route>
     </Routes>
   </BrowserRouter>
 );

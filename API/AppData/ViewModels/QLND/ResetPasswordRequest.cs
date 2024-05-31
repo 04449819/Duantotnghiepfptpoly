@@ -11,7 +11,6 @@ namespace AppData.ViewModels.QLND
     {
         [Required,EmailAddress]
         public string Email { get; set; }
-        public string ResetToken { get; set; }
         [Required]
         public string Password { get; set; }
         [Required,Compare("Password")]

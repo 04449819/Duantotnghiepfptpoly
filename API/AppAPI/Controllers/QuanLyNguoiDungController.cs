@@ -165,35 +165,10 @@ namespace AppAPI.Controllers
                 return false;
             }
 
-            var hasUpperCase = false;
-            var hasLowerCase = false;
-            var hasDigit = false;
-            var hasSpecialChar = false;
+			return true;
+		}
 
-            // Check each character in the password
-            foreach (var c in password)
-            {
-                if (char.IsUpper(c))
-                {
-                    hasUpperCase = true;
-                }
-                else if (char.IsLower(c))
-                {
-                    hasLowerCase = true;
-                }
-                else if (char.IsDigit(c))
-                {
-                    hasDigit = true;
-                }
-                else
-                {
-                    hasSpecialChar = true;
-                }
-            }
 
-            return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
-        }
-        //Tam
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> DoiMatKhau(ChangePasswordRequest request)
         {

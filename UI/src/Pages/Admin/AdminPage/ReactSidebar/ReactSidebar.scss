@@ -1,0 +1,52 @@
+/* src/Sidebar.css */
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  transition: width 0.3s;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-header {
+  width: 1250px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  Link {
+    color: white;
+  }
+}
+
+.sidebar-item:hover {
+  background-color: #444;
+}
+
+.sidebar-item {
+  span {
+    margin-left: 30px;
+  }
+}
+a {
+  color: white;
+  margin-left: 20px;
+}
+
+.user {
+  position: absolute;
+  left: 10px;
+  top: 20px;
+}

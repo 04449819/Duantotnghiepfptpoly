@@ -106,7 +106,7 @@ namespace AppAPI.Services
                 nv.ID = Guid.NewGuid();
                 nv.Ten = ten;
                 nv.Email = email;
-                nv.PassWord = MaHoaMatKhau(password);
+                nv.PassWord = password;
                 nv.SDT = sdt;
                 nv.DiaChi = diachi;
                 nv.TrangThai = 1;

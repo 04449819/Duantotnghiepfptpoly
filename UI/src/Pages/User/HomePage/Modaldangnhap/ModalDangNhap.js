@@ -1,44 +1,41 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FetchData } from "../../../../Rudux/Reducer/taiKhoanSlice";
 
 const ModalDangNhap = (props) => {
   const { show, setShow } = props;
   const navigate = useNavigate();
-
-  const [data, setdata] = useState({});
+  // const [data, setdata] = useState({});
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
+  const dispatch = useDispatch();
 
   const HandleDangNhap = async () => {
-    if (!name) return;
-    let response = await axios.get(
-      `https://localhost:7095/api/KhachHang/getBySDT?sdt=${name}`
-    );
-    if (response.status !== 200) {
-      toast.error("Sai tên đăng nhập or mật khẩu");
-      return;
+    dispatch(FetchData({ name, pass }));
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/QuanLyNguoiDung/DangNhap?lg=${name}&password=${pass}`
+      );
+      if (res.data.vaiTro === 1) {
+        navigate("/");
+        setShow(false);
+      }
+      if (res.data.vaiTro === 0) {
+        navigate("/admin");
+      }
+    } catch (error) {
+      toast.error("sai tên tài khoản or mật khẩu");
     }
-    setdata(response.data);
-    if (pass === response.data.password) {
-      navigate("/admin");
-    } else {
-      toast.error("Sai tên đăng nhập or mật khẩu");
-      setPass("");
-      console.log(setPass);
-      return;
-    }
-
-    console.log(">>>data:", data);
   };
 
   const handleClose = () => {
     setShow(false);
   };
-
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -69,18 +66,28 @@ const ModalDangNhap = (props) => {
               />
             </div>
             <div className="mb-3 form-check">
-              <Link>Quên mật khẩu</Link>
+              <Link onClick={handleClose} to={"/quenmatkhau"}>
+                Quên mật khẩu
+              </Link>
             </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
           <Link to="/dangki">
-            <button onClick={handleClose} className="btn btn-primary">
+            <button
+              style={{ marginRight: "230px" }}
+              onClick={handleClose}
+              className="btn btn-primary"
+            >
               Đăng kí
             </button>
           </Link>
           {/* <Button onClick={handleClose}>Close</Button> */}
-          <Button type="submit" onClick={HandleDangNhap}>
+          <Button
+            style={{ marginRight: "10px" }}
+            type="submit"
+            onClick={HandleDangNhap}
+          >
             Đăng nhập
           </Button>
         </Modal.Footer>

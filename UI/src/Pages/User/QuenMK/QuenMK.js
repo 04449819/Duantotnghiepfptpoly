@@ -24,6 +24,7 @@ const QuenMK = () => {
     };
     CheckEmail(email);
     SendMail(data);
+    console.log(data.emailBody);
     setmaxacnhan(data.emailBody);
   };
 

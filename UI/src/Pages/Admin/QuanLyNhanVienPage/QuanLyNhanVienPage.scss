@@ -5,4 +5,49 @@
   h2 {
     color: green;
   }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.search{
+  text-align: center;
+}
+.search input{
+  
+    max-width: 600px;
+    width:40%;
+    text-align: center;
+}
+.DanhMucHienThi{
+  font-size: 30px;
+  text-align: center;
+}
+.TNhanVien{
+  text-align: right;
+}
+.TNhanVien button {
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  text-align: right;
+  text-decoration: none;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+.Sua button{
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  text-align: right;
+  text-decoration: none;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
 }

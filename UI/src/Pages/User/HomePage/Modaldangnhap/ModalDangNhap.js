@@ -66,7 +66,11 @@ const ModalDangNhap = (props) => {
               />
             </div>
             <div className="mb-3 form-check">
-              <Link onClick={handleClose} to={"/quenmatkhau"}>
+              <Link
+                style={{ color: "blue" }}
+                onClick={handleClose}
+                to={"/quenmatkhau"}
+              >
                 Quên mật khẩu
               </Link>
             </div>

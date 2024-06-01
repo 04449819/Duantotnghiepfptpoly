@@ -12,6 +12,7 @@ const QuenMK = () => {
 
   const [checkma, setcheckma] = useState(false);
   const [checkmaxn, setchecmaxn] = useState(false);
+  const [checktaik, setchecktaik] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,6 +53,7 @@ const QuenMK = () => {
 
   const CheckEmail = async (email) => {
     try {
+      setchecktaik(true);
       await axios.post(
         `https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request=${email}`
       );
@@ -59,6 +61,7 @@ const QuenMK = () => {
       // SendMail(data);
     } catch (error) {
       toast.error("Email chưa được đăng kí");
+      setchecktaik(false);
       setcheckma(false);
     }
   };
@@ -118,6 +121,7 @@ const QuenMK = () => {
               type="button"
               className="btn btn-primary"
               onClick={HandlerOnclick}
+              disabled={checktaik}
             >
               Đặt lại mật khẩu
             </button>
@@ -125,7 +129,6 @@ const QuenMK = () => {
         </div>
       ) : checkmaxn === false ? (
         <>
-          {" "}
           <div
             className="container"
             style={{

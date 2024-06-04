@@ -3,19 +3,25 @@ import { FaBars, FaHome, FaUser, FaCog } from "react-icons/fa";
 import "./ReactSidebar.scss";
 import { Link, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Bounce, ToastContainer } from "react-toastify";
 const ReactSideBar = () => {
+  const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
   const user = useSelector((state) => state.user.User);
-  // const name = user.ten.substring(0, 5);
-  if (user.email !== undefined) {
+
+  useEffect(() => {
+    setemailUser(localStorage.getItem("useremail"));
+  }, []);
+
+  if (user.email) {
     return (
       <div style={{ display: "flex" }}>
         <div
-          style={{ height: "100vw" }}
+          // style={{ height: "100vw" }}
           className={`sidebar ${collapsed ? "collapsed" : ""}`}
         >
           <ul className="sidebar-menu">
@@ -99,6 +105,21 @@ const ReactSideBar = () => {
             <Outlet />
           </div>
         </div>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+        <ToastContainer />
       </div>
     );
   } else {

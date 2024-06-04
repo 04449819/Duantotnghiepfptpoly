@@ -21,35 +21,44 @@ import QuanLyHoaDon from "./Pages/Admin/QuanLyHoaDon/QuanLyHoaDon";
 import ThongKe from "./Pages/Admin/ThongKePage/ThongKe";
 import QuenMK from "./Pages/User/QuenMK/QuenMK";
 import { Provider } from "react-redux";
-import { store } from "./Rudux/store";
+import { store, persistor } from "./Rudux/store";
+import { PersistGate } from "redux-persist/integration/react";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="" element={<App />}>
-          <Route index element={<HomePage />} />
-          <Route path="/dangki" element={<Dangki />} />
-          <Route path="/quenmatkhau" element={<QuenMK />} />
-        </Route>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="" element={<App />}>
+            <Route index element={<HomePage />} />
+            <Route path="/dangki" element={<Dangki />} />
+            <Route path="/quenmatkhau" element={<QuenMK />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminPage />}>
-          <Route index element={<BanHangOfline />} />
-          <Route path="/admin/banhangofline" element={<BanHangOfline />} />
-          <Route
-            path="/admin/quanlynhanvien"
-            element={<QuanLyNhanVienPage />}
-          />
-          <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
-          <Route path="/admin/quanlykhachhang" element={<QuanLyKhachHang />} />
-          <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
-          <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
-          <Route path="/admin/quanlykhuyenmai" element={<QuanLyKhuyenMai />} />
-          <Route path="/admin/quanlyhoadon" element={<QuanLyHoaDon />} />
-          <Route path="/admin/thongke" element={<ThongKe />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route path="/admin" element={<AdminPage />}>
+            <Route index element={<BanHangOfline />} />
+            <Route path="/admin/banhangofline" element={<BanHangOfline />} />
+            <Route
+              path="/admin/quanlynhanvien"
+              element={<QuanLyNhanVienPage />}
+            />
+            <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
+            <Route
+              path="/admin/quanlykhachhang"
+              element={<QuanLyKhachHang />}
+            />
+            <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
+            <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
+            <Route
+              path="/admin/quanlykhuyenmai"
+              element={<QuanLyKhuyenMai />}
+            />
+            <Route path="/admin/quanlyhoadon" element={<QuanLyHoaDon />} />
+            <Route path="/admin/thongke" element={<ThongKe />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
 );
 

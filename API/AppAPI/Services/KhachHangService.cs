@@ -59,7 +59,7 @@ namespace AppAPI.Services
         {
             return _dbContext.KhachHangs.ToList();
         }
-        //Nhinh thêm
+
         public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
         {
             return await (from hd in _dbContext.HoaDons.AsNoTracking()
@@ -70,13 +70,13 @@ namespace AppAPI.Services
                           where kh.IDKhachHang == idkh
                           select hd).ToListAsync();
         }
-        //Nhinh-end
+
         public KhachHang GetById(Guid id)
         {
             return _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == id);
 
         }
-        //Nhinh thêm
+
         public KhachHang GetBySDT(string sdt)
         {
             return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt || c.Email == sdt);
@@ -103,40 +103,5 @@ namespace AppAPI.Services
             return false;
         }
 
-        //public bool Update(Guid id, string email, string password)
-        //{
-        //    var kh= _dbContext.KhachHangs.FirstOrDefault(a=>a.IDKhachHang == id);
-        //    if (kh != null)
-        //    {
-        //        kh.Email = email;
-        //        kh.Password = password;
-        //        _dbContext.KhachHangs.Update(kh);   
-        //        _dbContext.SaveChanges();
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-
-
-        //public bool Update(KhachHang nv)
-        //{
-        //    try
-        //    {
-        //        var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == nv.IDKhachHang);
-        //        if (kh != null)
-        //        {
-        //            _dbContext.KhachHangs.Update(kh);
-        //            _dbContext.SaveChanges();
-        //            return true;
-        //        }
-        //        return false;
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        return false;
-        //    }
-        //}
     }
 }

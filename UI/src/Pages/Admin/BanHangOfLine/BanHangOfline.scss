@@ -1,5 +1,58 @@
 .banhangofline {
-  h2 {
-    color: aqua;
+  // background-color: rgb(185, 192, 195);
+  margin-top: 20px;
+  height: 680px;
+  .banhangof_content {
+    .BanHangof_khachhang {
+      height: 240px;
+      border: 1px solid black;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      .form_khachhang_banhangofline {
+        margin: 5px 5px;
+        input {
+          width: 40%;
+          margin: 10px 10px;
+        }
+        input::placeholder {
+          color: rgb(168, 164, 162);
+        }
+
+        .banhangofline_title {
+          margin-left: 35px;
+          border-radius: 10px;
+          width: 45%;
+          text-align: center;
+          background-color: antiquewhite;
+          h3 {
+            margin-top: 10px;
+          }
+        }
+      }
+      button {
+        padding: 5px 10px 3x 10px;
+        height: 35px;
+        margin-top: 10px;
+      }
+    }
+    .BanHangof_giohang {
+      height: 430px;
+      .BanHangof_giohang_thongtin {
+        height: 35%;
+        border: 1px solid black;
+        border-radius: 5px;
+      }
+      .BanHangof_giohang_sanphamdamua {
+        height: 64%;
+        border: 1px solid black;
+        border-radius: 5px;
+        margin-top: 1%;
+      }
+    }
+  }
+  .banhangof_hoadon {
+    height: 680px;
+    border: 1px solid black;
+    border-radius: 5px;
   }
 }

@@ -40,7 +40,6 @@ const QuenMK = () => {
 
   const HandlerOnclickEditTK = () => {
     ChangPassword();
-    navigate("/");
   };
 
   const SendMail = async (data) => {
@@ -78,6 +77,7 @@ const QuenMK = () => {
         "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword",
         data
       );
+      navigate("/");
     } catch (error) {
       toast.error("mật khẩu chưa khớp or không đủ kí tự");
     }

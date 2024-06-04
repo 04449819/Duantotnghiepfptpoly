@@ -2,9 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { FetchData } from "../../../../Rudux/Reducer/taiKhoanSlice";
 
 const ModalDangNhap = (props) => {
@@ -28,9 +27,7 @@ const ModalDangNhap = (props) => {
       if (res.data.vaiTro === 0) {
         navigate("/admin");
       }
-    } catch (error) {
-      toast.error("sai tên tài khoản or mật khẩu");
-    }
+    } catch (error) {}
   };
 
   const handleClose = () => {

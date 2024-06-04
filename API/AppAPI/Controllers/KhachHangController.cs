@@ -100,9 +100,9 @@ namespace AppAPI.Controllers
         [HttpPost]
         public bool PostKHView(KhachHangView khv)
         {
-            khv.IDKhachHang = Guid.NewGuid();
+			var idkhv = Guid.NewGuid();
             KhachHang kh = new KhachHang();
-            kh.IDKhachHang = khv.IDKhachHang;
+            kh.IDKhachHang = idkhv;
             kh.Ten = khv.Ten?.Trim();
             kh.Password = MaHoaMatKhau(khv.Password).Trim();
             kh.GioiTinh=khv.GioiTinh;
@@ -120,7 +120,39 @@ namespace AppAPI.Controllers
             _dbcontext.SaveChanges();
             return true;
         }
-        private string MaHoaMatKhau(string matKhau)
+
+		[Route("PostKHView1")]
+		[HttpPost]
+		public bool PostKHView1(KhachHangView khv)
+		{
+			var idkhv = Guid.NewGuid();
+			KhachHang kh = new KhachHang();
+			kh.IDKhachHang = idkhv;
+			kh.Ten = khv.Ten?.Trim();
+			kh.Password = MaHoaMatKhau(khv.Password).Trim();
+			kh.GioiTinh = khv.GioiTinh;
+			kh.NgaySinh = khv.NgaySinh;
+            NhanVien nhanvien = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT );
+            KhachHang khachhang = _dbcontext.KhachHangs.FirstOrDefault(p=>p.Email == khv.Email || p.SDT == khv.SDT);
+            if(nhanvien != null  || khachhang != null)
+            {
+                return false;
+            }
+			kh.Email = khv.Email?.Trim();
+			kh.DiaChi = khv.DiaChi?.Trim();
+			kh.SDT = khv.SDT?.Trim();
+			kh.TrangThai = 1;
+			kh.DiemTich = 0;
+			_dbcontext.KhachHangs.Add(kh);
+			GioHang gh = new GioHang();
+			gh.IDKhachHang = kh.IDKhachHang;
+			gh.NgayTao = DateTime.Now;
+			_dbcontext.GioHangs.Add(gh);
+			_dbcontext.SaveChanges();
+			return true;
+		}
+
+		private string MaHoaMatKhau(string matKhau)
         {
             // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
             // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu

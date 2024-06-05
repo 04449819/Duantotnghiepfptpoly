@@ -141,7 +141,7 @@ namespace AppAPI.Services
                                          TenKichCo = f.Ten,
                                          TenMau = g.Ten,
                                          TenSanPham = i.Ten,
-                                         DuongDan = context.Anhs.First(x => x.IDMauSac == g.ID && x.IDSanPham == i.ID).DuongDan,
+                                         DuongDan = "",
                                          HinhThucGiamGia = a.IDVoucher == null ? null : (context.Vouchers.First(x=>x.ID == a.IDVoucher)).HinhThucGiamGia,
                                          GiaTri = a.IDVoucher == null ? null : (context.Vouchers.First(x => x.ID == a.IDVoucher)).GiaTri,
                                          TrangThaiDanhGia = d.TrangThai,
@@ -175,7 +175,7 @@ namespace AppAPI.Services
                                             TenSanPham = e.Ten,
                                             TenMau = d.Ten,
                                             TenKichThuoc = c.Ten,
-                                            DuongDan = context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == e.ID).DuongDan,
+                                            DuongDan = "",
                                             IDHoaDon = g.ID
                                             
                                         }).FirstOrDefault();

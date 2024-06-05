@@ -84,199 +84,199 @@ namespace AppAPI.Services
         }
 
         //Thanh toan online
-        public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
-        {
-            try
-            {
-                //Tâm - Thêm đơn mua
-                DonMuaSuccessViewModel donMua = new DonMuaSuccessViewModel()
-                {
-                    Ten = hoaDon.Ten,
-                    Email = hoaDon.Email,
-                    SDT = hoaDon.SDT,
-                    DiaChi = hoaDon.DiaChi,
-                    PhuongThucThanhToan = hoaDon.PhuongThucThanhToan,
-                    TongTien = hoaDon.TongTien,
-                    GhiChu = hoaDon.GhiChu == null ? "" : hoaDon.GhiChu,
-                    DiemSuDung = hoaDon.Diem == null ? 0 : hoaDon.Diem.Value,
-                    Login = false,
-                    GioHangs = new List<GioHangRequest>()
-                };
-                int subtotal = 0;
-                var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == hoaDon.TenVoucher);
-                if (chiTietHoaDons != null)
-                {
-                    HoaDon hoaDon1 = new HoaDon();
-                    hoaDon1.ID = Guid.NewGuid();
-                    hoaDon1.IDNhanVien = null;
-                    if (voucher != null)
-                    {
-                        hoaDon1.IDVoucher = voucher.ID;
-                        voucher.SoLuong--;
-                        reposVoucher.Update(voucher);
-                        donMua.MaVoucher = voucher.Ten;
-                    }
-                    else
-                    {
-                        hoaDon1.IDVoucher = null;
-                    }
-                    hoaDon1.TenNguoiNhan = hoaDon.Ten;
-                    hoaDon1.MaHD = "HD" + (hoaDon1.ID).ToString().Substring(0, 8).ToUpper();
-                    hoaDon1.SDT = hoaDon.SDT;
-                    hoaDon1.Email = hoaDon.Email;
-                    hoaDon1.NgayTao = DateTime.Now;
-                    //Tam
-                    if (hoaDon.NgayThanhToan != null)
-                    {
-                        hoaDon1.NgayThanhToan = hoaDon.NgayThanhToan;
-                    }
-                    //End
-                    hoaDon1.DiaChi = hoaDon.DiaChi;
-                    hoaDon1.TienShip = hoaDon.TienShip;
-                    hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
-                    hoaDon1.TrangThaiGiaoHang = 2;
-                    //hoaDon1.ThueVAT = 10;
-                    hoaDon1.TongTien = hoaDon.TongTien;
-                    hoaDon1.GhiChu = hoaDon.GhiChu;
-                    donMua.ID = hoaDon1.ID.ToString();
-                    if (reposHoaDon.Add(hoaDon1))
-                    {
-                        foreach (var x in chiTietHoaDons)
-                        {
-                            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
-                            chiTietHoaDon.ID = Guid.NewGuid();
-                            chiTietHoaDon.IDHoaDon = hoaDon1.ID;
-                            chiTietHoaDon.IDCTSP = x.IDChiTietSanPham;
-                            chiTietHoaDon.SoLuong = x.SoLuong;
-                            chiTietHoaDon.DonGia = x.DonGia;
-                            chiTietHoaDon.TrangThai = 1;
-                            DanhGia danhGia = new DanhGia();
-                            danhGia.ID = chiTietHoaDon.ID;
-                            danhGia.Sao = null;
-                            danhGia.BinhLuan = null;
-                            danhGia.TrangThai = 0;
-                            reposDanhGia.Add(danhGia);
-                            reposChiTietHoaDon.Add(chiTietHoaDon);
-                            var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
-                            CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
-                            if (CTsanPham.SoLuong < 0)
-                            {
-                                CTsanPham.SoLuong += chiTietHoaDon.SoLuong;
-                                reposHoaDon.Delete(hoaDon1);
-                                return new DonMuaSuccessViewModel()
-                                {
-                                    TongTien = -1
-                                };
-                            }
-                            else
-                            {
-                                subtotal += x.SoLuong * x.DonGia;
-                                repsCTSanPham.Update(CTsanPham);
-                            }
-                            //Tâm
-                            donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia, Ten = context.SanPhams.First(y => y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten, MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
-                        }
-                        //tích điểm, dùng điểm
-                        if (hoaDon.IDNguoiDung != null)
-                        {
-                            QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First(p => p.TrangThai > 0);
-                            KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
-                            donMua.Login = true;
-                            if (quyDoiDiem.TrangThai == 1)
-                            {
-                                if (hoaDon.Diem == 0 || hoaDon.Diem == null)
-                                {
-                                    //khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
-                                    reposKhachHang.Update(khachHang);
-                                    LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
-                                    {
-                                        ID = Guid.NewGuid(),
-                                        IDKhachHang = hoaDon.IDNguoiDung,
-                                        IDQuyDoiDiem = quyDoiDiem.ID,
-                                        IDHoaDon = hoaDon1.ID,
-                                        Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
-                                        TrangThai = 1
-                                    };
-                                    reposLichSuTichDiem.Add(lichSuTichDiem);
-                                    donMua.DiemTich = lichSuTichDiem.Diem;
-                                }
-                                //dùng điểm
-                                else
-                                {
-                                    if (khachHang.DiemTich >= hoaDon.Diem)
-                                    {
-                                        khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
-                                        reposKhachHang.Update(khachHang);
-                                        LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
-                                        {
-                                            ID = Guid.NewGuid(),
-                                            IDKhachHang = hoaDon.IDNguoiDung,
-                                            IDQuyDoiDiem = quyDoiDiem.ID,
-                                            IDHoaDon = hoaDon1.ID,
-                                            Diem = hoaDon.Diem.Value,
-                                            TrangThai = 0
-                                        };
-                                        reposLichSuTichDiem.Add(lichSuTichDiem);
-                                    }
-                                }
-                            }
-                            //Vừa tích vừa tiêu
-                            else if (quyDoiDiem.TrangThai == 2)
-                            {
-                                //tích điểm
-                                //khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
-                                LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
-                                {
-                                    ID = Guid.NewGuid(),
-                                    IDKhachHang = hoaDon.IDNguoiDung,
-                                    IDQuyDoiDiem = quyDoiDiem.ID,
-                                    IDHoaDon = hoaDon1.ID,
-                                    Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
-                                    TrangThai = 1
-                                };
-                                reposLichSuTichDiem.Add(lichSuTichDiem);
-                                donMua.DiemTich = lichSuTichDiem.Diem;
-                                //tiều điểm
-                                if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0)
-                                {
-                                    khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
-                                    reposKhachHang.Update(khachHang);
-                                    LichSuTichDiem lichSuTieuDiem = new LichSuTichDiem()
-                                    {
-                                        ID = Guid.NewGuid(),
-                                        IDKhachHang = hoaDon.IDNguoiDung,
-                                        IDQuyDoiDiem = quyDoiDiem.ID,
-                                        IDHoaDon = hoaDon1.ID,
-                                        Diem = hoaDon.Diem.Value,
-                                        TrangThai = 0
-                                    };
-                                    reposLichSuTichDiem.Add(lichSuTieuDiem);
-                                }
+        //public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+        //{
+        //    try
+        //    {
+        //        //Tâm - Thêm đơn mua
+        //        DonMuaSuccessViewModel donMua = new DonMuaSuccessViewModel()
+        //        {
+        //            Ten = hoaDon.Ten,
+        //            Email = hoaDon.Email,
+        //            SDT = hoaDon.SDT,
+        //            DiaChi = hoaDon.DiaChi,
+        //            PhuongThucThanhToan = hoaDon.PhuongThucThanhToan,
+        //            TongTien = hoaDon.TongTien,
+        //            GhiChu = hoaDon.GhiChu == null ? "" : hoaDon.GhiChu,
+        //            DiemSuDung = hoaDon.Diem == null ? 0 : hoaDon.Diem.Value,
+        //            Login = false,
+        //            GioHangs = new List<GioHangRequest>()
+        //        };
+        //        int subtotal = 0;
+        //        var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == hoaDon.TenVoucher);
+        //        if (chiTietHoaDons != null)
+        //        {
+        //            HoaDon hoaDon1 = new HoaDon();
+        //            hoaDon1.ID = Guid.NewGuid();
+        //            hoaDon1.IDNhanVien = null;
+        //            if (voucher != null)
+        //            {
+        //                hoaDon1.IDVoucher = voucher.ID;
+        //                voucher.SoLuong--;
+        //                reposVoucher.Update(voucher);
+        //                donMua.MaVoucher = voucher.Ten;
+        //            }
+        //            else
+        //            {
+        //                hoaDon1.IDVoucher = null;
+        //            }
+        //            hoaDon1.TenNguoiNhan = hoaDon.Ten;
+        //            hoaDon1.MaHD = "HD" + (hoaDon1.ID).ToString().Substring(0, 8).ToUpper();
+        //            hoaDon1.SDT = hoaDon.SDT;
+        //            hoaDon1.Email = hoaDon.Email;
+        //            hoaDon1.NgayTao = DateTime.Now;
+        //            //Tam
+        //            if (hoaDon.NgayThanhToan != null)
+        //            {
+        //                hoaDon1.NgayThanhToan = hoaDon.NgayThanhToan;
+        //            }
+        //            //End
+        //            hoaDon1.DiaChi = hoaDon.DiaChi;
+        //            hoaDon1.TienShip = hoaDon.TienShip;
+        //            hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
+        //            hoaDon1.TrangThaiGiaoHang = 2;
+        //            //hoaDon1.ThueVAT = 10;
+        //            hoaDon1.TongTien = hoaDon.TongTien;
+        //            hoaDon1.GhiChu = hoaDon.GhiChu;
+        //            donMua.ID = hoaDon1.ID.ToString();
+        //            if (reposHoaDon.Add(hoaDon1))
+        //            {
+        //                foreach (var x in chiTietHoaDons)
+        //                {
+        //                    ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+        //                    chiTietHoaDon.ID = Guid.NewGuid();
+        //                    chiTietHoaDon.IDHoaDon = hoaDon1.ID;
+        //                    chiTietHoaDon.IDCTSP = x.IDChiTietSanPham;
+        //                    chiTietHoaDon.SoLuong = x.SoLuong;
+        //                    chiTietHoaDon.DonGia = x.DonGia;
+        //                    chiTietHoaDon.TrangThai = 1;
+        //                    DanhGia danhGia = new DanhGia();
+        //                    danhGia.ID = chiTietHoaDon.ID;
+        //                    danhGia.Sao = null;
+        //                    danhGia.BinhLuan = null;
+        //                    danhGia.TrangThai = 0;
+        //                    reposDanhGia.Add(danhGia);
+        //                    reposChiTietHoaDon.Add(chiTietHoaDon);
+        //                    var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
+        //                    CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
+        //                    if (CTsanPham.SoLuong < 0)
+        //                    {
+        //                        CTsanPham.SoLuong += chiTietHoaDon.SoLuong;
+        //                        reposHoaDon.Delete(hoaDon1);
+        //                        return new DonMuaSuccessViewModel()
+        //                        {
+        //                            TongTien = -1
+        //                        };
+        //                    }
+        //                    else
+        //                    {
+        //                        subtotal += x.SoLuong * x.DonGia;
+        //                        repsCTSanPham.Update(CTsanPham);
+        //                    }
+        //                    //Tâm
+        //                    donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia, Ten = context.SanPhams.First(y => y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten, MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
+        //                }
+        //                //tích điểm, dùng điểm
+        //                if (hoaDon.IDNguoiDung != null)
+        //                {
+        //                    QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First(p => p.TrangThai > 0);
+        //                    KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
+        //                    donMua.Login = true;
+        //                    if (quyDoiDiem.TrangThai == 1)
+        //                    {
+        //                        if (hoaDon.Diem == 0 || hoaDon.Diem == null)
+        //                        {
+        //                            //khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
+        //                            reposKhachHang.Update(khachHang);
+        //                            LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
+        //                            {
+        //                                ID = Guid.NewGuid(),
+        //                                IDKhachHang = hoaDon.IDNguoiDung,
+        //                                IDQuyDoiDiem = quyDoiDiem.ID,
+        //                                IDHoaDon = hoaDon1.ID,
+        //                                Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
+        //                                TrangThai = 1
+        //                            };
+        //                            reposLichSuTichDiem.Add(lichSuTichDiem);
+        //                            donMua.DiemTich = lichSuTichDiem.Diem;
+        //                        }
+        //                        //dùng điểm
+        //                        else
+        //                        {
+        //                            if (khachHang.DiemTich >= hoaDon.Diem)
+        //                            {
+        //                                khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
+        //                                reposKhachHang.Update(khachHang);
+        //                                LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
+        //                                {
+        //                                    ID = Guid.NewGuid(),
+        //                                    IDKhachHang = hoaDon.IDNguoiDung,
+        //                                    IDQuyDoiDiem = quyDoiDiem.ID,
+        //                                    IDHoaDon = hoaDon1.ID,
+        //                                    Diem = hoaDon.Diem.Value,
+        //                                    TrangThai = 0
+        //                                };
+        //                                reposLichSuTichDiem.Add(lichSuTichDiem);
+        //                            }
+        //                        }
+        //                    }
+        //                    //Vừa tích vừa tiêu
+        //                    else if (quyDoiDiem.TrangThai == 2)
+        //                    {
+        //                        //tích điểm
+        //                        //khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
+        //                        LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
+        //                        {
+        //                            ID = Guid.NewGuid(),
+        //                            IDKhachHang = hoaDon.IDNguoiDung,
+        //                            IDQuyDoiDiem = quyDoiDiem.ID,
+        //                            IDHoaDon = hoaDon1.ID,
+        //                            Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
+        //                            TrangThai = 1
+        //                        };
+        //                        reposLichSuTichDiem.Add(lichSuTichDiem);
+        //                        donMua.DiemTich = lichSuTichDiem.Diem;
+        //                        //tiều điểm
+        //                        if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0)
+        //                        {
+        //                            khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
+        //                            reposKhachHang.Update(khachHang);
+        //                            LichSuTichDiem lichSuTieuDiem = new LichSuTichDiem()
+        //                            {
+        //                                ID = Guid.NewGuid(),
+        //                                IDKhachHang = hoaDon.IDNguoiDung,
+        //                                IDQuyDoiDiem = quyDoiDiem.ID,
+        //                                IDHoaDon = hoaDon1.ID,
+        //                                Diem = hoaDon.Diem.Value,
+        //                                TrangThai = 0
+        //                            };
+        //                            reposLichSuTichDiem.Add(lichSuTieuDiem);
+        //                        }
 
-                            }
-                        }
-                        if (hoaDon.TrangThai)
-                        {
-                            _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
-                        }
+        //                    }
+        //                }
+        //                if (hoaDon.TrangThai)
+        //                {
+        //                    _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
+        //                }
 
-                        return donMua;
-                    }
-                    else
-                    {
-                        return new DonMuaSuccessViewModel();
-                    }
-                }
-                else
-                {
-                    return new DonMuaSuccessViewModel();
-                }
-            }
-            catch
-            {
-                return new DonMuaSuccessViewModel();
-            }
-        }
+        //                return donMua;
+        //            }
+        //            else
+        //            {
+        //                return new DonMuaSuccessViewModel();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return new DonMuaSuccessViewModel();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return new DonMuaSuccessViewModel();
+        //    }
+        //}
 
         //Bán hàng tại quầy
         public bool CreateHoaDonOffline(Guid idnhanvien)
@@ -1103,5 +1103,10 @@ namespace AppAPI.Services
                 throw new Exception(ex.Message);
             }
         }
-    }
+
+		public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

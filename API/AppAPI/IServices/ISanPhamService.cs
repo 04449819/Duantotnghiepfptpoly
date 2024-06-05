@@ -10,7 +10,8 @@ namespace AppAPI.IServices
         #region SanPham
         List<SanPhamViewModelAdmin> GetAllSanPhamAdmin();
         Task<List<SanPhamViewModel>> GetAllSanPham();
-        Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
+		Task<List<SanPhamViewModel>> GetALLSanPham();
+		Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
         Task<SanPhamUpdateRequest> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
         Task<ChiTietSanPhamUpdateRequest> AddSanPham(SanPhamRequest request);
@@ -55,7 +56,7 @@ namespace AppAPI.IServices
         //Nhinh thêm
         #region SanPhamBanHang
         Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu();
-        Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay();
+        Task<List<SanPhamVieww>> GetAllSanPhamTaiQuay();
         Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp); // Sản phẩm và list màu, list size
         Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp); // Chitet sp 
         #endregion

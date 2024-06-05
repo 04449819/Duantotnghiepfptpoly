@@ -16,6 +16,6 @@ namespace AppData.Models
         public virtual LoaiSP? LoaiSP { get; set; }
         public virtual ChatLieu ChatLieu { get; set; }
         public virtual IEnumerable<ChiTietSanPham> ChiTietSanPhams { get; set; }
-        public virtual IEnumerable<Anh> Anhs { get; set; }
+       // public virtual IEnumerable<Anh> Anhs { get; set; }
     }
 }

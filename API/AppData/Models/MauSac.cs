@@ -15,6 +15,6 @@ namespace AppData.Models
         public string? Ma { get; set; }
         public int? TrangThai { get; set; }
         public virtual IEnumerable<ChiTietSanPham>? ChiTietSanPhams { get; set; }
-        public virtual IEnumerable<Anh>? Anhs { get; set; }
+       
     }
 }

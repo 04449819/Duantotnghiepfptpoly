@@ -106,12 +106,6 @@ namespace AppAPI.Controllers
         #endregion
 
         #region ChiTietSanPham
-        [HttpGet("GetChiTietSanPhamByID")]
-        public IActionResult GetChiTietSanPhamByID(Guid id)
-        {
-            var response = _sanPhamServices.GetChiTietSanPhamByID(id);
-            return Ok(response);
-        }
         [HttpGet("GetAllChiTietSanPhamHome")]
         public async Task<IActionResult> GetAllChiTietSanPhamHome(string idSanPham)
         {
@@ -224,12 +218,7 @@ namespace AppAPI.Controllers
         #endregion
 
         #region SanPhamBanHang
-        [HttpGet("getAllSPBanHang")]
-        public async Task<IActionResult> GetAllSanPhamBanHang()
-        {
-            var listSP = await _sanPhamServices.GetAllSanPhamTaiQuay();
-            return Ok(listSP);
-        }
+
         [HttpGet("getAllSPTrangChu")]
         public async Task<IActionResult> GetAllSanPhamTrangChu()
         {
@@ -248,7 +237,23 @@ namespace AppAPI.Controllers
             var listCTSP = await _sanPhamServices.GetChiTietCTSPBanHang(idsp);
             return Ok(listCTSP);
         }
-        #endregion
+		#endregion
 
-    }
+		#region SanPhamBanHangOfline
+		[HttpGet("getAllSPBanHang")]
+		public async Task<IActionResult> GetAllSanPhamBanHang()
+		{
+			var listSP = await _sanPhamServices.GetAllSanPhamTaiQuay();
+			return Ok(listSP);
+		}
+
+		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
+		public IActionResult GetChiTietSanPhamByID(Guid id)
+		{
+			var response = _sanPhamServices.GetChiTietSanPhamByID(id);
+			return Ok(response);
+		}
+		#endregion
+
+	}
 }

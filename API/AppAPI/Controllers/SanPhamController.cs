@@ -12,6 +12,7 @@ namespace AppAPI.Controllers
     public class SanPhamController : ControllerBase
     {
         private readonly ISanPhamService _sanPhamServices;
+
         public SanPhamController(AssignmentDBContext dBContext)
         {
             this._sanPhamServices = new SanPhamService(dBContext);
@@ -21,7 +22,7 @@ namespace AppAPI.Controllers
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllSanPham()
         {
-            var listSP = await _sanPhamServices.GetAllSanPham();
+            var listSP = await _sanPhamServices.getAll();
             return Ok(listSP);
         }
 

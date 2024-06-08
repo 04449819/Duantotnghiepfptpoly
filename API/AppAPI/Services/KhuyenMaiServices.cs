@@ -4,7 +4,9 @@ using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
 
 namespace AppAPI.Services
@@ -99,9 +101,10 @@ namespace AppAPI.Services
             }
         }
 
-        public List<KhuyenMai> GetAll()
+        public List<KhuyenMai> GetAll(int page, int limit)
         {
-            return _repos.GetAll();
+            //return _repos.GetAll();
+            return _repos.GetPaged(page, limit);
         }
 
        

@@ -16,7 +16,7 @@ namespace AppAPI.IServices
         public bool Delete(Guid Id);
 
         public KhuyenMai GetById(Guid Id);
-        public List<KhuyenMai> GetAll();
+        public List<KhuyenMai> GetAll(int page, int limit);
        
         public List<KhuyenMai> GetKMByName(string Ten);
     }

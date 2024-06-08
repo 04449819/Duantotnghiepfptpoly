@@ -1,10 +1,13 @@
-﻿using AppAPI.IServices;
+﻿
+using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -26,9 +29,9 @@ namespace AppAPI.Controllers
 
         // GET: api/<KhuyenMaiController>
         [HttpGet]
-        public List<KhuyenMai> Get()
+        public List<KhuyenMai> Get(int page, int limit)
         {
-            return _khuyenmai.GetAll();
+            return _khuyenmai.GetAll( page, limit);
         }
         [Route("GetAllCTSPBySP")]
         [HttpGet]

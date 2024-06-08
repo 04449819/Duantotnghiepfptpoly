@@ -8,6 +8,7 @@ namespace AppAPI.IServices
     public interface ISanPhamService
     {
         #region SanPham
+        Task<List<SanPham>> getAll();
         List<SanPhamViewModelAdmin> GetAllSanPhamAdmin();
         Task<List<SanPhamViewModel>> GetAllSanPham();
 		Task<List<SanPhamViewModel>> GetALLSanPham();

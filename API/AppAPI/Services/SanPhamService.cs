@@ -17,6 +17,10 @@ namespace AppAPI.Services
         }
 
 		#region SanPham
+        public Task<List<SanPham>> getAll()
+        {
+            return _context.SanPhams.ToListAsync();
+        }
 		public Task<List<SanPhamViewModel>> GetALLSanPham()
 		{
 			throw new NotImplementedException();

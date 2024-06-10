@@ -32,7 +32,7 @@ namespace AppData.Models
         public DbSet<Anh> Anhs { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfpt;Integrated Security=True");
+			optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-B0M2PNO\VIETHOANG;Initial Catalog=duantotnghiepfpt;Integrated Security=True");
 		}
         //THUYNHU\SQLEXPRESS
         //DESKTOP-UOIH77U\SQLEXPRESS

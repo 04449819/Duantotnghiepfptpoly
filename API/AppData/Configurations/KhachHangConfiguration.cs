@@ -20,7 +20,6 @@ namespace AppData.Configurations
             builder.Property(x => x.GioiTinh).HasColumnType("int");
             builder.Property(x => x.NgaySinh).HasColumnType("datetime");
             builder.Property(x => x.Email).HasColumnType("varchar(250)");
-            builder.Property(x => x.DiaChi).HasColumnType("nvarchar(100)");
             builder.Property(x => x.SDT).HasColumnType("varchar(10)");
             builder.Property(x => x.DiemTich).HasColumnType("int");
             builder.Property(x => x.TrangThai).HasColumnType("int");

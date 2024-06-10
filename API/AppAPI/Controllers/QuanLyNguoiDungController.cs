@@ -203,7 +203,7 @@ namespace AppAPI.Controllers
         //End
         //Nhinh
         [HttpPost("AddNhanhKH")]
-        public async Task<bool> AddNhanhKH(KhachHang kh)
+        public async Task<bool> AddNhanhKH(KhachHangVieww kh)
         {
             return await service.AddNhanhKH(kh);
         }

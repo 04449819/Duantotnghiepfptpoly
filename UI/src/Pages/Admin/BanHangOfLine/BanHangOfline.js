@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 // import axios from "axios";
 // import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
+import HoaDon from "./HoaDon/HoaDon";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -274,7 +275,9 @@ const BanHangOfline = () => {
             </div>
           </div>
         </div>
-        <div className="col-3 banhangof_hoadon">hoadon</div>
+        <div className="col-3 banhangof_hoadon">
+          <HoaDon />
+        </div>
       </div>
     </div>
   );

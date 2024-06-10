@@ -108,7 +108,7 @@ namespace AppAPI.Controllers
             kh.GioiTinh=khv.GioiTinh;
             kh.NgaySinh=khv.NgaySinh;
             kh.Email = khv.Email?.Trim();
-            kh.DiaChi=khv.DiaChi?.Trim();
+            //kh.DiaChi=khv.DiaChi?.Trim();
             kh.SDT = khv.SDT?.Trim();
             kh.TrangThai=1;
             kh.DiemTich = 0;
@@ -117,7 +117,13 @@ namespace AppAPI.Controllers
             gh.IDKhachHang=kh.IDKhachHang;
             gh.NgayTao=DateTime.Now;
             _dbcontext.GioHangs.Add(gh);
-            _dbcontext.SaveChanges();
+            DiaChiKhachHang dckh = new DiaChiKhachHang();
+			dckh.Id = Guid.NewGuid();
+            dckh.KhachHangID = kh.IDKhachHang;
+            dckh.DiaChi = khv.DiaChi?.Trim();
+            dckh.TrangThai = 1;
+            _dbcontext.diaChiKhachHangs.Add(dckh);
+			_dbcontext.SaveChanges();
             return true;
         }
 
@@ -139,7 +145,6 @@ namespace AppAPI.Controllers
                 return false;
             }
 			kh.Email = khv.Email?.Trim();
-			kh.DiaChi = khv.DiaChi?.Trim();
 			kh.SDT = khv.SDT?.Trim();
 			kh.TrangThai = 1;
 			kh.DiemTich = 0;
@@ -148,6 +153,12 @@ namespace AppAPI.Controllers
 			gh.IDKhachHang = kh.IDKhachHang;
 			gh.NgayTao = DateTime.Now;
 			_dbcontext.GioHangs.Add(gh);
+			DiaChiKhachHang dckh = new DiaChiKhachHang();
+			dckh.Id = Guid.NewGuid();
+			dckh.KhachHangID = kh.IDKhachHang;
+			dckh.DiaChi = khv.DiaChi?.Trim();
+			dckh.TrangThai = 1;
+			_dbcontext.diaChiKhachHangs.Add(dckh);
 			_dbcontext.SaveChanges();
 			return true;
 		}
@@ -177,30 +188,30 @@ namespace AppAPI.Controllers
             return Ok("Đăng ký thành công");
         }
         // PUT api/<SanPhamController>/5
-        [Route("PutKhView")]
-        [HttpPut]
-        public bool PutKhView(KhachHangView khv)
-        {
-            var kh = _khachHangService.GetById(khv.IDKhachHang);
-            if (kh != null)
-            {
+        //[Route("PutKhView")]
+        //[HttpPut]
+        //public bool PutKhView(KhachHangView khv)
+        //{
+        //    var kh = _khachHangService.GetById(khv.IDKhachHang);
+        //    if (kh != null)
+        //    {
                 
-                kh.Ten = khv.Ten?.Trim();
-                //kh.Password = MaHoaMatKhau(khv.Password);
-                //kh.GioiTinh = khv.GioiTinh;
-                kh.NgaySinh = khv.NgaySinh;
-                //kh.Email = khv.Email;
-                kh.DiaChi = khv.DiaChi?.Trim();
-                //kh.SDT = khv.SDT;
-                //kh.TrangThai = khv.TrangThai;
+        //        kh.Ten = khv.Ten?.Trim();
+        //        //kh.Password = MaHoaMatKhau(khv.Password);
+        //        //kh.GioiTinh = khv.GioiTinh;
+        //        kh.NgaySinh = khv.NgaySinh;
+        //        //kh.Email = khv.Email;
+        //        kh.DiaChi = khv.DiaChi?.Trim();
+        //        //kh.SDT = khv.SDT;
+        //        //kh.TrangThai = khv.TrangThai;
                 
-                _dbcontext.KhachHangs.Update(kh);
-                _dbcontext.SaveChanges();
-                return true;
-            }
-            return false;
+        //        _dbcontext.KhachHangs.Update(kh);
+        //        _dbcontext.SaveChanges();
+        //        return true;
+        //    }
+        //    return false;
 
-        }
+        //}
 
         // DELETE api/<SanPhamController>/5
         [HttpDelete("{id}")]

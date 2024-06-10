@@ -30,6 +30,7 @@ namespace AppData.Models
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
+        public DbSet<DiaChiKhachHang> diaChiKhachHangs { get;set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfpt;Integrated Security=True");

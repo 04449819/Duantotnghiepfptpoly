@@ -82,26 +82,31 @@ namespace AppAPI.Services
             return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt || c.Email == sdt);
         }
 
-        public bool Update(KhachHang khachHang)
-        {
-            var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
-            if (kh != null)
-            {
-                kh.Ten = khachHang.Ten;
-                kh.SDT = khachHang.SDT;
-                kh.Email = khachHang.Email;
-                kh.Password = khachHang.Password;
-                kh.GioiTinh = khachHang.GioiTinh;
-                kh.DiaChi = khachHang.DiaChi;
-                kh.NgaySinh = khachHang.NgaySinh;
-                kh.DiemTich = khachHang.DiemTich;
-                kh.TrangThai = khachHang.TrangThai;
-                _dbContext.KhachHangs.Update(kh);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            return false;
-        }
+		public bool Update(KhachHang khachHang)
+		{
+			throw new NotImplementedException();
+		}
 
-    }
+		//public bool Update(KhachHang khachHang)
+		//{
+		//    var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
+		//    if (kh != null)
+		//    {
+		//        kh.Ten = khachHang.Ten;
+		//        kh.SDT = khachHang.SDT;
+		//        kh.Email = khachHang.Email;
+		//        kh.Password = khachHang.Password;
+		//        kh.GioiTinh = khachHang.GioiTinh;
+		//        kh.DiaChi = khachHang.DiaChi;
+		//        kh.NgaySinh = khachHang.NgaySinh;
+		//        kh.DiemTich = khachHang.DiemTich;
+		//        kh.TrangThai = khachHang.TrangThai;
+		//        _dbContext.KhachHangs.Update(kh);
+		//        _dbContext.SaveChanges();
+		//        return true;
+		//    }
+		//    return false;
+		//}
+
+	}
 }

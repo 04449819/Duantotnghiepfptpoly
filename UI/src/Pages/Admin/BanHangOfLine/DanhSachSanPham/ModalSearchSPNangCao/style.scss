@@ -1,0 +1,21 @@
+.dsspnangcao_body {
+  margin: auto !important;
+  text-align: center;
+  .dsspnangcao_dssp {
+    .dsspnangcao_sp {
+      //border: 1px solid black !important;
+      margin: 10px 0px;
+      .dsspnangcao_spct {
+        width: 90%;
+        // height: 280px;
+        padding-bottom: 10px;
+        border: 1px solid black !important;
+        img {
+          width: 130px !important;
+          height: 130px;
+          background-color: rgb(56, 146, 83);
+        }
+      }
+    }
+  }
+}

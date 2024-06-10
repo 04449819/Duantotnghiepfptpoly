@@ -4,6 +4,8 @@ using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Org.BouncyCastle.Crypto;
 using System.Diagnostics.Eventing.Reader;
 
 namespace AppAPI.Services
@@ -327,23 +329,23 @@ namespace AppAPI.Services
             }
             catch { return false; }
         }
-        public async Task<bool> DeleteImage(Guid id)
-        {
-            try
-            {
-                var temp = _context.Anhs.First(x => x.ID == id);
-                if (temp.IDMauSac != null)
-                {
-                    temp.DuongDan = "";
-                    _context.Anhs.Update(temp);
-                }
-                else _context.Anhs.Remove(temp);
-                await _context.SaveChangesAsync();
-                return true;
+        //public async Task<bool> DeleteImage(Guid id)
+        //{
+        //    try
+        //    {
+        //        var temp = _context.Anhs.First(x => x.ID == id);
+        //        if (temp.IDMauSac != null)
+        //        {
+        //            temp.DuongDan = "";
+        //            _context.Anhs.Update(temp);
+        //        }
+        //        else _context.Anhs.Remove(temp);
+        //        await _context.SaveChangesAsync();
+        //        return true;
 
-            }
-            catch { return false; }
-        }
+        //    }
+        //    catch { return false; }
+        //}
         #endregion
 
         #region ChiTietSanPham
@@ -852,7 +854,6 @@ namespace AppAPI.Services
             _context.SaveChanges();
         }
         #endregion
-        //Nhinh thêm
         #region SanPhamBanHang
         //public async Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay()
         //{
@@ -960,9 +961,39 @@ namespace AppAPI.Services
 			throw new NotImplementedException();
 		}
 
-		public ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id)
+		public SanPhamVieww GetChiTietSanPhamByID(Guid id)
 		{
-			throw new NotImplementedException();
+			var listsp = from a in _context.SanPhams
+						 join b in _context.LoaiSPs on a.IDLoaiSP equals b.ID
+						 join c in _context.ChatLieus on a.IDChatLieu equals c.ID
+						 join d in _context.ChiTietSanPhams on a.ID equals d.IDSanPham
+						 join e in _context.KhuyenMais on d.IDKhuyenMai equals e.ID
+						 join f in _context.MauSacs on d.IDMauSac equals f.ID
+						 join g in _context.Anhs on d.ID equals g.IDChitietsanpham
+						 join h in _context.KichCos on d.IDKichCo equals h.ID
+						 select new SanPhamVieww
+						 {
+							 idLoaiSP = b.ID,
+							 idSP = a.ID,
+							 idCTSP = d.ID,
+							 idAnh = g.ID,
+							 loaiSP = b.Ten,
+							 tenchatlieu = c.Ten,
+							 tenSanPham = a.Ten,
+							 soLuong = d.SoLuong,
+							 soLuongmua=1,
+							 giaBan = d.GiaBan,
+							 ngayTao = d.NgayTao,
+							 trangThai = d.TrangThai,
+							 giaTriKhuyenMai = e.GiaTri,
+							 tenMau = f.Ten,
+							 maMau = f.Ma,
+							 duongDanAnh = g.DuongDan,
+							 kichCo = h.Ten
+						 };
+
+            var sanPham = listsp.FirstOrDefault(p=>p.idCTSP == id);
+            return sanPham;
 		}
 
 		public Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
@@ -977,32 +1008,36 @@ namespace AppAPI.Services
 
 		public async Task<List<SanPhamVieww>>  GetAllSanPhamTaiQuay()
 		{
-            var listsp = from a in _context.SanPhams.AsNoTracking()
-                         join b in _context.LoaiSPs.AsNoTracking() on a.IDLoaiSP equals b.ID
-                         join c in _context.ChatLieus.AsNoTracking() on a.IDChatLieu equals c.ID
-                         join d in _context.ChiTietSanPhams.AsNoTracking() on a.ID equals d.IDSanPham
-                         join e in _context.KhuyenMais.AsNoTracking() on d.IDKhuyenMai equals e.ID
-                         join f in _context.MauSacs.AsNoTracking() on d.IDMauSac equals f.ID
-                         join g in _context.Anhs.AsNoTracking() on f.ID equals g.IDMauSac
-                         join h in _context.KichCos.AsNoTracking() on d.IDKichCo equals h.ID
+            var listsp = from a in _context.SanPhams
+                         join b in _context.LoaiSPs on a.IDLoaiSP equals b.ID
+                         join c in _context.ChatLieus on a.IDChatLieu equals c.ID
+                         join d in _context.ChiTietSanPhams on a.ID equals d.IDSanPham
+                         join e in _context.KhuyenMais on d.IDKhuyenMai equals e.ID
+                         join f in _context.MauSacs on d.IDMauSac equals f.ID
+                         join g in _context.Anhs on d.ID equals g.IDChitietsanpham
+						 join h in _context.KichCos on d.IDKichCo equals h.ID
                          select new SanPhamVieww
                          {
+                             idLoaiSP = b.ID,
+                             idSP = a.ID,
                              idCTSP = d.ID,
+                             idAnh = g.ID,
                              loaiSP = b.Ten,
                              tenchatlieu = c.Ten,
                              tenSanPham = a.Ten,
                              soLuong = d.SoLuong,
-                             giaBan = d.GiaBan,
+							 soLuongmua=1,
+							 giaBan = d.GiaBan,
                              ngayTao = d.NgayTao,
                              trangThai = d.TrangThai,
                              giaTriKhuyenMai = e.GiaTri,
                              tenMau = f.Ten,
                              maMau = f.Ma,
                              duongDanAnh = g.DuongDan,
-							 kichCo = h.Ten
-						 };
+                             kichCo = h.Ten
+                         };
             return await listsp.ToListAsync();
-		}
+        }
 
 		public Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp)
 		{
@@ -1010,6 +1045,11 @@ namespace AppAPI.Services
 		}
 
 		public Task<bool> AddAnhToSanPham(List<AnhRequest> request)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<bool> DeleteImage(Guid id)
 		{
 			throw new NotImplementedException();
 		}

@@ -32,7 +32,7 @@ namespace AppData.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
-                    b.Property<Guid?>("IDMauSac")
+                    b.Property<Guid?>("IDChitietsanpham")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TrangThai")
@@ -40,7 +40,7 @@ namespace AppData.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("IDMauSac");
+                    b.HasIndex("IDChitietsanpham");
 
                     b.ToTable("Anh", (string)null);
                 });
@@ -611,11 +611,11 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.Anh", b =>
                 {
-                    b.HasOne("AppData.Models.MauSac", "MauSac")
+                    b.HasOne("AppData.Models.ChiTietSanPham", "ChiTietSanPham")
                         .WithMany("Anhs")
-                        .HasForeignKey("IDMauSac");
+                        .HasForeignKey("IDChitietsanpham");
 
-                    b.Navigation("MauSac");
+                    b.Navigation("ChiTietSanPham");
                 });
 
             modelBuilder.Entity("AppData.Models.ChiTietGioHang", b =>
@@ -792,6 +792,8 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.ChiTietSanPham", b =>
                 {
+                    b.Navigation("Anhs");
+
                     b.Navigation("ChiTietGioHangs");
 
                     b.Navigation("ChiTietHoaDons");
@@ -839,8 +841,6 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.MauSac", b =>
                 {
-                    b.Navigation("Anhs");
-
                     b.Navigation("ChiTietSanPhams");
                 });
 

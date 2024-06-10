@@ -61,43 +61,43 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        public GioHangViewModel GetCart(List<GioHangRequest> request)
-        {
-            var response = new GioHangViewModel();
-            long tongTien = 0;
-            ChiTietSanPhamViewModel chiTietSanPham;
-            foreach (var item in request)
-            {
-                chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDChiTietSanPham);
-                item.DonGia = chiTietSanPham.GiaBan;
-                item.Ten = chiTietSanPham.Ten;
-                item.MauSac = chiTietSanPham.MauSac;
-                item.KichCo = chiTietSanPham.KichCo;
-                item.Anh = chiTietSanPham.Anh;
-                item.HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : chiTietSanPham.TrangThai < 1 ? false : true;
-                tongTien += item.DonGia.Value * item.SoLuong;
-            }
-            response.GioHangs = request;
-            response.TongTien = tongTien;
-            return response;
-        }
-        public GioHangViewModel GetCartLogin(string idNguoiDung)
-        {
-            var lstChiTietGioHang = context.ChiTietGioHangs.Where(x => x.IDNguoiDung == new Guid(idNguoiDung)).ToList();
-            ChiTietSanPhamViewModel chiTietSanPham;
-            List<GioHangRequest> lst = new List<GioHangRequest>();
-            var response = new GioHangViewModel();
-            long tongTien = 0;
-            foreach (var item in lstChiTietGioHang)
-            {
-                chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDCTSP);
-                lst.Add(new GioHangRequest() { IDChiTietSanPham = chiTietSanPham.ID, SoLuong = item.SoLuong, DonGia = chiTietSanPham.GiaBan, Ten = chiTietSanPham.Ten, MauSac = chiTietSanPham.MauSac, KichCo = chiTietSanPham.KichCo, Anh = chiTietSanPham.Anh , HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : true});
-                tongTien += chiTietSanPham.GiaBan * item.SoLuong;
-            }
-            response.GioHangs = lst;
-            response.TongTien = tongTien;
-            return response;
-        }
+        //public GioHangViewModel GetCart(List<GioHangRequest> request)
+        //{
+        //    var response = new GioHangViewModel();
+        //    long tongTien = 0;
+        //    ChiTietSanPhamViewModel chiTietSanPham;
+        //    foreach (var item in request)
+        //    {
+        //        chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDChiTietSanPham);
+        //        item.DonGia = chiTietSanPham.GiaBan;
+        //        item.Ten = chiTietSanPham.Ten;
+        //        item.MauSac = chiTietSanPham.MauSac;
+        //        item.KichCo = chiTietSanPham.KichCo;
+        //        item.Anh = chiTietSanPham.Anh;
+        //        item.HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : chiTietSanPham.TrangThai < 1 ? false : true;
+        //        tongTien += item.DonGia.Value * item.SoLuong;
+        //    }
+        //    response.GioHangs = request;
+        //    response.TongTien = tongTien;
+        //    return response;
+        //}
+        //public GioHangViewModel GetCartLogin(string idNguoiDung)
+        //{
+        //    var lstChiTietGioHang = context.ChiTietGioHangs.Where(x => x.IDNguoiDung == new Guid(idNguoiDung)).ToList();
+        //    ChiTietSanPhamViewModel chiTietSanPham;
+        //    List<GioHangRequest> lst = new List<GioHangRequest>();
+        //    var response = new GioHangViewModel();
+        //    long tongTien = 0;
+        //    foreach (var item in lstChiTietGioHang)
+        //    {
+        //        chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDCTSP);
+        //        lst.Add(new GioHangRequest() { IDChiTietSanPham = chiTietSanPham.ID, SoLuong = item.SoLuong, DonGia = chiTietSanPham.GiaBan, Ten = chiTietSanPham.Ten, MauSac = chiTietSanPham.MauSac, KichCo = chiTietSanPham.KichCo, Anh = chiTietSanPham.Anh , HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : true});
+        //        tongTien += chiTietSanPham.GiaBan * item.SoLuong;
+        //    }
+        //    response.GioHangs = lst;
+        //    response.TongTien = tongTien;
+        //    return response;
+        //}
         public async Task<bool> AddCart(ChiTietGioHang chiTietGioHang)
         {
             try
@@ -165,5 +165,15 @@ namespace AppAPI.Services
                 return false;
             }
         }
-    }
+
+		public GioHangViewModel GetCart(List<GioHangRequest> request)
+		{
+			throw new NotImplementedException();
+		}
+
+		public GioHangViewModel GetCartLogin(string idNguoiDung)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

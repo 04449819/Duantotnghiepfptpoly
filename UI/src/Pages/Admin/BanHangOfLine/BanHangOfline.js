@@ -15,7 +15,7 @@ const BanHangOfline = () => {
   const [inputreadOnly, setinputreadOnly] = useState(true);
   const [coler, setcoler] = useState("white");
   const [btnSearch, setbtnSearch] = useState(false);
-  const [datasp, setData] = useState([]);
+  // const [datasp, setData] = useState([]);
   let inputtrue = !inputreadOnly;
 
   const HandleOnclickSearchKH = async () => {
@@ -131,31 +131,31 @@ const BanHangOfline = () => {
       );
   };
 
-  const Getdata = async (inputsearch) => {
-    try {
-      const res = await axios.get(
-        `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
-      );
-      const existingItem = datasp.find(
-        (item) => item.idCTSP === res.data.idCTSP
-      );
-      if (existingItem) {
-        const sanpham = datasp.map((item) => {
-          if (item.idCTSP === res.data.idCTSP)
-            return {
-              ...item,
-              soLuongmua: item.soLuongmua + res.data.soLuongmua,
-            };
-          return item;
-        });
-        setData(sanpham);
-      } else {
-        setData([...datasp, res.data]);
-      }
-    } catch (error) {
-      toast.error("Thông tin sản phẩm không chính xác");
-    }
-  };
+  // const Getdata = async (inputsearch) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
+  //     );
+  //     const existingItem = datasp.find(
+  //       (item) => item.idCTSP === res.data.idCTSP
+  //     );
+  //     if (existingItem) {
+  //       const sanpham = datasp.map((item) => {
+  //         if (item.idCTSP === res.data.idCTSP)
+  //           return {
+  //             ...item,
+  //             soLuongmua: item.soLuongmua + res.data.soLuongmua,
+  //           };
+  //         return item;
+  //       });
+  //       setData(sanpham);
+  //     } else {
+  //       setData([...datasp, res.data]);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Thông tin sản phẩm không chính xác");
+  //   }
+  // };
 
   return (
     <div className="banhangofline">
@@ -267,11 +267,7 @@ const BanHangOfline = () => {
               </div>
             </div>
             <div className="BanHangof_giohang_sanphamdamua">
-              <DanhSachSanPham
-                datasp={datasp}
-                Getdata={Getdata}
-                setData={setData}
-              />
+              <DanhSachSanPham />
             </div>
           </div>
         </div>

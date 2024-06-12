@@ -1,0 +1,21 @@
+.SPduocchon_body {
+  .SPduocchon_body_img {
+    .SPduocchon_body_imgbig {
+      img {
+        width: 250px;
+        height: 250px;
+      }
+    }
+    .SPduocchon_body_imgsmall {
+      margin-top: 20px;
+      img {
+        width: 50px;
+        height: 50px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .SPduocchon_body_content {
+    margin: 10px;
+  }
+}

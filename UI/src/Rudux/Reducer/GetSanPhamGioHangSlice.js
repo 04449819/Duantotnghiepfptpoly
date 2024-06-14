@@ -30,6 +30,15 @@ export const GetSanPhamGioHangSlice = createSlice({
         (p) => p.idCTSP !== action.payload
       );
     },
+    UpdateSoLuong: (state, action) => {
+      const data = state.SanPhamGioHang.map((item) => {
+        if (item.idCTSP === action.payload.idctsp) {
+          return { ...item, soLuongmua: action.payload.soluong };
+        }
+        return item;
+      });
+      state.SanPhamGioHang = data;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
@@ -38,26 +47,32 @@ export const GetSanPhamGioHangSlice = createSlice({
       state.errordata = false;
     });
     builder.addCase(FetchDataSanPhamGioHang.fulfilled, (state, action) => {
+      const payload = action.payload;
+      if (!payload || !payload.idCTSP) {
+        state.errordata = true;
+        return;
+      }
+
       const existingItem = state.SanPhamGioHang.find(
-        (item) => item.idCTSP === action.payload.idCTSP
+        (item) => item.idCTSP === payload.idCTSP
       );
+
       if (!existingItem) {
-        state.SanPhamGioHang = [...state.SanPhamGioHang, action.payload];
+        state.SanPhamGioHang.push(payload);
       } else {
-        const sanpham = state.SanPhamGioHang.map((item) => {
-          if (item.idCTSP === action.payload.idCTSP)
+        state.SanPhamGioHang = state.SanPhamGioHang.map((item) => {
+          if (item.idCTSP === payload.idCTSP) {
             return {
               ...item,
-              soLuongmua: item.soLuongmua + action.payload.soLuongmua,
+              soLuongmua: item.soLuongmua + payload.soLuongmua,
             };
+          }
           return item;
         });
-        state.SanPhamGioHang = sanpham;
       }
 
       state.loadingdata = false;
       state.errordata = false;
-      console.log(">>>> hahaha", state.SanPhamGioHang);
     });
     builder.addCase(FetchDataSanPhamGioHang.rejected, (state, action) => {
       state.loadingdata = false;
@@ -65,5 +80,5 @@ export const GetSanPhamGioHangSlice = createSlice({
     });
   },
 });
-export const { DeleteCTSP } = GetSanPhamGioHangSlice.actions;
+export const { DeleteCTSP, UpdateSoLuong } = GetSanPhamGioHangSlice.actions;
 export default GetSanPhamGioHangSlice.reducer;

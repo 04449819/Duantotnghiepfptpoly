@@ -160,6 +160,9 @@ const ModalSearchSPNangCao = () => {
                     >
                       Chọn loại sản phẩm
                     </option>
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      TẤT CẢ LOẠI SẢN PHẨM
+                    </option>
                     {LoaiSP.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.ten}
@@ -181,6 +184,9 @@ const ModalSearchSPNangCao = () => {
                       hidden
                     >
                       chất liệu sản phẩm
+                    </option>
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      TẤT CẢ CHẤT LIỆU
                     </option>
                     {ChatLieuSP.map((item) => (
                       <option key={item.id} value={item.id}>

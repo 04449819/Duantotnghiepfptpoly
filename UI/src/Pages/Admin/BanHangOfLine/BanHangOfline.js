@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 // import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
 import HoaDon from "./HoaDon/HoaDon";
+import { useSelector } from "react-redux";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -15,6 +16,8 @@ const BanHangOfline = () => {
   const [inputreadOnly, setinputreadOnly] = useState(true);
   const [coler, setcoler] = useState("white");
   const [btnSearch, setbtnSearch] = useState(false);
+  const [soSP, setSoSP] = useState(0);
+  const [TongGia, setTongGia] = useState(0);
   // const [datasp, setData] = useState([]);
   let inputtrue = !inputreadOnly;
 
@@ -90,6 +93,7 @@ const BanHangOfline = () => {
         console.log(res);
         if (res.data === true) {
           toast.success("thêm khách hàng thành công");
+          setbtnSearch(false);
         }
         if (res.data === false) {
           toast.error("khach hang da ton tai");
@@ -130,6 +134,21 @@ const BanHangOfline = () => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+  //soSP, setSoSP
+  // const [TongGia, setTongGia] = useState(0);
+  const data = useSelector((item) => item.sanPhamGioHang.SanPhamGioHang);
+  useEffect(() => {
+    if (data.length > 0) {
+      const totalSoSP = data.reduce((acc, item) => acc + item.soLuongmua, 0);
+      const TongGiaSP = data.reduce((acc, item) => {
+        return acc + item.soLuongmua * item.giaBan;
+      }, 0);
+      setSoSP(totalSoSP);
+      setTongGia(TongGiaSP);
+    } else {
+      setSoSP(0);
+    }
+  }, [data]);
 
   // const Getdata = async (inputsearch) => {
   //   try {
@@ -169,6 +188,7 @@ const BanHangOfline = () => {
                   className="form-control"
                   placeholder="email or sdt"
                   value={search}
+                  style={{ width: "38%" }}
                   onChange={(event) => setSearch(event.target.value)}
                 />
                 <button
@@ -260,8 +280,11 @@ const BanHangOfline = () => {
               >
                 <div style={{ margin: "0px 20px" }}>
                   <h3>Giỏ hàng</h3>
-                  <h6>Sản phẩm: 1</h6>
-                  <h6>Giá: xxxx &nbsp;&nbsp;&nbsp; Giảm: xxxx</h6>
+                  <h6>Sản phẩm: {soSP} </h6>
+                  <h6>
+                    Giá: {data.length > 0 ? TongGia : 0} &nbsp;&nbsp;&nbsp;
+                    Giảm: xxxx
+                  </h6>
                   <h5>Tổng tiền: xxxx</h5>
                 </div>
               </div>

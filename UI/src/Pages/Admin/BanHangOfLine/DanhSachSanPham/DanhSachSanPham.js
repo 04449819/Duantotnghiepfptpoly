@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   DeleteCTSP,
   FetchDataSanPhamGioHang,
+  UpdateSoLuong,
 } from "../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 const DanhSachSanPham = () => {
   const [inputsearch, setinputsearch] = useState("");
@@ -31,7 +32,8 @@ const DanhSachSanPham = () => {
   };
   const handleOnChangeSoLuong = (e, item) => {
     const newSoLuong = parseInt(e.target.value);
-    if (newSoLuong >= 0) {
+    if (newSoLuong > 0) {
+      dispatch(UpdateSoLuong({ soluong: newSoLuong, idctsp: item.idCTSP }));
       // Gửi cập nhật số lượng lên store Redux
       // Bạn có thể gửi action để cập nhật số lượng cho sản phẩm cụ thể
       // ở đây tôi sẽ sử dụng Redux Toolkit và action được tạo sẵn là UpdateSoLuong
@@ -83,6 +85,7 @@ const DanhSachSanPham = () => {
           </thead>
           <tbody>
             {dataSanPhamGioHang.map((item, index) => {
+              if (!item) return null;
               return (
                 <tr key={item.idCTSP}>
                   <td>{index + 1}</td>

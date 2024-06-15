@@ -28,7 +28,7 @@ const DanhSachSanPham = () => {
 
   const HandleOnclickGetDatainQR = (QRSearch) => {
     // props.Getdata(QRSearch);
-    dispatch(FetchDataSanPhamGioHang(inputsearch));
+    dispatch(FetchDataSanPhamGioHang(QRSearch));
   };
   const handleOnChangeSoLuong = (e, item) => {
     const newSoLuong = parseInt(e.target.value);

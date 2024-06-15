@@ -18,6 +18,7 @@ const BanHangOfline = () => {
   const [btnSearch, setbtnSearch] = useState(false);
   const [soSP, setSoSP] = useState(0);
   const [TongGia, setTongGia] = useState(0);
+  const [giabandau, setGiaBandau] = useState(0);
   // const [datasp, setData] = useState([]);
   let inputtrue = !inputreadOnly;
 
@@ -92,11 +93,11 @@ const BanHangOfline = () => {
         );
         console.log(res);
         if (res.data === true) {
-          toast.success("thêm khách hàng thành công");
+          toast.success("Thêm khách hàng thành công");
           setbtnSearch(false);
         }
         if (res.data === false) {
-          toast.error("khach hang da ton tai");
+          toast.error("Tài khoản đã tồn tại");
           return;
         }
       } catch (error) {
@@ -282,9 +283,12 @@ const BanHangOfline = () => {
                   <h3>Giỏ hàng</h3>
                   <h6>Sản phẩm: {soSP} </h6>
                   <h6>
-                    Giá: {data.length > 0 ? TongGia : 0} &nbsp;&nbsp;&nbsp;
-                    Giảm: xxxx
+                    {data.length > 0
+                      ? TongGia.toLocaleString("vi-VN") + " VNĐ"
+                      : giabandau.toLocaleString("vi-VN") + " VNĐ"}
+                    &nbsp;&nbsp;&nbsp; Giảm: xxxx
                   </h6>
+
                   <h5>Tổng tiền: xxxx</h5>
                 </div>
               </div>

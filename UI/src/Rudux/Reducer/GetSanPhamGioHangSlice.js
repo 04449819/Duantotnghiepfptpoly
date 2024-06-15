@@ -14,6 +14,10 @@ export const FetchDataSanPhamGioHang = createAsyncThunk(
       const res = await axios.get(
         `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
       );
+      if (res.data.length === 0) {
+        toast.error("Thông tin sản phẩm không chính xác");
+      }
+
       return res.data;
     } catch (error) {
       toast.error("Thông tin sản phẩm không chính xác");

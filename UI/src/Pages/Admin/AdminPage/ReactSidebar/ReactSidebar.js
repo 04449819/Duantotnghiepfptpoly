@@ -9,6 +9,7 @@ import { IoSettings } from "react-icons/io5";
 import { IoMenu } from "react-icons/io5";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
+import Swal from "sweetalert2";
 const ReactSideBar = () => {
   const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
@@ -23,12 +24,26 @@ const ReactSideBar = () => {
   }, []);
   //vaiTro
   const HandleOnclickLogout = () => {
-    let text = "Bạn có muốn đăng xuất không?";
-    if (window.confirm(text) === true) {
-      dispath(LogOutTaiKhoan());
-      navigate("/");
-    } else {
-    }
+    Swal.fire({
+      title: "Xác nhận",
+      text: "Bạn có muốn đăng xuất không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispath(LogOutTaiKhoan());
+        navigate("/");
+      } else {
+      }
+    });
+    //let text = "Bạn có muốn đăng xuất không?";
+    // if (window.confirm(text) === true) {
+    // dispath(LogOutTaiKhoan());
+    // navigate("/");
+    // } else {
+    // }
   };
 
   if (user.email && user.vaiTro === 0) {
@@ -53,7 +68,7 @@ const ReactSideBar = () => {
               <div style={{ padding: "0 24px", marginBottom: "8px" }}></div>
               <Menu>
                 <MenuItem
-                  component={<Link to="/admin/banhangofline" />}
+                  component={<Link to="/admin/dashboard" />}
                   icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                 >
                   Dashboard
@@ -181,7 +196,16 @@ const ReactSideBar = () => {
                 </button>
               )}
             </div>
-            <div className="sidebar_body_ok">
+            <div
+              className="sidebar_body_ok"
+              style={
+                {
+                  // overflowY: "scroll",
+                  // overflowX: "hidden",
+                  // height: "600px",
+                }
+              }
+            >
               <Outlet />
             </div>
           </div>

@@ -29,9 +29,22 @@ namespace AppAPI.Controllers
 
         // GET: api/<KhuyenMaiController>
         [HttpGet]
-        public List<KhuyenMai> Get(int page, int limit)
+        
+
+        public async Task<IActionResult> Get(int pageIndex, int pageSize)
         {
-            return _khuyenmai.GetAll( page, limit);
+            int totalKM = await _dbcontext.KhuyenMais.CountAsync();
+            int totalPage = (int)Math.Ceiling(totalKM / (double)pageSize);
+            var km = await _dbcontext.KhuyenMais
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+            return Ok(new
+            {
+                Data = km,
+                TotalCount = totalPage
+            });
+
         }
         [Route("GetAllCTSPBySP")]
         [HttpGet]

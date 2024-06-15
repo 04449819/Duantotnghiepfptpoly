@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Modal, Button } from 'react-bootstrap';
 import "./QuanLyVoucher.scss";
+import { toast } from "react-toastify";
 const QuanLyVoucher = () => {
   const [ vouchers, setVouchers ] = useState([]);
   const [ newVoucher, setNewVoucher ] = useState({
@@ -18,27 +19,48 @@ const QuanLyVoucher = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const tableRef = useRef(null);
+  const ROWS_PER_PAGE = 2;
+  const [total, setTotal] = useState();
 
   useEffect(() => {
-    fetchVouchers();
+    fetchVouchers(page);
   }, []);
+ 
 
-  const fetchVouchers = async () => {
+  const fetchVouchers = async (page1) => {
     try {
-      const response = await axios.get('https://localhost:7095/api/Voucher');
-      setVouchers(response.data);
+      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page1}&pageSize=${ROWS_PER_PAGE}`);
+      const data = res.data;
+      setVouchers(prev => [...prev, ...data.data]);
+      setTotal(data.total);
     } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu:', error);
+      
     }
-  }
+
+  };
+ 
+    const handleScroll = async (e) => {
+       const { scrollTop, scrollHeight, clientHeight } = e.target;
+       const isBottom = scrollTop + clientHeight >= scrollHeight - 5;
+       if (isBottom) {
+        if(page < total){
+          fetchVouchers(page + 1);
+          setPage(page + 1);
+        }
+       }
+     
+    };
+
   const handleDelete = async (voucherId) => {
     try {
       await axios.delete(`https://localhost:7095/api/Voucher/${voucherId}`);
-      fetchVouchers();
+      fetchVouchers(1);
     } catch (error) {
       console.error('Error deleting voucher:', error);
     }
-  };
+  };            
   const handleShowModal = () => {
     setShowModal(true); 
   }
@@ -52,9 +74,19 @@ const QuanLyVoucher = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`https://localhost:7095/api/Voucher/${newVoucher.id}`, newVoucher);
+        try {
+          await axios.put(`https://localhost:7095/api/Voucher/${newVoucher.id}`, newVoucher);
+          toast.success("Cập nhật voucher thành công");
+        } catch (error) {
+          toast.error("Cập nhật voucher thất bại");
+        }
       } else {
-        await axios.post('https://localhost:7095/api/Voucher', newVoucher);
+        try {
+          await axios.post('https://localhost:7095/api/Voucher', newVoucher);
+          toast.success("Thêm voucher thành công");
+        } catch (error) {
+          toast.error("Thêm voucher thất bại");
+        }
       }
       setNewVoucher({
         ten: '',
@@ -68,7 +100,18 @@ const QuanLyVoucher = () => {
         trangThai: 0,
       });
       setIsEditing(false);
-      fetchVouchers();
+      setNewVoucher({
+        ten: '',
+        hinhThucGiamGia: 0, 
+        soTienCan: 0,
+        giaTri: 0,
+        ngayApDung: '',
+        ngayKetThuc: '',
+        soLuong: 0,
+        moTa: '',
+        trangThai: 0,
+      });
+      fetchVouchers(1);       
     } catch (error) {
       console.error('Error creating/updating voucher:', error);
     }
@@ -91,18 +134,16 @@ const QuanLyVoucher = () => {
   <div className="row">
     <div className="col text-center mb-4">
       <h1>Quản lý voucher</h1>
-      
+      <hr></hr>
     </div>
   </div>
-
-<Button variant="primary" onClick={handleShowModal}>
+      <Button variant="primary" onClick={handleShowModal}>
         Tạo Voucher
       </Button>
       <Modal show={showModal} onHide={handleCloseModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">Thông Tin Voucher</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           
   <div className="row">
@@ -241,6 +282,7 @@ const QuanLyVoucher = () => {
 
   <div className="row">
     <div className="col-md-12">
+    <div style={{width: '30%'}}>
     <input
         className="form-control mb-4 mt-4"
         placeholder="Tìm kiếm theo tên voucher"
@@ -248,50 +290,67 @@ const QuanLyVoucher = () => {
         value={searchTerm}
         onChange={handleSearchChange}
       />
-    <table className="table">
+    </div>
+    <h2 style={{textAlign: 'center'}}>Danh sách voucher</h2>
+    <hr></hr>
+    <div className="table-container" ref={tableRef} style={{ height: '200px', overflowY: 'scroll' }}
+    onScroll={handleScroll} >
+    
+        <table className="table">
       
-  <thead>
-    <tr>
-      <th>Tên</th>
-      <th>Hình thức giảm giá</th>
-      <th>Số tiền cần</th>
-      <th>Giá trị</th>
-      <th>Ngày áp dụng</th>
-      <th>Ngày kết thúc</th>
-      <th>Số lượng</th>
-      <th>Mô tả</th>
-      <th>Trạng thái</th>
-      <th>Hành động</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredVouchers.map((voucher) => (
-      <tr key={voucher.id}>
-        <td>{voucher.ten}</td>
-        <td>{voucher.hinhThucGiamGia === 0 ? 'Giảm tiền' : 'Giảm theo %'}</td>
-        <td>{voucher.soTienCan}</td>
-        <td>{voucher.giaTri}</td>
-        <td>{voucher.ngayApDung}</td>
-        <td>{voucher.ngayKetThuc}</td>
-        <td>{voucher.soLuong}</td>
-        <td>{voucher.moTa}</td>
-        <td>{voucher.trangThai === 0 ? 'Hết' : 'Còn'}</td>
-        <td>
-          <button className="btn btn-primary" onClick={() => { handleEdit(voucher); handleShowModal();} }>
-            Sửa
-          </button>
-          <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
-          Xóa
-        </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>    
+          <thead>
+            <tr>
+              <th>Tên</th>
+              <th>Hình thức giảm giá</th>
+              <th>Số tiền cần</th>
+              <th>Giá trị</th>
+              <th>Ngày áp dụng</th>
+              <th>Ngày kết thúc</th>
+              <th>Số lượng</th>
+              <th>Mô tả</th>
+              <th>Trạng thái</th>
+              <th >Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredVouchers.map((voucher) => (
+              <tr key={voucher.id}>
+                <td>{voucher.ten}</td>
+                <td>{voucher.hinhThucGiamGia === 0 ? 'Giảm tiền' : 'Giảm theo %'}</td>
+                <td>{voucher.soTienCan}</td>
+                <td>{voucher.giaTri}</td>
+                <td>{voucher.ngayApDung}</td>
+                <td>{voucher.ngayKetThuc}</td>
+                <td>{voucher.soLuong}</td>
+                <td>{voucher.moTa}</td>
+                <td>{voucher.trangThai === 0 ? 'Hết' : 'Còn'}</td>
+                <td>
+                  <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); handleShowModal();} }>
+                    Sửa
+                  </button>
+
+                </td>
+                <td> <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
+                  Xóa
+                </button>
+                {/* <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); handleCloseModal() }}>
+                  Sửa
+                </button>
+                <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
+                  Xóa
+                </button> */}
+                
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>    
+      </div>
     </div>
   </div>
 </div>
   );
 };
+
 
 export default QuanLyVoucher;

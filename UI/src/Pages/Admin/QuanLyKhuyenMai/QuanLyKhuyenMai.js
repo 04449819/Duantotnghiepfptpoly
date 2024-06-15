@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Modal, Button } from 'react-bootstrap';
 import "./QuanLyKhuyenMai.scss";
+import { toast } from "react-toastify";
 const QuanLyKhuyenMai = () => {
   const [promotions, setPromotions] = useState([]);
   const [newPromotion, setNewPromotion] = useState({
@@ -15,76 +16,62 @@ const QuanLyKhuyenMai = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [total, setTotal] = useState();
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const tableRef = useRef(null);
   const ROWS_PER_PAGE = 2;
-  const [isFetching, setIsFetching] = useState(false);
-  
-  useEffect(() => {  
-    fetchPromotions(1);
-  }, []);
-  useEffect(() => {
-    const handleScroll = () => {
-      if (tableRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
-        if (isFetching || (scrollTop + clientHeight >= scrollHeight - 5 && promotions.length < ROWS_PER_PAGE)) return;
-        setIsFetching(true);
-        loadMoreItems();
-      }
-    };
-    if (tableRef.current) {
-      tableRef.current.addEventListener('scroll', handleScroll);
-    }
-    return () => {
-      if (tableRef.current) {
-        tableRef.current.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [promotions, page, isFetching]);
 
+  useEffect(() => {  
+    fetchPromotions(1); 
+  }, []);
+
+
+  const handleScroll = async (e) => {
+   
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    const isBottom = scrollTop + clientHeight >= scrollHeight - 5;
+    if (isBottom) {
+     
+     if(page < total){
+       fetchPromotions(page + 1);
+       setPage(page + 1);
+     }
+    }
+  
+ };
+    
+  
+  
   const fetchPromotions = async (pageNumber) => {
     try {
-      const response = await axios.get(`https://localhost:7095/api/KhuyenMai?page=${pageNumber}&limit=${ROWS_PER_PAGE}`);
-      if (pageNumber === 1) {
-        setPromotions(response.data);
-      } else if (response.data.length === ROWS_PER_PAGE) {
-        setPromotions((prevPromotions) => [...prevPromotions, ...response.data]);
-      }
-      setHasMore(response.data.length >= ROWS_PER_PAGE);
-    } catch (error) {
-      console.error('Error fetching promotions:', error);
+      const res = await axios.get(`https://localhost:7095/api/KhuyenMai?pageIndex=${pageNumber}&pageSize=${ROWS_PER_PAGE}`);
+      const data = res.data;
+      
+      setPromotions(prev => [...prev, ...data.data]);
+      setTotal(data.totalCount);
+    } catch (error) {   
     }
   };
- 
-
   
-  const loadMoreItems = async () => {
-    if (hasMore) {
-      try {
-        const nextPage = page + 1;
-        await fetchPromotions(nextPage);
-      } catch (error) {
-        console.error('Error loading more items:', error);
-      } finally {
-        setIsFetching(false);
-      }
-    }
-  };
+  
   const handleClose = () => setShowModal(false);
+
   const handleShow = () => setShowModal(true);
+
   const handleDelete = async (kmId) => {
     try {
       await axios.delete(`https://localhost:7095/api/KhuyenMai/${kmId}`);
-      await fetchPromotions(page);
+     fetchPromotions(1);
     } catch (error) {
       console.error('Error deleting khuyen mai:', error);
     }
   };
+
   const handleEdit = (km) => {
     setNewPromotion(km);
     setIsEditing(true);
   };
+
   const handleInputChange = (e) => {
     setNewPromotion({ ...newPromotion, [e.target.name]: e.target.value });
   };
@@ -93,10 +80,21 @@ const QuanLyKhuyenMai = () => {
     e.preventDefault();
     try {
       if(!isEditing) {
-        await axios.post('https://localhost:7095/api/KhuyenMai', newPromotion);
+        try {
+          await axios.post('https://localhost:7095/api/KhuyenMai', newPromotion);
+          toast.success("Thêm khuyến mãi thành công");
+        } catch (error) {
+          toast.error('Thêm khuyến mãi thất bại');
+        }
+
       }
       else{
-        await axios.put(`https://localhost:7095/api/KhuyenMai/${newPromotion.id}`, newPromotion);
+        try {
+          await axios.put(`https://localhost:7095/api/KhuyenMai/${newPromotion.id}`, newPromotion);
+           toast.success("Cập nhật khuyến mãi thành công");
+        } catch (error) {
+          toast.error("Cập nhật khuyến mãi thất bại");
+        }
       }
       setNewPromotion({
         ten: '',
@@ -107,11 +105,20 @@ const QuanLyKhuyenMai = () => {
         trangThai: 0,
       });
       setIsEditing(false);
-      fetchPromotions();
+      setNewPromotion({
+        ten: '',
+        giaTri: 0,
+        ngayApDung: '',
+        ngayKetThuc: '',
+        moTa: '',
+        trangThai: 0,
+      });
+      fetchPromotions(1);
     } catch (error) {
       console.error('Error creating promotion:', error);
     }
   };
+ 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -122,7 +129,8 @@ const QuanLyKhuyenMai = () => {
 
   return (
     <div className="container mt-5">
-  <h1>Quản lý khuyến mại</h1>
+  <h1 style={{ textAlign: "center" }}>Quản lý khuyến mại</h1>
+  <hr></hr>
   <Button variant="primary" onClick={handleShow}>
         Tạo khuyến mại
       </Button>
@@ -208,17 +216,19 @@ const QuanLyKhuyenMai = () => {
       </Modal>
 
 
-
-  <h2>Danh sách khuyến mại</h2>
-  <input
+      
+ 
+  <hr></hr>
+  <div style={{width:"30%"}}>  
+    <input
     className="form-control mb-4"
     placeholder="Tìm kiếm theo tên khuyến mại"
     type="text"
     value={searchTerm}
     onChange={handleSearchChange}
-  />
-
-<div className="table-container" ref={tableRef} style={{ height: '200px', overflowY: 'scroll' }}>
+  /></div>
+   <h2 style={{textAlign: 'center'}}>Danh sách khuyến mại</h2>
+<div className="table-container" ref={tableRef} style={{ height: '200px', overflowY: 'scroll',marginTop:"40px" }} onScroll={handleScroll}>
       <table className="table">
         <thead>
           <tr>
@@ -262,6 +272,7 @@ const QuanLyKhuyenMai = () => {
 
 
 </div>
-  );
+);
 };
+
 export default QuanLyKhuyenMai;

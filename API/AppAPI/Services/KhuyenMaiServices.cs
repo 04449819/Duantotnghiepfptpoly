@@ -100,11 +100,13 @@ namespace AppAPI.Services
                 return false;
             }
         }
-
-        public List<KhuyenMai> GetAll(int page, int limit)
+        public (List<KhuyenMai>, int) GetAll(int page, int limit)
         {
-            //return _repos.GetAll();
-            return _repos.GetPaged(page, limit);
+            
+
+            var km = _repos.GetPaged(page, limit);
+            var totalCount = _repos.GetTotalCount();
+            return (km, totalCount);
         }
 
        
@@ -124,9 +126,9 @@ namespace AppAPI.Services
             var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
             if (khuyenmai != null)
             {
-                //khuyenmai.TrangThai = kmv.TrangThai;
-                //khuyenmai.Ten = kmv.Ten;
-                //khuyenmai.GiaTri = kmv.GiaTri;
+                khuyenmai.TrangThai = kmv.TrangThai;
+                khuyenmai.Ten = kmv.Ten;
+                khuyenmai.GiaTri = kmv.GiaTri;
                 khuyenmai.MoTa = kmv.MoTa?.Trim();
                 khuyenmai.NgayApDung = kmv.NgayApDung;
                 khuyenmai.NgayKetThuc = kmv.NgayKetThuc;

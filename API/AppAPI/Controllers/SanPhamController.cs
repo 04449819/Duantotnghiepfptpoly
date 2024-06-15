@@ -16,6 +16,7 @@ namespace AppAPI.Controllers
     public class SanPhamController : ControllerBase
     {
         private readonly ISanPhamService _sanPhamServices;
+        AssignmentDBContext _dbcontext = new AssignmentDBContext();
 
         public SanPhamController(AssignmentDBContext dBContext)
         {
@@ -36,7 +37,7 @@ namespace AppAPI.Controllers
             var listSP = _sanPhamServices.GetAllSanPhamAdmin();
             return listSP;
         }
-
+     
         [HttpGet("GetSanPhamById")]
         public async Task<IActionResult> GetSanPhamById(Guid id)
         {
@@ -273,6 +274,7 @@ namespace AppAPI.Controllers
                            MoTa = a.MoTa,
                            TrangThai = a.TrangThai,
 						   giaBan =_dbcontext.ChiTietSanPhams.FirstOrDefault(p => p.IDSanPham == a.ID) != null ? _dbcontext.ChiTietSanPhams.FirstOrDefault(p => p.IDSanPham == a.ID).GiaBan : 0,
+                           IdSanPham = a.ID,
                            IDLoaiSP = a.IDLoaiSP,
                            IDChatLieu = a.IDChatLieu,
                            anhs = (from b in _dbcontext.ChiTietSanPhams.Where(p => p.IDSanPham == a.ID)

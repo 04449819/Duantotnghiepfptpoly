@@ -1,5 +1,7 @@
 ﻿using AppAPI.IServices;
+using AppData.IRepositories;
 using AppData.Models;
+using AppData.Repositories;
 using AppData.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +9,12 @@ namespace AppAPI.Services
 {
     public class KhachHangService : IKhachHangService
     {
-        private readonly AssignmentDBContext _dbContext;
+        AssignmentDBContext _dbContext = new AssignmentDBContext();
+        private readonly IAllRepository<KhachHang> _repos;
         public KhachHangService()
         {
-            _dbContext = new AssignmentDBContext();
+            
+            _repos = new AllRepository<KhachHang>(_dbContext, _dbContext.KhachHangs);
         }
 
         public async Task<KhachHang> Add(KhachHangViewModel nv)
@@ -55,9 +59,37 @@ namespace AppAPI.Services
             }
         }
 
-        public List<KhachHang> GetAll()
+        //public List<KhachHang> GetAll()
+        //{
+        //    return _dbContext.KhachHangs.ToList();
+        //}
+
+
+        public async Task<(List<KhachHangView>, int)> GetAll(int pageIndex, int pageSize)
         {
-            return _dbContext.KhachHangs.ToList();
+            var offset = (pageIndex - 1) * pageSize;
+            var totalRecords = await _dbContext.KhachHangs.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var khachhang = await (from kh in _dbContext.KhachHangs
+                                   select new KhachHangView()
+                                   {
+                                       IDKhachHang = kh.IDKhachHang,
+                                       Ten = kh.Ten,
+                                       Password = kh.Password,
+                                       GioiTinh = kh.GioiTinh,
+                                       NgaySinh = kh.NgaySinh,
+                                       Email = kh.Email,
+                                       SDT = kh.SDT,
+                                       DiemTich = kh.DiemTich,
+                                       TrangThai = kh.TrangThai,
+                                       DiaChi = _dbContext.diaChiKhachHangs.FirstOrDefault(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1) != null ? _dbContext.diaChiKhachHangs.FirstOrDefault(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1).DiaChi : "chưa cập nhật địa chỉ"
+                                   }
+                                  )
+                                 .Skip(offset)
+                                 .Take(pageSize)
+                                 .ToListAsync();
+            return (khachhang,totalPages);
         }
 
         public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)

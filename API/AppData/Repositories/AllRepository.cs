@@ -28,6 +28,10 @@ namespace AppData.Repositories
                          .Take(limit)
                          .ToList();
         }
+        public int GetTotalCount()
+        {
+            return dbset.Count();
+        }
         public bool Add(T item)
         {
             try

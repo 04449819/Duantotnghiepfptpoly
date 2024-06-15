@@ -3,6 +3,8 @@ import taiKhoanSlice from "./Reducer/taiKhoanSlice";
 
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import IDchitietsanphamSlice from "./Reducer/IDchitietsanphamSlice";
+import GetSanPhamGioHangSlice from "./Reducer/GetSanPhamGioHangSlice";
 
 const persistConfig = {
   key: "root",
@@ -12,7 +14,11 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, taiKhoanSlice);
 
 const store = configureStore({
-  reducer: { user: persistedReducer },
+  reducer: {
+    user: persistedReducer,
+    getIDchitietsanpham: IDchitietsanphamSlice,
+    sanPhamGioHang: GetSanPhamGioHangSlice,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -25,7 +25,11 @@ export const FetchData = createAsyncThunk(
 export const taiKhoanSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    LogOutTaiKhoan: (state) => {
+      state.User = {};
+    },
+  },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(FetchData.pending, (state, action) => {
@@ -43,5 +47,5 @@ export const taiKhoanSlice = createSlice({
     });
   },
 });
-
+export const { LogOutTaiKhoan } = taiKhoanSlice.actions;
 export default taiKhoanSlice.reducer;

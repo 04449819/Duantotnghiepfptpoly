@@ -23,6 +23,7 @@ import QuenMK from "./Pages/User/QuenMK/QuenMK";
 import { Provider } from "react-redux";
 import { store, persistor } from "./Rudux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import DashBoard from "./Pages/Admin/Dashboard/DashBoard";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -49,6 +50,7 @@ root.render(
             />
             <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
             <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
+            <Route path="/admin/dashboard" element={<DashBoard />} />
             <Route
               path="/admin/quanlykhuyenmai"
               element={<QuanLyKhuyenMai />}

@@ -68,7 +68,7 @@ const DanhSachSanPham = () => {
           bordered
           hover
           className="banhangol_danhsachsanpham_table table table-striped table-bordered"
-          variant="dark"
+          // variant="dark"
         >
           <thead>
             <tr>
@@ -77,7 +77,8 @@ const DanhSachSanPham = () => {
               <th>Số lượng</th>
               <th>Tên màu</th>
               <th>Kích cỡ</th>
-              <th>Gía bán</th>
+              <th>Giá bán</th>
+              <th>Tổng giá</th>
               <th>Khuyến mãi</th>
               <th>Img</th>
               <th>Action</th>
@@ -100,6 +101,7 @@ const DanhSachSanPham = () => {
                   </td>
                   <td>{item.tenMau}</td>
                   <td>{item.kichCo}</td>
+                  <td>{item.giaBan}</td>
                   <td>{item.giaBan * item.soLuongmua}</td>
                   <td>{item.giaTriKhuyenMai}</td>
                   <td>

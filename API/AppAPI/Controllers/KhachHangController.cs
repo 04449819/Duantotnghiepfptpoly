@@ -7,6 +7,7 @@ using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security;
 
 namespace AppAPI.Controllers
@@ -56,7 +57,9 @@ namespace AppAPI.Controllers
             }
             else return new KhachHangViewModel();
         }
-        [HttpGet("ChangeForgotPassword")]
+
+   
+		[HttpGet("ChangeForgotPassword")]
         public async Task<bool> ChangeForgotPassword(string id, string password)
         {
             try
@@ -127,41 +130,7 @@ namespace AppAPI.Controllers
             return true;
         }
 
-		[Route("PostKHView1")]
-		[HttpPost]
-		public bool PostKHView1(KhachHangView khv)
-		{
-			var idkhv = Guid.NewGuid();
-			KhachHang kh = new KhachHang();
-			kh.IDKhachHang = idkhv;
-			kh.Ten = khv.Ten?.Trim();
-			kh.Password = MaHoaMatKhau(khv.Password).Trim();
-			kh.GioiTinh = khv.GioiTinh;
-			kh.NgaySinh = khv.NgaySinh;
-            NhanVien nhanvien = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT );
-            KhachHang khachhang = _dbcontext.KhachHangs.FirstOrDefault(p=>p.Email == khv.Email || p.SDT == khv.SDT);
-            if(nhanvien != null  || khachhang != null)
-            {
-                return false;
-            }
-			kh.Email = khv.Email?.Trim();
-			kh.SDT = khv.SDT?.Trim();
-			kh.TrangThai = 1;
-			kh.DiemTich = 0;
-			_dbcontext.KhachHangs.Add(kh);
-			GioHang gh = new GioHang();
-			gh.IDKhachHang = kh.IDKhachHang;
-			gh.NgayTao = DateTime.Now;
-			_dbcontext.GioHangs.Add(gh);
-			DiaChiKhachHang dckh = new DiaChiKhachHang();
-			dckh.Id = Guid.NewGuid();
-			dckh.KhachHangID = kh.IDKhachHang;
-			dckh.DiaChi = khv.DiaChi?.Trim();
-			dckh.TrangThai = 1;
-			_dbcontext.diaChiKhachHangs.Add(dckh);
-			_dbcontext.SaveChanges();
-			return true;
-		}
+	
 
 		private string MaHoaMatKhau(string matKhau)
         {
@@ -220,5 +189,70 @@ namespace AppAPI.Controllers
             var result = _khachHangService.Delete(id);
             return result;
         }
-    }
+
+		#region KhachHangKien
+
+		[Route("PostKHView1")]
+		[HttpPost]
+		public bool PostKHView1(KhachHangView khv)
+		{
+			var idkhv = Guid.NewGuid();
+			KhachHang kh = new KhachHang();
+			kh.IDKhachHang = idkhv;
+			kh.Ten = khv.Ten?.Trim();
+			kh.Password = khv.Password;
+			kh.GioiTinh = khv.GioiTinh;
+			kh.NgaySinh = khv.NgaySinh;
+			NhanVien nhanvien = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT);
+			KhachHang khachhang = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT);
+			if (nhanvien != null || khachhang != null)
+			{
+				return false;
+			}
+			kh.Email = khv.Email?.Trim();
+			kh.SDT = khv.SDT?.Trim();
+			kh.TrangThai = 1;
+			kh.DiemTich = 0;
+			_dbcontext.KhachHangs.Add(kh);
+			GioHang gh = new GioHang();
+			gh.IDKhachHang = kh.IDKhachHang;
+			gh.NgayTao = DateTime.Now;
+			_dbcontext.GioHangs.Add(gh);
+			DiaChiKhachHang dckh = new DiaChiKhachHang();
+			dckh.Id = Guid.NewGuid();
+			dckh.KhachHangID = kh.IDKhachHang;
+			dckh.DiaChi = khv.DiaChi?.Trim();
+			dckh.TrangThai = 1;
+			_dbcontext.diaChiKhachHangs.Add(dckh);
+			_dbcontext.SaveChanges();
+			return true;
+		}
+
+		[HttpGet("checkEmail")]
+		public async Task<IActionResult> GetKhachHangByEmail1(string email)
+		{
+			var temp = await _dbcontext.KhachHangs.FirstOrDefaultAsync(x => x.Email == email);
+			var temp1 = await _dbcontext.NhanViens.FirstOrDefaultAsync(x => x.Email == email);
+			if (temp != null || temp1 != null)
+			{
+				return Ok(1);
+			}
+			return Ok(0);
+
+		}
+
+		[HttpGet("checkSDT")]
+		public async Task<IActionResult> GetKhachHangBySDT(string sdt)
+		{
+			var temp = await _dbcontext.KhachHangs.FirstOrDefaultAsync(x => x.SDT == sdt);
+			var temp1 = await _dbcontext.NhanViens.FirstOrDefaultAsync(x => x.SDT == sdt);
+			if (temp != null || temp1 != null)
+			{
+				return Ok(1);
+			}
+			return Ok(0);
+
+		}
+		#endregion
+	}
 }

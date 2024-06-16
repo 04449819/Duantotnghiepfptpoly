@@ -6,6 +6,7 @@ using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -175,7 +176,7 @@ namespace AppAPI.Controllers
 		//    return _iHoaDonService.DeletePTTT(id);
 		//}
 
-		#region DarhboardHoaDon
+		#region DarhboardHoaDonKien
 
 		[HttpGet("getdarhboardHoaDon")]
 		public async Task<List<DarhboardHoaDonViewModel>> DarhboardHoaDon(int year)
@@ -194,9 +195,27 @@ namespace AppAPI.Controllers
 		{
 			var ds = await _dbcontext.HoaDons.Where(p => p.NgayTao.Month == month && p.NgayTao.Year == year).ToListAsync();
 
-			var results = ds.GroupBy(
-				p => p.LoaiHD,
-				(key, g) => new DarhboarhHoaDonTheoMonthViewMoldel { loaiHD = key, tongTien = g.Sum(x => x.TongTien) }).ToList();
+			//var results = ds.GroupBy(
+			//	p => p.LoaiHD,
+			//	(key, g) => new DarhboarhHoaDonTheoMonthViewMoldel { loaiHD = key, tongTien = g.Sum(x => x.TongTien) }).ToList();
+			List<DarhboarhHoaDonTheoMonthViewMoldel> results = new List<DarhboarhHoaDonTheoMonthViewMoldel>();
+
+			var tongTienLoaiHD0 = ds.Where(p => p.LoaiHD == 0).Sum(x => x.TongTien);
+			var tongTienLoaiHD1 = ds.Where(p => p.LoaiHD == 1).Sum(x => x.TongTien);
+
+			var result1 = new DarhboarhHoaDonTheoMonthViewMoldel
+			{
+				loaiHD = 0,
+				tongTien = tongTienLoaiHD0
+			};
+			results.Add(result1);
+
+			var result2 = new DarhboarhHoaDonTheoMonthViewMoldel
+			{
+				loaiHD = 1,
+				tongTien = tongTienLoaiHD1
+			};
+			results.Add(result2);
 
 			return results;
 		}

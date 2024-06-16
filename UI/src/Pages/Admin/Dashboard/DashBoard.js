@@ -23,8 +23,8 @@ ChartJS.register(
   Legend
 );
 const DashBoard = () => {
-  const [data, setdata] = useState([]);
-  const [datapie, setdatapie] = useState([]);
+  const [data, setdata] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [datapie, setdatapie] = useState([0, 0, 0]);
   const [year, setYear] = useState(new Date().getFullYear());
   const [monthpie, setmonthpie] = useState(new Date().getMonth() + 1);
   const [yearpie, setYearpie] = useState(new Date().getFullYear());
@@ -51,12 +51,13 @@ const DashBoard = () => {
       var res = await axios.get(
         `https://localhost:7095/api/HoaDon/getdarhboardHoaDonbyMonth?month=${month}&year=${yearpie}`
       );
-
       const newData = res.data.map((item) => item.tongTien);
-      console.log(newData, monthpie, yearpie);
+      //console.log(newData, monthpie, yearpie);
+      console.log(newData);
+      if (newData[0] === 0 && newData[1] === 0) return setdatapie([0, 0, 100]);
       setdatapie(newData);
     } catch (error) {
-      toast.error("năm không hợp lệ");
+      toast.error("Thang nam không hợp lệ");
     }
   };
 
@@ -71,7 +72,12 @@ const DashBoard = () => {
     GetDatapie(value.substring(6, 8), value.substring(0, 4));
   };
   const HandleOnclickSearch = () => {
-    GetData(year);
+    if (year === "") {
+      setYear(new Date().getFullYear());
+      GetData(new Date().getFullYear());
+    } else {
+      GetData(year);
+    }
   };
 
   const barData = {
@@ -115,13 +121,17 @@ const DashBoard = () => {
   };
 
   const pieData = {
-    labels: ["Khách ofline", "khách online"],
+    labels: ["Khách offline", "Khách online", "No data"],
     datasets: [
       {
         label: "My First Dataset",
         // data: [60, 100],
         data: datapie,
-        backgroundColor: ["rgba(255, 99, 132, 0.6)", "rgba(54, 162, 235, 0.6)"],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "gray",
+        ],
         hoverOffset: 4,
       },
     ],

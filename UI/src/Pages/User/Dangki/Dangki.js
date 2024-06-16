@@ -23,13 +23,23 @@ const Dangki = () => {
 
   const HandleOnSubmitTaiKhoan = async () => {
     let data = {
+      idKhachHang: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      ten: name,
+      password: pass,
+      gioiTinh: 0,
+      ngaySinh: "2024-06-15T08:42:53.397Z",
       email: email,
-      name: name,
+      diaChi: "string",
       sdt: sdt,
-      Password: pass,
-      ConfirmPassword: passcomfirm,
       diemTich: 0,
-      trangThai: 0,
+      trangThai: 1,
+      // email: email,
+      // name: name,
+      // sdt: sdt,
+      // Password: pass,
+      // ConfirmPassword: passcomfirm,
+      // diemTich: 0,
+      // trangThai: 0,
     };
     if (name === "") {
       csetname("tên không được bỏ trống");
@@ -42,7 +52,15 @@ const Dangki = () => {
       csetsdt("số điện thoại phải có 10 chữ số và bắt đầu bắng số 0");
       return;
     } else {
-      csetsdt("");
+      const res = await axios.get(
+        `https://localhost:7095/api/KhachHang/checkSDT?sdt=${sdt}`
+      );
+      if (res.data === 1) {
+        csetsdt("số điện thoại đã tồn tại");
+        return;
+      } else {
+        csetsdt("");
+      }
     }
 
     if (!validateEmail(email)) {
@@ -50,10 +68,10 @@ const Dangki = () => {
       return;
     } else {
       const response = await axios.get(
-        `https://localhost:7095/api/KhachHang/GetKhachHangByEmail?email=${email}`
+        `https://localhost:7095/api/KhachHang/checkEmail?email=${email}`
       );
 
-      if (response.data.email !== null) {
+      if (response.data === 1) {
         csetEmail("tài khoản đã tồn tại");
         return;
       } else {
@@ -76,10 +94,11 @@ const Dangki = () => {
       csetpasscomfirm("");
     }
 
-    let URL = "https://localhost:7095/api/KhachHang";
+    // let URL = "https://localhost:7095/api/KhachHang";
+    // let res = await axios.post(`${URL}`, data);
+    let URL = "https://localhost:7095/api/KhachHang/PostKHView1";
     let res = await axios.post(`${URL}`, data);
 
-    // alert("Đăng kí thành công");
     toast.success("đăng kí thành công");
     navigate("/");
   };

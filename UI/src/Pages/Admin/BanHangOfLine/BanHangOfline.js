@@ -102,6 +102,7 @@ const BanHangOfline = () => {
         }
       } catch (error) {
         toast.error("lỗi hệ thống");
+        setbtnSearch(false);
       }
       setName("");
       setPhone("");
@@ -187,7 +188,7 @@ const BanHangOfline = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="email or sdt"
+                  placeholder="Email or SĐT"
                   value={search}
                   style={{ width: "38%" }}
                   onChange={(event) => setSearch(event.target.value)}
@@ -212,7 +213,7 @@ const BanHangOfline = () => {
                       style={{ width: "99.5%" }}
                       type="text"
                       className="form-control"
-                      placeholder="họ và tên"
+                      placeholder="Họ và tên"
                       value={name}
                       onChange={(event) => setName(event.target.value)}
                       readOnly={inputreadOnly}
@@ -234,7 +235,7 @@ const BanHangOfline = () => {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="số điện thoại"
+                    placeholder="Số điện thoại"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
                     readOnly={inputreadOnly}
@@ -261,7 +262,7 @@ const BanHangOfline = () => {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="email"
+                    placeholder="Email"
                     value={email}
                     onChange={(event) => SetEmail(event.target.value)}
                     readOnly={inputreadOnly}
@@ -283,6 +284,7 @@ const BanHangOfline = () => {
                   <h3>Giỏ hàng</h3>
                   <h6>Sản phẩm: {soSP} </h6>
                   <h6>
+                    Giá:&nbsp;
                     {data.length > 0
                       ? TongGia.toLocaleString("vi-VN") + " VNĐ"
                       : giabandau.toLocaleString("vi-VN") + " VNĐ"}

@@ -261,7 +261,7 @@ namespace AppAPI.Controllers
 		}
 		#endregion
 
-		#region SanPhamBanHangOfline
+		#region SanPhamBanHangOflineKien
 		[HttpGet("getAllSPBanHang")]
 		public async Task<IActionResult> GetAllSanPhamBanHang(int currentPage, int productsPerPage)
 		{
@@ -425,7 +425,7 @@ namespace AppAPI.Controllers
             return Ok(sanPhamPhangTrang);
         }
 		#endregion
-		#region ChitietSanPhamBanHangOfline
+		#region ChitietSanPhamBanHangOflineKien
 		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
 		public  async Task<IActionResult> GetChiTietSanPhamByID(Guid id)
 		{

@@ -12,5 +12,7 @@ namespace AppData.IRepositories
         public bool Add(T item);
         public bool Update(T item);
         public bool Delete(T item);
+        public List<T> GetPaged(int page, int limit);
+        public int GetTotalCount();
     }
 }

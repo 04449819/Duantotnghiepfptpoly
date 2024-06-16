@@ -64,11 +64,11 @@ namespace AppAPI.Services
             var voucher= _allRepository.GetAll().FirstOrDefault(x => x.ID == id);
             if (voucher != null)
             {
-              
-                //voucher.Ten = voucherview.Ten;
-                //voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
+
+                voucher.Ten = voucherview.Ten;
+                voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
                 voucher.SoTienCan = voucherview.SoTienCan;
-                //voucher.GiaTri = voucherview.GiaTri;
+                voucher.GiaTri = voucherview.GiaTri;
                 voucher.NgayApDung = voucherview.NgayApDung;
                 voucher.NgayKetThuc = voucherview.NgayKetThuc;
                 if (voucher.NgayApDung > voucher.NgayKetThuc)
@@ -77,6 +77,7 @@ namespace AppAPI.Services
                 }
                 voucher.SoLuong = voucherview.SoLuong;
                 voucher.MoTa = voucherview.MoTa?.Trim();
+                voucher.TrangThai = voucherview.TrangThai;
               
                 return _allRepository.Update(voucher);
             }

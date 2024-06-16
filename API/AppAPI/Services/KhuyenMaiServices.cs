@@ -4,7 +4,9 @@ using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
 
 namespace AppAPI.Services
@@ -98,10 +100,13 @@ namespace AppAPI.Services
                 return false;
             }
         }
-
-        public List<KhuyenMai> GetAll()
+        public (List<KhuyenMai>, int) GetAll(int page, int limit)
         {
-            return _repos.GetAll();
+            
+
+            var km = _repos.GetPaged(page, limit);
+            var totalCount = _repos.GetTotalCount();
+            return (km, totalCount);
         }
 
        
@@ -121,9 +126,9 @@ namespace AppAPI.Services
             var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
             if (khuyenmai != null)
             {
-                //khuyenmai.TrangThai = kmv.TrangThai;
-                //khuyenmai.Ten = kmv.Ten;
-                //khuyenmai.GiaTri = kmv.GiaTri;
+                khuyenmai.TrangThai = kmv.TrangThai;
+                khuyenmai.Ten = kmv.Ten;
+                khuyenmai.GiaTri = kmv.GiaTri;
                 khuyenmai.MoTa = kmv.MoTa?.Trim();
                 khuyenmai.NgayApDung = kmv.NgayApDung;
                 khuyenmai.NgayKetThuc = kmv.NgayKetThuc;

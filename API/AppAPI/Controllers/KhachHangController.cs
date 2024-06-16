@@ -26,9 +26,10 @@ namespace AppAPI.Controllers
         }
         // GET: api/<SanPhamController>
         [HttpGet]
-        public List<KhachHang> GetAllKhachHang()
+        public IActionResult GetAllKhachHang(int pageIndex, int pageSize)
         {
-            return _khachHangService.GetAll();
+            var khv = _khachHangService.GetAll(pageIndex, pageSize);
+            return Ok(khv);
         }
         [Route("TimKiemKH")]
         [HttpGet]

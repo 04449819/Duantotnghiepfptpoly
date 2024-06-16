@@ -2,6 +2,7 @@
 using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,6 +13,7 @@ namespace AppAPI.Controllers
     public class VoucherController : ControllerBase
     {
         private  readonly IVoucherServices _services;
+        AssignmentDBContext _dbcontext = new AssignmentDBContext();
         public VoucherController(IVoucherServices services)
         {
             _services = services;
@@ -19,9 +21,22 @@ namespace AppAPI.Controllers
 
         // GET: api/<VoucherController>
         [HttpGet]
-        public List<Voucher> Get()
+        public async Task<IActionResult> Get(int pageIndex, int pageSize)
         {
-            return _services.GetAll();
+            // Tính tổng số vouchers có trong database
+            int totalVoucher = await _dbcontext.Vouchers.CountAsync();
+
+            // Tính tổng số trang dựa trên tổng số vouchers và pageSize
+            int totalPage = (int)Math.Ceiling(totalVoucher / (double)pageSize);
+
+            // Truy vấn và phân trang ngay trong câu lệnh SQL để cải thiện hiệu suất
+            var vouchers = await _dbcontext.Vouchers
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+
+            // Trả về dữ liệu và tổng số trang
+            return Ok(new { data = vouchers, total = totalPage });
         }
 
         // GET api/<VoucherController>/5

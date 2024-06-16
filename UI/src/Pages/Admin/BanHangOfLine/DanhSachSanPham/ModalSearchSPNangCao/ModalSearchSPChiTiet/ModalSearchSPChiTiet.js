@@ -103,8 +103,9 @@ const ModalSearchSPChiTiet = (props) => {
     }
   };
   return (
+    
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={ handleShow }>
         Mua ngay
       </Button>
 

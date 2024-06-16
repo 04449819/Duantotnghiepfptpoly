@@ -22,6 +22,16 @@ namespace AppData.Repositories
             this.context = context;
             this.dbset = dbset;
         }
+        public List<T> GetPaged(int page, int limit)
+        {
+            return dbset.Skip((page - 1) * limit)
+                         .Take(limit)
+                         .ToList();
+        }
+        public int GetTotalCount()
+        {
+            return dbset.Count();
+        }
         public bool Add(T item)
         {
             try

@@ -19,6 +19,8 @@ const ModalSearchSPChiTiet = (props) => {
   const [MauSac, setMauSac] = useState([]);
   const [kichthuoc, setKichthuoc] = useState([]);
   const [idmuaHang, setIDmua] = useState("");
+  const [imgSmall, setImgSmall] = useState([]);
+
   const handleClose = () => {
     setShow(false);
     setMauSac([]);
@@ -42,6 +44,19 @@ const ModalSearchSPChiTiet = (props) => {
       setIDmua(res.data[0].id);
       setSoluongsp(res.data[0].soLuong);
 
+      const ImgTam = [];
+      res.data.forEach((item) => {
+        if (!ImgTam.find((p) => p.img === item.img[0])) {
+          ImgTam.push({
+            id: item.id,
+            img: item.img[0],
+          });
+        }
+      });
+      console.log(res.data[0].img[0].toLocaleString());
+      console.log(ImgTam);
+      setImgSmall(ImgTam);
+
       const MauSactam = [];
       res.data.forEach((item) => {
         if (!MauSactam.some((p) => p.mauSac === item.mauSac)) {
@@ -49,6 +64,7 @@ const ModalSearchSPChiTiet = (props) => {
             id: item.id,
             mauSac: item.mauSac,
             trangthai: item.trangthai,
+            img: item.duongDanAnh,
           });
         }
       });
@@ -76,6 +92,11 @@ const ModalSearchSPChiTiet = (props) => {
         : kichThuocTam
     );
     setKichthuoc(kichThuocTam);
+
+    const datatam = data.find((a) => a.id === item.id);
+    if (datatam) {
+      setimg(datatam.img[0]);
+    }
   };
 
   const HandleOnclickChonKichCo = (item) => {
@@ -86,7 +107,7 @@ const ModalSearchSPChiTiet = (props) => {
 
     const datatam = data.find((a) => a.id === item.id);
     if (datatam) {
-      setimg(datatam.img[0]);
+      // setimg(datatam.img[0]);
       setGiaban(datatam.giaBan);
       setKhuyenMai(datatam.khuyenMai);
       setIDmua(datatam.id);
@@ -99,20 +120,17 @@ const ModalSearchSPChiTiet = (props) => {
       dispatch(FetchDataSanPhamGioHang(idmuaHang));
       toast.success("Sản phẩm đã được thêm vào giỏ hàng");
     } else {
-      toast.error("bạn chưa chọn màu sắc và kích thước");
+      toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
     }
   };
   return (
-    
     <>
-      <Button variant="primary" onClick={ handleShow }>
+      <Button variant="primary" onClick={handleShow}>
         Mua ngay
       </Button>
 
       <Modal show={show} onHide={handleClose} size="lg">
-        <Modal.Header closeButton>
-          {/* <Modal.Title>{props.item.ten}</Modal.Title> */}
-        </Modal.Header>
+        <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
           {data.length > 0 ? (
             <div className="SPduocchon_body">
@@ -122,8 +140,8 @@ const ModalSearchSPChiTiet = (props) => {
                     <img src={img} alt="Product" />
                   </div>
                   <div className="SPduocchon_body_imgsmall">
-                    {data.map((item) => (
-                      <img key={item.id} src={item.img[0]} alt="Product" />
+                    {imgSmall.map((item) => (
+                      <img key={item.id} src={item.img} alt="Product" />
                     ))}
                   </div>
                 </div>

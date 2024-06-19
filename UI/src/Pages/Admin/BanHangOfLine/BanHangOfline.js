@@ -190,7 +190,7 @@ const BanHangOfline = () => {
                   className="form-control"
                   placeholder="Email or SĐT"
                   value={search}
-                  style={{ width: "38%" }}
+                  style={{ width: "36%" }}
                   onChange={(event) => setSearch(event.target.value)}
                 />
                 <button

@@ -10,6 +10,8 @@ import { IoMenu } from "react-icons/io5";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
 import Swal from "sweetalert2";
+import { AiFillSignal } from "react-icons/ai";
+import { FaAddressBook } from "react-icons/fa";
 const ReactSideBar = () => {
   const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
@@ -48,183 +50,204 @@ const ReactSideBar = () => {
 
   if (user.email && user.vaiTro === 0) {
     return (
-      <div
-        style={{
-          display: "flex",
-          height: "800px",
-        }}
-      >
-        <Sidebar
-          collapsed={collapsed}
-          toggled={toggled}
-          onBackdropClick={() => setToggled(false)}
-          onBreakPoint={setBroken}
-          breakPoint="md"
+      <div>
+        <div
+          style={{
+            display: "flex",
+            height: "800px",
+          }}
         >
-          <div
-            style={{ display: "flex", flexDirection: "column", height: "100%" }}
+          <Sidebar
+            collapsed={collapsed}
+            // toggled={toggled}
+            // onBackdropClick={() => setToggled(false)}
+            onBreakPoint={setBroken}
+            breakPoint="md"
+            style={{ position: "fixed" }}
           >
-            <div style={{ flex: 1, marginBottom: "32px" }}>
-              <div style={{ padding: "0 24px", marginBottom: "8px" }}></div>
-              <Menu>
-                <MenuItem
-                  component={<Link to="/admin/dashboard" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Dashboard
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/banhangofline" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Bán hàng
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlynhanvien" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý nhân viên
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlysanpham" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý sản phẩm
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlykhachhang" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý Khách hàng
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlydoidiem" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý đổi điểm
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlyvoucher" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý voucher
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlykhuyenmai" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý khuyến mãi
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/quanlyhoadon" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Quản lý hóa đơn
-                </MenuItem>
-                <hr />
-                <MenuItem
-                  component={<Link to="/admin/thongke" />}
-                  icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                >
-                  Thống kê
-                </MenuItem>
-              </Menu>
-            </div>
-          </div>
-        </Sidebar>
-        <div style={{ width: "1440px" }}>
-          <div style={{ padding: "0 18px" }}>
-            <div className="row" style={{ marginBottom: "11px" }}>
-              <div
-                style={{ paddingLeft: "10px", paddingBottom: "6px" }}
-                className="col-11"
-                id="collapse"
-                label="Collapse"
-              >
-                <IoMenu
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{
-                    width: "1.5em",
-                    height: "1.5em",
-                    marginTop: "22px",
-                  }}
-                />
-              </div>
-              <div
-                className="col-1"
-                style={{ paddingTop: "15px", position: "relative" }}
-              >
-                <span
-                  className="User"
-                  style={{ fontSize: "18px", display: "flex" }}
-                >
-                  {user.ten}
-                  <NavDropdown
-                    id="nav-dropdown-dark-example"
-                    title=<IoSettings />
-                    menuVariant="dark"
-                    style={{ marginLeft: "10px" }}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+            >
+              <div style={{ flex: 1, marginBottom: "32px" }}>
+                <div style={{ padding: "0 24px", marginBottom: "8px" }}></div>
+                <Menu>
+                  <MenuItem
+                    component={<Link to="/admin/dashboard" />}
+                    icon={
+                      <AiFillSignal style={{ color: "blue", size: "20px" }} />
+                    }
                   >
-                    <NavDropdown.Item
-                      href="#action/3.1"
-                      onClick={HandleOnclickLogout}
-                    >
-                      Logout
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </span>
+                    Dashboard
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/banhangofline" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Bán hàng
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlynhanvien" />}
+                    icon={
+                      <FaAddressBook style={{ color: "blue", size: "20px" }} />
+                    }
+                  >
+                    Quản lý nhân viên
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlysanpham" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý sản phẩm
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlykhachhang" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý Khách hàng
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlydoidiem" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý đổi điểm
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlyvoucher" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý voucher
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlykhuyenmai" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý khuyến mãi
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlyhoadon" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý hóa đơn
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/thongke" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Thống kê
+                  </MenuItem>
+                </Menu>
               </div>
             </div>
-          </div>
-          <hr />
-          <div style={{ padding: "16px 24px", color: "#44596e" }}>
-            <div>
-              {broken && (
-                <button
-                  className="sb-button"
-                  onClick={() => setToggled(!toggled)}
+          </Sidebar>
+          <div
+            style={{
+              marginLeft: collapsed === true ? "65px" : "250px",
+              width: collapsed === true ? "1440px" : "1250px",
+            }}
+          >
+            <div style={{ padding: "0 18px" }}>
+              <div className="row" style={{ marginBottom: "11px" }}>
+                <div
+                  style={{
+                    paddingLeft: "10px",
+                    height: "65px",
+                    paddingBottom: "6px",
+                    position: "fixed",
+                  }}
+                  className="col-11"
+                  id="collapse"
+                  label="Collapse"
                 >
-                  Toggle
-                </button>
-              )}
+                  <IoMenu
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                      width: "1.5em",
+                      height: "1.5em",
+                      marginTop: "22px",
+                    }}
+                  />
+                </div>
+                <div
+                  className="col-1"
+                  style={{
+                    paddingTop: "15px",
+                    position: "fixed",
+                    left: "1400px",
+                  }}
+                >
+                  <span
+                    className="User"
+                    style={{ fontSize: "18px", display: "flex" }}
+                  >
+                    {user.ten}
+                    <NavDropdown
+                      id="nav-dropdown-dark-example"
+                      title=<IoSettings />
+                      menuVariant="dark"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <NavDropdown.Item
+                        href="#action/3.1"
+                        onClick={HandleOnclickLogout}
+                      >
+                        Logout
+                      </NavDropdown.Item>
+                    </NavDropdown>
+                  </span>
+                </div>
+              </div>
             </div>
             <div
-              className="sidebar_body_ok"
-              style={
-                {
-                  // overflowY: "scroll",
-                  // overflowX: "hidden",
-                  // height: "600px",
-                }
-              }
+              style={{
+                padding: "16px 24px",
+                color: "#44596e",
+                marginTop: "63px",
+              }}
             >
-              <Outlet />
+              <div>
+                {broken && (
+                  <button
+                    className="sb-button"
+                    // onClick={() => setToggled(!toggled)}
+                  >
+                    Toggle
+                  </button>
+                )}
+              </div>
+              <div className="sidebar_body_ok">
+                <Outlet />
+              </div>
             </div>
           </div>
-        </div>
 
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
-        <ToastContainer />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
+          <ToastContainer />
+        </div>
       </div>
     );
   } else {

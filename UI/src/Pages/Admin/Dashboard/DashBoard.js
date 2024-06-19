@@ -173,7 +173,7 @@ const DashBoard = () => {
             </button>
           </div>
         </div>
-        <div className="col-9" style={{ width: "600px" }}>
+        <div className="col-9" style={{ width: "60%" }}>
           <h1 style={{ textAlign: "center" }}>Doanh thu theo năm</h1>
           <Bar data={barData} options={barOptions} />
         </div>
@@ -191,7 +191,7 @@ const DashBoard = () => {
             />
           </div>
         </div>
-        <div className="col-9" style={{ width: "400px" }}>
+        <div className="col-9" style={{ width: "40%" }}>
           <h1 style={{ textAlign: "center" }}>Khách hàng</h1>
           <Pie data={pieData} options={pieOptions} />
         </div>

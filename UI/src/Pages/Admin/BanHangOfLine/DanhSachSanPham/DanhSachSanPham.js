@@ -108,7 +108,10 @@ const DanhSachSanPham = () => {
                     <img src={item.duongDanAnh} />
                   </td>
                   <td>
-                    <button onClick={() => HandleOnclicnkDelete(item)}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => HandleOnclicnkDelete(item)}
+                    >
                       <MdDelete />
                     </button>
                   </td>

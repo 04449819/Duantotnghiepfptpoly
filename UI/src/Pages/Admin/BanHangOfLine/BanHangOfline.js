@@ -2,7 +2,10 @@ import { useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
+// import axios from "axios";
+// import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
+import HoaDon from "./HoaDon/HoaDon";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -12,7 +15,9 @@ const BanHangOfline = () => {
   const [inputreadOnly, setinputreadOnly] = useState(true);
   const [coler, setcoler] = useState("white");
   const [btnSearch, setbtnSearch] = useState(false);
+  const [datasp, setData] = useState([]);
   let inputtrue = !inputreadOnly;
+
   const HandleOnclickSearchKH = async () => {
     try {
       const res = await axios.get(
@@ -125,6 +130,33 @@ const BanHangOfline = () => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+
+  const Getdata = async (inputsearch) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
+      );
+      const existingItem = datasp.find(
+        (item) => item.idCTSP === res.data.idCTSP
+      );
+      if (existingItem) {
+        const sanpham = datasp.map((item) => {
+          if (item.idCTSP === res.data.idCTSP)
+            return {
+              ...item,
+              soLuongmua: item.soLuongmua + res.data.soLuongmua,
+            };
+          return item;
+        });
+        setData(sanpham);
+      } else {
+        setData([...datasp, res.data]);
+      }
+    } catch (error) {
+      toast.error("Thông tin sản phẩm không chính xác");
+    }
+  };
+
   return (
     <div className="banhangofline">
       <div className="row">
@@ -144,6 +176,7 @@ const BanHangOfline = () => {
                   className="btn btn-primary"
                   onClick={HandleOnclickSearchKH}
                   disabled={btnSearch}
+                  tabIndex="-1"
                 >
                   Tìm kiếm
                 </button>
@@ -189,6 +222,7 @@ const BanHangOfline = () => {
                     type="button"
                     className="btn btn-primary"
                     onClick={HandleOnclickAdd}
+                    tabIndex="-1"
                   >
                     Thêm tài khoản mới
                   </button>
@@ -197,6 +231,7 @@ const BanHangOfline = () => {
                     type="button"
                     className="btn btn-danger"
                     onClick={HandleOnclickclose}
+                    tabIndex="-1"
                   >
                     Hủy đăng kí
                   </button>
@@ -232,11 +267,17 @@ const BanHangOfline = () => {
               </div>
             </div>
             <div className="BanHangof_giohang_sanphamdamua">
-              <DanhSachSanPham />
+              <DanhSachSanPham
+                datasp={datasp}
+                Getdata={Getdata}
+                setData={setData}
+              />
             </div>
           </div>
         </div>
-        <div className="col-3 banhangof_hoadon">hoadon</div>
+        <div className="col-3 banhangof_hoadon">
+          <HoaDon />
+        </div>
       </div>
     </div>
   );

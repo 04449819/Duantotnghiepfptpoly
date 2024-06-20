@@ -11,7 +11,7 @@ namespace AppData.Models
     {
         public Guid ID { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Tên.")]
-        [StringLength(20, ErrorMessage = "Tên không được vượt quá 20 kí tự ")]
+        [StringLength(20, ErrorMessage = "Tên không được vượt quá 50 kí tự ")]
         public string Ten { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Email.")]
         [StringLength(100, ErrorMessage = "Email không được vượt quá 100 kí tự ")]

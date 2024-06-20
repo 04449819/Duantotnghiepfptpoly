@@ -238,6 +238,7 @@ namespace AppAPI.Services
                 var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) /*&& x.Password == password*/);
                 if (kh != null && kh.Password == password)
                 {
+                    var dckh = await context.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1);
                     return new LoginViewModel
                     {
                         Id = kh.IDKhachHang,
@@ -245,7 +246,7 @@ namespace AppAPI.Services
                         Ten = kh.Ten,
                         SDT = kh.SDT,
                         DiemTich = kh.DiemTich,
-                        DiaChi = kh.DiaChi,
+                        DiaChi = dckh.DiaChi,
                         GioiTinh = kh.GioiTinh,
                         NgaySinh = kh.NgaySinh,
                         vaiTro = 1
@@ -406,73 +407,74 @@ namespace AppAPI.Services
             }
         }
 
-        public async Task<LoginViewModel> UpdateProfile(LoginViewModel loginViewModel)
-        {
-            try
-            {
-                var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == loginViewModel.Id);
-                if (kh != null)
-                {
+        //public async Task<LoginViewModel> UpdateProfile(LoginViewModel loginViewModel)
+        //{
+        //    try
+        //    {
+        //        var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == loginViewModel.Id);
+        //        if (kh != null)
+        //        {
 
-                    kh.Ten = loginViewModel.Ten;
-                    kh.SDT = loginViewModel.SDT;
-                    kh.DiaChi = loginViewModel.DiaChi;
-                    kh.NgaySinh = loginViewModel.NgaySinh;
-                    kh.GioiTinh = loginViewModel.GioiTinh;
-                    kh.Email = loginViewModel.Email;
-                    //context.KhachHangs.Update(kh);
-                    context.SaveChangesAsync();
-                    return new LoginViewModel
-                    {
-                        Id = loginViewModel.Id,
-                        Email = loginViewModel.Email,
-                        Ten = loginViewModel.Ten,
-                        SDT = loginViewModel.SDT,
-                        DiemTich = kh.DiemTich,
-                        GioiTinh = loginViewModel.GioiTinh,
-                        NgaySinh = loginViewModel.NgaySinh,
-                        DiaChi = loginViewModel.DiaChi,
-                        vaiTro = loginViewModel.vaiTro,
-                    };
+        //            kh.Ten = loginViewModel.Ten;
+        //            kh.SDT = loginViewModel.SDT;
+        //            kh.DiaChi = loginViewModel.DiaChi;
+        //            kh.NgaySinh = loginViewModel.NgaySinh;
+        //            kh.GioiTinh = loginViewModel.GioiTinh;
+        //            kh.Email = loginViewModel.Email;
+        //            //context.KhachHangs.Update(kh);
+        //            context.SaveChangesAsync();
+        //            return new LoginViewModel
+        //            {
+        //                Id = loginViewModel.Id,
+        //                Email = loginViewModel.Email,
+        //                Ten = loginViewModel.Ten,
+        //                SDT = loginViewModel.SDT,
+        //                DiemTich = kh.DiemTich,
+        //                GioiTinh = loginViewModel.GioiTinh,
+        //                NgaySinh = loginViewModel.NgaySinh,
+        //                DiaChi = loginViewModel.DiaChi,
+        //                vaiTro = loginViewModel.vaiTro,
+        //            };
 
-                }
-                var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == loginViewModel.Id);
-                if (nv != null)
-                {
-                    nv.Ten = loginViewModel.Ten;
-                    nv.SDT = loginViewModel.SDT;
-                    nv.DiaChi = loginViewModel.DiaChi;
-                    nv.Email = loginViewModel.Email;
-                    context.SaveChangesAsync();
-                    return new LoginViewModel
-                    {
-                        Id = loginViewModel.Id,
-                        Email = loginViewModel.Email,
-                        Ten = loginViewModel.Ten,
-                        SDT = loginViewModel.SDT,
-                        GioiTinh = loginViewModel.GioiTinh,
-                        NgaySinh = loginViewModel.NgaySinh,
-                        DiaChi = loginViewModel.DiaChi,
-                        vaiTro = loginViewModel.vaiTro,
-                    };
-                }
+        //        }
+        //        var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == loginViewModel.Id);
+        //        if (nv != null)
+        //        {
+        //            nv.Ten = loginViewModel.Ten;
+        //            nv.SDT = loginViewModel.SDT;
+        //            nv.DiaChi = loginViewModel.DiaChi;
+        //            nv.Email = loginViewModel.Email;
+        //            context.SaveChangesAsync();
+        //            return new LoginViewModel
+        //            {
+        //                Id = loginViewModel.Id,
+        //                Email = loginViewModel.Email,
+        //                Ten = loginViewModel.Ten,
+        //                SDT = loginViewModel.SDT,
+        //                GioiTinh = loginViewModel.GioiTinh,
+        //                NgaySinh = loginViewModel.NgaySinh,
+        //                DiaChi = loginViewModel.DiaChi,
+        //                vaiTro = loginViewModel.vaiTro,
+        //            };
+        //        }
 
-                return null;
-            }
-            catch (Exception)
-            {
+        //        return null;
+        //    }
+        //    catch (Exception)
+        //    {
 
-                throw;
+        //        throw;
 
-            }
-        }
+        //    }
+        //}
         //End
         //Nhinh thêm
-        public async Task<bool> AddNhanhKH(KhachHang kh)
+        public async Task<bool> AddNhanhKH(KhachHangVieww kh)
         {
             try
             {
                 KhachHang KH = new KhachHang();
+                DiaChiKhachHang dckh = new DiaChiKhachHang();
                 GioHang gioHang = new GioHang()
                 {
                     IDKhachHang = kh.IDKhachHang,
@@ -488,17 +490,27 @@ namespace AppAPI.Services
                 KH.SDT = kh.SDT;
                 KH.DiemTich = 0;
                 KH.TrangThai = 1;
-                KH.DiaChi = kh.DiaChi;
                 KH.DiemTich = 0;
-                await context.KhachHangs.AddAsync(kh);
+                await context.KhachHangs.AddAsync(KH);
                 await context.SaveChangesAsync();
-               
-                return true;
+
+                dckh.Id = Guid.NewGuid();
+                dckh.KhachHangID = KH.IDKhachHang;
+                dckh.DiaChi = kh.DiaChi;
+                dckh.TrangThai = 1;
+
+
+				return true;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-    }
+
+		public Task<LoginViewModel> UpdateProfile(LoginViewModel loginViewModel)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

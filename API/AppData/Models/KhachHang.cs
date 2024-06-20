@@ -18,11 +18,11 @@ namespace AppData.Models
         public DateTime? NgaySinh { get; set; }
         [EmailAddress]
         public string? Email { get; set; }
-        public string? DiaChi { get; set; }
         public string? SDT { get; set; }
         public int? DiemTich { get; set; }
         public int? TrangThai { get; set; }
         public virtual GioHang? GioHang { get; set; }
         public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
-    }
+		public virtual IEnumerable<DiaChiKhachHang>? DiaChiKhachHangs { get; set; }
+        	}
 }

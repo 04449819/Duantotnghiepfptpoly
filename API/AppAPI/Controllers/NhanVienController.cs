@@ -21,9 +21,10 @@ namespace AppAPI.Controllers
         }
         // GET: api/<NhanVienController>
         [HttpGet("GetAll")]
-        public List<NhanVien> GetAllNhanVien()
+        public async Task <IActionResult> GetAllNhanVien(int pageIndex, int pageSize)
         {
-            return _nhanVienService.GetAll();
+           var DanhSach =  await _nhanVienService.GetAll(pageIndex, pageSize);
+            return Ok(DanhSach);
         }
         [Route("TimKiemNhanVien")]
         [HttpGet]
@@ -57,24 +58,39 @@ namespace AppAPI.Controllers
 
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        public async Task<IActionResult> Put1(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
-            var nv = _nhanVienService.GetById(id);
-            if (nv != null)
+            if (id == Guid.Empty || string.IsNullOrEmpty(ten) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(sdt) || string.IsNullOrEmpty(diachi) || idvaitro == Guid.Empty)
             {
+                return BadRequest("Invalid input parameters.");
+            }
+
+            try
+            {
+                var nv = await _dbContext.NhanViens.FindAsync(id);
+                if (nv == null)
+                {
+                    return NotFound("Employee not found.");
+                }
+
                 nv.Ten = ten;
                 nv.Email = email;
-                nv.PassWord = password;
+                nv.PassWord = password; // Consider hashing the password before saving
                 nv.SDT = sdt;
                 nv.DiaChi = diachi;
                 nv.TrangThai = trangthai;
                 nv.IDVaiTro = idvaitro;
+
                 _dbContext.NhanViens.Update(nv);
                 _dbContext.SaveChanges();
-                return true;
-            }
-            return false;
 
+                return Ok("Update successful.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) as needed
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
         }
 
         // DELETE api/<NhanVienController>/5

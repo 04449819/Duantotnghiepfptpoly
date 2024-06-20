@@ -9,6 +9,6 @@ namespace AppAPI.IServices
         public NhanVien? GetById(Guid id);
         public bool Delete(Guid id);
         public bool Update(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro);
-        public List<NhanVien> GetAll();
+        public Task<(List<NhanVien>, int)> GetAll(int pageIndex, int pageSize);
     }
 }

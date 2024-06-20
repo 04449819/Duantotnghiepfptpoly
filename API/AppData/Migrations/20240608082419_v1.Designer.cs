@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240608082419_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,29 +189,6 @@ namespace AppData.Migrations
                     b.ToTable("DanhGia", (string)null);
                 });
 
-            modelBuilder.Entity("AppData.Models.DiaChiKhachHang", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DiaChi")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("KhachHangID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TrangThai")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KhachHangID");
-
-                    b.ToTable("diaChiKhachHangs");
-                });
-
             modelBuilder.Entity("AppData.Models.GioHang", b =>
                 {
                     b.Property<Guid>("IDKhachHang")
@@ -292,6 +271,9 @@ namespace AppData.Migrations
                 {
                     b.Property<Guid>("IDKhachHang")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DiaChi")
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("DiemTich")
                         .HasColumnType("int");
@@ -717,17 +699,6 @@ namespace AppData.Migrations
                     b.Navigation("SanPham");
                 });
 
-            modelBuilder.Entity("AppData.Models.DiaChiKhachHang", b =>
-                {
-                    b.HasOne("AppData.Models.KhachHang", "KhachHang")
-                        .WithMany("DiaChiKhachHangs")
-                        .HasForeignKey("KhachHangID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("KhachHang");
-                });
-
             modelBuilder.Entity("AppData.Models.HoaDon", b =>
                 {
                     b.HasOne("AppData.Models.NhanVien", "NhanVien")
@@ -852,8 +823,6 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.KhachHang", b =>
                 {
-                    b.Navigation("DiaChiKhachHangs");
-
                     b.Navigation("LichSuTichDiems");
                 });
 

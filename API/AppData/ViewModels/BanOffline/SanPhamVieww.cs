@@ -8,11 +8,15 @@ namespace AppData.ViewModels.BanOffline
 {
 	public class SanPhamVieww
 	{
+		public Guid idLoaiSP { get; set; }
+		public Guid idSP { get; set; }
 		public Guid idCTSP { get; set; }
+		public Guid idAnh{ get;set;}
 		public string loaiSP { get; set; }
 		public string tenchatlieu { get; set; }
 		public string tenSanPham { get; set; }
 		public int soLuong { get; set; }
+		public int soLuongmua { get; set; }
 		public decimal giaBan { get; set; }
 		public DateTime ngayTao { get; set; }
 		public int	trangThai { get; set; }

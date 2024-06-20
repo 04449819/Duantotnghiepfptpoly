@@ -10,31 +10,69 @@
     padding: 0;
     box-sizing: border-box;
 }
-.search{
+.TextThem{
   text-align: center;
 }
+//////////////////////////////
+
+.search{
+  // text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 .search input{
-  
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     max-width: 600px;
     width:40%;
     text-align: center;
 }
+.search button{
+  padding: 10px 20px;
+    font-size: 16px;
+    // color: white;
+    // background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.search button:hover{
+  background-color:dimgray;
+}
+///////////////////////////////
+
 .table{
   text-align: center;
 }
+/////////////////////////////
+.table-container {
+  height: 450px; /* Chiều cao cố định cho bảng */
+  overflow-y: scroll;  /* Bật tính năng cuộn dọc */
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+////////////////////////////////
 .DanhMucHienThi{
   font-size: 30px;
   text-align: center;
 }
+//////////////////////////////////
 .ThemKhachHang{
-  text-align: right;
+  text-align: left;
 }
 .ThemKhachHang button {
-  background-color: gray;
-  color: white;
+  background-color: rgb(221, 23, 23);
+  color: rgb(236, 228, 228);
   border: none;
   padding: 5px 15px;
-  text-align: right;
+  text-align: left;
   text-decoration: none;
   margin: 2px;
   cursor: pointer;
@@ -53,5 +91,53 @@
   border-radius: 4px;
   transition: background-color 0.3s;
 }
+.delete{
+  background-color: rgb(209, 133, 133);
+  border: none;
+  color: rgb(48, 5, 5);
+  padding: 17px 35px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 11px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.edit{
+  background-color: rgb(209, 133, 133);
+  border: none;
+  color: rgb(48, 5, 5);
+  padding: 17px 35px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 11px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+
+}
+.label_name {
+  width: 150px; 
+  margin-right: 10px;
+  text-align: left; 
+}
+.submit-button {
+  background-color: #062207; /* Màu nền của nút */
+  border: none; /* Loại bỏ đường viền */
+  color: rgb(240, 234, 234); /* Màu chữ */
+  padding: 15px 25px; /* Khoảng cách bên trong */
+  font-size: 13px; /* Kích thước chữ */
+  cursor: pointer; /* Hình dạng con trỏ */
+  border-radius: 7px; /* Bo tròn góc */
+  transition: background-color 0.3s ease, transform 0.1s ease; /* Hiệu ứng chuyển màu nền và nhấn nút */
+}

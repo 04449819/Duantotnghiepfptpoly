@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppData.Models;
 using AppData.ViewModels;
+using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -55,9 +56,36 @@ namespace AppAPI.Services
             }
         }
 
-        public List<KhachHang> GetAll()
+        public async Task<(List<KhachHangView>, int)> GetAll(int pageIndex, int pageSize)
         {
-            return _dbContext.KhachHangs.ToList();
+            var offset = (pageIndex - 1) * pageSize;
+            var totalRecords = await _dbContext.KhachHangs.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var khachhang = await (from kh in _dbContext.KhachHangs
+                                   select new KhachHangView()
+                                   {
+                                       IDKhachHang = kh.IDKhachHang,
+                                       Ten = kh.Ten,
+                                       Password = kh.Password,
+                                       GioiTinh = kh.GioiTinh,
+                                       NgaySinh = kh.NgaySinh,
+                                       Email = kh.Email,
+                                       SDT = kh.SDT,
+                                       DiemTich = kh.DiemTich,
+                                       TrangThai = kh.TrangThai,
+                                       DiaChi = _dbContext.diaChiKhachHangs.FirstOrDefault(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1) != null ? _dbContext.diaChiKhachHangs.FirstOrDefault(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1).DiaChi : "chưa cập nhật địa chỉ"
+                                   }
+                                  )
+                                 .Skip(offset)
+                                 .Take(pageSize)
+                                 .ToListAsync();
+            return (khachhang, totalPages);
+        }
+
+        public Task<List<KhachHangView>> GetAll()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
@@ -82,26 +110,36 @@ namespace AppAPI.Services
             return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt || c.Email == sdt);
         }
 
-        public bool Update(KhachHang khachHang)
+        public List<KhachHang> GetKMByName(string Ten)
         {
-            var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
-            if (kh != null)
-            {
-                kh.Ten = khachHang.Ten;
-                kh.SDT = khachHang.SDT;
-                kh.Email = khachHang.Email;
-                kh.Password = khachHang.Password;
-                kh.GioiTinh = khachHang.GioiTinh;
-                kh.DiaChi = khachHang.DiaChi;
-                kh.NgaySinh = khachHang.NgaySinh;
-                kh.DiemTich = khachHang.DiemTich;
-                kh.TrangThai = khachHang.TrangThai;
-                _dbContext.KhachHangs.Update(kh);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            return false;
+            throw new NotImplementedException();
         }
 
-    }
+        public bool Update(KhachHang khachHang)
+		{
+			throw new NotImplementedException();
+		}
+
+		//public bool Update(KhachHang khachHang)
+		//{
+		//    var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
+		//    if (kh != null)
+		//    {
+		//        kh.Ten = khachHang.Ten;
+		//        kh.SDT = khachHang.SDT;
+		//        kh.Email = khachHang.Email;
+		//        kh.Password = khachHang.Password;
+		//        kh.GioiTinh = khachHang.GioiTinh;
+		//        kh.DiaChi = khachHang.DiaChi;
+		//        kh.NgaySinh = khachHang.NgaySinh;
+		//        kh.DiemTich = khachHang.DiemTich;
+		//        kh.TrangThai = khachHang.TrangThai;
+		//        _dbContext.KhachHangs.Update(kh);
+		//        _dbContext.SaveChanges();
+		//        return true;
+		//    }
+		//    return false;
+		//}
+
+	}
 }

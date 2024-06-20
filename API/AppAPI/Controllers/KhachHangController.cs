@@ -8,6 +8,9 @@ using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.ConstrainedExecution;
 using System.Security;
 
 namespace AppAPI.Controllers
@@ -253,6 +256,68 @@ namespace AppAPI.Controllers
 			}
 			return Ok(0);
 
+		}
+
+        [HttpPut("updatekhachhang")]
+        public async Task<IActionResult> UpdateKhachHangBySDT(Guid id, KhachHangAddView khachHang)
+		{
+
+            var check = await _dbcontext.KhachHangs.FindAsync(id);
+			if (check == null)
+			{
+				return NotFound("Khách hàng không tồn tại");
+			}
+			check.Ten = khachHang.Ten;
+            check.GioiTinh = khachHang.GioiTinh;
+            check.NgaySinh = khachHang.NgaySinh;
+			if(check.Email == khachHang.Email)
+            {
+				check.Email = khachHang.Email;
+			}
+			else
+			{
+                var checkEmail = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khachHang.Email);
+				if(checkEmail != null)
+                {
+                    return Ok("Email đã tồn tại");
+					
+				}
+				check.Email = khachHang.Email;
+			};
+			if (check.SDT == khachHang.SDT)
+			{
+				check.SDT = khachHang.SDT;
+			}
+			else
+			{
+				var checksdt = _dbcontext.KhachHangs.FirstOrDefault(p => p.SDT == khachHang.SDT);
+				if (checksdt != null)
+				{
+					return Ok("SĐT đã tồn tại");
+
+				}
+				check.SDT = khachHang.SDT;
+			};
+
+			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == id && p.TrangThai == 1);
+			if(diachi != null)
+			{
+				diachi.DiaChi = khachHang.DiaChi;
+				_dbcontext.diaChiKhachHangs.Update(diachi);
+			}
+			else
+			{
+                DiaChiKhachHang dcKhangHang = new DiaChiKhachHang();
+				dcKhangHang.Id = Guid.NewGuid();
+                dcKhangHang.KhachHangID = id;
+				dcKhangHang.DiaChi = khachHang.DiaChi;
+                dcKhangHang.TrangThai = 1;
+				await _dbcontext.diaChiKhachHangs.AddAsync(dcKhangHang);
+			}
+
+			 _dbcontext.KhachHangs.Update(check);
+			await _dbcontext.SaveChangesAsync();
+			return Ok("Update thành công");
 		}
 		#endregion
 	}

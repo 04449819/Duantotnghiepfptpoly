@@ -101,21 +101,24 @@ function ModalApplyKM(props) {
 
   const GetDataChitietSanPhamDaAD = async (idsp) => {
     //https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDKM?id=e107cc6d-5a68-4d5b-836e-4d70b088dd1f
-    const res = await axios.get(
-      `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDKM?id=${props.item.id}`
-    );
-    if (res.data && res.data.length >= 0) {
-      const dataTam = res.data.map((item) => {
-        return { ...item, check: true };
-      });
-      setdataCTSP(dataTam);
-    }
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDKM?id=${props.item.id}`
+      );
+      if (res.data && res.data.length >= 0) {
+        const dataTam = res.data.map((item) => {
+          return { ...item, check: true };
+        });
+        setdataCTSP(dataTam);
+      }
+    } catch (error) {}
   };
 
   useEffect(() => {
     setdata([]);
     setdataCTSP([]);
     getDataSP(page);
+    setpage(1);
     GetDataChitietSanPhamDaAD(props.item.id);
   }, [show]);
 

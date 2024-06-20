@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { FaBars, FaHome } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import "./ReactSidebar.scss";
-import { Form, Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Bounce, ToastContainer } from "react-toastify";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
@@ -59,8 +59,8 @@ const ReactSideBar = () => {
         >
           <Sidebar
             collapsed={collapsed}
-            // toggled={toggled}
-            // onBackdropClick={() => setToggled(false)}
+            toggled={toggled}
+            onBackdropClick={() => setToggled(false)}
             onBreakPoint={setBroken}
             breakPoint="md"
             style={{ position: "fixed" }}
@@ -221,7 +221,7 @@ const ReactSideBar = () => {
                 {broken && (
                   <button
                     className="sb-button"
-                    // onClick={() => setToggled(!toggled)}
+                    onClick={() => setToggled(!toggled)}
                   >
                     Toggle
                   </button>
@@ -232,22 +232,21 @@ const ReactSideBar = () => {
               </div>
             </div>
           </div>
-
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-          <ToastContainer />
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+        <ToastContainer />
       </div>
     );
   } else {

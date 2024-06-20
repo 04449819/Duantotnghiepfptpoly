@@ -22,6 +22,8 @@ const ModalSearchSPNangCao = () => {
   const [selectedValue1, setSelectedValue1] = useState(
     "00000000-0000-0000-0000-000000000000"
   );
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
   const handleClose = () => {
     GetDSSP(1);
     setShow(false);
@@ -69,7 +71,17 @@ const ModalSearchSPNangCao = () => {
 
   const HandleOnchangeSearch = async (event) => {
     const page = 1;
-    if (event.target.value === "") return GetDSSP(page);
+    if (event.target.value === "") {
+      setSelectedValue("00000000-0000-0000-0000-000000000000");
+      setSelectedValue1("00000000-0000-0000-0000-000000000000");
+      setMinValue(0);
+      setMaxValue(0);
+      return GetDSSP(page);
+    }
+    setSelectedValue("00000000-0000-0000-0000-000000000000");
+    setSelectedValue1("00000000-0000-0000-0000-000000000000");
+    setMinValue(0);
+    setMaxValue(0);
     GetDSSPbyName(event.target.value);
   };
 
@@ -84,9 +96,6 @@ const ModalSearchSPNangCao = () => {
   const HandleOnChangeChatLieuSP = (event) => {
     setSelectedValue1(event.target.value);
   };
-
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
 
   const handleMinChange = (event) => {
     const newMinValue = Number(event.target.value);

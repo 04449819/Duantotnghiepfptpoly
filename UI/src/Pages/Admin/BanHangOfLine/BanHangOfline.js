@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
-// import axios from "axios";
-// import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
 import HoaDon from "./HoaDon/HoaDon";
 import { useSelector } from "react-redux";

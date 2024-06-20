@@ -28,8 +28,10 @@ const ModalSearchSPChiTiet = (props) => {
   };
   const handleShow = () => {
     setShow(true);
-    getSanPhamSearch(props.item.id);
-    setTensp(props.item.ten);
+    if (props && props.item.id) {
+      getSanPhamSearch(props.item.id);
+      setTensp(props.item.ten);
+    }
   };
 
   const getSanPhamSearch = async (IDSanPham) => {

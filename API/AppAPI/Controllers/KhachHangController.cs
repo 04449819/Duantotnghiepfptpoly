@@ -7,6 +7,10 @@ using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Threading.Tasks;
 
@@ -25,12 +29,18 @@ namespace AppAPI.Controllers
             
         }
         [HttpGet]
+
         public async Task<IActionResult> GetAll(int pageIndex = 1, int pageSize = 10)
         {
             var result = await _khachHangService.GetAll(pageIndex, pageSize);
-            return Ok(new {Data = result.Item1 , TongTrang = result.Item2});
-            
+            return Ok(new { Data = result.Item1, TongTrang = result.Item2 });
+
         }
+        //public IActionResult GetAllKhachHang(int pageIndex, int pageSize)
+        //{
+        //    var khv = _khachHangService.GetAll(pageIndex, pageSize);
+        //    return Ok(khv);
+        //}
         // GET: api/<SanPhamController>
         //[HttpGet]
         //public async Task<IActionResult> GetAllKhachHang()
@@ -65,7 +75,9 @@ namespace AppAPI.Controllers
             }
             else return new KhachHangViewModel();
         }
-        [HttpGet("ChangeForgotPassword")]
+
+   
+		[HttpGet("ChangeForgotPassword")]
         public async Task<bool> ChangeForgotPassword(string id, string password)
         {
             try
@@ -136,41 +148,7 @@ namespace AppAPI.Controllers
             return true;
         }
 
-		[Route("PostKHView1")]
-		[HttpPost]
-		public bool PostKHView1(KhachHangView khv)
-		{
-			var idkhv = Guid.NewGuid();
-			KhachHang kh = new KhachHang();
-			kh.IDKhachHang = idkhv;
-			kh.Ten = khv.Ten?.Trim();
-			kh.Password = MaHoaMatKhau(khv.Password).Trim();
-			kh.GioiTinh = khv.GioiTinh;
-			kh.NgaySinh = khv.NgaySinh;
-            NhanVien nhanvien = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT );
-            KhachHang khachhang = _dbcontext.KhachHangs.FirstOrDefault(p=>p.Email == khv.Email || p.SDT == khv.SDT);
-            if(nhanvien != null  || khachhang != null)
-            {
-                return false;
-            }
-			kh.Email = khv.Email?.Trim();
-			kh.SDT = khv.SDT?.Trim();
-			kh.TrangThai = 1;
-			kh.DiemTich = 0;
-			_dbcontext.KhachHangs.Add(kh);
-			GioHang gh = new GioHang();
-			gh.IDKhachHang = kh.IDKhachHang;
-			gh.NgayTao = DateTime.Now;
-			_dbcontext.GioHangs.Add(gh);
-			DiaChiKhachHang dckh = new DiaChiKhachHang();
-			dckh.Id = Guid.NewGuid();
-			dckh.KhachHangID = kh.IDKhachHang;
-			dckh.DiaChi = khv.DiaChi?.Trim();
-			dckh.TrangThai = 1;
-			_dbcontext.diaChiKhachHangs.Add(dckh);
-			_dbcontext.SaveChanges();
-			return true;
-		}
+	
 
 		private string MaHoaMatKhau(string matKhau)
         {
@@ -229,5 +207,132 @@ namespace AppAPI.Controllers
             var result = _khachHangService.Delete(id);
             return result;
         }
-    }
+
+		#region KhachHangKien
+
+		[Route("PostKHView1")]
+		[HttpPost]
+		public bool PostKHView1(KhachHangView khv)
+		{
+			var idkhv = Guid.NewGuid();
+			KhachHang kh = new KhachHang();
+			kh.IDKhachHang = idkhv;
+			kh.Ten = khv.Ten?.Trim();
+			kh.Password = khv.Password;
+			kh.GioiTinh = khv.GioiTinh;
+			kh.NgaySinh = khv.NgaySinh;
+			NhanVien nhanvien = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT);
+			KhachHang khachhang = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khv.Email || p.SDT == khv.SDT);
+			if (nhanvien != null || khachhang != null)
+			{
+				return false;
+			}
+			kh.Email = khv.Email?.Trim();
+			kh.SDT = khv.SDT?.Trim();
+			kh.TrangThai = 1;
+			kh.DiemTich = 0;
+			_dbcontext.KhachHangs.Add(kh);
+			GioHang gh = new GioHang();
+			gh.IDKhachHang = kh.IDKhachHang;
+			gh.NgayTao = DateTime.Now;
+			_dbcontext.GioHangs.Add(gh);
+			DiaChiKhachHang dckh = new DiaChiKhachHang();
+			dckh.Id = Guid.NewGuid();
+			dckh.KhachHangID = kh.IDKhachHang;
+			dckh.DiaChi = khv.DiaChi?.Trim();
+			dckh.TrangThai = 1;
+			_dbcontext.diaChiKhachHangs.Add(dckh);
+			_dbcontext.SaveChanges();
+			return true;
+		}
+
+		[HttpGet("checkEmail")]
+		public async Task<IActionResult> GetKhachHangByEmail1(string email)
+		{
+			var temp = await _dbcontext.KhachHangs.FirstOrDefaultAsync(x => x.Email == email);
+			var temp1 = await _dbcontext.NhanViens.FirstOrDefaultAsync(x => x.Email == email);
+			if (temp != null || temp1 != null)
+			{
+				return Ok(1);
+			}
+			return Ok(0);
+
+		}
+
+		[HttpGet("checkSDT")]
+		public async Task<IActionResult> GetKhachHangBySDT(string sdt)
+		{
+			var temp = await _dbcontext.KhachHangs.FirstOrDefaultAsync(x => x.SDT == sdt);
+			var temp1 = await _dbcontext.NhanViens.FirstOrDefaultAsync(x => x.SDT == sdt);
+			if (temp != null || temp1 != null)
+			{
+				return Ok(1);
+			}
+			return Ok(0);
+
+		}
+
+        [HttpPut("updatekhachhang")]
+        public async Task<IActionResult> UpdateKhachHangBySDT(Guid id, KhachHangAddView khachHang)
+		{
+
+            var check = await _dbcontext.KhachHangs.FindAsync(id);
+			if (check == null)
+			{
+				return NotFound("Khách hàng không tồn tại");
+			}
+			check.Ten = khachHang.Ten;
+            check.GioiTinh = khachHang.GioiTinh;
+            check.NgaySinh = khachHang.NgaySinh;
+			if(check.Email == khachHang.Email)
+            {
+				check.Email = khachHang.Email;
+			}
+			else
+			{
+                var checkEmail = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khachHang.Email);
+				if(checkEmail != null)
+                {
+                    return Ok("Email đã tồn tại");
+					
+				}
+				check.Email = khachHang.Email;
+			};
+			if (check.SDT == khachHang.SDT)
+			{
+				check.SDT = khachHang.SDT;
+			}
+			else
+			{
+				var checksdt = _dbcontext.KhachHangs.FirstOrDefault(p => p.SDT == khachHang.SDT);
+				if (checksdt != null)
+				{
+					return Ok("SĐT đã tồn tại");
+
+				}
+				check.SDT = khachHang.SDT;
+			};
+
+			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == id && p.TrangThai == 1);
+			if(diachi != null)
+			{
+				diachi.DiaChi = khachHang.DiaChi;
+				_dbcontext.diaChiKhachHangs.Update(diachi);
+			}
+			else
+			{
+                DiaChiKhachHang dcKhangHang = new DiaChiKhachHang();
+				dcKhangHang.Id = Guid.NewGuid();
+                dcKhangHang.KhachHangID = id;
+				dcKhangHang.DiaChi = khachHang.DiaChi;
+                dcKhangHang.TrangThai = 1;
+				await _dbcontext.diaChiKhachHangs.AddAsync(dcKhangHang);
+			}
+
+			 _dbcontext.KhachHangs.Update(check);
+			await _dbcontext.SaveChangesAsync();
+			return Ok("Update thành công");
+		}
+		#endregion
+	}
 }

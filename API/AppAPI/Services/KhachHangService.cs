@@ -1,5 +1,7 @@
 ﻿using AppAPI.IServices;
+using AppData.IRepositories;
 using AppData.Models;
+using AppData.Repositories;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +10,12 @@ namespace AppAPI.Services
 {
     public class KhachHangService : IKhachHangService
     {
-        private readonly AssignmentDBContext _dbContext;
+        AssignmentDBContext _dbContext = new AssignmentDBContext();
+        private readonly IAllRepository<KhachHang> _repos;
         public KhachHangService()
         {
-            _dbContext = new AssignmentDBContext();
+            
+            _repos = new AllRepository<KhachHang>(_dbContext, _dbContext.KhachHangs);
         }
 
         public async Task<KhachHang> Add(KhachHangViewModel nv)
@@ -56,6 +60,13 @@ namespace AppAPI.Services
             }
         }
 
+
+        //public List<KhachHang> GetAll()
+        //{
+        //    return _dbContext.KhachHangs.ToList();
+        //}
+
+
         public async Task<(List<KhachHangView>, int)> GetAll(int pageIndex, int pageSize)
         {
             var offset = (pageIndex - 1) * pageSize;
@@ -80,6 +91,7 @@ namespace AppAPI.Services
                                  .Skip(offset)
                                  .Take(pageSize)
                                  .ToListAsync();
+
             return (khachhang, totalPages);
         }
 

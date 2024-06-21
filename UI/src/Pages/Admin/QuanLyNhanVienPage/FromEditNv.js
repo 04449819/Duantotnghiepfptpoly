@@ -13,7 +13,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
     sdt : '', 
     password: '',
     diachi: '',
-    trangthai: '',
+    trangThai: '',
     idvaitro : '952c1a5d-74ff-4daf-ba88-135c5440809c'
     
   });
@@ -27,6 +27,9 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
   }, [initialFormData]);
   ////////////////////
   const [message, setMessage] = useState('');
+  const [messageName, setMessageName] = useState('');
+  const [messagePhone, setMessagePhone] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
   // Handle input change
   const handleChange = (e) => {
     
@@ -44,26 +47,26 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
       // Validate tên
       const nameRegex = /^[A-Za-z\s]+$/;
       if (formData.name.length < 2) {
-        setMessage('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
+        setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
         return;
       } else if (formData.name.length > 50) {
-        setMessage('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
+        setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
         return;
       } else if (!nameRegex.test(formData.name)) {
-        setMessage('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
+        setMessageName('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
         return;
       }
       //  Validate Số emai
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(formData.email)) {
-        setMessage('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
+        setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
         return;
       }
       // Validate Số Điện thoại
       ///  /^[0-9]{10}$/
       const phoneRegex = /^0\d{9}$/ ;
       if (!phoneRegex.test(formData.sdt)) {
-        setMessage('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
+        setMessagePhone('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
         return;
       }
     try {
@@ -107,6 +110,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
+      <p>{messageName}</p>
       <div>
         <label className='label' htmlFor="password">password:</label>
         <input className='text_input'
@@ -129,7 +133,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
-
+      <p>{messageEmail}</p>
       <div>
         <label className='label' htmlFor="sdt">sdt:</label>
         <input className='text_input'
@@ -141,6 +145,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
+      <p>{messagePhone}</p>
       <div>
         <label className='label' htmlFor="diachi">diaChi:</label>
         <input className='text_input'
@@ -153,12 +158,12 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
         />
       </div>
       <div>
-        <label className='label' htmlFor="trangthai">trangThai:</label>
+        <label className='label' htmlFor="trangThai">trangThai:</label>
         <input className='text_input'
           type="text"
-          id="trangthai"
-          name="trangthai"
-          value={formData.trangthai}
+          id="trangThai"
+          name="trangThai"
+          value={formData.trangThai}
           onChange={handleChange}
           required
         />
@@ -176,7 +181,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
       </div>
       <div className="button-container">
       <button type="submit" className="submit-button">Submit</button>
-      {message && <p>{message}</p>}
+    
       </div>
     </form>
   );

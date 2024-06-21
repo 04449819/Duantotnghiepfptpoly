@@ -1,10 +1,13 @@
-﻿using AppAPI.IServices;
+﻿
+using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -26,9 +29,22 @@ namespace AppAPI.Controllers
 
         // GET: api/<KhuyenMaiController>
         [HttpGet]
-        public List<KhuyenMai> Get()
+        
+
+        public async Task<IActionResult> Get(int pageIndex, int pageSize)
         {
-            return _khuyenmai.GetAll();
+            int totalKM = await _dbcontext.KhuyenMais.CountAsync();
+            int totalPage = (int)Math.Ceiling(totalKM / (double)pageSize);
+            var km = await _dbcontext.KhuyenMais
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+            return Ok(new
+            {
+                Data = km,
+                TotalCount = totalPage
+            });
+
         }
         [Route("GetAllCTSPBySP")]
         [HttpGet]
@@ -358,5 +374,48 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
-    }
+
+		#region khuyenmaiKien
+		[HttpPut("addkhuyenmaitoCTSP")]
+		public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
+		{
+			if (IDCTSP == null || !IDCTSP.Any())
+			{
+				return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+			}
+
+			foreach (var id in IDCTSP)
+			{
+					var dt = await _dbcontext.ChiTietSanPhams.FindAsync(id.id);
+					if (dt != null)
+					{
+						if(id.trangthai == true)
+						{
+							dt.IDKhuyenMai = Guid.Parse(idkhuyenmai);
+						}
+						else
+						{
+							dt.IDKhuyenMai = Guid.Parse("B2B70D39-0658-422B-93B1-C054B374B232");
+						}
+						_dbcontext.ChiTietSanPhams.Update(dt);
+                        _dbcontext.SaveChanges();
+					}
+					else
+					{
+						return NotFound($"Sản phẩm chi tiết với ID {id} không tồn tại.");
+					}
+			}
+
+	
+
+			// Lưu các thay đổi vào database
+			await _dbcontext.SaveChangesAsync();
+
+			return Ok("Update thành công.");
+		
+
+	    }
+		#endregion
+	}
+
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import "./QuanLyNhanVienPage.scss";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
 const AddQuanLyNV = ({handleSuccess, handleClose}) => {
   // State to hold form data
@@ -9,6 +10,9 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
     name: '',
     email: ''
   });
+  const [messageName, setMessageName] = useState('');
+  const [messagePhone, setMessagePhone] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
 
   // Handle input change
   const handleChange = (e) => {
@@ -23,11 +27,42 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+     // Perform form validation or submission logic here
+     console.log('Form submitted:', formData);
+     // Validate tên
+     const nameRegex = /^[A-Za-z\s]+$/;
+     if (formData.ten < 2) {
+       setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
+       return;
+     } else if (formData.ten > 50) {
+       setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
+       return;
+     } else if (!nameRegex.test(formData.ten)) {
+       setMessageName('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
+       return;
+     }
+     //  Validate Số emai
+     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+     if (!emailRegex.test(formData.email)) {
+       setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
+       return;
+     }
+     // Validate Số Điện thoại
+     ///  /^[0-9]{10}$/
+     const phoneRegex = /^0\d{9}$/ ;
+     if (!phoneRegex.test(formData.sdt)) {
+       setMessagePhone('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
+       return;
+     }
+
+
+
+    /////
     try {
       const formData = new FormData(e.target);
       const params = new URLSearchParams();
       formData.forEach((value, key) => {
-        console.log(key, value);
+       // console.log(key, value);
         params.append(key, value);
       });
       
@@ -41,12 +76,18 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
         handleSuccess()
         console.log('Response:', response.data);
       } else {
+        toast.error("Thoong tin ddawng ky bij trung", {
+          autoClose: 5000,
+        });
         console.log('Response:', `${response.status} - ${response.error}`);
       }
       
       // Xử lý dữ liệu phản hồi tại đây
   } catch (error) {
-      console.error('There was an error posting the data!', error);
+    toast.error("Thoong tin ddawng ky bij trung", {
+      autoClose: 5000,
+    });
+      console.error('There was an error posting the data!', error.error);
   }
   
   };
@@ -64,6 +105,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           required
         />
       </div>
+      <p>{messageName}</p>
       <div div className="form-group">
         <label className='label' htmlFor="password"> password :</label>
         <input className='text_input'
@@ -86,7 +128,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           required
         />
       </div>
-
+      <p>{messageEmail}</p>
       <div div className="form-group">
         <label className='label' htmlFor="sdt"> Số điện thoại :</label>
         <input className='text_input'
@@ -98,6 +140,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           required
         />
       </div>
+      <p>{messagePhone}</p>
       <div div className="form-group">
         <label className='label' htmlFor="diachi"> Địa chỉ:</label>
         <input className='text_input'
@@ -134,6 +177,9 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
       <div className="button-container">
       <button type="submit" className="submit-button"> Submit </button>
       </div>
+      <ToastContainer
+      position="top-right"
+      />
     </form>
   );
 };

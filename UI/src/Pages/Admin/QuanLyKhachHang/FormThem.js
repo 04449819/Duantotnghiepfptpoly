@@ -10,7 +10,10 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
     email: ''
   });
   /////////////////////////////////
-  const [message, setMessage] = useState('');
+  const [messageName, setMessageName] = useState('');
+  const [messagePhone, setMessagePhone] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
+  // const [messageAddress, setMessageAddress] = useState('');
   // Handle input change
   const handleChange = (e) => {
     
@@ -25,31 +28,34 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
     // Perform form validation or submission logic here
     console.log('Form submitted:', formData);
     // Validate tên
-    const nameRegex = /^[A-Za-z\s]+$/;
     if (formData.ten.length < 2) {
-      setMessage('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
+      setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
       return;
     } else if (formData.ten.length > 50) {
-      setMessage('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
-      return;
-    } else if (!nameRegex.test(formData.ten)) {
-      setMessage('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
+      setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
       return;
     }
     //  Validate Số emai
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
-      setMessage('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
+      setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
       return;
     }
     // Validate Số Điện thoại
     ///  /^[0-9]{10}$/
     const phoneRegex = /^0\d{9}$/ ;
     if (!phoneRegex.test(formData.sdt)) {
-      setMessage('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
+      setMessagePhone('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
       return;
     }
-
+    /////vlidate địa chỉ 
+    // if (formData.diaChi.trim() === '') {
+    //   setMessageAddress('Địa chỉ không được để trống.');
+    //   return;
+    // } else if (formData.diaChi.value < 10) {
+    //   setMessageAddress('Địa chỉ quá ngắn. Vui lòng nhập ít nhất 10 ký tự.');
+    //   return;
+    // }
     try {
 
       const response = await axios.post('https://localhost:7095/api/KhachHang/PostKHView1', {
@@ -92,6 +98,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
           onChange={handleChange}
         />
       </div>
+      <p>{messageName}</p>
         <div className="form-group">
             <label className='label_name' htmlFor="password">Password:</label>
             <input className='text_input'
@@ -102,7 +109,9 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
                 onChange={handleChange}
                 required
             />
+            
         </div>
+       
         <div className="form-group">
             <label className='label_name' htmlFor="confirmPassword">Confirm Password:</label>
             <input className='text_input'
@@ -125,6 +134,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
                 required
             />
         </div>
+        <p>{messageEmail}</p>
         <div className="form-group">
             <label className='label_name' htmlFor="gioiTinh">Gioi tinh:</label>
             <input className='text_input'
@@ -136,6 +146,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
                 required
             />
         </div>
+        <p>{messageEmail}</p>
         <div  className="form-group">
             <label className='label_name' htmlFor="ngaySinh">Ngay sinh:</label>
             <input  className='text_input'
@@ -156,8 +167,9 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
                 value={formData.diaChi}
                 onChange={handleChange}
                 required
-            />
+            />        
         </div>
+        {/* <p>{messageAddress}</p> */}
         <div  className="form-group">
         <label className='label_name' htmlFor="sdt">Số Điện Thoại:</label>
         <input className='text_input'
@@ -168,6 +180,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
           onChange={handleChange}
         />
       </div>
+      <p>{messagePhone}</p>
         
         <div className="form-group">
             <label className='label_name' htmlFor="diemTich">Diem Tich:</label>
@@ -192,7 +205,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
             />
         </div>
         <button type="submit" className="submit-button"> Submit </button>
-        {message && <p>{message}</p>}
+
     </form>
   );
 };

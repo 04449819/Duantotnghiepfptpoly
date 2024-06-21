@@ -12,10 +12,14 @@ namespace AppAPI.IServices
         //End
         public bool Delete(Guid id);
         public bool Update(KhachHang khachHang);
+
         public Task<List<KhachHangView>> GetAll();
+
+        public Task< (List<KhachHangView>, int)> GetAll(int pageIndex, int pageSize);
+
         public Task<List<HoaDon>> GetAllHDKH(Guid idkh);
 
-        public Task<(List<KhachHangView>, int)> GetAll(int pageIndex, int pageSize);
+
         public List<KhachHang> GetKMByName(string Ten);
 
     }

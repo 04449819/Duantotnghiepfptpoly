@@ -1,7 +1,7 @@
 .banhangofline {
   // background-color: rgb(185, 192, 195);
-  margin-top: 20px;
   height: 680px;
+  // padding: 10px !important;
   .banhangof_content {
     .BanHangof_khachhang {
       height: 240px;
@@ -36,9 +36,9 @@
       }
     }
     .BanHangof_giohang {
-      height: 430px;
+      height: 890px;
       .BanHangof_giohang_thongtin {
-        height: 35%;
+        height: 17%;
         border: 1px solid black;
         border-radius: 5px;
       }
@@ -51,7 +51,7 @@
     }
   }
   .banhangof_hoadon {
-    height: 680px;
+    height: 977px;
     border: 1px solid black;
     border-radius: 5px;
   }

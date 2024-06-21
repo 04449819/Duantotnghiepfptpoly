@@ -30,7 +30,12 @@ const QuanLyKhachHang = () => {
 
   ////////////////////////////////////////
   const [inputValue, setInputValue] = useState('');
-
+  ///////////////////////////
+  const [messageName, setMessageName] = useState('');
+  const [messagePhone, setMessagePhone] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
+  // const [messageAddress, setMessageAddress] = useState('');
+  // Handle input change
   // Step 3: Handle input change
   const handleChange = (event) => {
     setInputValue(event.target.value);
@@ -58,26 +63,24 @@ const QuanLyKhachHang = () => {
   };
 
  const handleClickEdit = async (idKhachHang) =>{
-  const res = await axios.get(`https://localhost:7095/api/KhachHang/GetById?Id=${idKhachHang}`)
-  if (res.status == 200){
-    
-    setFormData({
-      id: res.data.id,
-      name: res.data.ten,
-      email: res.data.email,
-      ngaySinh:res.data.ngaySinh,
-      gioiTinh:res.data.gioiTinh,
-      sdt: res.data.sdt, 
-      password: res.data.password,
-      confirmPassword: res.data.password,
-      diemTich : res.data.diemTich == null ? "" : res.data.diemTich,
-      trangThai: res.data.trangThai == null ? "" : res.data.trangThai
-    })
-
-    console.log('data form', formData);
-    handleShowEdit()
-  }
  
+
+  data.forEach((item, index) => {
+    if (item.idKhachHang == idKhachHang){
+      setFormData({
+        id: item.idKhachHang,
+        name: item.ten,
+        email: item.email,
+        ngaySinh:item.ngaySinh,
+        sdiaChidt:item.diaChi,
+        gioiTinh:item.gioiTinh,
+        sdt: item.sdt
+      });
+  
+    }
+   
+  });
+  handleShowEdit() 
  
 };
 

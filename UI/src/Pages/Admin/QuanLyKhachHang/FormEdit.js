@@ -3,6 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import "./QuanlyKhachHang.scss";
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
+import { templateSettings } from 'lodash';
 const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
   // State to hold form data
   const [formData, setFormData] = useState({
@@ -10,9 +11,10 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
     email: '',
     sdt : '', 
     password: '',
-    confirmPassword: '',
-    diemTich : '',
-    trangThai: ''
+    gioiTinh:'',
+    ngaySinh:'',   
+    sdiaChidt:''
+
   });
   useEffect(() => {
     console.log('Form submitted:', initialFormData);
@@ -21,6 +23,12 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       setFormData(initialFormData);
     }
   }, [initialFormData]);
+
+
+  //////////////////////////////////////////
+  const [messageName, setMessageName] = useState('');
+  const [messagePhone, setMessagePhone] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,23 +37,40 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       [name]: value
     });
   };
-  
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+     // Validate tên
+     if ( formData.name.length < 2) {
+      setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
+      return;
+    } else if ( formData.name.length > 50) {
+      setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
+      return;
+    }
+    //  Validate Số emai
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
+      return;
+    }
+    // Validate Số Điện thoại
+    ///  /^[0-9]{10}$/
+    const phoneRegex = /^0\d{9}$/ ;
+    if (!phoneRegex.test(formData.sdt)) {
+      setMessagePhone('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng .');
+      return;
+    }
     // Perform form validation or submission logic here
     console.log('Form submitted:', formData);
     try {
-      const response = await axios.post('https://localhost:7095/api/KhachHang/Update', {
-        id : formData.id,
-          name: formData.name,
+      const response = await axios.put(`https://localhost:7095/api/KhachHang/updatekhachhang?id=${formData.id }`, {
+          ten: formData.name,
           email: formData.email,
           sdt: formData.sdt,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          diemTich: formData.diemTich,
-          trangThai: formData.trangThai
+          gioiTinh:formData.gioiTinh,
+          ngaySinh:formData.ngaySinh,
+          diaChi:formData.sdiaChidt,
       });
       if (response.status === 200) {
         handleClose()
@@ -66,7 +91,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       <div>
         <label  className='label_name' htmlFor="name">Name:</label>
         <input className='text_input'
-          type="text"
+          type="name"
           id="name"
           name="name"
           value={formData.name}
@@ -74,24 +99,25 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
+      <p>{messageName}</p>
       <div>
-        <label  className='label_name' htmlFor="password">password:</label>
+        <label  className='label_name' htmlFor="ngaySinh">Ngày sinh:</label>
         <input className='text_input'
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
+          type="ngaySinh"
+          id="ngaySinh"
+          name="ngaySinh"
+          value={formData.ngaySinh}
           onChange={handleChange}
           required
         />
       </div>
       <div>
-        <label   className='label_name' htmlFor="password">Confirm Password:</label>
+        <label   className='label_name' htmlFor="gioiTinh">Giới tính:</label>
         <input className='text_input'
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
+          type="gioiTinh"
+          id="gioiTinh"
+          name="gioiTinh"
+          value={formData.gioiTinh}
           onChange={handleChange}
           required
         />
@@ -108,9 +134,10 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
+      <p>{messageEmail}</p>
 
       <div>
-        <label  className='label_name' htmlFor="sdt">sdt:</label>
+        <label  className='label_name' htmlFor="sdt">Số điện thoại:</label>
         <input  className='text_input'
           type="sdt"
           id="sdt"
@@ -120,24 +147,14 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
-      <div>  
-        <label   className='label_name' htmlFor="diemtich">diemTich:</label>
-        <input className='text_input'
-          type="diemTich"
-          id="diemTich"
-          name="diemTich"
-          value={formData.diemTich}
-          onChange={handleChange}
-          required
-        />
-      </div>
+      <p>{messagePhone}</p>
       <div>
-        <label className='label_name'  htmlFor="trangthai">trangThai:</label>
+        <label  className='label_name' htmlFor="sdiaChidt">Địa chỉ :</label>
         <input  className='text_input'
-          type="trangThai"
-          id="trangThai"
-          name="trangThai"
-          value={formData.trangThai}
+          type="sdiaChidt"
+          id="sdiaChidt"
+          name="sdiaChidt"
+          value={formData.sdiaChidt}
           onChange={handleChange}
           required
         />

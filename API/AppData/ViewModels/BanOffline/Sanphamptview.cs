@@ -18,6 +18,7 @@ namespace AppData.ViewModels.BanOffline
 		public decimal? giaBan { get; set; }
 		public int TrangThai { get; set; }
 		public List<Anh> anhs { get; set;}
+		public Guid IdSanPham { get; set; }
 		public Guid IDLoaiSP { get; set; }
 		public Guid IDChatLieu { get; set; }
 	}

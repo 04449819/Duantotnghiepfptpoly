@@ -16,8 +16,14 @@ const ModalSearchSPNangCao = () => {
   const [page, setPage] = useState(1);
   const [LoaiSP, SetLoaiSP] = useState([]);
   const [ChatLieuSP, SetChatLieuSP] = useState([]);
-  const [selectedValue, setSelectedValue] = useState("");
-  const [selectedValue1, setSelectedValue1] = useState("");
+  const [selectedValue, setSelectedValue] = useState(
+    "00000000-0000-0000-0000-000000000000"
+  );
+  const [selectedValue1, setSelectedValue1] = useState(
+    "00000000-0000-0000-0000-000000000000"
+  );
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
   const handleClose = () => {
     GetDSSP(1);
     setShow(false);
@@ -65,7 +71,17 @@ const ModalSearchSPNangCao = () => {
 
   const HandleOnchangeSearch = async (event) => {
     const page = 1;
-    if (event.target.value === "") return GetDSSP(page);
+    if (event.target.value === "") {
+      setSelectedValue("00000000-0000-0000-0000-000000000000");
+      setSelectedValue1("00000000-0000-0000-0000-000000000000");
+      setMinValue(0);
+      setMaxValue(0);
+      return GetDSSP(page);
+    }
+    setSelectedValue("00000000-0000-0000-0000-000000000000");
+    setSelectedValue1("00000000-0000-0000-0000-000000000000");
+    setMinValue(0);
+    setMaxValue(0);
     GetDSSPbyName(event.target.value);
   };
 
@@ -81,17 +97,36 @@ const ModalSearchSPNangCao = () => {
     setSelectedValue1(event.target.value);
   };
 
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
-
   const handleMinChange = (event) => {
-    setMinValue(event.target.value);
+    const newMinValue = Number(event.target.value);
+    if (newMinValue > maxValue) {
+      setMaxValue(newMinValue);
+    } else {
+      setMinValue(newMinValue);
+    }
   };
 
   const handleMaxChange = (event) => {
-    setMaxValue(event.target.value);
+    const newMaxValue = Number(event.target.value);
+    if (newMaxValue < minValue) {
+      setMinValue(newMaxValue);
+    } else {
+      setMaxValue(newMaxValue);
+    }
   };
 
+  const handleOnClickLocSP = async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/getSPBanHangbyLoaisp?idloaiSP=${selectedValue}&idchatLieu=${selectedValue1}&giaMin=${
+          minValue * 10000
+        }&giaMax=${maxValue * 10000}&currentPage=1&productsPerPage=6`
+      );
+      const data = res.data;
+      SetDataSP(data.sanPham);
+      setintPage(res.data.soTrang);
+    } catch (error) {}
+  };
   return (
     <>
       <Button
@@ -127,11 +162,18 @@ const ModalSearchSPNangCao = () => {
                     onChange={(event) => HandleOnChangeLoaiSP(event)}
                     value={selectedValue}
                   >
-                    <option value="" disabled hidden>
+                    <option
+                      value="00000000-0000-0000-0000-000000000000"
+                      disabled
+                      hidden
+                    >
                       Chọn loại sản phẩm
                     </option>
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      TẤT CẢ LOẠI SẢN PHẨM
+                    </option>
                     {LoaiSP.map((item) => (
-                      <option key={item.id} value={item.ten}>
+                      <option key={item.id} value={item.id}>
                         {item.ten}
                       </option>
                     ))}
@@ -145,11 +187,18 @@ const ModalSearchSPNangCao = () => {
                     onChange={(event) => HandleOnChangeChatLieuSP(event)}
                     value={selectedValue1}
                   >
-                    <option value="" disabled hidden>
+                    <option
+                      value="00000000-0000-0000-0000-000000000000"
+                      disabled
+                      hidden
+                    >
                       chất liệu sản phẩm
                     </option>
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      TẤT CẢ CHẤT LIỆU
+                    </option>
                     {ChatLieuSP.map((item) => (
-                      <option key={item.id} value={item.ten}>
+                      <option key={item.id} value={item.id}>
                         {item.ten}
                       </option>
                     ))}
@@ -165,6 +214,7 @@ const ModalSearchSPNangCao = () => {
                       className="slider"
                       onChange={handleMinChange}
                     />
+                    <div className="slider-track"> </div>
                     <input
                       type="range"
                       min="0"
@@ -173,24 +223,32 @@ const ModalSearchSPNangCao = () => {
                       className="slider"
                       onChange={handleMaxChange}
                     />
+
                     <div
                       className="value-display min"
                       style={{
-                        left: "300px",
+                        left: "80px",
                       }}
                     >
-                      {minValue * 10000}
+                      <p style={{ fontSize: "15px" }}>{minValue * 10000}</p>
                     </div>
                     <div
                       className="value-display max"
                       style={{
-                        left: "10px",
+                        left: "250px",
                       }}
                     >
-                      {maxValue * 10000}
+                      <p style={{ fontSize: "15px" }}>{maxValue * 10000}</p>
                     </div>
                   </div>
                 </div>
+                <Button
+                  style={{ marginLeft: "10px" }}
+                  variant="primary"
+                  onClick={handleOnClickLocSP}
+                >
+                  Lọc sản phẩm
+                </Button>
               </div>
             </div>
             <hr />

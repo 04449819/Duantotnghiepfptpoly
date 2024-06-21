@@ -24,6 +24,7 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./Rudux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import DashBoard from "./Pages/Admin/Dashboard/DashBoard";
+import { Bounce, ToastContainer } from "react-toastify";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -60,6 +61,21 @@ root.render(
           </Route>
         </Routes>
       </BrowserRouter>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      <ToastContainer />
     </PersistGate>
   </Provider>
 );

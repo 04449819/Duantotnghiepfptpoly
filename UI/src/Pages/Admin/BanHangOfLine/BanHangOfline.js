@@ -4,7 +4,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
 import HoaDon from "./HoaDon/HoaDon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -20,30 +21,38 @@ const BanHangOfline = () => {
   // const [datasp, setData] = useState([]);
   let inputtrue = !inputreadOnly;
 
+  const dispath = useDispatch();
+
   const HandleOnclickSearchKH = async () => {
-    try {
-      const res = await axios.get(
-        `https://localhost:7095/api/KhachHang/getBySDT?sdt=${search}`
-      );
-      if (res.status === 200) {
-        setName(res.data.ten);
-        setPhone(res.data.sdt);
-        setAddress(res.data.diaChi);
-        SetEmail(res.data.email);
-      } else {
-        toast.error("Số điện thoại or email chưa được đăng kí");
+    dispath(SetLoading(true));
+    setTimeout(async () => {
+      try {
+        const res = await axios.get(
+          `https://localhost:7095/api/KhachHang/getBySDT?sdt=${search}`
+        );
+        if (res.status === 200) {
+          setName(res.data.ten);
+          setPhone(res.data.sdt);
+          setAddress(res.data.diaChi);
+          SetEmail(res.data.email);
+          dispath(SetLoading(false));
+        } else {
+          toast.error("Số điện thoại or email chưa được đăng kí");
+          setName("");
+          setPhone("");
+          setAddress("");
+          SetEmail("");
+          dispath(SetLoading(false));
+        }
+      } catch (error) {
         setName("");
         setPhone("");
         setAddress("");
         SetEmail("");
+        toast.error("Số điện thoại or email chưa được đăng kí");
+        dispath(SetLoading(false));
       }
-    } catch (error) {
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      toast.error("Số điện thoại or email chưa được đăng kí");
-    }
+    }, 3000);
   };
   const HandleOnclickAdd = async () => {
     if (inputreadOnly === true) {
@@ -84,30 +93,36 @@ const BanHangOfline = () => {
         SetEmail("");
         return;
       }
-      try {
-        const res = await axios.post(
-          "https://localhost:7095/api/KhachHang/PostKHView1",
-          KhachHang
-        );
-        console.log(res);
-        if (res.data === true) {
-          toast.success("Thêm khách hàng thành công");
+      dispath(SetLoading(true));
+      setTimeout(async () => {
+        try {
+          const res = await axios.post(
+            "https://localhost:7095/api/KhachHang/PostKHView1",
+            KhachHang
+          );
+          console.log(res);
+          if (res.data === true) {
+            toast.success("Thêm khách hàng thành công");
+            setbtnSearch(false);
+            dispath(SetLoading(false));
+          }
+          if (res.data === false) {
+            toast.error("Tài khoản đã tồn tại");
+            dispath(SetLoading(false));
+            return;
+          }
+        } catch (error) {
+          toast.error("lỗi hệ thống");
           setbtnSearch(false);
+          dispath(SetLoading(false));
         }
-        if (res.data === false) {
-          toast.error("Tài khoản đã tồn tại");
-          return;
-        }
-      } catch (error) {
-        toast.error("lỗi hệ thống");
-        setbtnSearch(false);
-      }
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      setinputreadOnly(inputtrue);
-      setcoler("white");
+        setName("");
+        setPhone("");
+        setAddress("");
+        SetEmail("");
+        setinputreadOnly(inputtrue);
+        setcoler("white");
+      }, 3000);
     }
   };
 

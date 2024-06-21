@@ -1,7 +1,14 @@
+import { useEffect } from "react";
 import "./HomePage.scss";
 import Carousel from "react-bootstrap/Carousel";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 const HomePage = () => {
+  useEffect(() => {
+    return () => {
+      toast.dismiss();
+    };
+  }, []);
   return (
     <>
       <div className="content1">

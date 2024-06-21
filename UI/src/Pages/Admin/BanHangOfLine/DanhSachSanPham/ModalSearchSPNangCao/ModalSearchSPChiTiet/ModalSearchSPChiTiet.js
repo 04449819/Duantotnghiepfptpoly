@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { GetIDCTSP } from "../../../../../../Rudux/Reducer/IDchitietsanphamSlice";
 import { FetchDataSanPhamGioHang } from "../../../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
+import { SetLoading } from "../../../../../../Rudux/Reducer/LoadingSlice";
 const ModalSearchSPChiTiet = (props) => {
   const [show, setShow] = useState(false);
   const [data, setdata] = useState([]);
@@ -117,13 +118,18 @@ const ModalSearchSPChiTiet = (props) => {
   };
   const dispatch = useDispatch();
   const handleOclickMuaHang = () => {
-    const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
-    if (checkMuaHang && checkMuaHang.soluong > 0) {
-      dispatch(FetchDataSanPhamGioHang(idmuaHang));
-      toast.success("Sản phẩm đã được thêm vào giỏ hàng");
-    } else {
-      toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
-    }
+    dispatch(SetLoading(true));
+    setTimeout(() => {
+      const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
+      if (checkMuaHang && checkMuaHang.soluong > 0) {
+        dispatch(FetchDataSanPhamGioHang(idmuaHang));
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng");
+        dispatch(SetLoading(false));
+      } else {
+        toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
+        dispatch(SetLoading(false));
+      }
+    }, 3000);
   };
   return (
     <>

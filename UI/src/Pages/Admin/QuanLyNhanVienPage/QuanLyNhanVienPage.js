@@ -5,7 +5,13 @@ import MyModalEdit from "./FromEditNv";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Toast } from "react-bootstrap";
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const QuanLyNhanVienPage = () => {
+
+  const dispath = useDispatch();
+
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -79,19 +85,23 @@ const QuanLyNhanVienPage = () => {
   };
   
    const handleClickSearch = async (event) =>{
+    dispath(SetLoading(true));
     event.preventDefault();
     if (inputValue == ""){
       handleReload()
     }else{
-      try {
-        let res = await axios.get(`https://localhost:7095/api/NhanVien/TimKiemNhanVien?name=${inputValue}`);
-        console.error('success', res.data);
-        setdata(res.data);
-       
-      } catch (error) {
-       
-        console.error('Error fetching promotions:', error);
-      }
+      setTimeout( async () => {
+        try {
+          let res = await axios.get(`https://localhost:7095/api/NhanVien/TimKiemNhanVien?name=${inputValue}`);
+          console.error('success', res.data);
+          setdata(res.data);
+           dispath(SetLoading(false));
+        } catch (error) {
+           dispath(SetLoading(false));
+          console.error('Error fetching promotions:', error);
+        }
+      
+      }, 3000);
     }
 }
 useEffect(() => {

@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import "./QuanlyKhachHang.scss";
 import axios from "axios";
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const AddQuanLyKH = ({handleSuccess, handleClose}) => {
+
+  const dispath = useDispatch();
   // State to hold form data
   const [formData, setFormData] = useState({
     ten: '',
@@ -25,6 +29,7 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispath(SetLoading(true));
     // Perform form validation or submission logic here
     console.log('Form submitted:', formData);
     // Validate tên
@@ -56,32 +61,42 @@ const AddQuanLyKH = ({handleSuccess, handleClose}) => {
     //   setMessageAddress('Địa chỉ quá ngắn. Vui lòng nhập ít nhất 10 ký tự.');
     //   return;
     // }
-    try {
+    setTimeout( async () => {
+      try {
+        const response = await axios.post('https://localhost:7095/api/KhachHang/PostKHView1', {
+          id : "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+            ten: formData.ten,
+            email: formData.email,
+            sdt: formData.sdt,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+            gioiTinh: formData.gioiTinh,
+            ngaySinh:formData.ngaySinh,
+            diaChi:formData.diaChi,
+            diemTich: formData.diemTich,
+            trangThai: formData.trangThai
+        });
+        if (response.status === 200) {
+          handleClose()
+          handleSuccess()
+        } else {
+          
+        }
+        console.log('Response:', response.data);
+         dispath(SetLoading(false));
+      } catch (error) {
 
-      const response = await axios.post('https://localhost:7095/api/KhachHang/PostKHView1', {
-        id : "3fa85f64-5717-4562-b3fc-2c963f66afa9",
-          ten: formData.ten,
-          email: formData.email,
-          sdt: formData.sdt,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          gioiTinh: formData.gioiTinh,
-          ngaySinh:formData.ngaySinh,
-          diaChi:formData.diaChi,
-          diemTich: formData.diemTich,
-          trangThai: formData.trangThai
-      });
-      if (response.status === 200) {
-        handleClose()
-        handleSuccess()
-      } else {
-        
+         dispath(SetLoading(false));
       }
-      console.log('Response:', response.data);
-      // Xử lý dữ liệu phản hồi tại đây
-  } catch (error) {
-      console.error('There was an error posting the data!', error);
-  }
+    
+    }, 3000);
+
+
+
+
+
+
+  
   
   };
 

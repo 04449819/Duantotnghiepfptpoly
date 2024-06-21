@@ -4,7 +4,10 @@ import "./QuanlyKhachHang.scss";
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { templateSettings } from 'lodash';
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
+  const dispath = useDispatch();
   // State to hold form data
   const [formData, setFormData] = useState({
     name: '',
@@ -40,6 +43,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispath(SetLoading(true));
      // Validate tên
      if ( formData.name.length < 2) {
       setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
@@ -63,8 +67,9 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
     }
     // Perform form validation or submission logic here
     console.log('Form submitted:', formData);
-    try {
-      const response = await axios.put(`https://localhost:7095/api/KhachHang/updatekhachhang?id=${formData.id }`, {
+    setTimeout( async () => {
+      try {
+        const response = await axios.put(`https://localhost:7095/api/KhachHang/updatekhachhang?id=${formData.id }`, {
           ten: formData.name,
           email: formData.email,
           sdt: formData.sdt,
@@ -80,9 +85,13 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       }
       console.log('Response:', response.data);
       // Xử lý dữ liệu phản hồi tại đây
-  } catch (error) {
-      console.error('There was an error posting the data!', error);
-  }
+        dispath(SetLoading(false));
+      } catch (error) {
+         dispath(SetLoading(false));
+      }
+    
+    }, 3000);
+
   
   };
 

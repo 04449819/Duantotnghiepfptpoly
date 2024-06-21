@@ -3,8 +3,13 @@ import { Modal, Button } from 'react-bootstrap';
 import "./QuanLyNhanVienPage.scss";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const AddQuanLyNV = ({handleSuccess, handleClose}) => {
+
+  const dispath = useDispatch();
+
   // State to hold form data
   const [formData, setFormData] = useState({
     name: '',
@@ -31,10 +36,10 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
      console.log('Form submitted:', formData);
      // Validate tên
      const nameRegex = /^[A-Za-z\s]+$/;
-     if (formData.ten < 2) {
+     if (formData.ten.length < 2) {
        setMessageName('Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.');
        return;
-     } else if (formData.ten > 50) {
+     } else if (formData.ten.length > 50) {
        setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
        return;
      } else if (!nameRegex.test(formData.ten)) {
@@ -59,34 +64,47 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
 
     /////
     try {
+      dispath(SetLoading(true));
       const formData = new FormData(e.target);
       const params = new URLSearchParams();
       formData.forEach((value, key) => {
        // console.log(key, value);
         params.append(key, value);
       });
-      
-      
-    
       const queryString = params.toString();
-      const response = await axios.post(`https://localhost:7095/api/NhanVien/DangKyNhanVien?${queryString}`);
+      setTimeout( async () => {
+        try {
+          const response = await axios.post(`https://localhost:7095/api/NhanVien/DangKyNhanVien?${queryString}`);
+          if (response.status === 200) {
+
+            handleClose()
+            handleSuccess()
+            console.log('Response:', response.data);
+            toast.success("đăng ký thành công");
+          } else {
+            toast.error("Thoong tin ddawng ky bij trung", {
+              autoClose: 5000,
+            });
+            console.log('Response:', `${response.status} - ${response.error}`);
+          }
+           dispath(SetLoading(false));
+        } catch (error) {
+
+           dispath(SetLoading(false));
+        }
+      
+      }, 3000);
+     
     
-      if (response.status === 200) {
-        handleClose()
-        handleSuccess()
-        console.log('Response:', response.data);
-      } else {
-        toast.error("Thoong tin ddawng ky bij trung", {
-          autoClose: 5000,
-        });
-        console.log('Response:', `${response.status} - ${response.error}`);
-      }
+     
       
       // Xử lý dữ liệu phản hồi tại đây
   } catch (error) {
+    dispath(SetLoading(false));
     toast.error("Thoong tin ddawng ky bij trung", {
       autoClose: 5000,
     });
+
       console.error('There was an error posting the data!', error.error);
   }
   
@@ -97,7 +115,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
       <div className="form-group">
         <label className='label' htmlFor="ten"> Name :</label>
         <input className='text_input'
-          type="text"
+          type="ten"
           id="ten"
           name="ten"
           value={formData.ten}

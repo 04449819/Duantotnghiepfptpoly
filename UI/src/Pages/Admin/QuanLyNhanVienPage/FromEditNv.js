@@ -3,7 +3,10 @@ import { Modal, Button } from 'react-bootstrap';
 import "./QuanLyNhanVienPage.scss";
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
+  const dispath = useDispatch();
   // State to hold form data
   const [id,setId] = useState('')
   const [formData, setFormData] = useState({
@@ -70,6 +73,7 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
         return;
       }
     try {
+      dispath(SetLoading(true));
       const formData = new FormData(e.target);
       const params = new URLSearchParams();
       formData.forEach((value, key) => {
@@ -81,15 +85,25 @@ const EditQuanLyNV = ({handleSuccess, handleClose , initialFormData}) => {
         }
       });
       const queryString = params.toString();
+      setTimeout( async () => {
+        try {
+          const response = await axios.put(`https://localhost:7095/api/NhanVien/${id}?${queryString}`);
+          if (response.status === 200) {
+            handleClose()
+            handleSuccess()
+          } else {
+            
+          }
+          console.log('Response:', response.data);
+          dispath(SetLoading(false));
+        } catch (error) {
+           dispath(SetLoading(false));
+        }
       
-      const response = await axios.put(`https://localhost:7095/api/NhanVien/${id}?${queryString}`);
-      if (response.status === 200) {
-        handleClose()
-        handleSuccess()
-      } else {
-        
-      }
-      console.log('Response:', response.data);
+      }, 3000);
+      
+    
+     
       // Xử lý dữ liệu phản hồi tại đây
   } catch (error) {
       console.error('There was an error posting the data!', error);

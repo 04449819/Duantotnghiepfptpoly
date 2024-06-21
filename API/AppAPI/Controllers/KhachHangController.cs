@@ -207,10 +207,11 @@ namespace AppAPI.Controllers
             var result = _khachHangService.Delete(id);
             return result;
         }
+        #region khachHangHoang
+        #endregion
+        #region KhachHangKien
 
-		#region KhachHangKien
-
-		[Route("PostKHView1")]
+        [Route("PostKHView1")]
 		[HttpPost]
 		public bool PostKHView1(KhachHangView khv)
 		{
@@ -291,7 +292,8 @@ namespace AppAPI.Controllers
 			else
 			{
                 var checkEmail = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khachHang.Email);
-				if(checkEmail != null)
+                var checkEmailNv = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khachHang.Email);
+                if (checkEmail != null || checkEmailNv != null)
                 {
                     return Ok("Email đã tồn tại");
 					
@@ -305,7 +307,9 @@ namespace AppAPI.Controllers
 			else
 			{
 				var checksdt = _dbcontext.KhachHangs.FirstOrDefault(p => p.SDT == khachHang.SDT);
-				if (checksdt != null)
+                var checksdtNv = _dbcontext.NhanViens.FirstOrDefault(p => p.SDT == khachHang.SDT);
+             
+                if (checksdt != null || checksdtNv != null )
 				{
 					return Ok("SĐT đã tồn tại");
 

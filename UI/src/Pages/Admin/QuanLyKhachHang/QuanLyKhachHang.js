@@ -5,7 +5,13 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import MyModalAdd from "./FormThem";
 import MyModalEdit from "./FormEdit";
+import { useDispatch} from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const QuanLyKhachHang = () => {
+
+  const dispath = useDispatch();
+
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -86,18 +92,23 @@ const QuanLyKhachHang = () => {
 
  const handleClickSearch = async (event) =>{
   event.preventDefault();
+  dispath(SetLoading(true));
   if (inputValue == ""){
     handleReload()
   }else{
-    try {
-      let res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
-      console.error('success', res.data);
-      setdata(res.data);
-     
-    } catch (error) {
-     
-      console.error('Error fetching promotions:', error);
-    }
+    setTimeout( async () => {
+      try {
+        let res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
+        console.error('success', res.data);
+        setdata(res.data);
+         dispath(SetLoading(false));
+      } catch (error) {
+         dispath(SetLoading(false));
+        console.error('Error fetching promotions:', error);
+      }
+    
+    }, 3000);
+
   }
   
 };

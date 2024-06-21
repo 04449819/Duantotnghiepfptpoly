@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const QuenMK = () => {
   const [email, setemail] = useState("");
@@ -15,7 +17,7 @@ const QuenMK = () => {
   const [checktaik, setchecktaik] = useState(false);
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const HandlerOnclick = () => {
     let data = {
       emailToId: email,
@@ -44,26 +46,35 @@ const QuenMK = () => {
 
   const SendMail = async (data) => {
     try {
+      // dispatch(SetLoading(true));
       const res1 = await axios.post(
         "https://localhost:7095/api/Mail/SendMail",
         data
       );
-    } catch (error) {}
+    } catch (error) {
+      // dispatch(SetLoading(false));
+    }
   };
 
   const CheckEmail = async (email) => {
-    try {
-      setchecktaik(true);
-      await axios.post(
-        `https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request=${email}`
-      );
-      setcheckma(true);
-      // SendMail(data);
-    } catch (error) {
-      toast.error("Email chưa được đăng kí");
-      setchecktaik(false);
-      setcheckma(false);
-    }
+    dispatch(SetLoading(true));
+    setchecktaik(true);
+    setTimeout(async () => {
+      try {
+        // setchecktaik(true);
+        await axios.post(
+          `https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request=${email}`
+        );
+        setcheckma(true);
+        dispatch(SetLoading(false));
+        // SendMail(data);
+      } catch (error) {
+        toast.error("Email chưa được đăng kí");
+        setchecktaik(false);
+        setcheckma(false);
+        dispatch(SetLoading(false));
+      }
+    }, 4000);
   };
 
   const ChangPassword = async () => {
@@ -72,15 +83,20 @@ const QuenMK = () => {
       password: pass,
       confirmPassword: passconfirm,
     };
-    try {
-      var res = await axios.post(
-        "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword",
-        data
-      );
-      navigate("/");
-    } catch (error) {
-      toast.error("mật khẩu chưa khớp or không đủ kí tự");
-    }
+    dispatch(SetLoading(true));
+    setTimeout(async () => {
+      try {
+        var res = await axios.post(
+          "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword",
+          data
+        );
+        navigate("/");
+        dispatch(SetLoading(false));
+      } catch (error) {
+        toast.error("mật khẩu chưa khớp or không đủ kí tự");
+        dispatch(SetLoading(false));
+      }
+    }, 3000);
   };
   return (
     <>

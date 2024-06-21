@@ -8,6 +8,8 @@ import "./style.scss";
 import ModalSearchSPChiTiet from "./ModalSearchSPChiTiet/ModalSearchSPChiTiet";
 import ReactPaginate from "react-paginate";
 import { Form, InputGroup } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../../../Rudux/Reducer/LoadingSlice";
 const ModalSearchSPNangCao = () => {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -24,6 +26,7 @@ const ModalSearchSPNangCao = () => {
   );
   const [minValue, setMinValue] = useState(0);
   const [maxValue, setMaxValue] = useState(0);
+  const dispatch = useDispatch();
   const handleClose = () => {
     GetDSSP(1);
     setShow(false);

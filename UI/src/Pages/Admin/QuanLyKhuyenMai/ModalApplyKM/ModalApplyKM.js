@@ -7,6 +7,8 @@ import { IoNewspaper } from "react-icons/io5";
 import Table from "react-bootstrap/Table";
 import { toast } from "react-toastify";
 import { IoIosAdd } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
 function ModalApplyKM(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -184,24 +186,30 @@ function ModalApplyKM(props) {
       }
     } catch (error) {}
   };
-
+  const dispatch = useDispatch();
   const handleSaveChange = async () => {
-    const listIDCTSP = dataCTSP
-      //   .filter((item) => item.check === true)
-      .map((item) => {
-        return { id: item.id, trangthai: item.check };
-      });
-    try {
-      var res = await axios.put(
-        `https://localhost:7095/api/KhuyenMai/addkhuyenmaitoCTSP?idkhuyenmai=${props.item.id}`,
-        listIDCTSP
-      );
-      toast.success(res.data);
-      setdata([]);
-      getDataSP(1);
-      setpage(1);
-      GetDataChitietSanPhamDaAD(props.item.id);
-    } catch (error) {}
+    dispatch(SetLoading(true));
+    setTimeout(async () => {
+      const listIDCTSP = dataCTSP
+        //   .filter((item) => item.check === true)
+        .map((item) => {
+          return { id: item.id, trangthai: item.check };
+        });
+      try {
+        var res = await axios.put(
+          `https://localhost:7095/api/KhuyenMai/addkhuyenmaitoCTSP?idkhuyenmai=${props.item.id}`,
+          listIDCTSP
+        );
+        toast.success(res.data);
+        setdata([]);
+        getDataSP(1);
+        setpage(1);
+        GetDataChitietSanPhamDaAD(props.item.id);
+        dispatch(SetLoading(false));
+      } catch (error) {
+        dispatch(SetLoading(false));
+      }
+    }, 3000);
   };
   return (
     <>

@@ -3,7 +3,6 @@ import { FaHome } from "react-icons/fa";
 import "./ReactSidebar.scss";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Bounce, ToastContainer } from "react-toastify";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { IoSettings } from "react-icons/io5";
 import { IoMenu } from "react-icons/io5";
@@ -63,7 +62,7 @@ const ReactSideBar = () => {
             onBackdropClick={() => setToggled(false)}
             onBreakPoint={setBroken}
             breakPoint="md"
-            style={{ position: "fixed" }}
+            style={{ position: "fixed", zIndex: 2 }}
           >
             <div
               style={{
@@ -166,6 +165,7 @@ const ReactSideBar = () => {
                     height: "65px",
                     paddingBottom: "6px",
                     position: "fixed",
+                    zIndex: 3,
                   }}
                   className="col-11"
                   id="collapse"
@@ -185,6 +185,7 @@ const ReactSideBar = () => {
                   style={{
                     paddingTop: "15px",
                     position: "fixed",
+                    zIndex: 4,
                     left: "1400px",
                   }}
                 >
@@ -233,20 +234,6 @@ const ReactSideBar = () => {
             </div>
           </div>
         </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
-        <ToastContainer />
       </div>
     );
   } else {

@@ -10,6 +10,7 @@ import {
   FetchDataSanPhamGioHang,
   UpdateSoLuong,
 } from "../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
+import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
 const DanhSachSanPham = () => {
   const [inputsearch, setinputsearch] = useState("");
   const dispatch = useDispatch();
@@ -18,8 +19,12 @@ const DanhSachSanPham = () => {
   );
   const HandleOnclickGetData = () => {
     // props.Getdata(inputsearch);
-    dispatch(FetchDataSanPhamGioHang(inputsearch));
-    setinputsearch("");
+    dispatch(SetLoading(true));
+    setTimeout(() => {
+      dispatch(FetchDataSanPhamGioHang(inputsearch));
+      setinputsearch("");
+      dispatch(SetLoading(false));
+    }, 3000);
   };
 
   const HandleOnclicnkDelete = (item) => {

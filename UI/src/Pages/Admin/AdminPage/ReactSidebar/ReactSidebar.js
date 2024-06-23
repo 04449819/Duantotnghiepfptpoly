@@ -99,12 +99,30 @@ const ReactSideBar = () => {
                     Quản lý nhân viên
                   </MenuItem>
                   <hr />
-                  <MenuItem
-                    component={<Link to="/admin/quanlysanpham" />}
+                  <SubMenu
                     icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    label="Quản lý Sản phẩm"
                   >
-                    Quản lý sản phẩm
-                  </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlysanpham" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      sản phẩm
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlychatlieu" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Chất liệu
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlyloaisanpham" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Loại sản phẩm
+                    </MenuItem>
+                  </SubMenu>
+
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlykhachhang" />}

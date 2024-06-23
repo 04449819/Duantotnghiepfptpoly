@@ -3,6 +3,7 @@ import Footerq from "./Pages/User/theme/Footer/Footer";
 import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import BarLoader from "react-spinners/BarLoader";
+import BeatLoader from "react-spinners/BeatLoader";
 import { useSelector } from "react-redux";
 const Index = () => {
   const loading = useSelector((p) => p.Loading.Loading);
@@ -16,7 +17,7 @@ const Index = () => {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 5,
+          zIndex: 2001,
         }}
         height={4}
         loading={loading}
@@ -32,6 +33,7 @@ const Index = () => {
       <div className="Footer">
         <Footerq />
       </div>
+      {loading && <div className="overlay"></div>}
     </div>
   );
 };

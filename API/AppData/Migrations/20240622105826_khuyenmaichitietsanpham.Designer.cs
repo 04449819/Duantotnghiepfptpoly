@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240622105826_khuyenmaichitietsanpham")]
+    partial class khuyenmaichitietsanpham
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -351,15 +353,21 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.KhuyenMaiCTSanPham", b =>
                 {
-                    b.Property<Guid>("IdKhuyenMai")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdChiTietSanPham")
+                    b.Property<Guid?>("IdChiTietSanPham")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("IdKhuyenMai", "IdChiTietSanPham");
+                    b.Property<Guid?>("IdKhuyenMai")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("IdChiTietSanPham");
+
+                    b.HasIndex("IdKhuyenMai");
 
                     b.ToTable("KhuyenMaiCTSanPhams");
                 });
@@ -762,15 +770,11 @@ namespace AppData.Migrations
                 {
                     b.HasOne("AppData.Models.ChiTietSanPham", "chiTietSanPham")
                         .WithMany("KhuyenMaiCTSanPhams")
-                        .HasForeignKey("IdChiTietSanPham")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdChiTietSanPham");
 
                     b.HasOne("AppData.Models.KhuyenMai", "khuyenMai")
                         .WithMany("KhuyenMaiCTSanPhams")
-                        .HasForeignKey("IdKhuyenMai")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdKhuyenMai");
 
                     b.Navigation("chiTietSanPham");
 

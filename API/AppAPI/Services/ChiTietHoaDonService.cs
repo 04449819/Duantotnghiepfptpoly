@@ -100,33 +100,34 @@ namespace AppAPI.Services
             return _context.ChiTietHoaDons.ToList();
         }
 
-        public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
-        {
-            List<HoaDonChiTietViewModel> lsthdct = await (from cthd in _context.ChiTietHoaDons
-                                                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
-                                                          join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                                                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
-                                                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
-                                                          join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
-                                                          into kmGroup
-                                                          from km in kmGroup.DefaultIfEmpty()
-                                                          where cthd.IDHoaDon == idhd
-                                                          select new HoaDonChiTietViewModel()
-                                                          {
-                                                              Id = cthd.ID,
-                                                              IdHoaDon = cthd.IDHoaDon,
-                                                              IdSP = sp.ID,
-                                                              Ten = sp.Ten,
-                                                              PhanLoai = ms.Ten + " - " + kc.Ten,
-                                                              SoLuong = cthd.SoLuong,
-                                                              GiaGoc = ctsp.GiaBan,
-                                                              GiaKM = km == null ? ctsp.GiaBan :
-                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
+        //public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
+        //{
+        //    List<HoaDonChiTietViewModel> lsthdct = await (from cthd in _context.ChiTietHoaDons
+        //                                                  join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+        //                                                  join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+        //                                                  join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+        //                                                  join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+        //                                                  //join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
+        //                                                  join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
+        //                                                  into kmGroup
+        //                                                  from km in kmGroup.DefaultIfEmpty()
+        //                                                  where cthd.IDHoaDon == idhd
+        //                                                  select new HoaDonChiTietViewModel()
+        //                                                  {
+        //                                                      Id = cthd.ID,
+        //                                                      IdHoaDon = cthd.IDHoaDon,
+        //                                                      IdSP = sp.ID,
+        //                                                      Ten = sp.Ten,
+        //                                                      PhanLoai = ms.Ten + " - " + kc.Ten,
+        //                                                      SoLuong = cthd.SoLuong,
+        //                                                      GiaGoc = ctsp.GiaBan,
+        //                                                      GiaKM = km == null ? ctsp.GiaBan :
+        //            (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+        //            (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                                                               
-                                                          }).ToListAsync();
-            return lsthdct;
-        }
+        //                                                  }).ToListAsync();
+        //    return lsthdct;
+        //}
 
         public async  Task<bool> UpdateSL(Guid id, int sl)
         {
@@ -151,5 +152,10 @@ namespace AppAPI.Services
                 throw new Exception(ex.Message);
             }
         }
-    }
+
+		public Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

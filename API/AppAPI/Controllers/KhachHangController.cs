@@ -105,11 +105,7 @@ namespace AppAPI.Controllers
             //return matKhau;
         }
         //Nhinh
-        [HttpGet("getBySDT")]
-        public KhachHang GetBySDT(string sdt)
-        {
-            return _khachHangService.GetBySDT(sdt);
-        }
+      
         [HttpGet("getAllHDKH")]
         public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
         {
@@ -207,11 +203,20 @@ namespace AppAPI.Controllers
             var result = _khachHangService.Delete(id);
             return result;
         }
-        #region khachHangHoang
-        #endregion
-        #region KhachHangKien
+		#region khachHangHoang
+		#endregion
+		#region KhachHangKien
+		[HttpGet("getBySDT")]
+		public async Task<IActionResult> GetBySDT(string sdt)
+		{
+            var diachinull = "";
+			var khachhang = _khachHangService.GetBySDT(sdt);
+			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == khachhang.IDKhachHang && p.TrangThai == 1);
+			if(diachi == null) return Ok(new { khachhang, diachinull });
+			return Ok(new {khachhang,diachi.DiaChi});
+		}
 
-        [Route("PostKHView1")]
+		[Route("PostKHView1")]
 		[HttpPost]
 		public bool PostKHView1(KhachHangView khv)
 		{

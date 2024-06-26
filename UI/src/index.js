@@ -27,6 +27,8 @@ import { store, persistor } from "./Rudux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import DashBoard from "./Pages/Admin/Dashboard/DashBoard";
 import { Bounce, ToastContainer } from "react-toastify";
+import MauSac from "./Pages/Admin/QuanLySanPham/MauSac/MauSac";
+import KichThuoc from "./Pages/Admin/QuanLySanPham/KichThuoc/KichThuoc";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -48,6 +50,8 @@ root.render(
             />
             <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
             <Route path="/admin/quanlychatlieu" element={<QuanLyChatLieu />} />
+            <Route path="/admin/quanlymausac" element={<MauSac />} />
+            <Route path="/admin/quanlykichthuoc" element={<KichThuoc />} />
             <Route
               path="/admin/quanlyloaisanpham"
               element={<QuanLyLoaiSanPham />}

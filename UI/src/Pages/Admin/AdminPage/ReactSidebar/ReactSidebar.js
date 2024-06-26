@@ -121,6 +121,18 @@ const ReactSideBar = () => {
                     >
                       Loại sản phẩm
                     </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlymausac" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Màu sắc
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlykichthuoc" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Kích thước
+                    </MenuItem>
                   </SubMenu>
 
                   <hr />

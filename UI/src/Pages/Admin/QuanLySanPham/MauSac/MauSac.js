@@ -1,9 +1,8 @@
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import "./style.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
-const QuanLyChatLieu = () => {
+const MauSac = () => {
   const [data, setdata] = useState([]);
 
   useEffect(() => {
@@ -12,7 +11,7 @@ const QuanLyChatLieu = () => {
   const getdata = async () => {
     try {
       const res = await axios.get(
-        "https://localhost:7095/api/ChatLieu/GetAllChatLieu"
+        "https://localhost:7095/api/MauSac/GetAllMauSac"
       );
       console.log(res.data);
       if (res.data.length > 0) {
@@ -27,7 +26,7 @@ const QuanLyChatLieu = () => {
     }
     try {
       var res = await axios.get(
-        `https://localhost:7095/api/ChatLieu/TimKiemChatLieu?name=${event.target.value}`
+        `https://localhost:7095/api/MauSac/TimKiemMauSac?name=${event.target.value}`
       );
       if (res.data.length > 0) {
         setdata(res.data);
@@ -40,7 +39,7 @@ const QuanLyChatLieu = () => {
     <div className="QuanlyChatLieu">
       <div className="mb-5 ">
         <div className="w-25 mx-auto">
-          <h3>Quản lý chất liệu</h3>
+          <h3>Quản lý màu sắc</h3>
         </div>
       </div>
 
@@ -58,7 +57,7 @@ const QuanLyChatLieu = () => {
 
       <div className="mt-5">
         <div className="mb-3 ms-4">
-          <Button variant="primary">Thêm chất liệu</Button>
+          <Button variant="primary">Thêm màu sắc</Button>
         </div>
         <div
           className="w-100 mx-auto"
@@ -69,7 +68,8 @@ const QuanLyChatLieu = () => {
               <tr>
                 <th>STT</th>
                 <th>ID</th>
-                <th>Tên chất liệu</th>
+                <th>Tên màu</th>
+                <th>mã màu</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
@@ -81,6 +81,17 @@ const QuanLyChatLieu = () => {
                     <td>{index + 1}</td>
                     <td>{item.id}</td>
                     <td>{item.ten}</td>
+                    <td>
+                      <div
+                        className="mx-auto mt-2"
+                        style={{
+                          width: "15px",
+                          height: "15px",
+                          backgroundColor: item.ma,
+                          border: "1px solid black",
+                        }}
+                      ></div>
+                    </td>
                     <td
                       style={{ color: item.trangThai === 1 ? "green" : "red" }}
                     >
@@ -112,4 +123,4 @@ const QuanLyChatLieu = () => {
   );
 };
 
-export default QuanLyChatLieu;
+export default MauSac;

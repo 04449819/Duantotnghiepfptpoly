@@ -34,14 +34,7 @@ namespace AppAPI.Services
             }
         }
 
-        public async Task<List<LoaiSP>> GetAllLoaiSP()
-        {
-            try
-            {
-                return await _context.LoaiSPs.AsNoTracking().OrderByDescending(x => x.TrangThai).ToListAsync();
-            }
-            catch (Exception) { throw; }
-        }
+   
 
         public async Task<LoaiSP> GetLoaiSPById(Guid id)
         {
@@ -121,33 +114,64 @@ namespace AppAPI.Services
             }
         }
 
-        public async Task<LoaiSP> AddSpCha(Guid idLoaiSPCha, string ten, int trangthai)
-        {
-            try
-            {
-                var check = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten == ten && x.IDLoaiSPCha != idLoaiSPCha);
-                if (check != null)
-                {
-                    return null;
-                }
-                LoaiSP kc = new LoaiSP()
-                {
-                    IDLoaiSPCha = Guid.NewGuid(),
-                    Ten = ten,
-                    TrangThai = 1
-                };
-                _context.LoaiSPs.Add(kc);
-                _context.SaveChanges();
-                return kc;
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
-        }
+		#endregion
+		#region LoaiSanPhamKien
+		public async Task<List<LoaiSP>> GetAllLoaiSP(int page, int totalPage, string tenLoaiSP)
+		{
+			if (page < 1 || totalPage < 1)
+			{
+				throw new ArgumentException("Page and totalPage must be greater than 0");
+			}
 
+			try
+			{
+				var query = _context.LoaiSPs.AsNoTracking();
 
-        #endregion
-    }
+				if (!string.IsNullOrEmpty(tenLoaiSP))
+				{
+					tenLoaiSP = tenLoaiSP.ToLower().Trim();
+					query = query.Where(p => p.Ten.ToLower().Trim().Contains(tenLoaiSP));
+				}
+
+				query = query.OrderByDescending(x => x.TrangThai)
+							 .Skip((page - 1) * totalPage)
+							 .Take(totalPage);
+
+				return await query.ToListAsync();
+			}
+			catch (Exception ex)
+			{
+				// Ghi log lỗi ở đây (nếu cần)
+				throw;
+			}
+		}
+
+		public async Task<LoaiSP> AddSpCha(string ten, int trangthai)
+		{
+			try
+			{
+				var check = await _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten.ToLower().Trim() == ten.ToLower().Trim());
+				if (check != null)
+				{
+					return null;
+				}
+				LoaiSP kc = new LoaiSP()
+				{
+					ID = Guid.NewGuid(),
+					Ten = ten.ToUpper(),
+					TrangThai = trangthai
+				};
+				await _context.LoaiSPs.AddAsync(kc);
+				await _context.SaveChangesAsync();
+				return kc;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+		#endregion
+	}
 }

@@ -95,7 +95,7 @@ const QuanLySanPham = () => {
           <h3>Danh sách sản phẩm</h3>
         </div>
         <div className="mb-3 ms-2">
-          <Button variant="primary">Add</Button>
+          <Button variant="primary">Thêm sản phẩm</Button>
         </div>
         <div>
           <Table striped bordered hover>

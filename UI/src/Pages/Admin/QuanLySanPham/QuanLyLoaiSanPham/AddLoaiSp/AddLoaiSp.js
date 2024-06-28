@@ -65,12 +65,14 @@ function AddLoaiSP(props) {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {props.item ? "Sửa ngay" : "Thêm loại sản phẩm"}
+        {props.item ? "Sửa" : "Thêm Loại sản phẩm"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Thêm loại sản phẩm</Modal.Title>
+          <Modal.Title>
+            {props.item ? "Sửa loại sản phẩm" : "Thêm loại sản phẩm"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
@@ -124,12 +126,12 @@ function AddLoaiSP(props) {
                 <Row>
                   <Form.Group as={Col}>
                     <Button variant="secondary" onClick={handleClose}>
-                      Close
+                      Đóng
                     </Button>
                   </Form.Group>
                   <Form.Group as={Col}>
                     <Button style={{ marginLeft: "200px" }} type="submit">
-                      Save
+                      Lưu
                     </Button>
                   </Form.Group>
                 </Row>

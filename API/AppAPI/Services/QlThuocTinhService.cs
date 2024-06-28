@@ -25,9 +25,9 @@ namespace AppAPI.Services
                 KichCo kc = new KichCo()
                 {
                     ID = Guid.NewGuid(),
-                    Ten = ten,
-                    TrangThai = 1
-                };
+                    Ten = ten.ToUpper(),
+                    TrangThai = trangthai
+				};
                 _dbContext.KichCos.Add(kc);
                 _dbContext.SaveChanges();
                 return kc;
@@ -60,13 +60,21 @@ namespace AppAPI.Services
                 var nv = await _dbContext.KichCos.FirstOrDefaultAsync(x => x.ID == id);
                 if (nv != null)
                 {
-                    var existingColor = await _dbContext.KichCos.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
-                    if (existingColor != null)
-                    {
-                        return null; // Trả về null để báo hiệu tên trùng
-                    }
-                    nv.Ten = ten;
-                    nv.TrangThai = 1;
+					if(nv.Ten.ToLower().Trim() == ten.ToLower().Trim())
+					{
+						nv.Ten = ten.ToUpper();
+						nv.TrangThai = trangthai;
+					}
+					else
+					{
+						var existingColor = await _dbContext.KichCos.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
+						if (existingColor != null)
+						{
+							return null; // Trả về null để báo hiệu tên trùng
+						}
+						nv.Ten = ten.ToUpper();
+						nv.TrangThai = trangthai;
+					}
                     _dbContext.KichCos.Update(nv);
                     _dbContext.SaveChanges();
                     return nv;
@@ -104,13 +112,12 @@ namespace AppAPI.Services
                 {
                     return null;
                 }
-                bool isHasHash = ma.StartsWith("#");
                 MauSac kc = new MauSac()
                 {
                     ID = Guid.NewGuid(),
-                    Ten = ten,
-                    Ma = isHasHash ? ma : $"#{Uri.EscapeDataString(ma)}",
-                    TrangThai = 1
+                    Ten = ten.ToUpper(),
+                    Ma = ma,
+                    TrangThai = trangthai,
                 };
                 _dbContext.MauSacs.Add(kc);
                 _dbContext.SaveChanges();
@@ -172,15 +179,23 @@ namespace AppAPI.Services
                 var nv = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.ID == id);
                 if (nv != null)
                 {
-                    var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
-                    if (existingColor != null)
-                    {
-                        return null;
-                    }
-                    bool isHasHash = ma.StartsWith("#");
-                    nv.Ten = ten;
-                    nv.Ma = isHasHash ? ma : $"#{Uri.EscapeDataString(ma)}";
-                    nv.TrangThai = 1;
+					if(nv.Ten.ToLower().Trim() == ten.ToLower().Trim())
+					{
+						nv.Ten = ten.ToUpper();
+						nv.Ma = ma;
+						nv.TrangThai = trangthai;
+					}
+					else
+					{
+						var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
+						if (existingColor != null)
+						{
+							return null;
+						}
+						nv.Ten = ten.ToUpper();
+						nv.Ma = ma;
+						nv.TrangThai = trangthai;
+					}
                     _dbContext.MauSacs.Update(nv);
                     _dbContext.SaveChanges();
                     return nv;
@@ -208,7 +223,7 @@ namespace AppAPI.Services
                 ChatLieu kc = new ChatLieu()
                 {
                     ID = Guid.NewGuid(),
-                    Ten = ten,
+                    Ten = ten.ToUpper(),
                     TrangThai = 1
                 };
                 _dbContext.ChatLieus.Add(kc);
@@ -267,13 +282,21 @@ namespace AppAPI.Services
                 var nv = await _dbContext.ChatLieus.FirstOrDefaultAsync(x => x.ID == id);
                 if (nv != null)
                 {
-                    var existingColor = await _dbContext.ChatLieus.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
+					if(nv.Ten.ToLower().Trim() == ten.ToLower().Trim())
+					{
+						nv.Ten = ten.ToUpper();
+						nv.TrangThai = trangthai;
+					}
+					else
+					{
+						var existingColor = await _dbContext.ChatLieus.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
                     if (existingColor != null)
                     {
                         return null; // Trả về null để báo hiệu tên trùng
                     }
-                    nv.Ten = ten;
-                    nv.TrangThai = 1;
+						nv.Ten = ten.ToUpper();
+						nv.TrangThai = trangthai;
+					}
                     _dbContext.ChatLieus.Update(nv);
                     _dbContext.SaveChanges();
                     return nv;

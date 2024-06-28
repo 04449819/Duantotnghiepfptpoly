@@ -2,12 +2,16 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ModalKichThuoc from "./ModalKichThuoc/ModalKichThuoc";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
+import { toast } from "react-toastify";
 const KichThuoc = () => {
   const [data, setdata] = useState([]);
-
+  const [loaduseE, setloaduseE] = useState(false);
   useEffect(() => {
     getdata();
-  }, []);
+  }, [loaduseE]);
   const getdata = async () => {
     try {
       const res = await axios.get(
@@ -35,6 +39,28 @@ const KichThuoc = () => {
       }
     } catch (error) {}
   };
+  const dispath = useDispatch();
+  const HandleOclickDelete = async (item) => {
+    dispath(SetLoading(true));
+    setTimeout(async () => {
+      try {
+        const res = await axios.delete(
+          `https://localhost:7095/api/KichCo/${item.id}`
+        );
+        if (res.data === true) {
+          toast.success("Xóa thành công");
+          dispath(SetLoading(false));
+          setloaduseE(!loaduseE);
+        } else {
+          toast.error("Xóa thất bại");
+          dispath(SetLoading(false));
+        }
+      } catch (error) {
+        toast.error("Xóa thất bại");
+        dispath(SetLoading(false));
+      }
+    }, 3000);
+  };
   return (
     <div className="QuanlyChatLieu">
       <div className="mb-5 ">
@@ -48,7 +74,7 @@ const KichThuoc = () => {
           <input
             type="text"
             className="form-control ms-3"
-            placeholder="Tên chất liệu"
+            placeholder="Tên kích thước"
             style={{ width: "36%" }}
             onChange={(event) => HandleOnChangeSearch(event)}
           />
@@ -57,7 +83,8 @@ const KichThuoc = () => {
 
       <div className="mt-5">
         <div className="mb-3 ms-4">
-          <Button variant="primary">Thêm kích thước</Button>
+          {/* <Button variant="primary">Thêm kích thước</Button> */}
+          <ModalKichThuoc loaduseE={loaduseE} setloaduseE={setloaduseE} />
         </div>
         <div
           className="w-100 mx-auto"
@@ -86,17 +113,15 @@ const KichThuoc = () => {
                       {item.trangThai === 1 ? "Đang sử dụng" : "Ngưng sử dụng"}
                     </td>
                     <td>
+                      <ModalKichThuoc
+                        item={item}
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
                       <Button
                         className="ms-2"
                         variant="danger"
-                        // onClick={() => HandleOclickDelete(item)}
-                      >
-                        Xóa
-                      </Button>
-                      <Button
-                        className="ms-2"
-                        variant="danger"
-                        // onClick={() => HandleOclickDelete(item)}
+                        onClick={() => HandleOclickDelete(item)}
                       >
                         Xóa
                       </Button>

@@ -73,6 +73,14 @@ namespace AppAPI.Controllers
 			return Ok(new { listLsp, totalPages });
 		}
 
+		[HttpGet("getAllLSP")]
+		public async Task<IActionResult> GetAllLSP()
+		{
+
+            var listLsp = await context.LoaiSPs.Where(p => p.TrangThai == 1).ToListAsync();
+			return Ok(listLsp);
+		}
+
 		[HttpDelete("delete/{id}")]
 		public async Task<IActionResult> DeleteLoaiSP(Guid id)
 		{

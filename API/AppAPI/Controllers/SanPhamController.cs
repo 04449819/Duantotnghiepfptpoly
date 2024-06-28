@@ -274,7 +274,7 @@ namespace AppAPI.Controllers
 			var pagedProducts = await _dbcontext.SanPhams
 				.Skip((currentPage - 1) * productsPerPage)
 				.Take(productsPerPage)
-				.Select(a => new Sanphamptview
+				.Select( a => new Sanphamptview
 				{
 					ID = a.ID,
 					Ten = a.Ten,
@@ -295,9 +295,11 @@ namespace AppAPI.Controllers
 								  DuongDan = c.DuongDan,
 								  TrangThai = c.TrangThai,
 								  IDChitietsanpham = c.IDChitietsanpham,
-							  }).ToList()
+							  }).ToList(),
+                    chatLieu =  _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+                    loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
 				})
-				.ToListAsync();
+				.OrderByDescending(p => p.TrangThai).ToListAsync();
 
 			// Prepare the paginated result
 			var sanPhamPhangTrang = new PhanTrangSanPham
@@ -355,7 +357,9 @@ namespace AppAPI.Controllers
 											  TrangThai = c.TrangThai,
 											  IDChitietsanpham = c.IDChitietsanpham
 										  })
-									.ToList()
+									.ToList(),
+							chatLieu = _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+							loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
 						})
 						.ToListAsync();
 
@@ -427,6 +431,7 @@ namespace AppAPI.Controllers
 
             return Ok(sanPhamPhangTrang);
         }
+
 		#endregion
 		#region ChitietSanPhamBanHangOflineKien
 		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]

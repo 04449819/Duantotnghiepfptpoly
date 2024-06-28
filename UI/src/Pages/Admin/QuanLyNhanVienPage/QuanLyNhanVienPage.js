@@ -4,7 +4,7 @@ import MyModalAdd from "./FormThemNhanVien";
 import MyModalEdit from "./FromEditNv";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Toast } from "react-bootstrap";
+import { Table, Toast } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 const QuanLyNhanVienPage = () => {
@@ -81,28 +81,17 @@ const QuanLyNhanVienPage = () => {
     }
   };
 
-  const handleClickSearch = async (event) => {
-    dispath(SetLoading(true));
+  const handleClickSearch = async (event) =>{
     event.preventDefault();
+    dispath(SetLoading(true));
     if (inputValue == "") {
       handleReload();
     } else {
       setTimeout(async () => {
         try {
-          let res;
-          // Kiểm tra nếu inputValue là số điện thoại (chỉ chứa số và có độ dài 10-11 ký tự)
-          const phoneRegex = /^[0-9]{10,11}$/;
-          if (phoneRegex.test(inputValue)) {
-            res = await axios.get(
-              `https://localhost:7095/api/NhanVien/TimKiemNhanVien?sdt=${inputValue}`
-            );
-          } else {
-            res = await axios.get(
-              `https://localhost:7095/api/NhanVien/TimKiemNhanVien?name=${inputValue}`
-            );
-          }
-          console.error("success", res.data);
-          setdata(res.data);
+         let res = await axios.get(`https://localhost:7095/api/NhanVien/TimKiemNhanVien?name=${inputValue}`);
+                console.error('success', res.data);
+                setdata(res.data);
         } catch (error) {
           dispath(SetLoading(false));
           console.error("Error fetching promotions:", error);
@@ -134,7 +123,7 @@ const QuanLyNhanVienPage = () => {
           <button onClick={handleShow}> + Thêm nhân viên</button>
         </div>
         <div className="table-container" onScroll={handleScroll}>
-          <table className="table">
+          <Table className="table"  striped bordered hover>
             <thead>
               <tr>
                 <th scope="col">STT</th>
@@ -142,8 +131,8 @@ const QuanLyNhanVienPage = () => {
                 <th scope="col">Email</th>
                 <th scope="col">Số điện thoại</th>
                 <th scope="col">Địa chỉ</th>
-                <th scope="col">Trạng thái</th>
                 <th scope="col">Vai trò</th>
+                <th scope="col">Trạng thái</th>
                 <th scope="col">Chức năng</th>
               </tr>
             </thead>
@@ -156,8 +145,8 @@ const QuanLyNhanVienPage = () => {
                     <td>{item.email}</td>
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
-                    <td>{item.trangThai == 0 ? "Đã nghỉ việc" : "Đang làm việc"}</td>
                     <td>Nhân Viên</td>
+                     <td   style={{ color: item.trangThai === 1 ? "green" : "red" }}>{ item.trangThai == 0 ? "Đã nghỉ việc" : "Đang làm việc"}</td>
                     {
                       <td>
                         <button onClick={() => handleClickEdit(item.id)} className="edit">Edit</button>
@@ -167,7 +156,7 @@ const QuanLyNhanVienPage = () => {
                 );
               })}
             </tbody>
-          </table>
+          </Table>
         </div>
         <MyModalAdd show={showModal} handleSuccess={handleReload} handleClose={handleClose}/>
         <MyModalEdit show={showModalEdit}handleSuccess={handleReload}handleClose={handleCloseEdit}initialFormData={formData}/>

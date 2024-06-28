@@ -7,6 +7,7 @@ import MyModalAdd from "./FormThem";
 import MyModalEdit from "./FormEdit";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+import { Table } from "react-bootstrap";
 const QuanLyKhachHang = () => {
   const dispath = useDispatch();
 
@@ -167,7 +168,7 @@ const QuanLyKhachHang = () => {
           <button onClick={handleShow}> + Thêm khách hàng</button>
         </div>
         <div className="table-container" onScroll={handleScroll}>
-          <table className="table">
+          <Table className="table" striped bordered hover>
             <thead>
               <tr>
                 <th scope="col">STT</th>
@@ -194,7 +195,7 @@ const QuanLyKhachHang = () => {
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
                     <td>{item.diemTich == null ? "0" : item.diemTich}</td>
-                    <td>
+                    <td style={{ color: item.trangThai === 1 ? "green" : "red" }}>
                       {item.trangThai == null || item.trangThai === 0
                         ? "không hoạt đông"
                         : "đang hoạt động"}
@@ -214,7 +215,7 @@ const QuanLyKhachHang = () => {
                 );
               })}
             </tbody>
-          </table>
+          </Table>
         </div>
         <MyModalAdd
           show={showModal}

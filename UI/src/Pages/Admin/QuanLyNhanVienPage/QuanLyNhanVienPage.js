@@ -44,6 +44,7 @@ const QuanLyNhanVienPage = () => {
       if (SoTrang == 1) {
         console.log("sotrang:", SoTrang);
         setdata(res.data.item1);
+        console.log("data",res.data);
       } else {
         setdata((prevData) => [...prevData, ...res.data.item1]);
       }
@@ -155,8 +156,8 @@ const QuanLyNhanVienPage = () => {
                     <td>{item.email}</td>
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
-                    <td>{item.trangThai == 0 ? "không hoạt động" : "đang hoạt động"}</td>
-                    <td>{item.vaitro == 0 ? "Nhân Viên" : " Nghỉ việc"}</td>
+                    <td>{item.trangThai == 0 ? "Đã nghỉ việc" : "Đang làm việc"}</td>
+                    <td>Nhân Viên</td>
                     {
                       <td>
                         <button onClick={() => handleClickEdit(item.id)} className="edit">Edit</button>

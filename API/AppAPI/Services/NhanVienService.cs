@@ -110,7 +110,7 @@ namespace AppAPI.Services
                 nv.PassWord = password;
                 nv.SDT = sdt;
                 nv.DiaChi = diachi;
-                nv.TrangThai = 1;
+                nv.TrangThai = trangthai;
                 nv.IDVaiTro = vt.ID;
                 _dbContext.NhanViens.Add(nv);
                 _dbContext.SaveChanges();

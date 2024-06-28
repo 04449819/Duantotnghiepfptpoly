@@ -262,6 +262,8 @@ namespace AppAPI.Controllers
 		}
 		#endregion
 
+
+
 		#region SanPhamBanHangOflineKien
 		[HttpGet("getAllSPBanHang")]
 		public async Task<IActionResult> GetAllSanPhamBanHang(int currentPage, int productsPerPage)
@@ -443,20 +445,28 @@ namespace AppAPI.Controllers
 			var DSCTSP = await _dbcontext.ChiTietSanPhams
                 .Where(x => x.IDSanPham == idsp).ToListAsync();
 
-            var dsctspview =  (from a in DSCTSP
-                             select new
-                             {
-                                 id = a.ID,
-								 idsp = a.IDSanPham,
-								 tenchatlieu = Tenchatlieu,
-                                 GiaBan = a.GiaBan,
-                                 SoLuong = a.SoLuong,
-                                 khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
-                                 MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
-                                 kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b=>b.Ten).FirstOrDefault(),
-                                 img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
-                                 trangthai = true
-							 }).ToList();
+            var dsctspview = (from a in DSCTSP
+                              select new
+                              {
+                                  id = a.ID,
+                                  idsp = a.IDSanPham,
+                                  tenchatlieu = Tenchatlieu,
+                                  GiaBan = a.GiaBan,
+                                  SoLuong = a.SoLuong,
+								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
+								  khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
+											   join km in _dbcontext.KhuyenMais
+											   on b.IdKhuyenMai equals km.ID
+											   where b.IdChiTietSanPham == a.ID
+													 && km.TrangThai == 1
+													 && km.NgayApDung < DateTime.Today
+													 && DateTime.Today < km.NgayKetThuc
+											   select km.GiaTri).FirstOrDefault(),
+								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
+                                  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
+                                  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
+                                  trangthai = true
+                              }).ToList();
             return Ok( dsctspview);
 		}
 		[HttpGet("GetChiTietSanPhamByIDKM")]
@@ -466,8 +476,15 @@ namespace AppAPI.Controllers
 			//var Tenchatlieu = await _dbcontext.ChatLieus
 			//	.Where(c => c.ID == idchatlieu).Select(p => p.Ten).FirstOrDefaultAsync();
 
-			var DSCTSP = await _dbcontext.ChiTietSanPhams
-				.Where(x => x.IDKhuyenMai == id).ToListAsync();
+			//var DSCTSP = await _dbcontext.ChiTietSanPhams
+			//	.Where(x => x.IDKhuyenMai == id).ToListAsync();
+			var DSCTSP = await (from a in _dbcontext.KhuyenMaiCTSanPhams.Where(p => p.IdKhuyenMai == id)
+
+								join b in _dbcontext.ChiTietSanPhams on a.IdChiTietSanPham equals b.ID
+                                select b)
+			.ToListAsync();
+
+			
 
 			var dsctspview = (from a in DSCTSP
 							  select new
@@ -478,7 +495,15 @@ namespace AppAPI.Controllers
 								  tenchatlieu = _dbcontext.ChatLieus.FirstOrDefault(p => p.ID == _dbcontext.SanPhams.FirstOrDefault(b => b.ID == a.IDSanPham).IDChatLieu).Ten,
 								  GiaBan = a.GiaBan,
 								  SoLuong = a.SoLuong,
-								  khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai && b.TrangThai == 1).Select(b => b.GiaTri).FirstOrDefault(),
+								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai && b.TrangThai == 1).Select(b => b.GiaTri).FirstOrDefault(),
+								  khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
+														   join km in _dbcontext.KhuyenMais
+														   on b.IdKhuyenMai equals km.ID
+														   where b.IdChiTietSanPham == a.ID
+																 && km.TrangThai == 1
+																 && km.NgayApDung < DateTime.Today
+																 && DateTime.Today < km.NgayKetThuc
+														   select km.GiaTri).FirstOrDefault(),
 								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
 								  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
 								  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),

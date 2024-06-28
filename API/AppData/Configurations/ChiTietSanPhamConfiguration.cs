@@ -23,7 +23,6 @@ namespace AppData.Configurations
             builder.HasOne(x => x.MauSac).WithMany(x => x.ChiTietSanPhams).HasForeignKey(x => x.IDMauSac);
             builder.HasOne(x => x.KichCo).WithMany(x => x.ChiTietSanPhams).HasForeignKey(x => x.IDKichCo);
             builder.HasOne(x => x.SanPham).WithMany(x => x.ChiTietSanPhams).HasForeignKey(x => x.IDSanPham);
-            builder.HasOne(x => x.KhuyenMai).WithMany(x => x.ChiTietSanPhams).HasForeignKey(x => x.IDKhuyenMai);
         }
     }
 }

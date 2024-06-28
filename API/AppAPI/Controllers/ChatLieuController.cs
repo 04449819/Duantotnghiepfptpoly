@@ -18,7 +18,7 @@ namespace AppAPI.Controllers
             service = new QlThuocTinhService();
             _dbContext = new AssignmentDBContext();
         }
-        #region KichCo
+        #region chatlieu
         [HttpGet("GetAllChatLieu")]
         public async Task<IActionResult> GetAllChatLieu()
         {

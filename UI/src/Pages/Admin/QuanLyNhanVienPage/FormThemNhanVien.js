@@ -180,8 +180,8 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
         required
     >
         <option value="">Chọn Trang thái</option>
-        <option value="0">Đang hoạt động</option>
-        <option value="1">Không hoạt động</option>
+        <option value="0">Đã nghỉ việc</option>
+        <option value="1">Đang làm việc</option>
     </select>
 </div>
 
@@ -196,7 +196,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           required
         />
       </div> */}
-      <div className="form-group">
+      {/* <div className="form-group">
        <label className='label' htmlFor="vaitro"> Vai trò:</label>
         <select className='text_input'
         id="vaitro"
@@ -209,7 +209,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
         <option value="0">Nhân Viên</option>
         <option value="1">Nghỉ việc</option>
     </select>
-</div>
+</div> */}
       {/* <div div className="form-group">
         <label className='label' htmlFor="vaitro"> Vai trò:</label>
         <input className='text_input'

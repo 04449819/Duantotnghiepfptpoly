@@ -20,12 +20,7 @@ namespace AppAPI.Controllers
             context = new AssignmentDBContext();
         }
         #region LoaiSP
-        [HttpGet("getAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            var listLsp = await _loaiSPService.GetAllLoaiSP();
-            return Ok(listLsp);
-        }
+   
         [Route("TimKiemLoaiSP")]
         [HttpGet]
         public async Task<IActionResult> GetAllLoaiSP(string name)
@@ -50,12 +45,7 @@ namespace AppAPI.Controllers
             return Ok(loaiSP);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteLoaiSP(Guid id)
-        {
-            var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
-            return Ok();
-        }
+   
 
         [HttpGet]
         public async Task<IActionResult> GetLoaiSpTheoCha(Guid id)
@@ -70,13 +60,64 @@ namespace AppAPI.Controllers
             }
             return Ok(listLoaiSpTheoCha);
         }
-        [HttpPost]
-        public async Task<IActionResult> AddLoaiSPCha(Guid idLoaiSPCha, string ten, int trangthai)
-        {
-            var tr = _loaiSPService.AddSpCha(idLoaiSPCha, ten, trangthai);
-            if (tr == null) return BadRequest();
-            return Ok(tr);
-        }
-        #endregion
-    }
+
+		#endregion
+
+		#region LoaiSpKien
+		[HttpGet("getAll")]
+		public async Task<IActionResult> GetAll(int page, int totalPage, string? tenLoaiSP)
+		{
+			var totalProducts = await context.LoaiSPs.CountAsync();
+			int totalPages = (int)Math.Ceiling((double)totalProducts / totalPage);
+			var listLsp = await _loaiSPService.GetAllLoaiSP( page,  totalPage, tenLoaiSP);
+			return Ok(new { listLsp, totalPages });
+		}
+
+		[HttpDelete("delete/{id}")]
+		public async Task<IActionResult> DeleteLoaiSP(Guid id)
+		{
+			var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
+			return Ok();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddLoaiSPCha(string ten, int trangthai)
+		{
+			var tr = await _loaiSPService.AddSpCha(ten, trangthai);
+			if (tr == null) return BadRequest();
+			return Ok(tr);
+		}
+
+		[HttpPut("updateLoaiSP")]
+		public async Task<IActionResult> UpdateLoaiSP(Guid id,string name,int trangThai)
+		{
+            var dt = await context.LoaiSPs.FindAsync(id);
+			if(dt != null)
+            {
+				if(dt.Ten.ToLower().Trim() == name.ToLower().Trim())
+				{
+					dt.Ten = name.ToUpper();
+				}
+				else
+				{
+                    var check = context.LoaiSPs.FirstOrDefault(p => p.Ten.ToLower().Trim() == name.ToLower().Trim());
+					if(check != null)
+                    {
+                        return NotFound("tên đã tồn tại");
+					}
+					else
+					{
+						dt.Ten = name.ToUpper();
+					}
+				}
+				dt.TrangThai = trangThai;
+				context.LoaiSPs.Update(dt);
+				await context.SaveChangesAsync();
+                return Ok("Update thành công");
+            }
+			return NotFound("không tìm thấy loại sản phẩm");
+		}
+		#endregion
+
+	}
 }

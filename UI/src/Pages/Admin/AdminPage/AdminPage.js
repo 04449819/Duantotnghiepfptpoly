@@ -13,7 +13,7 @@ const AdminPage = () => {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 2000,
+          zIndex: 2001,
         }}
         height={4}
         loading={loading}
@@ -21,6 +21,7 @@ const AdminPage = () => {
         width={1550}
       />
       <ReactSideBar />
+      {loading && <div className="overlay"></div>}
     </div>
   );
 };

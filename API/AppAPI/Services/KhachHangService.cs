@@ -117,11 +117,7 @@ namespace AppAPI.Services
 
         }
 
-        public KhachHang GetBySDT(string sdt)
-        {
-            return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt || c.Email == sdt);
-        }
-
+     
         public List<KhachHang> GetKMByName(string Ten)
         {
             throw new NotImplementedException();
@@ -152,6 +148,13 @@ namespace AppAPI.Services
 		//    }
 		//    return false;
 		//}
+
+		#region getbyKhachhangEmailorSĐTkiên
+		public KhachHang GetBySDT(string sdt)
+		{
+			return _dbContext.KhachHangs.FirstOrDefault(c => c.SDT == sdt || c.Email == sdt);
+		}
+		#endregion
 
 	}
 }

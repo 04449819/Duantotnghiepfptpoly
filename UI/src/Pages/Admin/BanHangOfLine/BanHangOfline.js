@@ -6,6 +6,7 @@ import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
 import HoaDon from "./HoaDon/HoaDon";
 import { useDispatch, useSelector } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+import MyModalAdd from "../QuanLyKhachHang/FormThem";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -13,13 +14,14 @@ const BanHangOfline = () => {
   const [email, SetEmail] = useState("");
   const [address, setAddress] = useState("");
   const [inputreadOnly, setinputreadOnly] = useState(true);
-  const [coler, setcoler] = useState("white");
-  const [btnSearch, setbtnSearch] = useState(false);
   const [soSP, setSoSP] = useState(0);
   const [TongGia, setTongGia] = useState(0);
   const [giabandau, setGiaBandau] = useState(0);
   // const [datasp, setData] = useState([]);
-  let inputtrue = !inputreadOnly;
+
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   const dispath = useDispatch();
 
@@ -31,10 +33,10 @@ const BanHangOfline = () => {
           `https://localhost:7095/api/KhachHang/getBySDT?sdt=${search}`
         );
         if (res.status === 200) {
-          setName(res.data.ten);
-          setPhone(res.data.sdt);
+          setName(res.data.khachhang.ten);
+          setPhone(res.data.khachhang.sdt);
           setAddress(res.data.diaChi);
-          SetEmail(res.data.email);
+          SetEmail(res.data.khachhang.email);
           dispath(SetLoading(false));
         } else {
           toast.error("Số điện thoại or email chưa được đăng kí");
@@ -54,103 +56,7 @@ const BanHangOfline = () => {
       }
     }, 3000);
   };
-  const HandleOnclickAdd = async () => {
-    if (inputreadOnly === true) {
-      setcoler("rgb(107, 101, 101)");
-      setinputreadOnly(inputtrue);
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      setbtnSearch(true);
-    } else {
-      const pass = Math.floor(Math.random(100) * 1000000000).toString();
-      const KhachHang = {
-        idKhachHang: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        email: email,
-        ten: name,
-        sdt: phone,
-        password: pass,
-        confirmPassword: pass,
-        diemTich: 0,
-        trangThai: 0,
-        gioiTinh: 0,
-        ngaySinh: "",
-        diaChi: "",
-      };
-      if (name === "") {
-        toast.error("tên không hợp lệ");
-        setName("");
-        return;
-      }
-      if (!validatesdt(phone)) {
-        toast.error("Số điện thoại không hợp lệ");
-        setPhone("");
-        return;
-      }
-      if (!validateEmail(email)) {
-        toast.error("email không hợp lệ");
-        SetEmail("");
-        return;
-      }
-      dispath(SetLoading(true));
-      setTimeout(async () => {
-        try {
-          const res = await axios.post(
-            "https://localhost:7095/api/KhachHang/PostKHView1",
-            KhachHang
-          );
-          console.log(res);
-          if (res.data === true) {
-            toast.success("Thêm khách hàng thành công");
-            setbtnSearch(false);
-            dispath(SetLoading(false));
-          }
-          if (res.data === false) {
-            toast.error("Tài khoản đã tồn tại");
-            dispath(SetLoading(false));
-            return;
-          }
-        } catch (error) {
-          toast.error("lỗi hệ thống");
-          setbtnSearch(false);
-          dispath(SetLoading(false));
-        }
-        setName("");
-        setPhone("");
-        setAddress("");
-        SetEmail("");
-        setinputreadOnly(inputtrue);
-        setcoler("white");
-      }, 3000);
-    }
-  };
 
-  const HandleOnclickclose = () => {
-    setName("");
-    setPhone("");
-    setAddress("");
-    SetEmail("");
-    setinputreadOnly(true);
-    setcoler("white");
-    setbtnSearch(false);
-  };
-
-  const validatesdt = (sdt) => {
-    return String(sdt)
-      .toLowerCase()
-      .match(/^(0)([0-9]){9,9}$/);
-  };
-
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
-  //soSP, setSoSP
-  // const [TongGia, setTongGia] = useState(0);
   const data = useSelector((item) => item.sanPhamGioHang.SanPhamGioHang);
   useEffect(() => {
     if (data.length > 0) {
@@ -164,8 +70,6 @@ const BanHangOfline = () => {
       setSoSP(0);
     }
   }, [data]);
-
-  // const Getdata = async (inputsearch) => {
   //   try {
   //     const res = await axios.get(
   //       `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
@@ -210,7 +114,6 @@ const BanHangOfline = () => {
                   type="button"
                   className="btn btn-primary"
                   onClick={HandleOnclickSearchKH}
-                  disabled={btnSearch}
                   tabIndex="-1"
                 >
                   Tìm kiếm
@@ -219,7 +122,7 @@ const BanHangOfline = () => {
                   <h3>Thông tin khách hàng</h3>
                 </div>
               </div>
-              <div style={{ backgroundColor: coler }}>
+              <div>
                 <div className="row">
                   <div className="col-5">
                     <input
@@ -253,23 +156,17 @@ const BanHangOfline = () => {
                     onChange={(event) => setPhone(event.target.value)}
                     readOnly={inputreadOnly}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={HandleOnclickAdd}
-                    tabIndex="-1"
-                  >
-                    Thêm tài khoản mới
-                  </button>
-                  <button
-                    style={{ marginLeft: "20px" }}
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={HandleOnclickclose}
-                    tabIndex="-1"
-                  >
-                    Hủy đăng kí
-                  </button>
+                  <div className="ThemKhachHang">
+                    <button
+                      className="btn btn-primary"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleShow();
+                      }}
+                    >
+                      + Thêm khách hàng
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <input
@@ -317,6 +214,11 @@ const BanHangOfline = () => {
           <HoaDon />
         </div>
       </div>
+      <MyModalAdd
+        show={showModal}
+        // handleSuccess={handleReload}
+        handleClose={handleClose}
+      />
     </div>
   );
 };

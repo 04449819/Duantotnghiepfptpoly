@@ -50,7 +50,7 @@ namespace AppAPI.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(nv);
         }
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]

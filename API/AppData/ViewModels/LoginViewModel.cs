@@ -23,5 +23,6 @@ namespace AppData.ViewModels
         public int? vaiTro { get; set; }
         public bool IsAccountLocked { get; set; } // New property for locked account
         public string Message { get; set; }
-    }
+        public string? chucNang { get; set; }
+	}
 }

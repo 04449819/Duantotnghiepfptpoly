@@ -223,6 +223,7 @@ namespace AppAPI.Services
                             Ten = nv.Ten,
                             DiaChi = nv.DiaChi,
                             SDT = nv.SDT,
+                            chucNang = nv.VaiTro != null ? nv.VaiTro.Ten : "",
                             vaiTro = 0
                         };
                     }

@@ -98,7 +98,14 @@ const QuanLyKhachHang = () => {
   }else{
     setTimeout( async () => {
       try {
-        let res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
+        let res;
+        // Kiểm tra nếu inputValue là số điện thoại (chỉ chứa số và có độ dài 10-11 ký tự)
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (phoneRegex.test(inputValue)) {
+            res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?sdt=${inputValue}`);
+        } else {
+          res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
+        }
         console.error('success', res.data);
         setdata(res.data);
          dispath(SetLoading(false));

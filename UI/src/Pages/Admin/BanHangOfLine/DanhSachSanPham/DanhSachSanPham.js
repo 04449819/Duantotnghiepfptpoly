@@ -37,7 +37,7 @@ const DanhSachSanPham = () => {
   };
   const handleOnChangeSoLuong = (e, item) => {
     const newSoLuong = parseInt(e.target.value);
-    if (newSoLuong > 0) {
+    if (newSoLuong >= 1) {
       dispatch(UpdateSoLuong({ soluong: newSoLuong, idctsp: item.idCTSP }));
       // Gửi cập nhật số lượng lên store Redux
       // Bạn có thể gửi action để cập nhật số lượng cho sản phẩm cụ thể

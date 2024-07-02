@@ -13,8 +13,8 @@ namespace AppData.Models
 		public Guid IdKhuyenMai	 { get; set;}
 		public Guid IdChiTietSanPham { get; set;}
 		[ForeignKey("IdKhuyenMai")]
-		public virtual KhuyenMai khuyenMai { get; set; }
+		public virtual KhuyenMai? khuyenMai { get; set; }
 		[ForeignKey("IdChiTietSanPham")]
-		public virtual ChiTietSanPham chiTietSanPham { get; set; }
+		public virtual ChiTietSanPham? chiTietSanPham { get; set; }
 	}
 }

@@ -15,6 +15,7 @@ namespace AppData.Configurations
             builder.Property(x => x.TrangThai).HasColumnType("int");
             builder.HasOne(x => x.LoaiSP).WithMany(x => x.SanPhams).HasForeignKey(x => x.IDLoaiSP);
             builder.HasOne(x => x.ChatLieu).WithMany(x => x.SanPhams).HasForeignKey(x => x.IDChatLieu);
-        }
+            builder.HasOne(p => p.CoAo).WithMany(p => p.SanPhams).HasForeignKey(p => p.idCoAo);
+		}
     }
 }

@@ -271,7 +271,7 @@ namespace AppAPI.Controllers
 			int totalProducts = await _dbcontext.SanPhams.CountAsync();
 			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
 
-			var pagedProducts = await _dbcontext.SanPhams
+			var pagedProducts = await _dbcontext.SanPhams.Where(p => p.TrangThai != 0)
 				.Skip((currentPage - 1) * productsPerPage)
 				.Take(productsPerPage)
 				.Select( a => new Sanphamptview
@@ -298,6 +298,52 @@ namespace AppAPI.Controllers
 							  }).ToList(),
                     chatLieu =  _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
                     loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
+				})
+				.OrderByDescending(p => p.TrangThai).ToListAsync();
+
+			// Prepare the paginated result
+			var sanPhamPhangTrang = new PhanTrangSanPham
+			{
+				sanPham = pagedProducts,
+				SoTrang = totalPages
+			};
+
+			return Ok(sanPhamPhangTrang);
+		}
+
+		[HttpGet("getAllQLSP")]
+		public async Task<IActionResult> GetAllQLSanPham(int currentPage, int productsPerPage)
+		{
+			int totalProducts = await _dbcontext.SanPhams.CountAsync();
+			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
+
+			var pagedProducts = await _dbcontext.SanPhams
+				.Skip((currentPage - 1) * productsPerPage)
+				.Take(productsPerPage)
+				.Select(a => new Sanphamptview
+				{
+					ID = a.ID,
+					Ten = a.Ten,
+					Ma = a.Ma,
+					MoTa = a.MoTa,
+					TrangThai = a.TrangThai,
+					giaBan = _dbcontext.ChiTietSanPhams
+							   .Where(p => p.IDSanPham == a.ID)
+							   .Select(p => p.GiaBan)
+							   .FirstOrDefault(),
+					IDLoaiSP = a.IDLoaiSP,
+					IDChatLieu = a.IDChatLieu,
+					anhs = _dbcontext.ChiTietSanPhams
+							  .Where(p => p.IDSanPham == a.ID)
+							  .Join(_dbcontext.Anhs, b => b.ID, c => c.IDChitietsanpham, (b, c) => new Anh
+							  {
+								  ID = c.ID,
+								  DuongDan = c.DuongDan,
+								  TrangThai = c.TrangThai,
+								  IDChitietsanpham = c.IDChitietsanpham,
+							  }).ToList(),
+					chatLieu = _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+					loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
 				})
 				.OrderByDescending(p => p.TrangThai).ToListAsync();
 

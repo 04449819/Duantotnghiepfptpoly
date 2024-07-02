@@ -397,13 +397,13 @@ namespace AppAPI.Services
                               KhachHang = kh != null ? kh.Ten : "Khách lẻ",
                               SDTKH = kh != null ? kh.SDT : null,
                               SDTnhanhang = hd.SDT != null ? hd.SDT : "null",
-                              PTTT = hd.PhuongThucThanhToan,
+                              PTTT = context.phuongThucThanhToans.Find(hd.phuongThucTTID).ten,
                               ThoiGian = hd.NgayTao,
                               //                              GiamGia = (from vc in context.Vouchers
                               //                                         where vc.ID == hd.IDVoucher
                               //                                         select vc.TrangThai == 0 ? vc.GiaTri : context.ChiTietHoaDons.Where(c => c.IDHoaDon == hd.ID).ToList().AsEnumerable().Sum(c => c.DonGia * c.SoLuong) / 100 * vc.GiaTri)
                               //.FirstOrDefault(),
-                              KhachDaTra = (hd.TrangThaiGiaoHang == 6 || hd.PhuongThucThanhToan == "VNPay" && hd.TrangThaiGiaoHang != 7) == true ? hd.TongTien : 0,
+                              KhachDaTra = (hd.TrangThaiGiaoHang == 6 || context.phuongThucThanhToans.Find(hd.phuongThucTTID).ten == "VNPay" && hd.TrangThaiGiaoHang != 7) == true ? hd.TongTien : 0,
                               TongTienHang = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hd.ID).ToList().AsQueryable().Sum(c => c.DonGia * c.SoLuong),
                               LoaiHD = hd.LoaiHD,
                               TrangThai = hd.TrangThaiGiaoHang,

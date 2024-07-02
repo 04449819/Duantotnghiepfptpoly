@@ -95,3 +95,39 @@
     z-index: 5;
   }
 }
+
+.hover-container {
+  position: relative;
+  width: 55px;
+  height: 55px;
+}
+
+.hover-container:hover .delete-button,
+.hover-container:hover .info-button {
+  display: block;
+}
+
+.delete-button,
+.info-button {
+  display: none;
+  position: absolute;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.delete-button {
+  top: 15px;
+  right: 0;
+  width: 45%;
+}
+
+.info-button {
+  width: 45%;
+  top: 15px;
+  left: 0;
+  background-color: blue;
+}

@@ -13,8 +13,10 @@ namespace AppData.Models
         
         public int TiLeTieuDiem { get; set; }
         [Required(ErrorMessage = "mời bạn chọn trạng thái")]
-        public int TrangThai { get; set; }//0 là ko sử dụng,1 là chỉ tích hoặc tiêu, 2 là vừa tích vừa tiêu.
+		public DateTime ngayBatDau { get; set; }
+		public DateTime? ngayKetThuc { get; set; }
+		public int TrangThai { get; set; }//0 là ko sử dụng,1 là chỉ tích hoặc tiêu, 2 là vừa tích vừa tiêu.
        
-        public virtual IEnumerable<LichSuTichDiem> LichSuTichDiems { get; set; }
+        public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
     }
 }

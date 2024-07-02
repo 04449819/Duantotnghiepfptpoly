@@ -7,12 +7,8 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import AddLoaiSP from "./QuanLyLoaiSanPham/AddLoaiSp/AddLoaiSp";
 import ModalChatLieu from "./QuanLyChatLieu/ModalChatLieu/ModalChatLieu";
-import PreviewIMG from "./PreviewIMG/PreviewIMG";
-import { toast } from "react-toastify";
-import { toBeDisabled } from "@testing-library/jest-dom/matchers";
 
-const ModalQLSP = (props) => {
-  const [show, setShow] = useState(false);
+const UpdateSanPham = (props) => {
   const [validated, setValidated] = useState(false);
   const [dataKT, setdataKT] = useState([]);
   const [dataMS, setdataMS] = useState([]);
@@ -23,9 +19,7 @@ const ModalQLSP = (props) => {
     ma: "",
     mota: "",
     loaisp: "",
-    tenloaisp: "",
     chatlieu: "",
-    tenchatlieu: "",
   });
   const [TTCTSP, setTTCTSP] = useState([]);
   //   const [loaduseE, setloaduseE] = useState(false);
@@ -46,6 +40,7 @@ const ModalQLSP = (props) => {
       const res = await axios.get(
         "https://localhost:7095/api/KichCo/GetAllKichCo"
       );
+      console.log(res.data);
       if (res.data.length > 0) {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
@@ -60,6 +55,7 @@ const ModalQLSP = (props) => {
       const res = await axios.get(
         "https://localhost:7095/api/MauSac/GetAllMauSac"
       );
+      console.log(res.data);
       if (res.data.length > 0) {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
@@ -74,6 +70,7 @@ const ModalQLSP = (props) => {
       const res = await axios.get(
         "https://localhost:7095/api/ChatLieu/GetAllChatLieu"
       );
+      console.log(res.data);
       if (res.data.length > 0) {
         setdataCL(res.data);
       }
@@ -84,6 +81,7 @@ const ModalQLSP = (props) => {
       const res = await axios.get(
         "https://localhost:7095/api/LoaiSP/getAllLSP"
       );
+      console.log(res.data);
       if (res.data.length > 0) {
         setdataLSP(res.data);
       }
@@ -110,8 +108,9 @@ const ModalQLSP = (props) => {
     setdataMS(updatedData);
   };
 
-  const handleOnChange = (event, item) => {
+  const HandleOnchange = (event, item) => {
     const { name, value, type, checked } = event.target;
+    console.log(name, value);
     const dataTam = TTCTSP.map((item1) => {
       if (item1.id === item.id) {
         return {
@@ -143,7 +142,7 @@ const ModalQLSP = (props) => {
           return dataMS
             .filter((item1) => item1.check)
             .map((item1) => ({
-              id: Math.floor(Math.random() * 100000) + 1,
+              id: Math.floor(Math.random() * 10000) + 1,
               masanpham: TTSanPham.ma,
               mactsp: "",
               soluong: 1,
@@ -151,10 +150,7 @@ const ModalQLSP = (props) => {
               check: true,
               kichthuoc: item.ten,
               mausac: item1.ten,
-              mota: TTSanPham.mota,
-              loaisp: TTSanPham.loaisp,
-              chatlieu: TTSanPham.chatlieu,
-              img: [], // Added missing property img
+              img: "", // Added missing property img
             }));
         }
         return [];
@@ -164,12 +160,7 @@ const ModalQLSP = (props) => {
         const dataFake = dataTam.map((item1) => {
           const existingItem = TTCTSP.find(
             (item) =>
-              item.kichthuoc === item1.kichthuoc &&
-              item.mausac === item1.mausac &&
-              item.masanpham === item1.masanpham &&
-              item.mota === item1.mota &&
-              item.loaisp === item1.loaisp &&
-              item.chatlieu === item1.chatlieu
+              item.kichthuoc === item1.kichthuoc && item.mausac === item1.mausac
           );
           return existingItem ? existingItem : item1;
         });
@@ -182,66 +173,12 @@ const ModalQLSP = (props) => {
     setValidated(true); // Set form validated state to true
   };
 
-  const handleOnClickPriview = (p) => {
-    setPreview(p.preview);
-    setShow(true);
-  };
-
-  const handleDivClick = (item) => {
-    document.getElementById(item.id).click();
-  };
-
-  const [preview, setPreview] = useState("");
-
-  const handleFileChange = (event, item) => {
-    const file = event.target.files[0];
-    try {
-      const dataTam = TTCTSP.map((p) => {
-        if (p.id === item.id) {
-          // Nếu img là mảng, ta thêm một đối tượng mới vào mảng này
-          const updatedImg = [
-            ...(p.img || []),
-            {
-              file: file,
-              preview: URL.createObjectURL(file),
-              id: Math.floor(Math.random() * 100000) + 1,
-            },
-          ];
-          return {
-            ...p,
-            img: updatedImg,
-          };
-        }
-        return p;
-      });
-      setTTCTSP(dataTam);
-    } catch (error) {
-      toast.error("Độ phân giải quá lớn... Tải lên thất bại!");
-    }
-  };
-
-  const handleDelete = (image, item) => {
-    // Thực hiện logic xóa ảnh ở đây
-    const datatam = TTCTSP.map((p) => {
-      if (p.id === item.id) {
-        const updatedImages = p.img.filter((img) => img.id !== image.id);
-        return { ...p, img: updatedImages };
-      }
-      return p;
-    });
-    setTTCTSP(datatam);
-  };
-
   return (
     <div className="w-100 mx-auto">
       <div className="text-center">
         <h2>Thêm sản phẩm</h2>
       </div>
-      <div className="w-25 ms-5">
-        <Button variant="secondary" onClick={HandleOnclickBack}>
-          Về trang QLSP
-        </Button>
-      </div>
+
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <div className="w-50 mx-auto">
           <h4>Thông tin sản phẩm</h4>
@@ -304,11 +241,7 @@ const ModalQLSP = (props) => {
                 required
                 value={TTSanPham.loaisp}
                 onChange={(event) =>
-                  setTTSanPham({
-                    ...TTSanPham,
-                    loaisp: event.target.value,
-                    tenloaisp: event.target.selectedOptions[0].text,
-                  })
+                  setTTSanPham({ ...TTSanPham, loaisp: event.target.value })
                 }
               >
                 <option value="">Loại sản phẩm</option>
@@ -326,11 +259,7 @@ const ModalQLSP = (props) => {
                 required
                 value={TTSanPham.chatlieu}
                 onChange={(event) =>
-                  setTTSanPham({
-                    ...TTSanPham,
-                    chatlieu: event.target.value,
-                    tenchatlieu: event.target.selectedOptions[0].text,
-                  })
+                  setTTSanPham({ ...TTSanPham, chatlieu: event.target.value })
                 }
               >
                 <option value="">Chất liệu</option>
@@ -346,6 +275,34 @@ const ModalQLSP = (props) => {
           <hr />
           <h4>Thông tin chi tiết sản phẩm</h4>
           <hr />
+          {/* <Row className="mb-3">
+            <div as={Col} className="w-25">
+              <Form.Select aria-label="Default select example" required>
+                <option value="">Kích thước</option>
+                {dataKT.length > 0 &&
+                  dataKT.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.ten}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+            <div as={Col} className="w-25">
+              <Form.Select aria-label="Default select example" required>
+                <option value="">Màu sắc</option>
+                {dataMS.length > 0 &&
+                  dataMS.map((item) => (
+                    <option
+                      //   style={{ backgroundColor: item.ma }}
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.ten}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+          </Row> */}
           <div
             style={{
               width: "700px",
@@ -413,31 +370,24 @@ const ModalQLSP = (props) => {
             </div>
           </div>
         </div>
-        <div className="w-25 ms-auto my-4">
-          <Button type="submit">Xác nhận</Button>
+        <div className="w-25 ms-auto">
+          <Button type="submit">Submit form</Button>
         </div>
       </Form>
       <hr />
-      <div className="d-flex">
-        <div className="w-25">Tên sản phẩm: {TTSanPham.ten}</div>
-        <div className="w-25">Mã sản phẩm: {TTSanPham.ma}</div>
-        <div className="w-25">Loại sản phẩm: {TTSanPham.tenloaisp}</div>
-        <div className="w-25">Chất liệu sản phẩm: {TTSanPham.tenchatlieu}</div>
-      </div>
-      <hr />
-      <h3 className="text-center my-4">Danh sách sản phẩm</h3>
       <div>
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th style={{ width: "100px" }}>Check</th>
-              <th style={{ width: "100px" }}>STT</th>
+              <th>Check</th>
+              <th>STT</th>
+              <th>Mã sản phẩm</th>
               <th style={{ width: "150px" }}>Mã chi tiết sản phẩm</th>
-              <th style={{ width: "130px" }}>Màu sắc</th>
-              <th style={{ width: "130px" }}>Kích thước</th>
+              <th>Màu sắc</th>
+              <th>Kích thước</th>
               <th style={{ width: "130px" }}>Số lượng</th>
               <th style={{ width: "150px" }}>Giá bán</th>
-              <th style={{ width: "200px" }}>img</th>
+              <th style={{ width: "150px" }}>img</th>
             </tr>
           </thead>
           <tbody>
@@ -449,96 +399,42 @@ const ModalQLSP = (props) => {
                       type="checkbox"
                       checked={item.check}
                       name="check"
-                      onChange={(event) => handleOnChange(event, item)}
+                      onChange={(event) => HandleOnchange(event, item)}
                     />
                   </td>
                   <td>{index + 1}</td>
+                  <td>{item.masanpham}</td>
                   <td>
                     <input
-                      className="w-100 mt-3"
+                      className="w-100"
                       type="text"
                       value={item.mactsp}
                       name="mactsp"
-                      onChange={(event) => handleOnChange(event, item)}
+                      onChange={(event) => HandleOnchange(event, item)}
                     />
                   </td>
                   <th>{item.mausac}</th>
                   <th>{item.kichthuoc}</th>
                   <td>
                     <input
-                      className="w-100 mt-3"
+                      className="w-100"
                       type="number"
                       value={item.soluong}
                       name="soluong"
-                      onChange={(event) => handleOnChange(event, item)}
+                      onChange={(event) => HandleOnchange(event, item)}
                     />
                   </td>
                   <td>
                     <input
-                      className="w-100 mt-3"
+                      className="w-100"
                       type="number"
                       value={item.giaban}
                       name="giaban"
-                      onChange={(event) => handleOnChange(event, item)}
+                      onChange={(event) => HandleOnchange(event, item)}
                     />
                   </td>
                   <td>
-                    <div className="row">
-                      {item.img.length > 0 &&
-                        item.img.map((p, index) => (
-                          <div
-                            className="ms-2 col-6 mb-2 px-0 hover-container"
-                            style={{
-                              width: "55px",
-                              height: "55px",
-                            }}
-                            // onClick={() => handleOnClickPriview(p)}
-                            key={`${p.preview} + ${index}`}
-                          >
-                            {p.preview && (
-                              <img
-                                src={p.preview}
-                                alt="Preview"
-                                style={{ width: "100%", height: "100%" }}
-                              />
-                            )}
-                            <button
-                              className="delete-button"
-                              onClick={() => handleDelete(p, item)}
-                            >
-                              X
-                            </button>
-                            <button
-                              className="info-button"
-                              onClick={() => handleOnClickPriview(p)}
-                            >
-                              i
-                            </button>
-                          </div>
-                        ))}
-                      <div
-                        className="col-6 ms-2 mb-2"
-                        hidden={item.img.length > 5}
-                        style={{
-                          width: "55px",
-                          height: "55px",
-                          // border: "1px solid black",
-                          backgroundImage: `url("https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg")`,
-                          backgroundSize: "cover", // This ensures the background image covers the entire div
-                          backgroundPosition: "center", // This centers the background image within the div
-                        }}
-                        onClick={() => handleDivClick(item)}
-                      >
-                        <input
-                          id={item.id}
-                          style={{
-                            display: "none",
-                          }}
-                          type="file"
-                          onChange={(event) => handleFileChange(event, item)}
-                        />
-                      </div>
-                    </div>
+                    <div>{item.img}</div>
                   </td>
                 </tr>
               ))}
@@ -546,11 +442,12 @@ const ModalQLSP = (props) => {
         </Table>
       </div>
       <div className="w-25 ms-auto">
-        <Button onClick={HandleOnclickBack}>Thêm sản phẩm</Button>
+        <Button variant="secondary" onClick={HandleOnclickBack}>
+          Về trang QLSP
+        </Button>
       </div>
-      <PreviewIMG show={show} setShow={setShow} preview={preview} />
     </div>
   );
 };
 
-export default ModalQLSP;
+export default UpdateSanPham;

@@ -32,9 +32,11 @@ namespace AppData.Models
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
         public DbSet<DiaChiKhachHang> diaChiKhachHangs { get;set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<CoAo> CoAos { get; set; }
+		public DbSet<PhuongThucThanhToan> phuongThucThanhToans { get; set; }
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
+			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=du_antotnghiepfptpoly;Integrated Security=True");
 
 		}
 		//THUYNHU\SQLEXPRESS

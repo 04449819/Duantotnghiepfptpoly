@@ -13,6 +13,6 @@ namespace AppData.Models
         [StringLength(10, ErrorMessage = "Tên kích cỡ không được vượt quá 10 kí tự ")]
         public string? Ten { get; set; }
         public int? TrangThai { get; set; }
-        public virtual IEnumerable<ChiTietSanPham> ChiTietSanPhams { get; set; }
+        public virtual IEnumerable<ChiTietSanPham>? ChiTietSanPhams { get; set; }
     }
 }

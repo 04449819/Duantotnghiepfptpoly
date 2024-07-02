@@ -9,7 +9,7 @@ namespace AppData.Models
 {
 	public class PhanTrangSanPham
 	{
-		public List<Sanphamptview> sanPham { get; set; }
+		public List<Sanphamptview>? sanPham { get; set; }
 		public int SoTrang{get;set;}
 	}
 }

@@ -37,7 +37,11 @@ export const GetSanPhamGioHangSlice = createSlice({
     UpdateSoLuong: (state, action) => {
       const data = state.SanPhamGioHang.map((item) => {
         if (item.idCTSP === action.payload.idctsp) {
-          return { ...item, soLuongmua: action.payload.soluong };
+          if (action.payload.soluong <= item.soLuong) {
+            return { ...item, soLuongmua: action.payload.soluong };
+          } else {
+            return { ...item, soLuongmua: item.soLuong };
+          }
         }
         return item;
       });

@@ -170,7 +170,22 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           required
         />
       </div>
-      <div div className="form-group">
+      <div className="form-group">
+       <label className='label' htmlFor="trangthai"> Trạng thái:</label>
+        <select className='text_input'
+        id="trangthai"
+        name="trangthai"
+        value={formData.trangthai}
+        onChange={handleChange}
+        required
+    >
+        <option value="">Chọn Trang thái</option>
+        <option value="0">Đã nghỉ việc</option>
+        <option value="1">Đang làm việc</option>
+    </select>
+</div>
+
+      {/* <div div className="form-group">
         <label className='label' htmlFor="trangthai"> Trạng thái:</label>
         <input className='text_input'
           type="trangThai"
@@ -180,8 +195,22 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           onChange={handleChange}
           required
         />
-      </div>
-      <div div className="form-group">
+      </div> */}
+      {/* <div className="form-group">
+       <label className='label' htmlFor="vaitro"> Vai trò:</label>
+        <select className='text_input'
+        id="vaitro"
+        name="vaitro"
+        value={formData.vaitro}
+        onChange={handleChange}
+        required
+    >
+        <option value="">Chọn vai trò</option>
+        <option value="0">Nhân Viên</option>
+        <option value="1">Nghỉ việc</option>
+    </select>
+</div> */}
+      {/* <div div className="form-group">
         <label className='label' htmlFor="vaitro"> Vai trò:</label>
         <input className='text_input'
           type="vaitro"
@@ -191,7 +220,7 @@ const AddQuanLyNV = ({handleSuccess, handleClose}) => {
           onChange={handleChange}
           required
         />
-      </div>
+      </div> */}
       <div className="button-container">
       <button type="submit" className="submit-button"> Submit </button>
       </div>

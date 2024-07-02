@@ -7,6 +7,7 @@ import MyModalAdd from "./FormThem";
 import MyModalEdit from "./FormEdit";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+import { Table } from "react-bootstrap";
 const QuanLyKhachHang = () => {
   const dispath = useDispatch();
 
@@ -65,6 +66,55 @@ const QuanLyKhachHang = () => {
     // setdata(res.data.data);
   };
 
+
+ const handleClickEdit = async (idKhachHang) =>{
+ 
+
+  data.forEach((item, index) => {
+    if (item.idKhachHang == idKhachHang){
+      setFormData({
+        id: item.idKhachHang,
+        name: item.ten,
+        email: item.email,
+        ngaySinh:item.ngaySinh,
+        sdiaChidt:item.diaChi,
+        gioiTinh:item.gioiTinh,
+        sdt: item.sdt
+      });
+  
+    }
+   
+  });
+  handleShowEdit() 
+ 
+};
+
+ const handleClickSearch = async (event) =>{
+  event.preventDefault();
+  dispath(SetLoading(true));
+  if (inputValue == ""){
+    handleReload()
+  }else{
+    setTimeout( async () => {
+      try {
+        let res;
+        // Kiểm tra nếu inputValue là số điện thoại (chỉ chứa số và có độ dài 10-11 ký tự)
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (phoneRegex.test(inputValue)) {
+            res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?sdt=${inputValue}`);
+        } else {
+          res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
+        }
+        console.error('success', res.data);
+        setdata(res.data);
+         dispath(SetLoading(false));
+      } catch (error) {
+         dispath(SetLoading(false));
+        console.error('Error fetching promotions:', error);
+      }
+    }, 3000);
+  }
+
   const handleClickEdit = async (idKhachHang) => {
     data.forEach((item, index) => {
       if (item.idKhachHang === idKhachHang) {
@@ -77,31 +127,11 @@ const QuanLyKhachHang = () => {
           gioiTinh: item.gioiTinh,
           sdt: item.sdt,
         });
+
       }
     });
     handleShowEdit();
   };
-
-  const handleClickSearch = async (event) => {
-    event.preventDefault();
-    dispath(SetLoading(true));
-    if (inputValue === "") {
-      handleReload();
-    } else {
-      setTimeout(async () => {
-        try {
-          let res = await axios.get(
-            `https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`
-          );
-          console.error("success", res.data);
-          setdata(res.data);
-          dispath(SetLoading(false));
-        } catch (error) {
-          dispath(SetLoading(false));
-          console.error("Error fetching promotions:", error);
-        }
-      }, 3000);
-    }
   };
   useEffect(() => {
     laydata(SoTrang);
@@ -138,7 +168,7 @@ const QuanLyKhachHang = () => {
           <button onClick={handleShow}> + Thêm khách hàng</button>
         </div>
         <div className="table-container" onScroll={handleScroll}>
-          <table className="table">
+          <Table className="table" striped bordered hover>
             <thead>
               <tr>
                 <th scope="col">STT</th>
@@ -165,7 +195,7 @@ const QuanLyKhachHang = () => {
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
                     <td>{item.diemTich == null ? "0" : item.diemTich}</td>
-                    <td>
+                    <td style={{ color: item.trangThai === 1 ? "green" : "red" }}>
                       {item.trangThai == null || item.trangThai === 0
                         ? "không hoạt đông"
                         : "đang hoạt động"}
@@ -185,7 +215,7 @@ const QuanLyKhachHang = () => {
                 );
               })}
             </tbody>
-          </table>
+          </Table>
         </div>
         <MyModalAdd
           show={showModal}

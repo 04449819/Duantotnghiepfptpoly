@@ -166,7 +166,23 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         />
       </div>
       <p>{messageEmail}</p>
+
+
       <div className="form-group">
+       <label className='label' htmlFor="gioiTinh"> Trạng thái:</label>
+        <select className='text_input'
+        id="gioiTinh"
+        name="gioiTinh"
+        value={formData.gioiTinh}
+        onChange={handleChange}
+        required
+         >
+        <option value="">Chọn Giới Tính</option>
+        <option value="0">Nam</option>
+        <option value="1">Nữ</option>
+       </select>
+     </div>
+      {/* <div className="form-group">
         <label className="label_name" htmlFor="gioiTinh">
           Gioi tinh:
         </label>
@@ -179,7 +195,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           onChange={handleChange}
           required
         />
-      </div>
+      </div> */}
       <p>{messageEmail}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="ngaySinh">
@@ -240,6 +256,23 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         />
       </div>
       <div className="form-group">
+       <label className='label' htmlFor="trangThai"> Trạng thái:</label>
+        <select className='text_input'
+        id="trangThai"
+        name="trangThai"
+        value={formData.trangThai}
+        onChange={handleChange}
+        required
+         >
+        <option value="">Chọn Trang thái</option>
+        <option value="0">Đang hoạt động</option>
+        <option value="1">Không hoạt động</option>
+       </select>
+     </div>
+
+
+
+      {/* <div className="form-group">
         <label className="label_name" htmlFor="trangThai">
           Trang Thai:
         </label>
@@ -252,7 +285,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           onChange={handleChange}
           required
         />
-      </div>
+      </div> */}
       <button type="submit" className="submit-button">
         Submit
       </button>

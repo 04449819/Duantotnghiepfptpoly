@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    [Migration("20240630092700_v1")]
+    [Migration("20240702041501_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,7 +176,7 @@ namespace AppData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("coAos");
+                    b.ToTable("CoAo", (string)null);
                 });
 
             modelBuilder.Entity("AppData.Models.DanhGia", b =>
@@ -265,7 +265,7 @@ namespace AppData.Migrations
                     b.Property<Guid?>("IDVoucher")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("KhachHangID")
+                    b.Property<Guid?>("KhachHangID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("LoaiHD")
@@ -546,7 +546,6 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Thongtin")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ten")
@@ -813,9 +812,7 @@ namespace AppData.Migrations
 
                     b.HasOne("AppData.Models.KhachHang", "KhachHang")
                         .WithMany("HoaDons")
-                        .HasForeignKey("KhachHangID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("KhachHangID");
 
                     b.HasOne("AppData.Models.PhuongThucThanhToan", "PhuongThucThanhToan")
                         .WithMany("HoaDons")
@@ -955,8 +952,7 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.DanhGia", b =>
                 {
-                    b.Navigation("ChiTietHoaDon")
-                        .IsRequired();
+                    b.Navigation("ChiTietHoaDon");
                 });
 
             modelBuilder.Entity("AppData.Models.GioHang", b =>

@@ -23,7 +23,7 @@ namespace AppData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "coAos",
+                name: "CoAo",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -32,7 +32,7 @@ namespace AppData.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_coAos", x => x.Id);
+                    table.PrimaryKey("PK_CoAo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -132,7 +132,7 @@ namespace AppData.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Thongtin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Thongtin = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     trangThai = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -237,9 +237,9 @@ namespace AppData.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SanPham_coAos_idCoAo",
+                        name: "FK_SanPham_CoAo_idCoAo",
                         column: x => x.idCoAo,
-                        principalTable: "coAos",
+                        principalTable: "CoAo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -353,7 +353,7 @@ namespace AppData.Migrations
                     IDNhanVien = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IDVoucher = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     phuongThucTTID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    KhachHangID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    KhachHangID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -362,8 +362,7 @@ namespace AppData.Migrations
                         name: "FK_HoaDon_KhachHang_KhachHangID",
                         column: x => x.KhachHangID,
                         principalTable: "KhachHang",
-                        principalColumn: "IDKhachHang",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IDKhachHang");
                     table.ForeignKey(
                         name: "FK_HoaDon_NhanVien_IDNhanVien",
                         column: x => x.IDNhanVien,
@@ -703,7 +702,7 @@ namespace AppData.Migrations
                 name: "ChatLieu");
 
             migrationBuilder.DropTable(
-                name: "coAos");
+                name: "CoAo");
 
             migrationBuilder.DropTable(
                 name: "LoaiSP");

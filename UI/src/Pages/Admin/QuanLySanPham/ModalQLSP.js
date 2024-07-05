@@ -38,6 +38,21 @@ const ModalQLSP = (props) => {
   const HandleOnclickBack = () => {
     props.setShow(false);
   };
+  const [maSanPhamValid, setMaSanPhamValid] = useState(true);
+  const handleOnChangecheck = (event) => {
+    if (!validatemasp(event.target.value)) {
+      setMaSanPhamValid(false);
+    } else {
+      setMaSanPhamValid(true);
+    }
+    setTTSanPham({ ...TTSanPham, ma: event.target.value });
+  };
+
+  const validatemasp = (masp) => {
+    return String(masp)
+      .toLowerCase()
+      .match(/^[a-zA-Z0-9-_]{0,15}$/);
+  };
 
   useEffect(() => {
     getdataKT();
@@ -133,6 +148,7 @@ const ModalQLSP = (props) => {
 
   const handleOnChange = (event, item) => {
     const { name, value, type, checked } = event.target;
+
     const dataTam = TTCTSP.map((item1) => {
       if (item1.id === item.id) {
         return {
@@ -154,7 +170,6 @@ const ModalQLSP = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission
-
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.stopPropagation(); // Stop further event propagation if form is invalid
@@ -393,21 +408,22 @@ const ModalQLSP = (props) => {
                 required
                 value={TTSanPham.ma}
                 maxLength="15"
-                onChange={(event) =>
-                  setTTSanPham({ ...TTSanPham, ma: event.target.value })
-                }
+                onChange={(event) => handleOnChangecheck(event)}
+                isInvalid={!maSanPhamValid}
               />
               <Form.Control.Feedback type="invalid">
-                Mã sản phẩm không được để trống
+                {maSanPhamValid
+                  ? "Mã sản phẩm không được để trống"
+                  : `Mã sản phẩm chưa đúng định dạng số, chữ, "-", "_"`}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} md="6" controlId="validationCustom03">
               <Form.Label>Mô tả</Form.Label>
-
               <Form.Control
-                type="text"
+                as="textarea"
+                // type="number"
                 placeholder="Mô tả"
                 required
                 value={TTSanPham.mota}
@@ -633,7 +649,7 @@ const ModalQLSP = (props) => {
                       className="w-100 mt-3"
                       type="text"
                       value={item.mactsp}
-                      maxLength="15"
+                      maxLength="20"
                       name="mactsp"
                       onChange={(event) => handleOnChange(event, item)}
                     />

@@ -121,6 +121,11 @@ const KichThuoc = () => {
                       <Button
                         className="ms-2"
                         variant="danger"
+                        style={{
+                          height: "28px",
+                          width: "70px",
+                          paddingTop: "7px",
+                        }}
                         onClick={() => HandleOclickDelete(item)}
                       >
                         Xóa

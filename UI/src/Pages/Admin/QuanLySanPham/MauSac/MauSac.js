@@ -130,6 +130,11 @@ const MauSac = () => {
                         setloaduseE={setloaduseE}
                       />
                       <Button
+                        style={{
+                          height: "28px",
+                          width: "70px",
+                          paddingTop: "7px",
+                        }}
                         className="ms-2"
                         variant="danger"
                         onClick={() => HandleOclickDelete(item)}

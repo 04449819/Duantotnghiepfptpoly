@@ -89,7 +89,7 @@ const ModalChatLieu = (props) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "Thêm chất liệu" : "Sửa"}
+        {props.item === undefined ? "+" : "Sửa"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>

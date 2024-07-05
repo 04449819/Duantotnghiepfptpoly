@@ -84,7 +84,7 @@ app.UseCors(policy =>
 );
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

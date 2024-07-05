@@ -12,8 +12,14 @@ namespace AppAPI.Services
         {
             _dbContext = new AssignmentDBContext();
         }
-        #region KichCo
-        public async Task<KichCo> AddKichCo(string ten, int trangthai)
+		#region coAo
+		public async Task<List<CoAo>> GetAllCoAo()
+		{
+			return await _dbContext.CoAos.OrderByDescending(c => c.trangThai).ToListAsync();
+		}
+		#endregion
+		#region KichCo
+		public async Task<KichCo> AddKichCo(string ten, int trangthai)
         {
             try
             {
@@ -324,6 +330,8 @@ namespace AppAPI.Services
 
             }
         }
-        #endregion
-    }
+
+	
+		#endregion
+	}
 }

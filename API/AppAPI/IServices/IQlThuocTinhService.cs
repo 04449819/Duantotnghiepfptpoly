@@ -5,8 +5,11 @@ namespace AppAPI.IServices
 {
     public interface IQlThuocTinhService
     {
-        #region MauSac
-        Task<MauSac> AddMauSac(string ten, string ma, int trangthai);
+		#region Co ao
+		Task<List<CoAo>> GetAllCoAo();
+		#endregion
+		#region MauSac
+		Task<MauSac> AddMauSac(string ten, string ma, int trangthai);
         Task<MauSac> GetMauSacById(Guid id);
         Task<bool> DeleteMauSac(Guid id);
         Task<MauSac> UpdateMauSac(Guid id, string ten, string ma, int trangthai);

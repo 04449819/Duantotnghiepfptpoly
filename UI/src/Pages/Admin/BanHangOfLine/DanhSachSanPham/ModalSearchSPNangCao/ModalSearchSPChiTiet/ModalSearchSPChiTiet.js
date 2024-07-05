@@ -57,7 +57,6 @@ const ModalSearchSPChiTiet = (props) => {
         }
       });
       console.log(res.data[0].img[0].toLocaleString());
-      console.log(ImgTam);
       setImgSmall(ImgTam);
 
       const MauSactam = [];
@@ -158,6 +157,9 @@ const ModalSearchSPChiTiet = (props) => {
                   <h4 className="SPduocchon_body_content">{tensp}</h4>
                   <h5 className="SPduocchon_body_content">
                     Chất liệu: {data[0].tenchatlieu}
+                  </h5>
+                  <h5 className="SPduocchon_body_content">
+                    Cổ áo: {data[0].tencoao}
                   </h5>
                   <div className="d-flex SPduocchon_body_content">
                     <h5>Màu sắc:</h5>

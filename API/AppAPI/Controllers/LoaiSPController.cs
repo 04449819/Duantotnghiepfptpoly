@@ -84,8 +84,18 @@ namespace AppAPI.Controllers
 		[HttpDelete("delete/{id}")]
 		public async Task<IActionResult> DeleteLoaiSP(Guid id)
 		{
-			var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
-			return Ok();
+			try
+			{
+				var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
+				if(loaiSP == false) return BadRequest();
+				return Ok();
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		
 		}
 
 		[HttpPost]

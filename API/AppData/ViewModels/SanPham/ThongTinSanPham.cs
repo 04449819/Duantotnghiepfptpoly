@@ -11,5 +11,6 @@ namespace AppData.ViewModels.SanPham
 	{
 		public List<LoaiSP> loaiSPs { get; set; }
 		public List<ChatLieu> chatLieus { get; set;}
+		public List<CoAo> coAos { get; set; }
 	}
 }

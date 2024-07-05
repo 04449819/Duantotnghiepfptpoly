@@ -22,6 +22,7 @@ const ReactSideBar = () => {
 
   useEffect(() => {
     setemailUser(localStorage.getItem("useremail"));
+    console.log(user);
   }, []);
   //vaiTro
   const HandleOnclickLogout = () => {
@@ -64,6 +65,9 @@ const ReactSideBar = () => {
             breakPoint="md"
             style={{ position: "fixed", zIndex: 2 }}
           >
+            <div className="my-4 ms-5">
+              <h1>Shop Man</h1>
+            </div>
             <div
               style={{
                 display: "flex",
@@ -95,6 +99,7 @@ const ReactSideBar = () => {
                     icon={
                       <FaAddressBook style={{ color: "blue", size: "20px" }} />
                     }
+                    hidden={user.chucNang !== "Admin" ? true : false}
                   >
                     Quản lý nhân viên
                   </MenuItem>

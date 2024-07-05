@@ -24,7 +24,7 @@ const QuanLySanPham = () => {
   const getdata = async (page, trangthai) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getAllQLSP?currentPage=${page}&productsPerPage=6`
+        `https://localhost:7095/api/SanPham/getAllQLSP?currentPage=${page}&productsPerPage=10000000`
       );
       if (res.data.sanPham.length > 0) {
         var datafake = res.data.sanPham.map((item) => {
@@ -34,7 +34,7 @@ const QuanLySanPham = () => {
             case 1:
               return { ...item, trangThai: "Đang bán", color: "green" };
             case 2:
-              return { ...item, trangThai: "Chưa quét QR", color: "yellow" };
+              return { ...item, trangThai: "Chưa quét QR", color: "red" };
             default:
               return { ...item, trangThai: "Ngưng bán", color: "red" };
           }
@@ -78,7 +78,9 @@ const QuanLySanPham = () => {
               case 1:
                 return { ...item, trangThai: "Đang bán", color: "green" };
               case 2:
-                return { ...item, trangThai: "QR", color: "yellow" };
+                return { ...item, trangThai: "Chưa quét QR", color: "red" };
+              case 3:
+                return { ...item, trangThai: "!", color: "antiquewhite" };
               default:
                 return { ...item, trangThai: "Ngưng bán", color: "red" };
             }

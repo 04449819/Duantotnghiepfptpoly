@@ -297,9 +297,6 @@ namespace AppData.Migrations
                     b.Property<int>("TrangThaiGiaoHang")
                         .HasColumnType("int");
 
-                    b.Property<int>("TrangThaiTT")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("phuongThucTTID")
                         .HasColumnType("uniqueidentifier");
 

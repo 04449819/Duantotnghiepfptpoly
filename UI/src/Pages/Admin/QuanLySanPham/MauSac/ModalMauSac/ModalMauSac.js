@@ -96,7 +96,7 @@ const ModalMauSac = (props) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "Thêm màu sắc" : "Sửa"}
+        {props.item === undefined ? "+" : "Sửa"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>

@@ -7,17 +7,20 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import AddLoaiSP from "./QuanLyLoaiSanPham/AddLoaiSp/AddLoaiSp";
 import ModalChatLieu from "./QuanLyChatLieu/ModalChatLieu/ModalChatLieu";
+import Modalkichthuoc from "./KichThuoc/ModalKichThuoc/ModalKichThuoc";
+import ModalMauSac from "./MauSac/ModalMauSac/ModalMauSac";
 import PreviewIMG from "./PreviewIMG/PreviewIMG";
 import { toast } from "react-toastify";
-import { toBeDisabled } from "@testing-library/jest-dom/matchers";
 
 const ModalQLSP = (props) => {
+  const [loaduseE, setloaduseE] = useState(false);
   const [show, setShow] = useState(false);
   const [validated, setValidated] = useState(false);
   const [dataKT, setdataKT] = useState([]);
   const [dataMS, setdataMS] = useState([]);
   const [dataCL, setdataCL] = useState([]);
   const [dataLSP, setdataLSP] = useState([]);
+  const [dataCoAo, setdataCoAo] = useState([]);
   const [TTSanPham, setTTSanPham] = useState({
     ten: "",
     ma: "",
@@ -26,6 +29,8 @@ const ModalQLSP = (props) => {
     tenloaisp: "",
     chatlieu: "",
     tenchatlieu: "",
+    coao: "",
+    tencoao: "",
   });
   const [TTCTSP, setTTCTSP] = useState([]);
   //   const [loaduseE, setloaduseE] = useState(false);
@@ -39,7 +44,8 @@ const ModalQLSP = (props) => {
     getdataMS();
     getdatacl();
     getdatalsp();
-  }, []);
+    GetALLCoAo();
+  }, [loaduseE]);
 
   const getdataKT = async () => {
     try {
@@ -50,7 +56,8 @@ const ModalQLSP = (props) => {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
         });
-        setdataKT(dataa);
+        setdataKT(dataa.filter((p) => p.trangThai !== 0));
+        // setdataKT(dataa);
       }
     } catch (error) {}
   };
@@ -64,7 +71,7 @@ const ModalQLSP = (props) => {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
         });
-        setdataMS(dataa);
+        setdataMS(dataa.filter((p) => p.trangThai !== 0));
       }
     } catch (error) {}
   };
@@ -75,7 +82,8 @@ const ModalQLSP = (props) => {
         "https://localhost:7095/api/ChatLieu/GetAllChatLieu"
       );
       if (res.data.length > 0) {
-        setdataCL(res.data);
+        setdataCL(res.data.filter((p) => p.trangThai !== 0));
+        // setdataCL(res.data);
       }
     } catch (error) {}
   };
@@ -85,10 +93,23 @@ const ModalQLSP = (props) => {
         "https://localhost:7095/api/LoaiSP/getAllLSP"
       );
       if (res.data.length > 0) {
-        setdataLSP(res.data);
+        setdataLSP(res.data.filter((p) => p.trangThai !== 0));
+        // setdataLSP(res.data);
       }
     } catch (error) {}
   };
+  const GetALLCoAo = async () => {
+    try {
+      var res = await axios.get(
+        "https://localhost:7095/api/CoAo/getAllCoAoThem"
+      );
+      if (res.data.length > 0) {
+        setdataCoAo(res.data);
+        // setdataLSP(res.data);
+      }
+    } catch (error) {}
+  };
+  // https://localhost:7095/api/CoAo/getAllCoAoThem
 
   const HandleOnclickKT = (item) => {
     const updatedData = dataKT.map((item1) => {
@@ -119,7 +140,7 @@ const ModalQLSP = (props) => {
           [name]:
             type === "checkbox"
               ? checked
-              : type === "number" && value > 0
+              : type === "number" && value > 0 && value <= 1000000000
               ? value
               : type === "text"
               ? value
@@ -145,12 +166,14 @@ const ModalQLSP = (props) => {
             .map((item1) => ({
               id: Math.floor(Math.random() * 100000) + 1,
               masanpham: TTSanPham.ma,
-              mactsp: "",
+              mactsp: `${TTSanPham.ma}-${Math.floor(Math.random() * 10000)}`,
               soluong: 1,
               giaban: 1000,
               check: true,
               kichthuoc: item.ten,
               mausac: item1.ten,
+              idkichthuoc: item.id,
+              idmausac: item1.id,
               mota: TTSanPham.mota,
               loaisp: TTSanPham.loaisp,
               chatlieu: TTSanPham.chatlieu,
@@ -192,12 +215,14 @@ const ModalQLSP = (props) => {
   };
 
   const [preview, setPreview] = useState("");
-
+  const [listanh, setlistanh] = useState([]);
   const handleFileChange = (event, item) => {
     const file = event.target.files[0];
+    setlistanh([...listanh, file]);
     try {
+      const diemchung = Math.floor(Math.random() * 100000) + 1;
       const dataTam = TTCTSP.map((p) => {
-        if (p.id === item.id) {
+        if (p.mausac === item.mausac) {
           // Nếu img là mảng, ta thêm một đối tượng mới vào mảng này
           const updatedImg = [
             ...(p.img || []),
@@ -205,6 +230,9 @@ const ModalQLSP = (props) => {
               file: file,
               preview: URL.createObjectURL(file),
               id: Math.floor(Math.random() * 100000) + 1,
+              mactsp: p.mactsp,
+              DuongDan: file.name,
+              diemchung: diemchung,
             },
           ];
           return {
@@ -221,17 +249,109 @@ const ModalQLSP = (props) => {
   };
 
   const handleDelete = (image, item) => {
-    // Thực hiện logic xóa ảnh ở đây
     const datatam = TTCTSP.map((p) => {
-      if (p.id === item.id) {
-        const updatedImages = p.img.filter((img) => img.id !== image.id);
+      if (p.mausac === item.mausac) {
+        console.log(p);
+        const updatedImages = p.img.filter(
+          (img) => img.diemchung !== image.diemchung
+        );
         return { ...p, img: updatedImages };
       }
       return p;
     });
     setTTCTSP(datatam);
   };
+  const HandleOnclickLuuThayDoi = async () => {
+    if (TTCTSP.filter((p) => p.check !== false).length > 0) {
+      console.log(TTCTSP);
+      const listctsp = TTCTSP.map((p) => {
+        if (p.check === true) {
+          return {
+            ma: p.mactsp,
+            soluong: p.soluong,
+            giaban: p.giaban,
+            trangthai: 2,
+            idmausac: p.idmausac,
+            idkichthuoc: p.idkichthuoc,
+            img: p.img.map((x) => {
+              return {
+                DuongDan: `https://localhost:7095/images/${x.DuongDan}`,
+                TrangThai: 1,
+              };
+            }),
+          };
+        }
+        return undefined; // Đảm bảo luôn có giá trị trả về
+      }).filter((p) => p !== undefined);
 
+      const DataThem = {
+        tenSanpham: TTSanPham.ten,
+        ma: TTSanPham.ma,
+        mota: TTSanPham.mota,
+        trangThai: 2,
+        idloaisp: TTSanPham.loaisp,
+        idchatlieu: TTSanPham.chatlieu,
+        idCoAo: TTSanPham.coao,
+        listctsp: listctsp,
+      };
+
+      const formData = new FormData();
+      listanh.forEach((file, index) => {
+        formData.append("images", file);
+      });
+      console.log(listanh);
+      console.log(">>>>>datathem", DataThem);
+      console.log(">>>>>list", formData);
+      console.log(
+        DataThem.listctsp.map((x) => {
+          return x.img.length;
+        })
+      );
+      let a = true;
+      DataThem.listctsp.map((x) => {
+        if (x.img.length <= 0) return (a = false);
+      });
+      if (a === true) {
+        try {
+          try {
+            const response = await axios.post(
+              "https://localhost:7095/api/SanPham/images",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+          } catch (error) {
+            toast.error(`gặp lỗi: ${error.response.data}`);
+            console.log("gặp lỗi:", error.response.data);
+            return;
+          }
+          try {
+            const response1 = await axios.post(
+              "https://localhost:7095/api/SanPham/addSanPhamQLSP",
+              DataThem
+            );
+          } catch (error) {
+            toast.error(`gặp lỗi: ${error.response.data}`);
+            return;
+          }
+
+          toast.success("thêm thành công !");
+        } catch (error) {
+          toast.error("gặp lỗi:", error);
+        }
+      } else {
+        toast.error("Hãy chọn ít nhất một ảnh cho từng sản phẩm");
+      }
+    } else {
+      toast.error("Hãy chọn ít nhất một sản phẩm!");
+    }
+  };
+  const HandleOnLoading = () => {
+    setloaduseE(!loaduseE);
+  };
   return (
     <div className="w-100 mx-auto">
       <div className="text-center">
@@ -252,6 +372,7 @@ const ModalQLSP = (props) => {
               <Form.Control
                 type="text"
                 placeholder="Tên sản phẩm"
+                maxLength="100"
                 required
                 value={TTSanPham.ten}
                 onChange={(event) =>
@@ -271,6 +392,7 @@ const ModalQLSP = (props) => {
                 placeholder="Mã sản phẩm"
                 required
                 value={TTSanPham.ma}
+                maxLength="15"
                 onChange={(event) =>
                   setTTSanPham({ ...TTSanPham, ma: event.target.value })
                 }
@@ -283,11 +405,13 @@ const ModalQLSP = (props) => {
           <Row className="mb-3">
             <Form.Group as={Col} md="6" controlId="validationCustom03">
               <Form.Label>Mô tả</Form.Label>
+
               <Form.Control
                 type="text"
                 placeholder="Mô tả"
                 required
                 value={TTSanPham.mota}
+                maxLength="200"
                 onChange={(event) =>
                   setTTSanPham({ ...TTSanPham, mota: event.target.value })
                 }
@@ -298,7 +422,7 @@ const ModalQLSP = (props) => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <div as={Col} className="w-25">
+            <div as={Col} className="w-25 mb-4">
               <Form.Select
                 aria-label="Default select example"
                 required
@@ -321,6 +445,9 @@ const ModalQLSP = (props) => {
               </Form.Select>
             </div>
             <div as={Col} className="w-25">
+              <AddLoaiSP HandleOnLoading={HandleOnLoading} />
+            </div>
+            <div as={Col} className="w-25">
               <Form.Select
                 aria-label="Default select example"
                 required
@@ -341,6 +468,34 @@ const ModalQLSP = (props) => {
                     </option>
                   ))}
               </Form.Select>
+            </div>
+            <div as={Col} className="w-25">
+              <ModalChatLieu loaduseE={loaduseE} setloaduseE={setloaduseE} />
+            </div>
+            <div as={Col} className="w-25">
+              <Form.Select
+                aria-label="Default select example"
+                required
+                value={TTSanPham.coao}
+                onChange={(event) =>
+                  setTTSanPham({
+                    ...TTSanPham,
+                    coao: event.target.value,
+                    tencoao: event.target.selectedOptions[0].text,
+                  })
+                }
+              >
+                <option value="">Cổ áo</option>
+                {dataCoAo.length > 0 &&
+                  dataCoAo.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.ten}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+            <div as={Col} className="w-25">
+              <AddLoaiSP HandleOnLoading={HandleOnLoading} />
             </div>
           </Row>
           <hr />
@@ -377,6 +532,16 @@ const ModalQLSP = (props) => {
                       </div>
                     </div>
                   ))}
+                <div className="col-2">
+                  <div>
+                    <div className="w-50 ">
+                      <Modalkichthuoc
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="w-75 mx-auto">
@@ -404,6 +569,16 @@ const ModalQLSP = (props) => {
                       </div>
                     </div>
                   ))}
+                <div className="col-2 mb-3">
+                  <div>
+                    <div className="w-50 ">
+                      <ModalMauSac
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="w-25 ms-auto">
@@ -458,6 +633,7 @@ const ModalQLSP = (props) => {
                       className="w-100 mt-3"
                       type="text"
                       value={item.mactsp}
+                      maxLength="15"
                       name="mactsp"
                       onChange={(event) => handleOnChange(event, item)}
                     />
@@ -535,6 +711,7 @@ const ModalQLSP = (props) => {
                             display: "none",
                           }}
                           type="file"
+                          accept="image/jpeg, image/png, image/gif"
                           onChange={(event) => handleFileChange(event, item)}
                         />
                       </div>
@@ -546,7 +723,7 @@ const ModalQLSP = (props) => {
         </Table>
       </div>
       <div className="w-25 ms-auto">
-        <Button onClick={HandleOnclickBack}>Thêm sản phẩm</Button>
+        <Button onClick={HandleOnclickLuuThayDoi}>Lưu thay đổi</Button>
       </div>
       <PreviewIMG show={show} setShow={setShow} preview={preview} />
     </div>

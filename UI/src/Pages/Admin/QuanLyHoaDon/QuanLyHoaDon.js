@@ -6,11 +6,12 @@ const QuanLyHoaDon = () => {
 
   useEffect(() => {
     fetchHoaDons();
+    console.log(hoaDons);
   }, []);
 
   const fetchHoaDons = async () => {
     try {
-      const response = await axios.get('/api/hoadons'); 
+      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll'); 
       setHoaDons(response.data);
     } catch (error) {
       console.error('Có lỗi khi fetch hóa đơn:', error);
@@ -57,21 +58,21 @@ const QuanLyHoaDon = () => {
         </thead>
         <tbody>
           {hoaDons.map((hoaDon) => (
-            <tr key={hoaDon.ID}>
-              <td>{hoaDon.MaHD}</td>
-              <td>{new Date(hoaDon.NgayTao).toLocaleDateString()}</td>
-              <td>{new Date(hoaDon.NgayThanhToan).toLocaleDateString()}</td>
-              <td>{new Date(hoaDon.NgayNhanHang).toLocaleDateString()}</td>
-              <td>{hoaDon.TenNguoiNhan}</td>
-              <td>{hoaDon.SDT}</td>
-              <td>{hoaDon.Email}</td>
-              <td>{hoaDon.DiaChi}</td>
-              <td>{hoaDon.TienShip}</td>
-              <td>{hoaDon.TongTien ? `${hoaDon.TongTien} VND` : 'Chưa xác định'}</td>
-              <td>{hoaDon.LoaiHD ? 'Off' : 'On'}</td>
-              <td>{hoaDon.PhuongThucThanhToan}</td>
-              <td>{hoaDon.GhiChu}</td>
-              <td>{renderTrangThaiGiaoHang(hoaDon.TrangThaiGiaoHang)}</td>
+            <tr key={hoaDon.id}>
+              <td>{hoaDon.maHD}</td>
+              <td>{new Date(hoaDon.ngayTao).toLocaleDateString()}</td>
+              <td>{new Date(hoaDon.ngayThanhToan).toLocaleDateString()}</td>
+              <td>{new Date(hoaDon.ngayNhanHang).toLocaleDateString()}</td>
+              <td>{hoaDon.tenNguoiNhan}</td>
+              <td>{hoaDon.sdt}</td>
+              <td>{hoaDon.email}</td>
+              <td>{hoaDon.diaChi}</td>
+              <td>{hoaDon.tienShip}</td>
+              <td>{hoaDon.tongTien ? `${hoaDon.TongTien} VND` : 'Chưa xác định'}</td>
+              <td>{hoaDon.loaiHD ? 'Off' : 'On'}</td>
+              <td>{hoaDon.phuongThucThanhToan}</td>
+              <td>{hoaDon.ghiChu}</td>
+              <td>{renderTrangThaiGiaoHang(hoaDon.trangThaiGiaoHang)}</td>
             </tr>
           ))}
         </tbody>

@@ -76,5 +76,10 @@ namespace AppData.Repositories
                 return false;
             }
         }
+
+        public T GetById(Guid id)
+        {
+            return dbset.Find(id);
+        }
     }
 }

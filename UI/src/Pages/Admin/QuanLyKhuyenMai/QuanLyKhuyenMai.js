@@ -26,7 +26,7 @@ const QuanLyKhuyenMai = () => {
   const ROWS_PER_PAGE = 2;
 
   useEffect(() => {
-    fetchPromotions(1);
+    fetchPromotions(page, false);
   }, []);
 
   const handleScroll = async (e) => {
@@ -34,20 +34,19 @@ const QuanLyKhuyenMai = () => {
     const isBottom = scrollTop + clientHeight >= scrollHeight - 5;
     if (isBottom) {
       if (page < total) {
-        fetchPromotions(page + 1);
+        fetchPromotions(page + 1, false);
         setPage(page + 1);
       }
     }
   };
 
-  const fetchPromotions = async (pageNumber) => {
+  const fetchPromotions = async (pageNumber, refresh = false) => {
     try {
       const res = await axios.get(
         `https://localhost:7095/api/KhuyenMai?pageIndex=${pageNumber}&pageSize=${ROWS_PER_PAGE}`
       );
       const data = res.data;
-
-      setPromotions((prev) => [...prev, ...data.data]);
+      refresh ? setPromotions(data.data) : setPromotions(prev => [...prev, ...data.data]);
       setTotal(data.totalCount);
     } catch (error) {}
   };
@@ -61,7 +60,8 @@ const QuanLyKhuyenMai = () => {
   const handleDelete = async (kmId) => {
     try {
       await axios.delete(`https://localhost:7095/api/KhuyenMai/${kmId}`);
-      fetchPromotions(1);
+      fetchPromotions(1, true);
+      setPage(1);
     } catch (error) {
       console.error("Error deleting khuyen mai:", error);
     }
@@ -117,7 +117,8 @@ const QuanLyKhuyenMai = () => {
         moTa: "",
         trangThai: 0,
       });
-      fetchPromotions(1);
+      fetchPromotions(1, true);
+      setPage(1);
     } catch (error) {
       console.error("Error creating promotion:", error);
     }

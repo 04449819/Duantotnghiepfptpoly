@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 // import axios from "axios";
 // import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
-import HoaDon from "./HoaDon/HoaDon";
+import ThongTinThanhToan from "./ThongTinThanhToan/ThongTinThanhToan";
 import { useSelector } from "react-redux";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
@@ -272,7 +272,7 @@ const BanHangOfline = () => {
             </form>
           </div>
           <div className="BanHangof_giohang">
-            <div className="BanHangof_giohang_thongtin">
+            {/* <div className="BanHangof_giohang_thongtin">
               <div
                 style={{
                   margin: "10px 20px",
@@ -294,14 +294,14 @@ const BanHangOfline = () => {
                   <h5>Tổng tiền: xxxx</h5>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="BanHangof_giohang_sanphamdamua">
-              <DanhSachSanPham />
+              <DanhSachSanPham />     
             </div>
           </div>
         </div>
         <div className="col-3 banhangof_hoadon">
-          <HoaDon />
+          <ThongTinThanhToan name={name} phone={phone} email={email} address={address} />
         </div>
       </div>
     </div>

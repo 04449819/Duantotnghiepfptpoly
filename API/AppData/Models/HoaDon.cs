@@ -38,6 +38,6 @@
         public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }
-        public virtual IEnumerable<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
+        public virtual List<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
     }
 }

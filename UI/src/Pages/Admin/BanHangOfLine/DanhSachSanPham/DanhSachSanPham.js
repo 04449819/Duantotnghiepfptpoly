@@ -101,8 +101,8 @@ const DanhSachSanPham = () => {
                   </td>
                   <td>{item.tenMau}</td>
                   <td>{item.kichCo}</td>
-                  <td>{item.giaBan}</td>
-                  <td>{item.giaBan * item.soLuongmua}</td>
+                  <td>{item.giaBan - item.giaTriKhuyenMai}</td>
+                  <td>{(item.giaBan - item.giaTriKhuyenMai) * item.soLuongmua }</td>
                   <td>{item.giaTriKhuyenMai}</td>
                   <td>
                     <img src={item.duongDanAnh} />
@@ -118,7 +118,7 @@ const DanhSachSanPham = () => {
                 </tr>
               );
             })}
-          </tbody>
+          </tbody>      
         </Table>
       </div>
     </>

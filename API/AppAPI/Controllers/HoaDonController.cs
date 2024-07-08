@@ -71,10 +71,15 @@ namespace AppAPI.Controllers
 		{
 			return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
 		}
-		[HttpPost("Offline/{idnhanvien}")]
-		public bool CreateHoaDonOffline(Guid idnhanvien)
+		//[HttpPost("Offline/{idnhanvien}")]
+		//public bool CreateHoaDonOffline(Guid idnhanvien)
+		//{
+		//	return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
+		//}	
+		[HttpPost("Offline")]
+		public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto)
 		{
-			return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
+			return _iHoaDonService.CreateHoaDonOffline(dto);
 		}
 		[HttpGet("GetAllHDCho")]
 		public IActionResult GetAllHDCho()

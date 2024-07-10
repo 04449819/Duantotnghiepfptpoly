@@ -36,7 +36,8 @@ const ModalQLSP = (props) => {
   //   const [loaduseE, setloaduseE] = useState(false);
 
   const HandleOnclickBack = () => {
-    props.setShow(false);
+    props.setShow(0);
+    props.setload(!props.load);
   };
   const [maSanPhamValid, setMaSanPhamValid] = useState(true);
   const handleOnChangecheck = (event) => {
@@ -168,6 +169,96 @@ const ModalQLSP = (props) => {
     setTTCTSP(dataTam);
   };
 
+  // const handleSubmit = (event) => {
+  //   event.preventDefault(); // Prevent default form submission
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.stopPropagation(); // Stop further event propagation if form is invalid
+  //   } else {
+  //     const dataTam = dataKT.flatMap((item) => {
+  //       if (item.check) {
+  //         return dataMS
+  //           .filter((item1) => item1.check)
+  //           .map((item1) => ({
+  //             id: Math.floor(Math.random() * 100000) + 1,
+  //             masanpham: TTSanPham.ma,
+  //             mactsp: `${TTSanPham.ma}-${Math.floor(Math.random() * 10000)}`,
+  //             soluong: 1,
+  //             giaban: 1000,
+  //             check: true,
+  //             kichthuoc: item.ten,
+  //             mausac: item1.ten,
+  //             idkichthuoc: item.id,
+  //             idmausac: item1.id,
+  //             mota: TTSanPham.mota,
+  //             loaisp: TTSanPham.loaisp,
+  //             chatlieu: TTSanPham.chatlieu,
+  //             img: [], // Added missing property img
+  //             soluongms: 1,
+  //             checkhiden: false,
+  //           }));
+  //       }
+  //       return [];
+  //     });
+
+  //     // const datatam1 = dataTam.sort((a, b) => a.mausac.localeCompare(b.mausac));
+
+  //     const colorCounts = dataTam.reduce((acc, product) => {
+  //       console.log(acc, product);
+  //       if (acc[product.mausac]) {
+  //         acc[product.mausac]++;
+  //       } else {
+  //         acc[product.mausac] = 1;
+  //       }
+  //       return acc;
+  //     }, {});
+
+  //     const datatam2 = dataTam.map((item) => {
+  //       if (colorCounts[item.mausac]) {
+  //         return { ...item, soluongms: colorCounts[item.mausac] };
+  //       }
+  //     });
+
+  //     const groupedByColor = datatam2.reduce((acc, product) => {
+  //       if (!acc[product.mausac]) {
+  //         acc[product.mausac] = [];
+  //       }
+  //       acc[product.mausac].push(product);
+  //       return acc;
+  //     }, {});
+
+  //     // Bước 2: Đặt check=true cho sản phẩm đầu tiên và check=false cho các sản phẩm còn lại
+  //     const datatam1 = Object.values(groupedByColor).flatMap((products) => {
+  //       return products.map((product, index) => ({
+  //         ...product,
+  //         checkhiden: index === 0 ? true : false,
+  //       }));
+  //     });
+
+  //     console.log(datatam1);
+
+  //     if (TTCTSP.length > 0) {
+  //       const dataFake = datatam1.map((item1) => {
+  //         const existingItem = TTCTSP.find(
+  //           (item) =>
+  //             item.kichthuoc === item1.kichthuoc &&
+  //             item.mausac === item1.mausac &&
+  //             item.masanpham === item1.masanpham &&
+  //             item.mota === item1.mota &&
+  //             item.loaisp === item1.loaisp &&
+  //             item.chatlieu === item1.chatlieu
+  //         );
+  //         return existingItem ? existingItem : item1;
+  //       });
+  //       setTTCTSP(dataFake);
+  //     } else {
+  //       setTTCTSP(datatam1);
+  //     }
+  //   }
+
+  //   setValidated(true); // Set form validated state to true
+  // };
+
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
@@ -193,13 +284,50 @@ const ModalQLSP = (props) => {
               loaisp: TTSanPham.loaisp,
               chatlieu: TTSanPham.chatlieu,
               img: [], // Added missing property img
+              soluongms: 1,
+              checkhiden: false,
             }));
         }
         return [];
       });
 
+      // Đếm số lượng sản phẩm theo màu sắc
+      const colorCounts = dataTam.reduce((acc, product) => {
+        if (acc[product.mausac]) {
+          acc[product.mausac]++;
+        } else {
+          acc[product.mausac] = 1;
+        }
+        return acc;
+      }, {});
+
+      // Cập nhật soluongms cho mỗi sản phẩm dựa trên màu sắc
+      const datatam2 = dataTam.map((item) => ({
+        ...item,
+        soluongms: colorCounts[item.mausac],
+      }));
+
+      // Nhóm sản phẩm theo màu sắc
+      const groupedByColor = datatam2.reduce((acc, product) => {
+        if (!acc[product.mausac]) {
+          acc[product.mausac] = [];
+        }
+        acc[product.mausac].push(product);
+        return acc;
+      }, {});
+
+      // Đặt checkhiden=true cho sản phẩm đầu tiên và checkhiden=false cho các sản phẩm còn lại
+      const datatam1 = Object.values(groupedByColor).flatMap((products) => {
+        return products.map((product, index) => ({
+          ...product,
+          checkhiden: index === 0,
+        }));
+      });
+
+      console.log(datatam1);
+      // Kiểm tra sản phẩm đã tồn tại trong TTCTSP hay chưa
       if (TTCTSP.length > 0) {
-        const dataFake = dataTam.map((item1) => {
+        const dataFake = datatam1.map((item1) => {
           const existingItem = TTCTSP.find(
             (item) =>
               item.kichthuoc === item1.kichthuoc &&
@@ -213,7 +341,7 @@ const ModalQLSP = (props) => {
         });
         setTTCTSP(dataFake);
       } else {
-        setTTCTSP(dataTam);
+        setTTCTSP(datatam1);
       }
     }
 
@@ -354,6 +482,8 @@ const ModalQLSP = (props) => {
           }
 
           toast.success("thêm thành công !");
+          props.setShow(0);
+          props.setload(!props.load);
         } catch (error) {
           toast.error("gặp lỗi:", error);
         }
@@ -364,6 +494,7 @@ const ModalQLSP = (props) => {
       toast.error("Hãy chọn ít nhất một sản phẩm!");
     }
   };
+
   const HandleOnLoading = () => {
     setloaduseE(!loaduseE);
   };
@@ -644,16 +775,7 @@ const ModalQLSP = (props) => {
                     />
                   </td>
                   <td>{index + 1}</td>
-                  <td>
-                    <input
-                      className="w-100 mt-3"
-                      type="text"
-                      value={item.mactsp}
-                      maxLength="20"
-                      name="mactsp"
-                      onChange={(event) => handleOnChange(event, item)}
-                    />
-                  </td>
+                  <td>{item.mactsp}</td>
                   <th>{item.mausac}</th>
                   <th>{item.kichthuoc}</th>
                   <td>
@@ -674,7 +796,7 @@ const ModalQLSP = (props) => {
                       onChange={(event) => handleOnChange(event, item)}
                     />
                   </td>
-                  <td>
+                  <td rowSpan={item.soluongms} hidden={!item.checkhiden}>
                     <div className="row">
                       {item.img.length > 0 &&
                         item.img.map((p, index) => (

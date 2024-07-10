@@ -177,7 +177,6 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
 
       <div className="form-group">
         <label className="label" htmlFor="gioiTinh">
-          {" "}
           Trạng thái:
         </label>
         <select

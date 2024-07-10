@@ -420,6 +420,8 @@ namespace AppAPI.Controllers
 									.ToList(),
 							chatLieu = _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
 							loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
+							coAo = _dbcontext.CoAos.Where(p => p.Id == a.idCoAo).Select(p => p.ten).FirstOrDefault(),
+							IDCoAo = a.idCoAo,
 						})
 						.ToListAsync();
 
@@ -521,6 +523,7 @@ namespace AppAPI.Controllers
                                   idsp = a.IDSanPham,
                                   tenchatlieu = Tenchatlieu,
 								  tencoao = tenCoAo,
+								  mactsp = a.Ma,
 								  GiaBan = a.GiaBan,
                                   SoLuong = a.SoLuong,
 								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
@@ -535,7 +538,7 @@ namespace AppAPI.Controllers
 								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
                                   kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
                                   img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
-                                  trangthai = true
+                                  trangthai = a.TrangThai,
                               }).ToList();
             return Ok( dsctspview);
 		}
@@ -633,8 +636,8 @@ namespace AppAPI.Controllers
 					var sanpham = new SanPham
 					{
 						ID = Guid.NewGuid(),
-						Ten = DataThem.tenSanpham,
-						Ma = DataThem.ma,
+						Ten = DataThem.tenSanpham.ToUpper(),
+						Ma = DataThem.ma.ToUpper(),
 						MoTa = DataThem.mota,
 						TrangThai = 2,
 						IDLoaiSP = DataThem.idloaisp,
@@ -647,7 +650,7 @@ namespace AppAPI.Controllers
 						var ctsp = new ChiTietSanPham
 						{
 							ID = Guid.NewGuid(),
-							Ma = item.ma,
+							Ma = item.ma.ToUpper(),
 							SoLuong = item.soluong,
 							GiaBan = item.giaban,
 							NgayTao = DateTime.Now,
@@ -687,8 +690,101 @@ namespace AppAPI.Controllers
 			}
 		}
 
+        [HttpDelete("deleteSanPham")]
+        public async Task<IActionResult> DeleteSanPham(Guid id)
+        {
+			try
+			{
+				var check = await _dbcontext.ChiTietSanPhams.FirstOrDefaultAsync(p => p.IDSanPham == id);
+				if (check != null)
+				{
+					return BadRequest("Cần xóa các chi tiết sản phẩm trước khi xóa sản phẩm");
+				}
+				var sp = await _dbcontext.SanPhams.FindAsync(id);
+				if (sp == null)
+				{
+					return BadRequest("Sản phẩm không tồn tại");
+				}
+				_dbcontext.SanPhams.Remove(sp);
+				await _dbcontext.SaveChangesAsync();
+				return Ok($"Xóa thành công sản phẩm {sp.Ma} ");
 
+			}
+			catch (Exception)
+			{
 
+				return BadRequest("Sản phẩm đã được liên kết không thể xóa");
+			}
+        }
+
+		[HttpDelete("deleteChitietSanPham")]
+		public async Task<IActionResult> DeleteChitietSanPham(Guid id)
+		{
+			try
+			{
+				var check = await _dbcontext.ChiTietHoaDons.FirstOrDefaultAsync(p => p.IDCTSP == id);
+				if (check != null)
+				{
+					return BadRequest("Sản phầm đã được bán không thể xóa");
+				}
+				var check1 = await _dbcontext.ChiTietGioHangs.FirstOrDefaultAsync(p => p.IDCTSP == id);
+				if (check1 != null)
+				{
+					return BadRequest("Sản phầm đã được có trong giỏ hàng không thể xóa");
+				}
+				var ctsp = await _dbcontext.ChiTietSanPhams.FindAsync(id);
+				if (ctsp == null)
+				{
+					return BadRequest("Sản phẩm không tồn tại");
+				}
+				var listAnh = await _dbcontext.Anhs.Where(p => p.IDChitietsanpham == id).ToListAsync();
+				foreach (var item in listAnh)
+				{
+					_dbcontext.Anhs.Remove(item);
+				}
+				var listkm = await _dbcontext.KhuyenMaiCTSanPhams.Where(p => p.IdChiTietSanPham == id).ToListAsync();
+				foreach (var item in listkm)
+				{
+					_dbcontext.KhuyenMaiCTSanPhams.Remove(item);
+				}
+				_dbcontext.ChiTietSanPhams.Remove(ctsp);
+				await _dbcontext.SaveChangesAsync();
+				return Ok($"Xóa thành công sản phẩm {ctsp.Ma} ");
+
+			}
+			catch (Exception)
+			{
+
+				return BadRequest("Sản phẩm đã được liên kết không thể xóa");
+			}
+		}
+
+		[HttpPut("UpdateSanPhamQLSP")]
+		public async Task<IActionResult> DeleteChitietSanPham(Guid id , string ten,string ma,string mota,Guid loaisp,Guid chatlieu,Guid coao)
+		{
+			try
+			{
+				var sp = await _dbcontext.SanPhams.FindAsync(id);
+				if (sp == null) return BadRequest("San phầm không tồn tại");
+				var check = await _dbcontext.SanPhams.FirstOrDefaultAsync(p => (p.Ten.ToLower().Trim() == ten.ToLower().Trim() && p.ID != id) || (p.Ma.ToLower().Trim() == ma.ToLower().Trim() && p.ID != id));
+				if (check != null) return BadRequest("Tên hoặc mã sản phầm bị trùng khớp với sản phẩm khác");
+				sp.Ten = ten.ToUpper();
+				sp.Ma = ma.ToUpper();
+				sp.MoTa = mota;
+				sp.IDLoaiSP = loaisp;
+				sp.IDChatLieu = chatlieu;
+				sp.idCoAo = coao;
+				_dbcontext.SanPhams.Update(sp);
+				await _dbcontext.SaveChangesAsync();
+				return Ok("Sửa thành công sản phẩm");
+			}
+			catch (Exception)
+			{
+
+				return BadRequest("Sản phẩm không thể sửa");
+			}
+
+		}
 		#endregion
 	}
 }

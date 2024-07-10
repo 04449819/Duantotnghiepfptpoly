@@ -7,6 +7,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import ModalQLSP from "./ModalQLSP";
+import UpdateSanPham from "./UpdateSanPham";
+import ModalSuaSanPham from "./ModalSuaSanPham";
 const QuanLySanPham = () => {
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(10000);
@@ -15,12 +17,13 @@ const QuanLySanPham = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [inputsearch, setInputSearch] = useState("");
-  const [show, setShow] = useState(false);
-
+  const [show, setShow] = useState(0);
+  const [dataupdate, setdataupdate] = useState({});
+  const [load, setload] = useState(false);
   useEffect(() => {
     getdata(page, 0);
     console.log(use);
-  }, []);
+  }, [load]);
   const getdata = async (page, trangthai) => {
     try {
       const res = await axios.get(
@@ -95,8 +98,27 @@ const QuanLySanPham = () => {
     }
   };
 
+  const HandleOnclickUpdateSp = (item) => {
+    console.log(item);
+    setdataupdate(item);
+    setShow(2);
+  };
+
+  const HandleOnclickDeleteSP = async (item) => {
+    try {
+      var res = await axios.delete(
+        `https://localhost:7095/api/SanPham/deleteSanPham?id=${item.id}`
+      );
+
+      toast.success(res.data);
+      setload(!load);
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+  };
+
   const use = useSelector((use) => use.user.User);
-  if (show === false) {
+  if (show === 0) {
     return (
       <div className="quanlysanpham">
         <div>
@@ -204,7 +226,7 @@ const QuanLySanPham = () => {
             <Button
               disabled={use.ten === "admin" ? false : true}
               variant="primary"
-              onClick={() => setShow(true)}
+              onClick={() => setShow(1)}
             >
               Thêm sản phẩm
             </Button>
@@ -219,11 +241,11 @@ const QuanLySanPham = () => {
                   <th>STT</th>
                   <th>Mã sản phấm</th>
                   <th>Tên sản pẩm</th>
-                  <th>Loại sản phẩm</th>
-                  <th>Chất liệu</th>
-                  <th>Mô tả</th>
+                  <th style={{ width: "50px" }}>Loại sản phẩm</th>
+                  <th style={{ width: "70px" }}>Chất liệu</th>
+                  <th style={{ width: "70px" }}>Mô tả</th>
                   <th>Trạng thái</th>
-                  <th>Hành động</th>
+                  <th style={{ width: "340px" }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -238,7 +260,25 @@ const QuanLySanPham = () => {
                       <td>{item.moTa}</td>
                       <td style={{ color: item.color }}>{item.trangThai}</td>
                       <td>
-                        <Button variant="primary">Thông tin</Button>
+                        <Button
+                          // disabled={use.ten === "admin" ? false : true}
+                          variant="info"
+                          onClick={() => HandleOnclickUpdateSp(item)}
+                        >
+                          Thông tin
+                        </Button>
+                        <ModalSuaSanPham
+                          load={load}
+                          setload={setload}
+                          item={item}
+                        />
+                        <Button
+                          onClick={() => HandleOnclickDeleteSP(item)}
+                          variant="danger"
+                          className="ms-2"
+                        >
+                          Xóa
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -253,10 +293,16 @@ const QuanLySanPham = () => {
         </div>
       </div>
     );
+  } else if (show === 1) {
+    return (
+      <div>
+        <ModalQLSP setload={setload} load={load} setShow={setShow} />
+      </div>
+    );
   } else {
     return (
       <div>
-        <ModalQLSP setShow={setShow} />
+        <UpdateSanPham dataupdate={dataupdate} setShow={setShow} />
       </div>
     );
   }

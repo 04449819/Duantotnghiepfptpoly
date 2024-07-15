@@ -67,8 +67,24 @@ namespace AppAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMauSac(Guid id)
         {
-            var loaiSP = await service.DeleteMauSac(id);
-            return Ok(loaiSP);
+            var ms = await service.DeleteMauSac(id);
+            switch (ms)
+            {
+                case 0:
+					return BadRequest("Màu sắc đã được sử dụng trong sản phẩm");
+					
+				case 1:
+					return Ok("Xóa thành công");
+			
+				case 2:
+					return BadRequest("Không tìm thấy màu sắc cần xóa");
+					
+				default:
+					return BadRequest("Xóa thất bại");
+					
+            }
+
+            
         }
         #endregion
 

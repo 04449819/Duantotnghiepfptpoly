@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
@@ -7,20 +7,22 @@ import { Row } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { SetLoading } from "../../../../../Rudux/Reducer/LoadingSlice";
-const ModalChatLieu = (props) => {
-  const [show, setShow] = useState(false);
-
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+const ModalSuaSanPhamChiTiet = (props) => {
   const handleClose = () => {
-    setShow(false);
+    props.setShow(false);
     props.setloaduseE(!props.loaduseE);
   };
-  const handleShow = () => setShow(true);
 
-  const [data, setdata] = useState({
-    ten: props.item !== undefined ? props.item.ten : "",
-    trangThai: props.item !== undefined ? props.item.trangThai : "",
-  });
+  // const [data, setdata] = useState(() => ({
+  //   id: props.item?.id || "",
+  //   trangThai: props.item?.trangthai || "",
+  //   soluong: props.item?.soluong || "",
+  //   giaban: props.item?.giaban || "",
+  // }));
+
+  // console.log(props.item);
+  // console.log(data);
 
   const [validated, setValidated] = useState(false);
 
@@ -31,55 +33,31 @@ const ModalChatLieu = (props) => {
       event.stopPropagation();
     }
     if (form.checkValidity() === true) {
-      props.item === undefined
-        ? Postdata(data.ten, data.trangThai)
-        : updateData(props.item.id, data.ten, data.trangThai);
+      updateData(
+        props.data.id,
+        props.data.giaban,
+        props.data.soluong,
+        props.data.trangThai
+      );
     }
     event.preventDefault();
     setValidated(true);
   };
 
   const dispath = useDispatch();
-  const Postdata = async (ten, trangthai) => {
-    dispath(SetLoading(true));
-    setTimeout(async () => {
-      try {
-        const res = await axios.post(
-          `https://localhost:7095/api/ChatLieu/ThemChatLieu?ten=${ten}&trangthai=${trangthai}`
-        );
-        console.log(res.data);
-        if (res.data !== null) {
-          toast.success("Thêm chất liệu thành công");
-          dispath(SetLoading(false));
-        } else {
-          toast.error("Thêm chất liệu thất bại");
-        }
-        dispath(SetLoading(false));
-      } catch (error) {
-        toast.error("Thêm chất liệu thất bại");
-        dispath(SetLoading(false));
-      }
-    }, 3000);
-  };
 
-  const updateData = async (id, ten, trangthai) => {
+  const updateData = async (id, giaBan, soLuong, trangthai) => {
     //https://localhost:7095/api/ChatLieu/0dc14d36-e00d-4cc7-bf92-0045c66861a2?ten=V%E1%BA%A3i%20Jean&trangthai=1
     dispath(SetLoading(true));
     setTimeout(async () => {
       try {
         const res = await axios.put(
-          `https://localhost:7095/api/ChatLieu/${id}?ten=${ten}&trangthai=${trangthai}`
+          `https://localhost:7095/api/SanPham/UpdateChiTietSanPhamQLSP?id=${id}&soLuong=${soLuong}&giaBan=${giaBan}&trangThai=${trangthai}`
         );
-        console.log(res.data);
-        if (res.data !== null) {
-          toast.success("Sửa chất liệu thành công");
-          dispath(SetLoading(false));
-        } else {
-          toast.error("Sửa chất liệu thất bại");
-        }
+        toast.success(`${res.data}`);
         dispath(SetLoading(false));
       } catch (error) {
-        toast.error("Sửa chất liệu thất bại");
+        toast.error(`Gặp lỗi : ${error.response.data}`);
         dispath(SetLoading(false));
       }
     }, 3000);
@@ -87,45 +65,66 @@ const ModalChatLieu = (props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "+" : "Sửa"}
-      </Button>
-
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={props.show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {props.item === undefined ? "Thêm chất liệu" : "Sửa chất liệu"}
-          </Modal.Title>
+          <Modal.Title>Thông tin sản phẩm</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group as={Col} md="6" controlId="validationCustom03">
-              <Form.Label>Tên chất liệu</Form.Label>
+            <Form.Group
+              as={Col}
+              md="6"
+              className="mb-3"
+              controlId="validationCustom03"
+            >
+              <Form.Label>Số lượng</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Kích thước"
+                type="number"
+                placeholder="Số lượng"
+                min="1"
+                max="10000"
                 required
-                value={data.ten}
-                onChange={(e) => setdata({ ...data, ten: e.target.value })}
+                value={props.data.soluong}
+                onChange={(e) =>
+                  props.setdata({ ...props.data, soluong: e.target.value })
+                }
               />
               <Form.Control.Feedback type="invalid">
-                Tên chất liệu không được bỏ trống.
+                Số lượng phải nằm trong khoảng 1000 - 10000
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="6" controlId="validationCustom03">
+              <Form.Label className="mt-3">Gía bán</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Gía bán"
+                min="1"
+                max="100000000"
+                required
+                value={props.data.giaban}
+                onChange={(e) =>
+                  props.setdata({ ...props.data, giaban: e.target.value })
+                }
+              />
+              <Form.Control.Feedback type="invalid">
+                Gía bán phải nằm trong khoảng 0 - 100000000
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
+              <Form.Label className="mt-4">Trạng thái</Form.Label>
               <Form.Select
                 style={{ width: "40%" }}
-                className="mt-5"
                 aria-label="Default select example"
-                value={data.trangThai}
+                value={props.data.trangThai}
                 onChange={(e) =>
-                  setdata({ ...data, trangThai: e.target.value })
+                  props.setdata({ ...props.data, trangThai: e.target.value })
                 }
                 required
               >
                 <option value="">Trạng thái</option>
                 <option value="1">Đang sử dụng</option>
                 <option value="0">Ngưng sử dụng</option>
+                <option value="2">Quét QR</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">
                 Trạng thái không được bỏ trống.
@@ -151,4 +150,4 @@ const ModalChatLieu = (props) => {
   );
 };
 
-export default ModalChatLieu;
+export default ModalSuaSanPhamChiTiet;

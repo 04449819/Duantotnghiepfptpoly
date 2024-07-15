@@ -5,12 +5,18 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ModalThemSanPhamChiTiet from "./ModalThemSanPhamChiTiet";
+import ModalSuaSanPhamChiTiet from "./ModalSuaSanPhamChiTiet";
+import GetQRChiTietSp from "./GetQRChiTietSp";
 
 const UpdateSanPham = (props) => {
   const [show, setShow] = useState(false);
+  const [showsua, setShowSua] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const [loaduseE, setloaduseE] = useState(false);
   const [dataKT, setdataKT] = useState([]);
   const [dataMS, setdataMS] = useState([]);
+  const [datasua, setdatasUA] = useState({});
+  const [isSanPhamQR, setIDSanPhamQR] = useState("");
   const [TTSanPham, setTTSanPham] = useState({
     id: props.dataupdate.id,
     ten: props.dataupdate.ten,
@@ -28,6 +34,7 @@ const UpdateSanPham = (props) => {
 
   const HandleOnclickBack = () => {
     props.setShow(0);
+    props.setload(!props.load);
   };
 
   useEffect(() => {
@@ -39,11 +46,10 @@ const UpdateSanPham = (props) => {
   const getChitietSp = async (IDSanPham) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${IDSanPham}`
+        `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp1?idsp=${IDSanPham}`
       );
 
       const datatam = res.data.map((data) => {
-        console.log(data);
         return {
           id: data.id,
           masanpham: props.dataupdate.ma,
@@ -61,7 +67,41 @@ const UpdateSanPham = (props) => {
           trangthai: data.trangthai,
         };
       });
-      setTTCTSP(datatam);
+
+      // Đếm số lượng sản phẩm theo màu sắc
+      const slms = datatam.reduce((acc, product) => {
+        if (acc[product.mausac]) {
+          acc[product.mausac]++;
+        } else {
+          acc[product.mausac] = 1;
+        }
+        return acc;
+      }, {});
+
+      // Cập nhật soluongms cho mỗi sản phẩm dựa trên màu sắc
+      const datatam2 = datatam.map((item) => ({
+        ...item,
+        soluongms: slms[item.mausac],
+      }));
+
+      // Nhóm sản phẩm theo màu sắc
+      const groupedByColor = datatam2.reduce((acc, product) => {
+        if (!acc[product.mausac]) {
+          acc[product.mausac] = [];
+        }
+        acc[product.mausac].push(product);
+        return acc;
+      }, {});
+
+      // Đặt checkhiden=true cho sản phẩm đầu tiên và checkhiden=false cho các sản phẩm còn lại
+      const datatam1 = Object.values(groupedByColor).flatMap((products) => {
+        return products.map((product, index) => ({
+          ...product,
+          checkhiden: index === 0,
+        }));
+      });
+
+      setTTCTSP(datatam1);
     } catch (error) {}
   };
 
@@ -105,6 +145,11 @@ const UpdateSanPham = (props) => {
       toast.error(`Gặp lỗi: ${error.response.data}`);
     }
   };
+
+  const HandleOnclicksua = (item) => {
+    setdatasUA(item);
+    setShowSua(true);
+  };
   return (
     <div className="w-100 mx-auto">
       <div className="text-center">
@@ -134,11 +179,12 @@ const UpdateSanPham = (props) => {
           <thead>
             <tr>
               <th style={{ width: "30px" }}>STT</th>
-              <th style={{ width: "150px" }}>Mã chi tiết sản phẩm</th>
+              <th style={{ width: "130px" }}>Mã chi tiết sản phẩm</th>
               <th style={{ width: "130px" }}>Màu sắc</th>
-              <th style={{ width: "130px" }}>Kích thước</th>
-              <th style={{ width: "130px" }}>Số lượng</th>
+              <th style={{ width: "100px" }}>Kích thước</th>
+              <th style={{ width: "100px" }}>Số lượng</th>
               <th style={{ width: "150px" }}>Giá bán</th>
+              <th style={{ width: "50px" }}>Trạng thái</th>
               <th style={{ width: "150px" }}>img</th>
               <th style={{ width: "290px" }}>Hành động</th>
             </tr>
@@ -153,19 +199,25 @@ const UpdateSanPham = (props) => {
                   <th>{item.kichthuoc}</th>
                   <td>{item.soluong}</td>
                   <td>{item.giaban}</td>
-                  <td>
+                  <td style={{ color: item.trangthai !== 0 ? "green" : "red" }}>
+                    {item.trangthai !== 0 ? "Đang bán" : "Ngưng kinh doanh"}
+                  </td>
+                  <td rowSpan={item.soluongms} hidden={!item.checkhiden}>
                     <div className="row">
                       {item.img.length > 0 &&
                         item.img.map((p, index) => (
                           <div
                             className="ms-2 col-6 mb-2 px-0 hover-container"
                             style={{
-                              width: "55px",
-                              height: "55px",
+                              width: "65px",
+                              height: "65px",
                             }}
                             key={`${index} - ${p}`}
                           >
-                            <img style={{ width: "55px" }} src={p} />
+                            <img
+                              style={{ width: "65px", height: "65px" }}
+                              src={p}
+                            />
                           </div>
                         ))}
                     </div>
@@ -173,11 +225,27 @@ const UpdateSanPham = (props) => {
                   <td>
                     <Button
                       variant={item.trangthai === 2 ? "warning" : "info"}
+                      onClick={() => {
+                        setShowQR(true);
+                        setIDSanPhamQR(item.id);
+                      }}
                       className="ms-2"
                     >
                       QR
                     </Button>
-                    <Button variant="primary" className="ms-2">
+                    <Button
+                      variant="primary"
+                      className="ms-2"
+                      onClick={() => {
+                        setdatasUA({
+                          id: item?.id,
+                          trangThai: item.trangthai,
+                          soluong: item.soluong,
+                          giaban: item.giaban,
+                        });
+                        setShowSua(true);
+                      }}
+                    >
                       Sửa
                     </Button>
                     <Button
@@ -193,7 +261,30 @@ const UpdateSanPham = (props) => {
           </tbody>
         </Table>
       </div>
-      <ModalThemSanPhamChiTiet show={show} setShow={setShow} />
+      <ModalThemSanPhamChiTiet
+        TTSanPham={TTSanPham}
+        TTCTSP={TTCTSP}
+        show={show}
+        setShow={setShow}
+        loaduseE={loaduseE}
+        setloaduseE={setloaduseE}
+      />
+      <ModalSuaSanPhamChiTiet
+        show={showsua}
+        setShow={setShowSua}
+        setdata={setdatasUA}
+        data={datasua}
+        loaduseE={loaduseE}
+        setloaduseE={setloaduseE}
+      />
+
+      <GetQRChiTietSp
+        show={showQR}
+        setShow={setShowQR}
+        value={isSanPhamQR}
+        loaduseE={loaduseE}
+        setloaduseE={setloaduseE}
+      />
     </div>
   );
 };

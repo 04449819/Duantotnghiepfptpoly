@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import { Row } from "react-bootstrap";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../../../Rudux/Reducer/LoadingSlice";
-const ModalChatLieu = (props) => {
+import { useDispatch } from "react-redux";
+import axios from "axios";
+const MoDalCoAo = (props) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -45,18 +45,18 @@ const ModalChatLieu = (props) => {
     setTimeout(async () => {
       try {
         const res = await axios.post(
-          `https://localhost:7095/api/ChatLieu/ThemChatLieu?ten=${ten}&trangthai=${trangthai}`
+          `https://localhost:7095/api/CoAo/ThemCoAo?ten=${ten}&trangthai=${trangthai}`
         );
         console.log(res.data);
         if (res.data !== null) {
-          toast.success("Thêm chất liệu thành công");
+          toast.success("Thêm cổ áo thành công");
           dispath(SetLoading(false));
         } else {
-          toast.error("Thêm chất liệu thất bại");
+          toast.error("Thêm cổ áo thất bại");
         }
         dispath(SetLoading(false));
       } catch (error) {
-        toast.error("Thêm chất liệu thất bại");
+        toast.error("Thêm cổ áo thất bại");
         dispath(SetLoading(false));
       }
     }, 3000);
@@ -68,18 +68,18 @@ const ModalChatLieu = (props) => {
     setTimeout(async () => {
       try {
         const res = await axios.put(
-          `https://localhost:7095/api/ChatLieu/${id}?ten=${ten}&trangthai=${trangthai}`
+          `https://localhost:7095/api/CoAo/${id}?ten=${ten}&trangthai=${trangthai}`
         );
         console.log(res.data);
         if (res.data !== null) {
-          toast.success("Sửa chất liệu thành công");
+          toast.success("Sửa cổ áo thành công");
           dispath(SetLoading(false));
         } else {
-          toast.error("Sửa chất liệu thất bại");
+          toast.error("Sửa cổ áo thất bại");
         }
         dispath(SetLoading(false));
       } catch (error) {
-        toast.error("Sửa chất liệu thất bại");
+        toast.error("Sửa cổ áo thất bại");
         dispath(SetLoading(false));
       }
     }, 3000);
@@ -94,22 +94,22 @@ const ModalChatLieu = (props) => {
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {props.item === undefined ? "Thêm chất liệu" : "Sửa chất liệu"}
+            {props.item === undefined ? "Thêm cổ áo" : "Sửa cổ áo"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group as={Col} md="6" controlId="validationCustom03">
-              <Form.Label>Tên chất liệu</Form.Label>
+              <Form.Label>Tên cổ áo</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Kích thước"
+                placeholder="Cổ áo"
                 required
                 value={data.ten}
                 onChange={(e) => setdata({ ...data, ten: e.target.value })}
               />
               <Form.Control.Feedback type="invalid">
-                Tên chất liệu không được bỏ trống.
+                Tên cổ áo không được bỏ trống.
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
@@ -151,4 +151,4 @@ const ModalChatLieu = (props) => {
   );
 };
 
-export default ModalChatLieu;
+export default MoDalCoAo;

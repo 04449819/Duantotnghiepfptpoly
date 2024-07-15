@@ -69,14 +69,13 @@ const QuanLyLoaiSanPham = () => {
         const res = await axios.delete(
           `https://localhost:7095/api/LoaiSP/delete/${item.id}`
         );
-        console.log(res);
-        toast.success(`đã xóa thành công ${item.ten}`);
+        toast.success(`đã xóa thành công`);
         setInputSearch("");
         dispath(SetLoading(false));
         getData(1, "", 2);
         setPageNumber(1);
       } catch (error) {
-        toast.error(`xóa không thành công ${item.ten}`);
+        toast.error(`Gặp lỗi: ${error.response.data}`);
         dispath(SetLoading(false));
       }
     }, 3000);

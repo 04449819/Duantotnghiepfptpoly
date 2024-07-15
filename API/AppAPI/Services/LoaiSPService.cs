@@ -14,18 +14,19 @@ namespace AppAPI.Services
             _context = new AssignmentDBContext();
         }
         #region LoaiSP
-        public async Task<bool> DeleteLoaiSP(Guid id)
+        public async Task<int> DeleteLoaiSP(Guid id)
         {
 
             try
             {
-                var lsp = await _context.LoaiSPs.FindAsync(id);
-                if (lsp == null) throw new Exception($"Không tìm thấy Loại sản phẩm: {id}");
-                // Check LoaiSP đag đc sử dụng k
-                if (_context.SanPhams.Any(c => c.IDLoaiSP == id)) return false;
-                _context.LoaiSPs.Remove(lsp);
+				var check = await _context.SanPhams.FirstOrDefaultAsync( p => p.IDLoaiSP == id);
+                if (check != null) return 0;
+				var lsp = await _context.LoaiSPs.FindAsync(id);
+                if (lsp == null) return 2;
+				// Check LoaiSP đag đc sử dụng k
+				_context.LoaiSPs.Remove(lsp);
                 await _context.SaveChangesAsync();
-                return true;
+                return 1;
             }
             catch (Exception)
             {

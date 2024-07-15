@@ -138,6 +138,12 @@ const ReactSideBar = () => {
                     >
                       Kích thước
                     </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/coao" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Cổ áo
+                    </MenuItem>
                   </SubMenu>
 
                   <hr />

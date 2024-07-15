@@ -145,7 +145,7 @@ function ModalSuaSanPham(props) {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              <Row className="mb-3">
+              {/* <Row className="mb-3">
                 <Form.Group as={Col} md="6" controlId="validationCustom03">
                   <Form.Label>Mã sản phẩm</Form.Label>
                   <Form.Control
@@ -163,7 +163,7 @@ function ModalSuaSanPham(props) {
                       : `Mã sản phẩm chưa đúng định dạng số, chữ, "-", "_"`}
                   </Form.Control.Feedback>
                 </Form.Group>
-              </Row>
+              </Row> */}
               <Row className="mb-3">
                 <Form.Group as={Col} md="6" controlId="validationCustom03">
                   <Form.Label>Mô tả</Form.Label>

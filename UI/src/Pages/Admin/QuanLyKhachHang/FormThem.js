@@ -16,7 +16,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
     ten: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    //confirmPassword: "",
     gioiTinh: "",
     ngaySinh: "",
     diaChi: "",
@@ -28,7 +28,8 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   const [messageName, setMessageName] = useState("");
   const [messagePhone, setMessagePhone] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
-  // const [messageAddress, setMessageAddress] = useState('');
+  const [messageDiaChi, setMessageDiaChi] = useState('');
+  const [messagePassword, setMessagePassword] = useState('');
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,44 +38,56 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
       [name]: value,
     });
   };
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispath(SetLoading(true));
-    // Perform form validation or submission logic here
-    console.log("Form submitted:", formData);
-    // Validate tên
-    if (formData.ten.length < 2) {
-      setMessageName("Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.");
+     // Perform form validation or submission logic here
+     console.log('Form submitted:', formData);
+     // Validate tên
+    // const nameRegex = /^[\p{L}\s]+$/u;
+     if ( formData.ten === undefined ) {
+       setMessageName('Tên không được để trống. Vui lòng nhập  ký tự.');
+       return;
+     } else if (formData.ten.length > 50) {
+       setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
+       return;
+     }else if (formData.ten.length < 2) {
+      setMessageName('Tên quá ngắn. Vui lòng nhập trên 2 ký tự.');
       return;
-    } else if (formData.ten.length > 50) {
-      setMessageName("Tên quá dài. Vui lòng nhập không quá 50 ký tự.");
+     }
+    //   else if (!nameRegex.test(formData.ten)) {
+    //    setMessageName('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
+    //    return;
+    //  }
+    ////////////////////////////////////////////
+     //  Validate Số emai
+     const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+     if (!emailRegex.test(formData.email)) {
+       setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
+       return;
+     }
+     // Validate Số Điện thoại
+     ///  /^[0-9]{10}$/
+     const phoneRegex = /^0\d{9}$/;
+     if (!formData.sdt || !phoneRegex.test(formData.sdt)) {
+         setMessagePhone(formData.sdt.length === 0 ? 
+             'Số điện thoại không được để trống.' : 
+             'Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.');
+         return;
+     }
+     // validate password
+     const passwordMinLength = 8;
+     if (!formData.password || formData.password.length < passwordMinLength) {
+         setMessagePassword(formData.password.length === 0 ? 
+             "Mật khẩu không được để trống." : 
+             `Mật khẩu quá ngắn. Vui lòng nhập ít nhất ${passwordMinLength} ký tự.`);
+         return;
+     }
+     // địa chỉ
+     if (!formData.address || formData.address.length === 0) {
+      setMessageDiaChi("Địa chỉ không được để trống.");
       return;
-    }
-    //  Validate Số emai
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setMessageEmail(
-        "Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng."
-      );
-      return;
-    }
-    // Validate Số Điện thoại
-    ///  /^[0-9]{10}$/
-    const phoneRegex = /^0\d{9}$/;
-    if (!phoneRegex.test(formData.sdt)) {
-      setMessagePhone(
-        "Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng ."
-      );
-      return;
-    }
-    /////vlidate địa chỉ
-    // if (formData.diaChi.trim() === '') {
-    //   setMessageAddress('Địa chỉ không được để trống.');
-    //   return;
-    // } else if (formData.diaChi.value < 10) {
-    //   setMessageAddress('Địa chỉ quá ngắn. Vui lòng nhập ít nhất 10 ký tự.');
-    //   return;
-    // }
+  }
     setTimeout(async () => {
       try {
         const response = await axios.post(
@@ -85,7 +98,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
             email: formData.email,
             sdt: formData.sdt,
             password: formData.password,
-            confirmPassword: formData.confirmPassword,
+            //confirmPassword: formData.confirmPassword,
             gioiTinh: formData.gioiTinh,
             ngaySinh: formData.ngaySinh,
             diaChi: formData.diaChi,
@@ -121,10 +134,10 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           onChange={handleChange}
         />
       </div>
-      <p>{messageName}</p>
+      <p style={{color : "red"}}>{messageName}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="password">
-          Password:
+          Mật khẩu:
         </label>
         <input
           className="text_input"
@@ -136,21 +149,8 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           required
         />
       </div>
+      <p style={{color : "red"}}>{ messagePassword}</p>
 
-      <div className="form-group">
-        <label className="label_name" htmlFor="confirmPassword">
-          Confirm Password:
-        </label>
-        <input
-          className="text_input"
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
-      </div>
       <div className="form-group">
         <label className="label_name" htmlFor="email">
           Email:
@@ -162,14 +162,14 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          required
+          
         />
       </div>
-      <p>{messageEmail}</p>
+      <p style={{color : "red"}}>{messageEmail}</p>
 
 
       <div className="form-group">
-       <label className='label' htmlFor="gioiTinh"> Trạng thái:</label>
+       <label className='label' htmlFor="gioiTinh"> Giới Tính:</label>
         <select className='text_input'
         id="gioiTinh"
         name="gioiTinh"
@@ -182,24 +182,9 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         <option value="1">Nữ</option>
        </select>
      </div>
-      {/* <div className="form-group">
-        <label className="label_name" htmlFor="gioiTinh">
-          Gioi tinh:
-        </label>
-        <input
-          className="text_input"
-          type="text"
-          id="gioiTinh"
-          name="gioiTinh"
-          value={formData.gioiTinh}
-          onChange={handleChange}
-          required
-        />
-      </div> */}
-      <p>{messageEmail}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="ngaySinh">
-          Ngay sinh:
+          Ngày sinh:
         </label>
         <input
           className="text_input"
@@ -225,7 +210,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           required
         />
       </div>
-      {/* <p>{messageAddress}</p> */}
+       <p>{messageDiaChi}</p> 
       <div className="form-group">
         <label className="label_name" htmlFor="sdt">
           Số Điện Thoại:
@@ -239,11 +224,10 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           onChange={handleChange}
         />
       </div>
-      <p>{messagePhone}</p>
-
+      <p style={{color : "red"}}>{messagePhone}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="diemTich">
-          Diem Tich:
+          Điểm tích:
         </label>
         <input
           className="text_input"
@@ -269,23 +253,6 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         <option value="1">Không hoạt động</option>
        </select>
      </div>
-
-
-
-      {/* <div className="form-group">
-        <label className="label_name" htmlFor="trangThai">
-          Trang Thai:
-        </label>
-        <input
-          className="text_input"
-          type="text"
-          id="trangThai"
-          name="trangThai"
-          value={formData.trangThai}
-          onChange={handleChange}
-          required
-        />
-      </div> */}
       <button type="submit" className="submit-button">
         Submit
       </button>

@@ -45,7 +45,7 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
     // Perform form validation or submission logic here
     console.log("Form submitted:", formData);
     // Validate tên
-    const nameRegex = /^[A-Za-z\s]+$/;
+    const nameRegex = /^[\p{L}\s]+$/u;
     if (formData.name.length < 2) {
       setMessageName("Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.");
       return;
@@ -57,7 +57,7 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
       return;
     }
     //  Validate Số emai
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       setMessageEmail(
         "Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng."
@@ -113,7 +113,7 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
     <form onSubmit={handleSubmit} className="TextThem">
       <div>
         <label className="label" htmlFor="name">
-          Name:
+          Tên:
         </label>
         <input
           className="text_input"
@@ -122,13 +122,13 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          required
+          
         />
       </div>
-      <p>{messageName}</p>
+      <p style={{color : "red"}}>{messageName}</p>
       <div>
         <label className="label" htmlFor="password">
-          password:
+          Mật khẩu:
         </label>
         <input
           className="text_input"
@@ -137,7 +137,7 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          required
+         
         />
       </div>
       <div>
@@ -151,10 +151,10 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          required
+         
         />
       </div>
-      <p>{messageEmail}</p>
+      <p style={{color : "red"}}>{messageEmail}</p>
       <div>
         <label className="label" htmlFor="sdt">
           sdt:
@@ -166,10 +166,10 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           name="sdt"
           value={formData.sdt}
           onChange={handleChange}
-          required
+         
         />
       </div>
-      <p>{messagePhone}</p>
+      <p style={{color : "red"}}>{messagePhone}</p>
       <div>
         <label className="label" htmlFor="diachi">
           diaChi:
@@ -181,7 +181,7 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           name="diachi"
           value={formData.diaChi}
           onChange={handleChange}
-          required
+         
         />
       </div>
 
@@ -203,49 +203,6 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
           <option value="1">Không hoạt động</option>
         </select>
       </div>
-
-      {/* <div>
-        <label className='label' htmlFor="trangThai">trangThai:</label>
-        <input className='text_input'
-          type="text"
-          id="trangThai"
-          name="trangThai"
-          value={formData.trangThai}
-          onChange={handleChange}
-          required
-        />
-      </div> */}
-
-      <div className="form-group">
-        <label className="label" htmlFor="vaitro">
-          {" "}
-          Vai trò:
-        </label>
-        <select
-          className="text_input"
-          id="vaitro"
-          name="vaitro"
-          value={formData.vaitro}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Chọn vai trò</option>
-          <option value="0">Nhân Viên</option>
-          <option value="1">Nghỉ việc</option>
-        </select>
-      </div>
-
-      {/* <div>
-        <label className='label' htmlFor="idvaitro">vaitro:</label>
-        <input className='text_input'
-          type="text"
-          id="idvaitro"
-          name="idvaitro"
-          value={formData.idvaitro}
-          onChange={handleChange}
-          required
-        />
-      </div> */}
       <div className="button-container">
         <button type="submit" className="submit-button">
           Submit
@@ -268,14 +225,6 @@ const MyModalEdit = ({ show, handleClose, handleSuccess, initialFormData }) => {
           initialFormData={initialFormData}
         ></EditQuanLyNV>
       </Modal.Body>
-      {/* <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer> */}
     </Modal>
   );
 };

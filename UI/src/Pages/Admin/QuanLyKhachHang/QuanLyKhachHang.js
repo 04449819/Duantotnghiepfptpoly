@@ -79,7 +79,8 @@ const QuanLyKhachHang = () => {
         ngaySinh:item.ngaySinh,
         sdiaChidt:item.diaChi,
         gioiTinh:item.gioiTinh,
-        sdt: item.sdt
+        sdt: item.sdt,
+        trangThai: item.trangThai
       });
   
     }
@@ -91,10 +92,13 @@ const QuanLyKhachHang = () => {
 
  const handleClickSearch = async (event) =>{
   event.preventDefault();
-  dispath(SetLoading(true));
-  if (inputValue == ""){
-    handleReload()
+ 
+ 
+  if (inputValue === ""){
+   
+    handleReload();
   }else{
+    dispath(SetLoading(true));
     setTimeout( async () => {
       try {
         let res;
@@ -102,12 +106,17 @@ const QuanLyKhachHang = () => {
         const phoneRegex = /^[0-9]{10,11}$/;
         if (phoneRegex.test(inputValue)) {
             res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?sdt=${inputValue}`);
-        } else {
+        } else  {
           res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
-        }
+        } 
         console.error('success', res.data);
         setdata(res.data);
          dispath(SetLoading(false));
+         if(res.data.length < 1){
+          toast.error("Không tìm thấy khách hàng ")
+          dispath(SetLoading(false));
+           return;
+         } 
       } catch (error) {
          dispath(SetLoading(false));
         console.error('Error fetching promotions:', error);
@@ -126,6 +135,7 @@ const QuanLyKhachHang = () => {
           sdiaChidt: item.diaChi,
           gioiTinh: item.gioiTinh,
           sdt: item.sdt,
+          trangThai:item.trangThai,
         });
 
       }
@@ -194,12 +204,8 @@ const QuanLyKhachHang = () => {
                     <td>{item.email}</td>
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
-                    <td>{item.diemTich == null ? "0" : item.diemTich}</td>
-                    <td style={{ color: item.trangThai === 1 ? "green" : "red" }}>
-                      {item.trangThai == null || item.trangThai === 0
-                        ? "không hoạt đông"
-                        : "đang hoạt động"}
-                    </td>
+                    <td>{item.diemTich }</td>
+                    <td   style={{ color: item.trangThai === 1 ? "green" : "red" }}>{ item.trangThai === 0 ?"Đang Hoạt động" : "Không hoạt động" }</td>
 
                     {
                       <td>

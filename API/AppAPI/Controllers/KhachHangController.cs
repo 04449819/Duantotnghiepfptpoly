@@ -50,10 +50,42 @@ namespace AppAPI.Controllers
         //}
         [Route("TimKiemKH")]
         [HttpGet]
-        public List<KhachHang> GetAllKhachHang(string? Ten, string? SDT)
+        public async Task<IActionResult> GetAllKhachHang(string? Ten, string? SDT)
         {
-            return _dbcontext.KhachHangs.Where(x=>x.SDT.Contains(SDT)|| x.Ten.Contains(Ten)|| x.SDT.Contains(SDT) || x.Ten.Contains(Ten)).ToList();
+            var kh = await _dbcontext.KhachHangs.Where(x => x.SDT.Contains(SDT) || x.Ten.Contains(Ten) || x.SDT.Contains(SDT) || x.Ten.Contains(Ten)).Select(p => new {
+                id = p.IDKhachHang,
+                Ten=p.Ten,
+                GioiTinh=p.GioiTinh,
+                NgaySinh=p.NgaySinh,
+                SDT=p.SDT,
+                DiemTich=p.DiemTich,
+                TrangThai=p.TrangThai,
+                DiaChi = _dbcontext.diaChiKhachHangs.FirstOrDefault(a=>a.KhachHangID==p.IDKhachHang && a.TrangThai==1).DiaChi,
+            }).ToListAsync();
+            return Ok(kh);
         }
+
+        //public Guid IDKhachHang { get; set; }
+        //[Required]
+        //public string Ten { get; set; }
+        //[Required]
+        //public string Password { get; set; }
+        //public int? GioiTinh { get; set; }
+        //public DateTime? NgaySinh { get; set; }
+        //[EmailAddress]
+        //public string? Email { get; set; }
+        //public string? SDT { get; set; }
+        //public int? DiemTich { get; set; }
+        //public int? TrangThai { get; set; }
+        //public virtual GioHang? GioHang { get; set; }
+        //public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
+        //public virtual IEnumerable<DiaChiKhachHang>? DiaChiKhachHangs { get; set; }
+
+
+
+
+
+
         [Route("GetById")]
         [HttpGet]
         public KhachHang GetById(Guid id)
@@ -128,7 +160,7 @@ namespace AppAPI.Controllers
             //kh.DiaChi=khv.DiaChi?.Trim();
             kh.SDT = khv.SDT?.Trim();
             kh.TrangThai=1;
-            kh.DiemTich = 0;
+            kh.DiemTich = kh.DiemTich;
             _dbcontext.KhachHangs.Add(kh);
             GioHang gh= new GioHang();
             gh.IDKhachHang=kh.IDKhachHang;
@@ -235,8 +267,8 @@ namespace AppAPI.Controllers
 			}
 			kh.Email = khv.Email?.Trim();
 			kh.SDT = khv.SDT?.Trim();
-			kh.TrangThai = 1;
-			kh.DiemTich = 0;
+			kh.TrangThai = khv.TrangThai;
+			kh.DiemTich = khv.DiemTich;
 			_dbcontext.KhachHangs.Add(kh);
 			GioHang gh = new GioHang();
 			gh.IDKhachHang = kh.IDKhachHang;

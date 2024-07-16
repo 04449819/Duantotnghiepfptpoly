@@ -98,17 +98,17 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
   return (
     <form onSubmit={handleSubmit}  className="TextThem">
       <div>
-        <label  className='label_name' htmlFor="name">Name:</label>
+        <label  className='label_name' htmlFor="name">Tên:</label>
         <input className='text_input'
           type="name"
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
-          required
+          
         />
       </div>
-      <p>{messageName}</p>
+      <p style={{color : "red"}}>{messageName}</p>
       <div>
         <label  className='label_name' htmlFor="ngaySinh">Ngày sinh:</label>
         <input className='text_input'
@@ -133,7 +133,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       </div>
   
       <div>
-        <label   className='label_name' htmlFor="Email">Email:</label>
+        <label className='label_name' htmlFor="Email">Email:</label>
         <input className='text_input'
           type="email"
           id="email"
@@ -143,7 +143,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           required
         />
       </div>
-      <p>{messageEmail}</p>
+      <p style={{color : "red"}}>{messageEmail}</p>
 
       <div>
         <label  className='label_name' htmlFor="sdt">Số điện thoại:</label>
@@ -153,10 +153,10 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           name="sdt"
           value={formData.sdt}
           onChange={handleChange}
-          required
+         
         />
       </div>
-      <p>{messagePhone}</p>
+      <p style={{color : "red"}}>{messagePhone}</p>
       <div>
         <label  className='label_name' htmlFor="sdiaChidt">Địa chỉ :</label>
         <input  className='text_input'
@@ -165,7 +165,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
           name="sdiaChidt"
           value={formData.sdiaChidt}
           onChange={handleChange}
-          required
+          
         />
       </div>
       <button type="submit" className="submit-button">Submit</button>

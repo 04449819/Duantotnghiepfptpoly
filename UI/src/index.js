@@ -30,6 +30,8 @@ import { Bounce, ToastContainer } from "react-toastify";
 import MauSac from "./Pages/Admin/QuanLySanPham/MauSac/MauSac";
 import KichThuoc from "./Pages/Admin/QuanLySanPham/KichThuoc/KichThuoc";
 import CoAo from "./Pages/Admin/QuanLySanPham/CoAo/CoAo";
+import CuaHang from "./Pages/User/CuaHang/CuaHang";
+import LienHe from "./Pages/User/LienHe/LienHe";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -40,6 +42,8 @@ root.render(
             <Route index element={<HomePage />} />
             <Route path="/dangki" element={<Dangki />} />
             <Route path="/quenmatkhau" element={<QuenMK />} />
+            <Route path="/cuahang" element={<CuaHang />} />
+            <Route path="/lienhe" element={<LienHe />} />
           </Route>
 
           <Route path="/admin" element={<AdminPage />}>

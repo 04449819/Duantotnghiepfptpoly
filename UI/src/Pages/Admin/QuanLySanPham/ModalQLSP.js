@@ -372,17 +372,16 @@ const ModalQLSP = (props) => {
             toast.error(`gặp lỗi: ${error.response.data}`);
             return;
           }
-          setTimeout(async () => {
-            try {
-              const response1 = await axios.post(
-                "https://localhost:7095/api/SanPham/addSanPhamQLSP",
-                DataThem
-              );
-            } catch (error) {
-              toast.error(`gặp lỗi: ${error.response.data}`);
-              return;
-            }
-          }, 3000);
+
+          try {
+            const response1 = await axios.post(
+              "https://localhost:7095/api/SanPham/addSanPhamQLSP",
+              DataThem
+            );
+          } catch (error) {
+            toast.error(`gặp lỗi: ${error.response.data}`);
+            return;
+          }
 
           toast.success("thêm thành công !");
           props.setShow(0);

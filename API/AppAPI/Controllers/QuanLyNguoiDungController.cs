@@ -29,15 +29,15 @@ namespace AppAPI.Controllers
         {
             LoginViewModel login = await service.Login(lg, password);
 
-            if (login.IsAccountLocked)
-            {
-                return Unauthorized(login.Message);
-            }
-            else if (login.Message != null) // Other error messages
-            {
-                ModelState.AddModelError(string.Empty, login.Message);
-                return BadRequest(ModelState);
-            }
+            //if (login.IsAccountLocked)
+            //{
+            //    return Unauthorized(login.Message);
+            //}
+            //else if (login.Message != null) // Other error messages
+            //{
+            //    ModelState.AddModelError(string.Empty, login.Message);
+            //    return BadRequest(ModelState);
+            //}
             return Ok(login);
         }
 

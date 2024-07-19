@@ -525,7 +525,7 @@ namespace AppAPI.Controllers
 					(idchatLieu == Guid.Empty || p.sp.IDChatLieu == idchatLieu) &&
 					(idcoAo == Guid.Empty || p.sp.idCoAo == idcoAo) &&
 					(trangthai == null || p.sp.TrangThai == trangthai) &&
-					(giaMin == 0 && giaMax == 0 || p.soluong >= Math.Min(giaMin, giaMax) && p.soluong <= Math.Max(giaMin, giaMax)))
+					(giaMin == 0 && giaMax == 10000 || p.soluong >= Math.Min(giaMin, giaMax) && p.soluong <= Math.Max(giaMin, giaMax)))
 				.ToList();
 
 			int totalProducts = query.Count();
@@ -580,6 +580,21 @@ namespace AppAPI.Controllers
 
 			return Ok(sanPhamPhangTrang);
 		}
+
+		[HttpGet("getSanPhamBanChay")]
+		public async Task<IActionResult> GetSanPhamBanChay()
+		{
+			var dssp = await _dbcontext.SanPhams.Take(7).ToListAsync();
+			return Ok(dssp);
+		}
+
+		//[HttpGet("getSanPhamLoaiSP")]
+		//public async Task<IActionResult> GetSanbyLoaiSanPhamBan()
+		//{
+		//	var dslsp = await (from a in _dbcontext.sa)
+
+		//	return Ok(dslsp);
+		//}
 
 		#endregion
 		#region ChitietSanPhamBanHangOflineKien

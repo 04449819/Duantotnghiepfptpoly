@@ -41,6 +41,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<AssignmentDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
 //builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
 builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
+builder.Services.AddScoped<IThongKeSanPhamService, ThongKeSanPhamService>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();
 builder.Services.AddScoped<IQuyDoiDiemServices, QuyDoiDiemServices>();
 builder.Services.AddScoped<IKhuyenMaiServices, KhuyenMaiServices>();
@@ -55,8 +56,11 @@ builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IThongKeService, ThongKeService>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
+
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IMailServices, MailServices>();
+
+
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 var app = builder.Build();

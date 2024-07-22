@@ -18,21 +18,21 @@ namespace AppAPI.Services
         public decimal DoanhThuNam(int year)
         {
             var nam = context.HoaDons.Where(hd => hd.NgayTao.Year == year).ToList();
-            decimal total = nam.Sum(hd => hd.TienShip);
+            decimal total =(int) nam.Sum(hd => hd.TongTien);
             return total;
         }
 
         public decimal DoanhThuNgay(DateTime date)
         {
             var ngay = context.HoaDons.Where(hd => hd.NgayTao.Date == date.Date).ToList();
-            decimal total = ngay.Sum(hd => hd.TienShip);
+            decimal total = (int)ngay.Sum(hd => hd.TongTien);
             return total;
         }
 
         public decimal DoanhThuThang(int month, int year)
         {
             var thang = context.HoaDons.Where(hd => hd.NgayTao.Month == month && hd.NgayTao.Year == year).ToList();
-            decimal total = thang.Sum(hd => hd.TienShip);
+            decimal total =(int)thang.Sum(hd => hd.TongTien);
             return total;
         }
 

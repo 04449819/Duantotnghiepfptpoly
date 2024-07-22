@@ -10,6 +10,7 @@ namespace AppAPI.Controllers
     public class ThongKeSanPhamController : ControllerBase
     {
         private readonly IThongKeSanPhamService service;
+        
 
         public ThongKeSanPhamController(IThongKeSanPhamService service)
         {
@@ -20,7 +21,7 @@ namespace AppAPI.Controllers
         [HttpGet("top10sanphamtrongngay")]
         public async Task<IActionResult> GetTop10SanphamTrongNgay([FromQuery] DateTime date)
         {
-            var top = await service.Top10SanPhamTrongNgay(date);
+            var top = await service.Top10SanPhamTrongNgay(date);  
             return Ok(top); 
         }
 

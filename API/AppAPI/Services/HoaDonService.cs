@@ -5,7 +5,11 @@ using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Security.Cryptography.Xml;
+using System.Text;
+
 namespace AppAPI.Services
 {
     public class HoaDonService : IHoaDonService
@@ -376,6 +380,10 @@ namespace AppAPI.Services
         {
             return reposChiTietHoaDon.GetAll().Where(x => x.IDHoaDon == idHoaDon).ToList();
         }
+        //public List<ChiTietHoaDon> GetThongtinHoaDon(Guid idHoaDon)
+        //{
+        //    return context.ChiTietHoaDons.Where(c => c.IDHoaDon == idHoaDon).ToList();
+        //}
 
         public List<HoaDon> GetAllHDCho()
         {
@@ -545,7 +553,6 @@ namespace AppAPI.Services
         //                  }).FirstOrDefault();
         //    return result;
         //}
-
         public HoaDon GetHoaDonById(Guid idhd)
         {
             return reposHoaDon.GetAll().FirstOrDefault(c => c.ID == idhd);
@@ -757,18 +764,47 @@ namespace AppAPI.Services
 
         public List<HoaDon> TimKiemVaLocHoaDon(string ten, int? loc)
         {
-            List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p => p.TenNguoiNhan.ToLower().Contains(ten.ToLower())).ToList();
+             string tenLowerCase = ten.ToLower();
+            ////    List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%")).ToList();
+            //    string tenLowerCase = ten.ToLower();
+            //List<HoaDon> timkiem = reposHoaDon.GetAll()
+            //    .Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%"))
+            //    .ToList();
+            List<HoaDon> timkiem = reposHoaDon.GetAll()
+       .Where(p => RemoveVietnameseSigns(p.TenNguoiNhan.ToLower()).StartsWith(RemoveVietnameseSigns(tenLowerCase)))
+       .ToList();
+
+            // Sắp xếp nếu có yêu cầu
             if (loc == 0)
             {
-                List<HoaDon> locTangDan = timkiem.OrderBy(p => p.NgayTao).ToList();
-                return locTangDan;
+                // Sắp xếp tăng dần theo NgayTao
+                return timkiem.OrderBy(p => p.NgayTao).ToList();
             }
             else if (loc == 1)
             {
-                List<HoaDon> locGiamDan = timkiem.OrderByDescending(p => p.NgayTao).ToList();
-                return locGiamDan;
+                // Sắp xếp giảm dần theo NgayTao
+                return timkiem.OrderByDescending(p => p.NgayTao).ToList();
             }
+
+            // Trả về danh sách đã tìm kiếm mà không sắp xếp
             return timkiem;
+        }
+        // Hàm loại bỏ dấu tiếng Việt
+        private string RemoveVietnameseSigns(string text)
+        {
+            text = text.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (var c in text)
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)

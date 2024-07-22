@@ -24,6 +24,8 @@ const ModalQLSP = (props) => {
   const [dataCL, setdataCL] = useState([]);
   const [dataLSP, setdataLSP] = useState([]);
   const [dataCoAo, setdataCoAo] = useState([]);
+  const [soluongchung, setsoluongchung] = useState(1000);
+  const [giachung, setgiachung] = useState(300000);
   const [TTSanPham, setTTSanPham] = useState({
     ten: "",
     ma: "",
@@ -178,6 +180,8 @@ const ModalQLSP = (props) => {
     if (form.checkValidity() === false) {
       event.stopPropagation(); // Stop further event propagation if form is invalid
     } else {
+      if (soluongchung < 1 || giachung < 1)
+        return toast.error("Số lượng và kích thước chung không được bé hơn 1");
       const dataTam = dataKT.flatMap((item) => {
         if (item.check) {
           return dataMS
@@ -186,8 +190,8 @@ const ModalQLSP = (props) => {
               id: Math.floor(Math.random() * 100000) + 1,
               masanpham: TTSanPham.ma,
               mactsp: `${TTSanPham.ma}-${Math.floor(Math.random() * 10000)}`,
-              soluong: 1,
-              giaban: 1000,
+              soluong: soluongchung,
+              giaban: giachung,
               check: true,
               kichthuoc: item.ten,
               mausac: item1.ten,
@@ -574,14 +578,23 @@ const ModalQLSP = (props) => {
                           border:
                             item.check === false
                               ? "1px solid black"
-                              : "3px solid blue",
+                              : "2px solid #007bff",
                           borderRadius: "5px",
                           marginBottom: "10px",
                           cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
                         }}
                         onClick={() => HandleOnclickMS(item)}
                       >
-                        <div style={{ backgroundColor: item.ma }}>
+                        <div
+                          style={{
+                            backgroundColor: item.ma,
+                            height: "25px",
+                            textAlign: "center",
+                            fontSize: "16px",
+                          }}
+                        >
                           {item.ma}
                         </div>
                       </div>
@@ -611,10 +624,12 @@ const ModalQLSP = (props) => {
                           border:
                             item.check === false
                               ? "1px solid black"
-                              : "3px solid blue",
+                              : "2px solid blue",
                           borderRadius: "5px",
                           marginBottom: "10px",
                           cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
                         }}
                         onClick={() => HandleOnclickKT(item)}
                       >
@@ -632,6 +647,25 @@ const ModalQLSP = (props) => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <hr className="my-3" />
+              <div className="d-flex ">
+                <span>Số lượng chung:</span>
+                <input
+                  className="ms-2"
+                  type="number"
+                  value={soluongchung}
+                  onChange={(event) => setsoluongchung(event.target.value)}
+                />
+              </div>
+              <div className="d-flex mt-3">
+                <span>Giá chung:</span>
+                <input
+                  className="ms-5"
+                  type="number"
+                  value={giachung}
+                  onChange={(event) => setgiachung(event.target.value)}
+                />
               </div>
             </div>
 

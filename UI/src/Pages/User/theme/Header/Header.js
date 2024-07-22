@@ -32,6 +32,10 @@ const Header = (props) => {
       }
     });
   };
+
+  const HandleOnclickGioHang = () => {
+    navigate("/giohang");
+  };
   return (
     <div className="Header">
       <div className="top-header ">
@@ -137,7 +141,7 @@ const Header = (props) => {
                   {/* <Link className="nav-link text-dark h5" to="/" target="blank"> */}
                   <button style={{ border: "none", backgroundColor: "white" }}>
                     <div className="mt-1">
-                      <FiShoppingCart />
+                      <FiShoppingCart onClick={HandleOnclickGioHang} />
                     </div>
                   </button>
 

@@ -442,7 +442,7 @@ namespace AppAPI.Controllers
 
             var query1 = _dbcontext.SanPhams
                       .Where(p => (idloaiSP.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDLoaiSP == idloaiSP) &&
-                                  (idchatLieu.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDChatLieu == idchatLieu) && (idcoAo.ToString() == "00000000-0000-0000-0000-000000000000" || p.idCoAo == idcoAo) && ((giaMin == 0 && giaMax == 0) || _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan >= giaMin && _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan <= giaMax));
+                                  (idchatLieu.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDChatLieu == idchatLieu) && (idcoAo.ToString() == "00000000-0000-0000-0000-000000000000" || p.idCoAo == idcoAo) && ((giaMin == 0 && giaMax == 0) || _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan >= Math.Min( giaMin,giaMax) && _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan <= Math.Max(giaMin, giaMax)));
 
             var query = query1.Where(p => p.TrangThai != 0);
 

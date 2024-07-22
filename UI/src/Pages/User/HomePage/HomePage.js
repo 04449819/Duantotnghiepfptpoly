@@ -18,6 +18,7 @@ const HomePage = () => {
     const res = await axios.get(
       "https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=1&productsPerPage=10"
     );
+    // console.log(res.data.sanPham);
     setdata(res.data.sanPham);
   };
 
@@ -61,6 +62,10 @@ const HomePage = () => {
 
   const Handleonclickchuyentrang = () => {
     navigate("/cuahang");
+  };
+
+  const Handleonclickchuyentrang1 = () => {
+    navigate("/chitietsanpham");
   };
 
   const products = [
@@ -111,9 +116,9 @@ const HomePage = () => {
       <div className="content1">
         <Carousel1 interval={3000}>
           <Carousel1.Item>
-            <Link to="/cuahang" className="btn">
+            <Link style={{ padding: "10px" }} to="/cuahang" className="btn">
               <img
-                style={{ width: "1550px", height: "600px" }}
+                style={{ width: "1500px", height: "600px" }}
                 src="https://media-fmplus.cdn.vccloud.vn/uploads/news/7742e2dd-1dd7-4459-a17e-b532079d7bc0.png"
                 alt="haha"
               />
@@ -127,9 +132,9 @@ const HomePage = () => {
             </Carousel1.Caption>
           </Carousel1.Item>
           <Carousel1.Item>
-            <Link to="/cuahang" className="btn">
+            <Link style={{ padding: "10px" }} to="/cuahang" className="btn">
               <img
-                style={{ width: "1550px", height: "600px" }}
+                style={{ width: "1500px", height: "600px" }}
                 src="https://media-fmplus.cdn.vccloud.vn/uploads/news/3eba0a63-ec4a-4195-994a-fede3d7b1d25.jpeg"
                 alt="haha"
               />
@@ -143,9 +148,9 @@ const HomePage = () => {
             </Carousel1.Caption>
           </Carousel1.Item>
           <Carousel1.Item>
-            <Link to="/cuahang" className="btn">
+            <Link style={{ padding: "10px" }} to="/cuahang" className="btn">
               <img
-                style={{ width: "1550px", height: "600px" }}
+                style={{ width: "1500px", height: "600px" }}
                 src="https://img.pikbest.com/origin/06/43/50/933pIkbEsT7AG.jpg!w700wp"
                 alt="haha"
               />
@@ -208,18 +213,23 @@ const HomePage = () => {
           </div>
           <div>
             <Slider {...settings}>
-              {products.map((product, index) => (
+              {data.map((product, index) => (
                 <div key={index}>
-                  <div
-                    style={{ width: "200px", height: "200px" }}
-                    className="homepage-top-khung"
+                  <button
+                    onClick={Handleonclickchuyentrang1}
+                    style={{ border: "none", backgroundColor: "#e1e1e1" }}
                   >
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      style={{ width: "150px", height: "200px" }}
-                    />
-                  </div>
+                    <div
+                      style={{ width: "200px", height: "200px" }}
+                      className="homepage-top-khung"
+                    >
+                      <img
+                        src={product.anhs[0].duongDan}
+                        alt={product.title}
+                        style={{ width: "150px", height: "200px" }}
+                      />
+                    </div>
+                  </button>
                 </div>
               ))}
             </Slider>

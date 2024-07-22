@@ -6,22 +6,29 @@
 }
 
 .product-list :first-child {
+  // border-left: 1px solid black !important;
   border: none !important;
+}
+.product-list {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
 }
 
 .product-image {
   width: 100%;
-  height: 200px;
+  height: 150px;
+  // border: none !important;
 }
 
 .product-title {
   margin-top: 10px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   color: black;
   font-weight: 100;
   font-family: "Roboto", sans-serif;
   opacity: 0.6;
+  // border: none;
 }
 .product-title:hover {
   color: black;
@@ -30,7 +37,7 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  padding: 20px;
+  padding: 10px 0px;
 }
 /* styles.css */
 /* styles.css */

@@ -4,6 +4,24 @@
   flex: 1;
   border-left: 1px solid black;
 }
+.tilte-delete {
+  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  position: relative;
+  p {
+    margin-left: 4px;
+    position: absolute;
+    top: -5px;
+    left: 1px;
+  }
+}
+.tilte-delete:hover {
+  color: red;
+
+  cursor: pointer;
+}
 
 .product-list :first-child {
   // border-left: 1px solid black !important;

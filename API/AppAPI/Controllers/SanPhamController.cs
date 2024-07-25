@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
@@ -273,8 +274,6 @@ namespace AppAPI.Controllers
             return Ok(thongTinSP);
 		}
 		#endregion
-
-
 
 		#region SanPhamBanHangOflineKien
 		[HttpGet("getAllSPBanHang")]
@@ -725,7 +724,6 @@ namespace AppAPI.Controllers
 			return Ok(dsctspview);
 		}
 		#endregion
-
 		#region add san pham 
 		[HttpPost("images")]
 		public async Task<IActionResult> UploadImages([FromForm] List<IFormFile> images)
@@ -1056,6 +1054,96 @@ namespace AppAPI.Controllers
 
 
 
+
+		#endregion
+
+		#region sanphambanhangonl
+		[HttpGet("getLoaiSPbanhangonl")]
+		public async Task<IActionResult> GetAllLSPSanPhamonl()
+		{
+			var listlSP = await (from lsp in _dbcontext.LoaiSPs
+								 where lsp.TrangThai == 1
+								 join sp in _dbcontext.SanPhams on lsp.ID equals sp.IDLoaiSP
+								 where sp.TrangThai != 0
+								 join spct in _dbcontext.ChiTietSanPhams on sp.ID equals spct.IDSanPham
+								 where spct.TrangThai != 0
+								 join a in _dbcontext.Anhs on spct.ID equals a.IDChitietsanpham
+								 where a.TrangThai != 0
+								 group new { lsp, a } by lsp.ID into g
+								 select new
+								 {
+									 id = g.Key,
+									 images = g.Select(x => x.a.DuongDan).ToList(),
+									 title = g.FirstOrDefault().lsp.Ten
+								 }).ToListAsync();
+
+			return Ok(listlSP);
+		}
+
+		[HttpGet("getSPbanhangonl")]
+		public async Task<IActionResult> GetAllSanPhamonl(Guid? loaiSanPham,int? sapxep, int currentPage, int productsPerPage)
+		{
+			
+			
+
+		
+
+			var listlSP = await (
+				from spct in _dbcontext.ChiTietSanPhams
+				where spct.TrangThai != 0 && spct.SoLuong > 0
+				join sp in _dbcontext.SanPhams on spct.IDSanPham equals sp.ID
+				join kt in _dbcontext.KichCos on spct.IDKichCo equals kt.ID
+				join a in _dbcontext.Anhs on spct.ID equals a.IDChitietsanpham into anhs
+				from a in anhs.DefaultIfEmpty()
+				group new { spct, sp, a,kt } by new { spct.IDSanPham, spct.IDMauSac } into g
+				select new
+				{
+					id = g.Key.IDSanPham,
+					idMauSac = g.Key.IDMauSac,
+					ctsp = g.Select(p => new {
+						id = p.spct.ID,
+						ma = p.spct.Ma,
+						soluong = p.spct.SoLuong,
+						giaban = p.spct.GiaBan,
+						ngaytao = p.spct.NgayTao,
+						trangthai = p.spct.TrangThai,
+						tensp = p.sp.Ten,
+						p.spct.IDMauSac,
+						p.spct.IDKichCo,
+						tenkt = p.kt.Ten,
+						anh = p.a != null ? p.a.DuongDan : null,
+						idloaisp = p.sp.IDLoaiSP,
+					}).ToList()
+				}).ToListAsync();
+
+
+			var filteredProducts = listlSP
+		   .Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null);
+
+			if (sapxep == 1)
+			{
+				filteredProducts = filteredProducts
+					.OrderByDescending(p => p.ctsp.Min(ctsp => ctsp.giaban));
+			}
+			else if (sapxep == 2)
+			{
+				filteredProducts = filteredProducts
+					.OrderBy(p => p.ctsp.Min(ctsp => ctsp.giaban));
+			}
+
+			var pagedProducts = filteredProducts
+	       .Skip((currentPage - 1) * productsPerPage)
+	       .Take(productsPerPage)
+	       .ToList();
+
+			int totalProducts = listlSP.Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null).Count();
+			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
+			return Ok(new {sp = pagedProducts, sotrang = totalPages });
+
+
+
+
+		}
 
 		#endregion
 	}

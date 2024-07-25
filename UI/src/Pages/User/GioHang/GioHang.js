@@ -413,8 +413,8 @@ const GioHang = () => {
       { value: "ThuanBac", label: "Thuận Bắc" },
       // Thêm các quận/huyện khác nếu có
     ],
-    PhuThoc: [
-      { value: "PhuThocCity", label: "Thành phố Phú Thọ" },
+    PhuTho: [
+      { value: "PhuThoCity", label: "Thành phố Phú Thọ" },
       { value: "CamKhe", label: "Cẩm Khê" },
       { value: "HanhLang", label: "Hạ Lang" },
       { value: "PhuTho", label: "Phú Thọ" },

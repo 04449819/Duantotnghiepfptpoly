@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import "./ProductPage.css";
 import "./style.scss";
 import Slider from "react-slick";
 import { Link, useNavigate } from "react-router-dom";
 import { BiChevronRight } from "react-icons/bi";
+import { useSelector } from "react-redux";
 const ChiTietSanPhamKH = () => {
   const navigate = useNavigate();
   const settings = {
@@ -45,6 +46,11 @@ const ChiTietSanPhamKH = () => {
   const Handleonclickchuyentrang1 = () => {
     navigate("/cuahang");
   };
+  const chitietsanpham = useSelector((p) => p.setchitietsp.chitietsp);
+  useEffect(() => {
+    console.log(chitietsanpham);
+  }, []);
+
   const products = [
     {
       image:
@@ -118,9 +124,9 @@ const ChiTietSanPhamKH = () => {
           <hr />
           <div className="product-page__main">
             <div className="product-page__gallery row">
-              <div className="product-page__thumbnails col-2">
+              <div className="product-page__thumbnails">
                 {/* Danh sách hình ảnh nhỏ */}
-                <img
+                {/* <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s"
                   alt="thumbnail"
                 />
@@ -135,33 +141,46 @@ const ChiTietSanPhamKH = () => {
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s"
                   alt="thumbnail"
-                />
+                /> */}
               </div>
-              <div className="product-page__image col-9">
+              <div className="product-page__image col-9 ms-5">
                 {/* Hình ảnh chính */}
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s"
-                  alt="product"
-                />
+                {chitietsanpham.ctsp && chitietsanpham.ctsp[0] && (
+                  <img src={chitietsanpham.ctsp[0].anh} alt="product" />
+                )}
               </div>
             </div>
             <div className="product-page__details">
               <h3>
-                Áo Thun Họa Tiết Catus Long Tee Old Sailor - ATDE88593 - Big
-                Size upto 5XL
+                {chitietsanpham.ctsp &&
+                  chitietsanpham.ctsp[0] &&
+                  `${chitietsanpham.ctsp[0].tensp} - ${chitietsanpham.ctsp[0].ma} - ${chitietsanpham.ctsp[0].ma}`}
               </h3>
-              <p>Mã sản phẩm - ATDE88593</p>
-              <p>Giá: 315.000 ₫</p>
+              {/* <p>Mã sản phẩm - ATDE88593</p> */}
+              <p>
+                Giá bán: &nbsp;
+                {chitietsanpham.ctsp &&
+                  chitietsanpham.ctsp[0] &&
+                  chitietsanpham.ctsp[0].giaban.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+              </p>
               <div className="product-page__sizes">
-                <label htmlFor="size">Kích thước size:</label>
+                {/* <label htmlFor="size">Kích thước size:</label> */}
+
                 <select id="size">
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                  <option value="2XL">2XL</option>
-                  <option value="3XL">3XL</option>
-                  <option value="4XL">4XL</option>
-                  <option value="5XL">5XL</option>
+                  <option value="">Chọn size</option>
+                  {chitietsanpham.ctsp &&
+                    chitietsanpham.ctsp.map((item) => (
+                      <option
+                        className="select-option"
+                        key={item.idKichCo}
+                        value={item.idKichCo}
+                      >
+                        {item.tenkt}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="">

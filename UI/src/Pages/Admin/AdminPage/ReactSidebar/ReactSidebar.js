@@ -198,59 +198,63 @@ const ReactSideBar = () => {
               width: collapsed === true ? "1440px" : "1250px",
             }}
           >
-            <div style={{ padding: "0 18px" }}>
+            <div className="ok" style={{ padding: "0 18px" }}>
               <div className="row" style={{ marginBottom: "11px" }}>
-                <div
-                  style={{
-                    paddingLeft: "10px",
-                    height: "65px",
-                    paddingBottom: "6px",
-                    position: "fixed",
-                    zIndex: 3,
-                  }}
-                  className="col-11"
-                  id="collapse"
-                  label="Collapse"
-                >
-                  <IoMenu
-                    onClick={() => setCollapsed(!collapsed)}
+                <div className="row" style={{}}>
+                  <div
                     style={{
-                      width: "1.5em",
-                      height: "1.5em",
-                      marginTop: "22px",
+                      paddingLeft: "10px",
+                      height: "65px",
+                      paddingBottom: "6px",
+                      position: "fixed",
+                      zIndex: 3,
+                      // backgroundColor: "antiquewhite",
                     }}
-                  />
-                </div>
-                <div
-                  className="col-1"
-                  style={{
-                    paddingTop: "15px",
-                    position: "fixed",
-                    zIndex: 4,
-                    left: "1400px",
-                  }}
-                >
-                  <span
-                    className="User"
-                    style={{ fontSize: "18px", display: "flex" }}
+                    className="col-11"
+                    id="collapse"
+                    label="Collapse"
                   >
-                    {user.ten.length < 6
-                      ? user.ten
-                      : `${user.ten.substring(0, 6)}`}
-                    <NavDropdown
-                      id="nav-dropdown-dark-example"
-                      title=<IoSettings />
-                      menuVariant="dark"
-                      style={{ marginLeft: "10px" }}
+                    <IoMenu
+                      onClick={() => setCollapsed(!collapsed)}
+                      style={{
+                        width: "1.5em",
+                        height: "1.5em",
+                        marginTop: "22px",
+                      }}
+                    />
+                  </div>
+                  <div
+                    className="col-1"
+                    style={{
+                      paddingTop: "15px",
+                      // marginLeft: "auto",
+                      position: "fixed",
+                      zIndex: 4,
+                      left: "1400px",
+                    }}
+                  >
+                    <span
+                      className="User"
+                      style={{ fontSize: "18px", display: "flex" }}
                     >
-                      <NavDropdown.Item
-                        href="#action/3.1"
-                        onClick={HandleOnclickLogout}
+                      {user.ten.length < 6
+                        ? user.ten
+                        : `${user.ten.substring(0, 6)}`}
+                      <NavDropdown
+                        id="nav-dropdown-dark-example"
+                        title=<IoSettings />
+                        menuVariant="dark"
+                        style={{ marginLeft: "10px" }}
                       >
-                        Đăng xuất
-                      </NavDropdown.Item>
-                    </NavDropdown>
-                  </span>
+                        <NavDropdown.Item
+                          href="#action/3.1"
+                          onClick={HandleOnclickLogout}
+                        >
+                          Đăng xuất
+                        </NavDropdown.Item>
+                      </NavDropdown>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

@@ -7,17 +7,25 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import AddLoaiSP from "./QuanLyLoaiSanPham/AddLoaiSp/AddLoaiSp";
 import ModalChatLieu from "./QuanLyChatLieu/ModalChatLieu/ModalChatLieu";
+import Modalkichthuoc from "./KichThuoc/ModalKichThuoc/ModalKichThuoc";
+import ModalMauSac from "./MauSac/ModalMauSac/ModalMauSac";
 import PreviewIMG from "./PreviewIMG/PreviewIMG";
 import { toast } from "react-toastify";
-import { toBeDisabled } from "@testing-library/jest-dom/matchers";
+import MoDalCoAo from "./CoAo/ModalCoAo/MoDalCoAo";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const ModalQLSP = (props) => {
+  const [loaduseE, setloaduseE] = useState(false);
   const [show, setShow] = useState(false);
   const [validated, setValidated] = useState(false);
   const [dataKT, setdataKT] = useState([]);
   const [dataMS, setdataMS] = useState([]);
   const [dataCL, setdataCL] = useState([]);
   const [dataLSP, setdataLSP] = useState([]);
+  const [dataCoAo, setdataCoAo] = useState([]);
+  const [soluongchung, setsoluongchung] = useState(1000);
+  const [giachung, setgiachung] = useState(300000);
   const [TTSanPham, setTTSanPham] = useState({
     ten: "",
     ma: "",
@@ -26,12 +34,30 @@ const ModalQLSP = (props) => {
     tenloaisp: "",
     chatlieu: "",
     tenchatlieu: "",
+    coao: "",
+    tencoao: "",
   });
   const [TTCTSP, setTTCTSP] = useState([]);
   //   const [loaduseE, setloaduseE] = useState(false);
 
   const HandleOnclickBack = () => {
-    props.setShow(false);
+    props.setShow(0);
+    props.setload(!props.load);
+  };
+  const [maSanPhamValid, setMaSanPhamValid] = useState(true);
+  const handleOnChangecheck = (event) => {
+    if (!validatemasp(event.target.value)) {
+      setMaSanPhamValid(false);
+    } else {
+      setMaSanPhamValid(true);
+    }
+    setTTSanPham({ ...TTSanPham, ma: event.target.value });
+  };
+
+  const validatemasp = (masp) => {
+    return String(masp)
+      .toLowerCase()
+      .match(/^[a-zA-Z0-9-_]{0,15}$/);
   };
 
   useEffect(() => {
@@ -39,7 +65,8 @@ const ModalQLSP = (props) => {
     getdataMS();
     getdatacl();
     getdatalsp();
-  }, []);
+    GetALLCoAo();
+  }, [loaduseE]);
 
   const getdataKT = async () => {
     try {
@@ -50,7 +77,8 @@ const ModalQLSP = (props) => {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
         });
-        setdataKT(dataa);
+        setdataKT(dataa.filter((p) => p.trangThai !== 0));
+        // setdataKT(dataa);
       }
     } catch (error) {}
   };
@@ -64,7 +92,7 @@ const ModalQLSP = (props) => {
         const dataa = res.data.map((item) => {
           return { ...item, check: false };
         });
-        setdataMS(dataa);
+        setdataMS(dataa.filter((p) => p.trangThai !== 0));
       }
     } catch (error) {}
   };
@@ -75,7 +103,8 @@ const ModalQLSP = (props) => {
         "https://localhost:7095/api/ChatLieu/GetAllChatLieu"
       );
       if (res.data.length > 0) {
-        setdataCL(res.data);
+        setdataCL(res.data.filter((p) => p.trangThai !== 0));
+        // setdataCL(res.data);
       }
     } catch (error) {}
   };
@@ -85,10 +114,23 @@ const ModalQLSP = (props) => {
         "https://localhost:7095/api/LoaiSP/getAllLSP"
       );
       if (res.data.length > 0) {
-        setdataLSP(res.data);
+        setdataLSP(res.data.filter((p) => p.trangThai !== 0));
+        // setdataLSP(res.data);
       }
     } catch (error) {}
   };
+  const GetALLCoAo = async () => {
+    try {
+      var res = await axios.get(
+        "https://localhost:7095/api/CoAo/getAllCoAoThem"
+      );
+      if (res.data.length > 0) {
+        setdataCoAo(res.data);
+        // setdataLSP(res.data);
+      }
+    } catch (error) {}
+  };
+  // https://localhost:7095/api/CoAo/getAllCoAoThem
 
   const HandleOnclickKT = (item) => {
     const updatedData = dataKT.map((item1) => {
@@ -112,6 +154,7 @@ const ModalQLSP = (props) => {
 
   const handleOnChange = (event, item) => {
     const { name, value, type, checked } = event.target;
+
     const dataTam = TTCTSP.map((item1) => {
       if (item1.id === item.id) {
         return {
@@ -119,7 +162,7 @@ const ModalQLSP = (props) => {
           [name]:
             type === "checkbox"
               ? checked
-              : type === "number" && value > 0
+              : type === "number" && value > 0 && value <= 1000000000
               ? value
               : type === "text"
               ? value
@@ -133,11 +176,12 @@ const ModalQLSP = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission
-
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.stopPropagation(); // Stop further event propagation if form is invalid
     } else {
+      if (soluongchung < 1 || giachung < 1)
+        return toast.error("Số lượng và kích thước chung không được bé hơn 1");
       const dataTam = dataKT.flatMap((item) => {
         if (item.check) {
           return dataMS
@@ -145,23 +189,61 @@ const ModalQLSP = (props) => {
             .map((item1) => ({
               id: Math.floor(Math.random() * 100000) + 1,
               masanpham: TTSanPham.ma,
-              mactsp: "",
-              soluong: 1,
-              giaban: 1000,
+              mactsp: `${TTSanPham.ma}-${Math.floor(Math.random() * 10000)}`,
+              soluong: soluongchung,
+              giaban: giachung,
               check: true,
               kichthuoc: item.ten,
               mausac: item1.ten,
+              idkichthuoc: item.id,
+              idmausac: item1.id,
               mota: TTSanPham.mota,
               loaisp: TTSanPham.loaisp,
               chatlieu: TTSanPham.chatlieu,
               img: [], // Added missing property img
+              soluongms: 1,
+              checkhiden: false,
             }));
         }
         return [];
       });
 
+      // Đếm số lượng sản phẩm theo màu sắc
+      const colorCounts = dataTam.reduce((acc, product) => {
+        if (acc[product.mausac]) {
+          acc[product.mausac]++;
+        } else {
+          acc[product.mausac] = 1;
+        }
+        return acc;
+      }, {});
+
+      // Cập nhật soluongms cho mỗi sản phẩm dựa trên màu sắc
+      const datatam2 = dataTam.map((item) => ({
+        ...item,
+        soluongms: colorCounts[item.mausac],
+      }));
+
+      // Nhóm sản phẩm theo màu sắc
+      const groupedByColor = datatam2.reduce((acc, product) => {
+        if (!acc[product.mausac]) {
+          acc[product.mausac] = [];
+        }
+        acc[product.mausac].push(product);
+        return acc;
+      }, {});
+
+      // Đặt checkhiden=true cho sản phẩm đầu tiên và checkhiden=false cho các sản phẩm còn lại
+      const datatam1 = Object.values(groupedByColor).flatMap((products) => {
+        return products.map((product, index) => ({
+          ...product,
+          checkhiden: index === 0,
+        }));
+      });
+
+      // Kiểm tra sản phẩm đã tồn tại trong TTCTSP hay chưa
       if (TTCTSP.length > 0) {
-        const dataFake = dataTam.map((item1) => {
+        const dataFake = datatam1.map((item1) => {
           const existingItem = TTCTSP.find(
             (item) =>
               item.kichthuoc === item1.kichthuoc &&
@@ -175,7 +257,7 @@ const ModalQLSP = (props) => {
         });
         setTTCTSP(dataFake);
       } else {
-        setTTCTSP(dataTam);
+        setTTCTSP(datatam1);
       }
     }
 
@@ -192,12 +274,14 @@ const ModalQLSP = (props) => {
   };
 
   const [preview, setPreview] = useState("");
-
+  const [listanh, setlistanh] = useState([]);
   const handleFileChange = (event, item) => {
     const file = event.target.files[0];
+    setlistanh([...listanh, file]);
     try {
+      const diemchung = Math.floor(Math.random() * 100000) + 1;
       const dataTam = TTCTSP.map((p) => {
-        if (p.id === item.id) {
+        if (p.mausac === item.mausac) {
           // Nếu img là mảng, ta thêm một đối tượng mới vào mảng này
           const updatedImg = [
             ...(p.img || []),
@@ -205,6 +289,9 @@ const ModalQLSP = (props) => {
               file: file,
               preview: URL.createObjectURL(file),
               id: Math.floor(Math.random() * 100000) + 1,
+              mactsp: p.mactsp,
+              DuongDan: file.name,
+              diemchung: diemchung,
             },
           ];
           return {
@@ -219,19 +306,104 @@ const ModalQLSP = (props) => {
       toast.error("Độ phân giải quá lớn... Tải lên thất bại!");
     }
   };
-
+  const dispath = useDispatch();
   const handleDelete = (image, item) => {
-    // Thực hiện logic xóa ảnh ở đây
     const datatam = TTCTSP.map((p) => {
-      if (p.id === item.id) {
-        const updatedImages = p.img.filter((img) => img.id !== image.id);
+      if (p.mausac === item.mausac) {
+        const updatedImages = p.img.filter(
+          (img) => img.diemchung !== image.diemchung
+        );
         return { ...p, img: updatedImages };
       }
       return p;
     });
     setTTCTSP(datatam);
   };
+  const HandleOnclickLuuThayDoi = async () => {
+    if (TTCTSP.filter((p) => p.check !== false).length > 0) {
+      const listctsp = TTCTSP.map((p) => {
+        if (p.check === true) {
+          return {
+            ma: p.mactsp,
+            soluong: p.soluong,
+            giaban: p.giaban,
+            trangthai: 2,
+            idmausac: p.idmausac,
+            idkichthuoc: p.idkichthuoc,
+            img: p.img.map((x) => {
+              return {
+                DuongDan: `https://localhost:7095/images/${x.DuongDan}`,
+                TrangThai: 1,
+              };
+            }),
+          };
+        }
+        return undefined; // Đảm bảo luôn có giá trị trả về
+      }).filter((p) => p !== undefined);
 
+      const DataThem = {
+        tenSanpham: TTSanPham.ten,
+        ma: TTSanPham.ma,
+        mota: TTSanPham.mota,
+        trangThai: 2,
+        idloaisp: TTSanPham.loaisp,
+        idchatlieu: TTSanPham.chatlieu,
+        idCoAo: TTSanPham.coao,
+        listctsp: listctsp,
+      };
+
+      const formData = new FormData();
+      listanh.forEach((file, index) => {
+        formData.append("images", file);
+      });
+      let a = true;
+      DataThem.listctsp.map((x) => {
+        if (x.img.length <= 0) return (a = false);
+      });
+      if (a === true) {
+        try {
+          try {
+            const response = await axios.post(
+              "https://localhost:7095/api/SanPham/images",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+          } catch (error) {
+            toast.error(`gặp lỗi: ${error.response.data}`);
+            return;
+          }
+
+          try {
+            const response1 = await axios.post(
+              "https://localhost:7095/api/SanPham/addSanPhamQLSP",
+              DataThem
+            );
+          } catch (error) {
+            toast.error(`gặp lỗi: ${error.response.data}`);
+            return;
+          }
+
+          toast.success("thêm thành công !");
+          props.setShow(0);
+          props.setload(!props.load);
+        } catch (error) {
+          toast.error("gặp lỗi:", error);
+        }
+      } else {
+        toast.error("Hãy chọn ít nhất một ảnh cho từng sản phẩm");
+      }
+    } else {
+      toast.error("Hãy chọn ít nhất một sản phẩm!");
+    }
+  };
+
+  const HandleOnLoading = () => {
+    setloaduseE(!loaduseE);
+  };
   return (
     <div className="w-100 mx-auto">
       <div className="text-center">
@@ -252,6 +424,7 @@ const ModalQLSP = (props) => {
               <Form.Control
                 type="text"
                 placeholder="Tên sản phẩm"
+                maxLength="100"
                 required
                 value={TTSanPham.ten}
                 onChange={(event) =>
@@ -271,12 +444,14 @@ const ModalQLSP = (props) => {
                 placeholder="Mã sản phẩm"
                 required
                 value={TTSanPham.ma}
-                onChange={(event) =>
-                  setTTSanPham({ ...TTSanPham, ma: event.target.value })
-                }
+                maxLength="15"
+                onChange={(event) => handleOnChangecheck(event)}
+                isInvalid={!maSanPhamValid}
               />
               <Form.Control.Feedback type="invalid">
-                Mã sản phẩm không được để trống
+                {maSanPhamValid
+                  ? "Mã sản phẩm không được để trống"
+                  : `Mã sản phẩm chưa đúng định dạng số, chữ, "-", "_"`}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
@@ -284,10 +459,12 @@ const ModalQLSP = (props) => {
             <Form.Group as={Col} md="6" controlId="validationCustom03">
               <Form.Label>Mô tả</Form.Label>
               <Form.Control
-                type="text"
+                as="textarea"
+                // type="number"
                 placeholder="Mô tả"
                 required
                 value={TTSanPham.mota}
+                maxLength="200"
                 onChange={(event) =>
                   setTTSanPham({ ...TTSanPham, mota: event.target.value })
                 }
@@ -298,7 +475,7 @@ const ModalQLSP = (props) => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <div as={Col} className="w-25">
+            <div as={Col} className="w-25 mb-4">
               <Form.Select
                 aria-label="Default select example"
                 required
@@ -319,6 +496,9 @@ const ModalQLSP = (props) => {
                     </option>
                   ))}
               </Form.Select>
+            </div>
+            <div as={Col} className="w-25">
+              <AddLoaiSP HandleOnLoading={HandleOnLoading} />
             </div>
             <div as={Col} className="w-25">
               <Form.Select
@@ -342,6 +522,38 @@ const ModalQLSP = (props) => {
                   ))}
               </Form.Select>
             </div>
+            <div as={Col} className="w-25">
+              <ModalChatLieu loaduseE={loaduseE} setloaduseE={setloaduseE} />
+            </div>
+            <div as={Col} className="w-25">
+              <Form.Select
+                aria-label="Default select example"
+                required
+                value={TTSanPham.coao}
+                onChange={(event) =>
+                  setTTSanPham({
+                    ...TTSanPham,
+                    coao: event.target.value,
+                    tencoao: event.target.selectedOptions[0].text,
+                  })
+                }
+              >
+                <option value="">Cổ áo</option>
+                {dataCoAo.length > 0 &&
+                  dataCoAo.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.ten}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+            <div as={Col} className="w-25">
+              <MoDalCoAo
+                loaduseE={loaduseE}
+                setloaduseE={setloaduseE}
+                HandleOnLoading={HandleOnLoading}
+              />
+            </div>
           </Row>
           <hr />
           <h4>Thông tin chi tiết sản phẩm</h4>
@@ -355,31 +567,6 @@ const ModalQLSP = (props) => {
             className="mb-4"
           >
             <div className="w-75 mx-auto mt-3">
-              <h4>Kích thước</h4>
-              <hr />
-              <div className="row">
-                {dataKT.length > 0 &&
-                  dataKT.map((item) => (
-                    <div className="col-2" key={item.id}>
-                      <div
-                        style={{
-                          border:
-                            item.check === false
-                              ? "1px solid black"
-                              : "3px solid blue",
-                          borderRadius: "5px",
-                          marginBottom: "10px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => HandleOnclickKT(item)}
-                      >
-                        <div className="w-50 mx-auto">{item.ten}</div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div className="w-75 mx-auto">
               <h4>Màu sắc</h4>
               <hr />
               <div className="row">
@@ -391,21 +578,97 @@ const ModalQLSP = (props) => {
                           border:
                             item.check === false
                               ? "1px solid black"
-                              : "3px solid blue",
+                              : "2px solid #007bff",
                           borderRadius: "5px",
                           marginBottom: "10px",
                           cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
                         }}
                         onClick={() => HandleOnclickMS(item)}
                       >
-                        <div style={{ backgroundColor: item.ma }}>
+                        <div
+                          style={{
+                            backgroundColor: item.ma,
+                            height: "25px",
+                            textAlign: "center",
+                            fontSize: "16px",
+                          }}
+                        >
                           {item.ma}
                         </div>
                       </div>
                     </div>
                   ))}
+                <div className="col-2 mb-3">
+                  <div>
+                    <div className="w-50 ">
+                      <ModalMauSac
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <div className="w-75 mx-auto mb-3">
+              <h4>Kích thước</h4>
+              <hr />
+              <div className="row">
+                {dataKT.length > 0 &&
+                  dataKT.map((item) => (
+                    <div className="col-2" key={item.id}>
+                      <div
+                        style={{
+                          border:
+                            item.check === false
+                              ? "1px solid black"
+                              : "2px solid blue",
+                          borderRadius: "5px",
+                          marginBottom: "10px",
+                          cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
+                        }}
+                        onClick={() => HandleOnclickKT(item)}
+                      >
+                        <div className="w-50 mx-auto">{item.ten}</div>
+                      </div>
+                    </div>
+                  ))}
+                <div className="col-2">
+                  <div>
+                    <div className="w-50 ">
+                      <Modalkichthuoc
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr className="my-3" />
+              <div className="d-flex ">
+                <span>Số lượng chung:</span>
+                <input
+                  className="ms-2"
+                  type="number"
+                  value={soluongchung}
+                  onChange={(event) => setsoluongchung(event.target.value)}
+                />
+              </div>
+              <div className="d-flex mt-3">
+                <span>Giá chung:</span>
+                <input
+                  className="ms-5"
+                  type="number"
+                  value={giachung}
+                  onChange={(event) => setgiachung(event.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="w-25 ms-auto">
               {/* <Button onClick={HandleOnclickChonMSKT} className="mb-3 ">
                 Xác nhận
@@ -453,15 +716,7 @@ const ModalQLSP = (props) => {
                     />
                   </td>
                   <td>{index + 1}</td>
-                  <td>
-                    <input
-                      className="w-100 mt-3"
-                      type="text"
-                      value={item.mactsp}
-                      name="mactsp"
-                      onChange={(event) => handleOnChange(event, item)}
-                    />
-                  </td>
+                  <td>{item.mactsp}</td>
                   <th>{item.mausac}</th>
                   <th>{item.kichthuoc}</th>
                   <td>
@@ -482,7 +737,7 @@ const ModalQLSP = (props) => {
                       onChange={(event) => handleOnChange(event, item)}
                     />
                   </td>
-                  <td>
+                  <td rowSpan={item.soluongms} hidden={!item.checkhiden}>
                     <div className="row">
                       {item.img.length > 0 &&
                         item.img.map((p, index) => (
@@ -535,6 +790,7 @@ const ModalQLSP = (props) => {
                             display: "none",
                           }}
                           type="file"
+                          accept="image/jpeg, image/png, image/gif"
                           onChange={(event) => handleFileChange(event, item)}
                         />
                       </div>
@@ -546,7 +802,7 @@ const ModalQLSP = (props) => {
         </Table>
       </div>
       <div className="w-25 ms-auto">
-        <Button onClick={HandleOnclickBack}>Thêm sản phẩm</Button>
+        <Button onClick={HandleOnclickLuuThayDoi}>Lưu thay đổi</Button>
       </div>
       <PreviewIMG show={show} setShow={setShow} preview={preview} />
     </div>

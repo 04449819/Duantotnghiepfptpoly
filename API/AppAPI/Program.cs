@@ -56,7 +56,7 @@ builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IThongKeService, ThongKeService>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
-
+builder.Services.AddScoped<IThongKeSanPhamService, ThongKeSanPhamService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IMailServices, MailServices>();
 
@@ -88,7 +88,7 @@ app.UseCors(policy =>
 );
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

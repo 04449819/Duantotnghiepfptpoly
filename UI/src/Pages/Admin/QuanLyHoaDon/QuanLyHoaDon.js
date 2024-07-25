@@ -65,6 +65,7 @@ const QuanLyHoaDon = () => {
     try {
       const response = await axios.get(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}`);
       setSelectedBillDetails(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Có lỗi khi fetch chi tiết hóa đơn:', error);
       setError('Có lỗi khi fetch chi tiết hóa đơn: ' + error.message);
@@ -112,9 +113,8 @@ const QuanLyHoaDon = () => {
             <th>Ngày nhận hàng</th>
             <th>Người Nhận</th>
             <th>SDT</th>
-            <th>Email</th>
             <th>Địa Chỉ</th>
-            <th>Tiền Ship</th>
+            <th>Trạng thái giao hàng</th>
             <th>Tổng Tiền</th>
             <th>Loại hóa đơn</th>
             <th></th>
@@ -127,26 +127,27 @@ const QuanLyHoaDon = () => {
               <td>{hoaDon.ngayNhanHang}</td>
               <td>{hoaDon.tenNguoiNhan}</td>
               <td>{hoaDon.sdt}</td>
-              <td>{hoaDon.email}</td>
               <td>{hoaDon.diaChi}</td>
-              <td>{hoaDon.tienShip}</td>
+              <td>{renderTrangThaiGiaoHang(hoaDon.trangThaiGiaoHang)}</td>
               <td>{hoaDon.tongTien ? `${hoaDon.tongTien} VND` : 'Chưa xác định'}</td>
               <td>{hoaDon.LoaiHD ? 'Off' : 'On'}</td>
               <td>{hoaDon.phuongThucThanhToan}</td>
+             
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Modal to display bill details */}
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal} className="modal-lg" >
         <Modal.Header closeButton>
-          <Modal.Title>Chi tiết hóa đơn #{selectedBillId}</Modal.Title>
+          <Modal.Title>Chi tiết hóa đơn</Modal.Title>
         </Modal.Header>
       <Modal.Body>
   <table className="table">
     <thead>
       <tr>
+     <th>Ảnh</th>
         <th>Tên sản phẩm</th>
         <th>Đơn giá</th>
         <th>số lượng</th>
@@ -158,10 +159,10 @@ const QuanLyHoaDon = () => {
     <tbody>
       {selectedBillDetails && selectedBillDetails.map((bill) => (
         <tr key={bill.chiTietHoaDon.id}>
+          <img src={bill.anh.duongDan} alt="Ảnh sản phẩm" style={{ width: '125px', height: '125px' }} />
           <td>{bill.sanPham.ten}</td> 
           <td>{bill.chiTietHoaDon.donGia}</td>
           <td>{bill.chiTietHoaDon.soLuong}</td>
-          
           <td>{bill.chiTietSanPham.trangThai}</td>
           {/* Render more details here */}
         </tr>

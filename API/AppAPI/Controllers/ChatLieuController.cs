@@ -67,9 +67,23 @@ namespace AppAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChatLieu(Guid id)
         {
-            var loaiSP = await service.DeleteChatLieu(id);
-            return Ok(loaiSP);
-        }
+            var cl = await service.DeleteChatLieu(id);
+			switch (cl)
+			{
+				case 0:
+					return BadRequest("Chất liệu đã được sử dụng trong sản phẩm");
+
+				case 1:
+					return Ok("Xóa thành công");
+
+				case 2:
+					return BadRequest("Không tìm thấy Chất liệu cần xóa");
+
+				default:
+					return BadRequest("Xóa thất bại");
+
+			}
+		}
         #endregion
     }
 }

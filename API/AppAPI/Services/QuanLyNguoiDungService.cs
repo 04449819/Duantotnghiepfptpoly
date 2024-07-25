@@ -223,7 +223,7 @@ namespace AppAPI.Services
                             Ten = nv.Ten,
                             DiaChi = nv.DiaChi,
                             SDT = nv.SDT,
-                            chucNang = nv.VaiTro != null ? nv.VaiTro.Ten : "",
+                            chucNang =  context.VaiTros.FirstOrDefault(p => p.ID == nv.IDVaiTro) != null ? context.VaiTros.FirstOrDefault(p => p.ID == nv.IDVaiTro).Ten : "",
                             vaiTro = 0
                         };
                     }
@@ -247,7 +247,8 @@ namespace AppAPI.Services
                         Ten = kh.Ten,
                         SDT = kh.SDT,
                         DiemTich = kh.DiemTich,
-                        DiaChi = dckh.DiaChi,
+                        //DiaChi = dckh.DiaChi,
+                        DiaChi = "",
                         GioiTinh = kh.GioiTinh,
                         NgaySinh = kh.NgaySinh,
                         vaiTro = 1

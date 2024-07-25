@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import "./QuanlyKhachHang.scss";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
-const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
+const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
   const dispath = useDispatch();
   // State to hold form data
   // const [formData, setFormData] = useState({
@@ -28,8 +28,17 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   const [messageName, setMessageName] = useState("");
   const [messagePhone, setMessagePhone] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
+  const [themnhanhh, setThemnhanhh] = useState(true);
   // const [messageAddress, setMessageAddress] = useState('');
   // Handle input change
+
+  useEffect(() => {
+    if (themnhanh !== undefined) {
+      setThemnhanhh(false);
+    } else {
+      setThemnhanhh(true);
+    }
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -105,7 +114,6 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
       }
     }, 3000);
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
@@ -133,7 +141,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
 
@@ -148,7 +156,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
       <div className="form-group">
@@ -167,21 +175,23 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
       </div>
       <p>{messageEmail}</p>
 
-
       <div className="form-group">
-       <label className='label' htmlFor="gioiTinh"> Trạng thái:</label>
-        <select className='text_input'
-        id="gioiTinh"
-        name="gioiTinh"
-        value={formData.gioiTinh}
-        onChange={handleChange}
-        required
-         >
-        <option value="">Chọn Giới Tính</option>
-        <option value="0">Nam</option>
-        <option value="1">Nữ</option>
-       </select>
-     </div>
+        <label className="label" htmlFor="gioiTinh">
+          Trạng thái:
+        </label>
+        <select
+          className="text_input"
+          id="gioiTinh"
+          name="gioiTinh"
+          value={formData.gioiTinh}
+          onChange={handleChange}
+          required={themnhanhh}
+        >
+          <option value="">Chọn Giới Tính</option>
+          <option value="0">Nam</option>
+          <option value="1">Nữ</option>
+        </select>
+      </div>
       {/* <div className="form-group">
         <label className="label_name" htmlFor="gioiTinh">
           Gioi tinh:
@@ -208,7 +218,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="ngaySinh"
           value={formData.ngaySinh}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
       <div className="form-group">
@@ -252,25 +262,26 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="diemTich"
           value={formData.diemTich}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
       <div className="form-group">
-       <label className='label' htmlFor="trangThai"> Trạng thái:</label>
-        <select className='text_input'
-        id="trangThai"
-        name="trangThai"
-        value={formData.trangThai}
-        onChange={handleChange}
-        required
-         >
-        <option value="">Chọn Trang thái</option>
-        <option value="0">Đang hoạt động</option>
-        <option value="1">Không hoạt động</option>
-       </select>
-     </div>
-
-
+        <label className="label" htmlFor="trangThai">
+          Trạng thái:
+        </label>
+        <select
+          className="text_input"
+          id="trangThai"
+          name="trangThai"
+          value={formData.trangThai}
+          onChange={handleChange}
+          required={themnhanhh}
+        >
+          <option value="">Chọn Trang thái</option>
+          <option value="0">Đang hoạt động</option>
+          <option value="1">Không hoạt động</option>
+        </select>
+      </div>
 
       {/* <div className="form-group">
         <label className="label_name" htmlFor="trangThai">
@@ -293,7 +304,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   );
 };
 /////////////////////////////////////////////////////////////////////
-const MyModalAdd = ({ show, handleClose, handleSuccess }) => {
+const MyModalAdd = ({ show, handleClose, handleSuccess, themnhanh }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -303,6 +314,7 @@ const MyModalAdd = ({ show, handleClose, handleSuccess }) => {
         <AddQuanLyKH
           handleSuccess={handleSuccess}
           handleClose={handleClose}
+          themnhanh={themnhanh}
         ></AddQuanLyKH>
       </Modal.Body>
       {/* <Modal.Footer>

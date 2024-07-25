@@ -21,7 +21,9 @@ namespace AppData.ViewModels.BanOffline
 		public Guid IdSanPham { get; set; }
 		public Guid IDLoaiSP { get; set; }
 		public Guid IDChatLieu { get; set; }
+		public Guid IDCoAo { get; set; }
 		public string chatLieu { get; set; }
 		public string loaiSanPham{ get; set; }
+		public string coAo { get; set; }
 	}
 }

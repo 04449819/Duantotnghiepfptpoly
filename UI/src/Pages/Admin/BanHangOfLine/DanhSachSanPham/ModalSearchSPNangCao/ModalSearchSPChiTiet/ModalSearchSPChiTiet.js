@@ -21,7 +21,6 @@ const ModalSearchSPChiTiet = (props) => {
   const [kichthuoc, setKichthuoc] = useState([]);
   const [idmuaHang, setIDmua] = useState("");
   const [imgSmall, setImgSmall] = useState([]);
-
   const handleClose = () => {
     setShow(false);
     setMauSac([]);
@@ -56,9 +55,9 @@ const ModalSearchSPChiTiet = (props) => {
           });
         }
       });
-      console.log(res.data[0].img[0].toLocaleString());
-      console.log(ImgTam);
-      setImgSmall(ImgTam);
+      console.log(res.data[0].img);
+      // setImgSmall(ImgTam);
+      setImgSmall(res.data[0].img);
 
       const MauSactam = [];
       res.data.forEach((item) => {
@@ -99,6 +98,7 @@ const ModalSearchSPChiTiet = (props) => {
     const datatam = data.find((a) => a.id === item.id);
     if (datatam) {
       setimg(datatam.img[0]);
+      setImgSmall(datatam.img);
     }
   };
 
@@ -131,6 +131,10 @@ const ModalSearchSPChiTiet = (props) => {
       }
     }, 3000);
   };
+
+  const HandleOnclickCHonAnh = (item) => {
+    setimg(item);
+  };
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
@@ -147,9 +151,16 @@ const ModalSearchSPChiTiet = (props) => {
                   <div className="SPduocchon_body_imgbig">
                     <img src={img} alt="Product" />
                   </div>
-                  <div className="SPduocchon_body_imgsmall">
-                    {imgSmall.map((item) => (
-                      <img key={item.id} src={item.img} alt="Product" />
+                  <div className="SPduocchon_body_imgsmall d-flex">
+                    {imgSmall.map((item, index) => (
+                      <div style={{ cursor: "pointer" }}>
+                        <img
+                          onClick={() => HandleOnclickCHonAnh(item)}
+                          key={index}
+                          src={item}
+                          alt="Product"
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -158,6 +169,9 @@ const ModalSearchSPChiTiet = (props) => {
                   <h4 className="SPduocchon_body_content">{tensp}</h4>
                   <h5 className="SPduocchon_body_content">
                     Chất liệu: {data[0].tenchatlieu}
+                  </h5>
+                  <h5 className="SPduocchon_body_content">
+                    Cổ áo: {data[0].tencoao}
                   </h5>
                   <div className="d-flex SPduocchon_body_content">
                     <h5>Màu sắc:</h5>
@@ -224,7 +238,11 @@ const ModalSearchSPChiTiet = (props) => {
                     khuyến mãi: {khuyenmai.toLocaleString("vi-VN") + " VNĐ"}
                   </h6>
                   <h5 className="SPduocchon_body_content">
-                    giá bán: {giaBan.toLocaleString("vi-VN") + " VNĐ"}
+                    giá bán:{" "}
+                    {giaBan.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </h5>
                   <Button
                     style={{ marginTop: "50px" }}

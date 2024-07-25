@@ -35,7 +35,7 @@ const QuanLyLoaiSanPham = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/LoaiSP/getAll?page=${page}&totalPage=5&tenLoaiSP=${search}`
+        `https://localhost:7095/api/LoaiSP/getAll?page=${page}&totalPage=100000&tenLoaiSP=${search}`
       );
       if (res.data.listLsp) {
         if (check === 1) {
@@ -69,21 +69,18 @@ const QuanLyLoaiSanPham = () => {
         const res = await axios.delete(
           `https://localhost:7095/api/LoaiSP/delete/${item.id}`
         );
-        toast.success(`đã xóa thành công ${item.ten}`);
+        toast.success(`đã xóa thành công`);
         setInputSearch("");
         dispath(SetLoading(false));
         getData(1, "", 2);
         setPageNumber(1);
       } catch (error) {
-        toast.error(`xóa không thành công ${item.ten}`);
+        toast.error(`Gặp lỗi: ${error.response.data}`);
         dispath(SetLoading(false));
       }
     }, 3000);
   };
 
-  const HandleOclickUpdate = () => {
-    alert("click me");
-  };
   return (
     <div>
       <div className="mb-5">

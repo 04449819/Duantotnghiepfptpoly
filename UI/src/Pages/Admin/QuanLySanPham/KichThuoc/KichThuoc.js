@@ -47,16 +47,12 @@ const KichThuoc = () => {
         const res = await axios.delete(
           `https://localhost:7095/api/KichCo/${item.id}`
         );
-        if (res.data === true) {
-          toast.success("Xóa thành công");
-          dispath(SetLoading(false));
-          setloaduseE(!loaduseE);
-        } else {
-          toast.error("Xóa thất bại");
-          dispath(SetLoading(false));
-        }
+
+        toast.success("Xóa thành công");
+        dispath(SetLoading(false));
+        setloaduseE(!loaduseE);
       } catch (error) {
-        toast.error("Xóa thất bại");
+        toast.error(`Gặp lỗi: ${error.response.data}`);
         dispath(SetLoading(false));
       }
     }, 3000);
@@ -121,6 +117,11 @@ const KichThuoc = () => {
                       <Button
                         className="ms-2"
                         variant="danger"
+                        style={{
+                          height: "28px",
+                          width: "70px",
+                          paddingTop: "7px",
+                        }}
                         onClick={() => HandleOclickDelete(item)}
                       >
                         Xóa

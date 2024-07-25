@@ -22,6 +22,7 @@ const ReactSideBar = () => {
 
   useEffect(() => {
     setemailUser(localStorage.getItem("useremail"));
+    console.log(user);
   }, []);
   //vaiTro
   const HandleOnclickLogout = () => {
@@ -64,6 +65,9 @@ const ReactSideBar = () => {
             breakPoint="md"
             style={{ position: "fixed", zIndex: 2 }}
           >
+            <div className="my-4 ms-5">
+              <h1>Shop Man</h1>
+            </div>
             <div
               style={{
                 display: "flex",
@@ -95,6 +99,7 @@ const ReactSideBar = () => {
                     icon={
                       <FaAddressBook style={{ color: "blue", size: "20px" }} />
                     }
+                    hidden={user.chucNang !== "Admin" ? true : false}
                   >
                     Quản lý nhân viên
                   </MenuItem>
@@ -132,6 +137,12 @@ const ReactSideBar = () => {
                       icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                     >
                       Kích thước
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/coao" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Cổ áo
                     </MenuItem>
                   </SubMenu>
 
@@ -223,7 +234,9 @@ const ReactSideBar = () => {
                     className="User"
                     style={{ fontSize: "18px", display: "flex" }}
                   >
-                    {user.ten}
+                    {user.ten.length < 6
+                      ? user.ten
+                      : `${user.ten.substring(0, 6)}`}
                     <NavDropdown
                       id="nav-dropdown-dark-example"
                       title=<IoSettings />
@@ -234,7 +247,7 @@ const ReactSideBar = () => {
                         href="#action/3.1"
                         onClick={HandleOnclickLogout}
                       >
-                        Logout
+                        Đăng xuất
                       </NavDropdown.Item>
                     </NavDropdown>
                   </span>

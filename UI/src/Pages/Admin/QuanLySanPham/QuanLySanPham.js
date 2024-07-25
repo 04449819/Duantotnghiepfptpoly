@@ -7,24 +7,72 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import ModalQLSP from "./ModalQLSP";
+import UpdateSanPham from "./UpdateSanPham";
+import ModalSuaSanPham from "./ModalSuaSanPham";
 const QuanLySanPham = () => {
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(10000);
-
+  const [idchatlieu, setidchatlieu] = useState(
+    "00000000-0000-0000-0000-000000000000"
+  );
+  const [idcoao, setidcoao] = useState("00000000-0000-0000-0000-000000000000");
+  const [idloaisp, setidlsp] = useState("00000000-0000-0000-0000-000000000000");
+  const [trangThai, settrangthai] = useState("");
   const [data, setdata] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [inputsearch, setInputSearch] = useState("");
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(0);
+  const [dataupdate, setdataupdate] = useState({});
+  const [dataCL, setdataCL] = useState([]);
+  const [dataLSP, setdataLSP] = useState([]);
+  const [dataCoAo, setdataCoAo] = useState([]);
 
+  const [load, setload] = useState(false);
   useEffect(() => {
     getdata(page, 0);
-    console.log(use);
-  }, []);
+    GetALLCoAo();
+    getdatalsp();
+    getdatacl();
+  }, [load]);
+  const getdatacl = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/ChatLieu/GetAllChatLieu"
+      );
+      if (res.data.length > 0) {
+        setdataCL(res.data.filter((p) => p.trangThai !== 0));
+        // setdataCL(res.data);
+      }
+    } catch (error) {}
+  };
+  const getdatalsp = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/LoaiSP/getAllLSP"
+      );
+      if (res.data.length > 0) {
+        setdataLSP(res.data.filter((p) => p.trangThai !== 0));
+        // setdataLSP(res.data);
+      }
+    } catch (error) {}
+  };
+  const GetALLCoAo = async () => {
+    try {
+      var res = await axios.get(
+        "https://localhost:7095/api/CoAo/getAllCoAoThem"
+      );
+      if (res.data.length > 0) {
+        setdataCoAo(res.data);
+        // setdataLSP(res.data);
+      }
+    } catch (error) {}
+  };
+
   const getdata = async (page, trangthai) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getAllQLSP?currentPage=${page}&productsPerPage=6`
+        `https://localhost:7095/api/SanPham/getAllQLSP?currentPage=${page}&productsPerPage=10000000`
       );
       if (res.data.sanPham.length > 0) {
         var datafake = res.data.sanPham.map((item) => {
@@ -34,7 +82,11 @@ const QuanLySanPham = () => {
             case 1:
               return { ...item, trangThai: "Đang bán", color: "green" };
             case 2:
-              return { ...item, trangThai: "Chưa quét QR", color: "yellow" };
+              return {
+                ...item,
+                trangThai: "Chưa quét QR",
+                color: "rgb(234, 184, 120)",
+              };
             default:
               return { ...item, trangThai: "Ngưng bán", color: "red" };
           }
@@ -67,7 +119,7 @@ const QuanLySanPham = () => {
     if (event.target.value.trim() !== "") {
       try {
         const res = await axios.get(
-          `https://localhost:7095/api/SanPham/getSPBanHangbyName?TenSanPham=${event.target.value}&currentPage=1&productsPerPage=6`
+          `https://localhost:7095/api/SanPham/getSPBanHangbyName?TenSanPham=${event.target.value}&currentPage=1&productsPerPage=6000000`
         );
         console.log(res.data.sanPham);
         if (res.data.sanPham !== undefined) {
@@ -78,7 +130,13 @@ const QuanLySanPham = () => {
               case 1:
                 return { ...item, trangThai: "Đang bán", color: "green" };
               case 2:
-                return { ...item, trangThai: "QR", color: "yellow" };
+                return {
+                  ...item,
+                  trangThai: "Chưa quét QR",
+                  color: "rgb(234, 184, 120)",
+                };
+              case 3:
+                return { ...item, trangThai: "!", color: "antiquewhite" };
               default:
                 return { ...item, trangThai: "Ngưng bán", color: "red" };
             }
@@ -93,8 +151,70 @@ const QuanLySanPham = () => {
     }
   };
 
+  const HandleOnclickUpdateSp = (item) => {
+    console.log(item);
+    setdataupdate(item);
+    setShow(2);
+  };
+
+  const HandleOnclickDeleteSP = async (item) => {
+    try {
+      var res = await axios.delete(
+        `https://localhost:7095/api/SanPham/deleteSanPham?id=${item.id}`
+      );
+
+      toast.success(res.data);
+      setload(!load);
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+  };
+
+  const HandleOnclickTimKiem = async () => {
+    try {
+      var res = await axios.get(
+        `https://localhost:7095/api/SanPham/getSPBanHangbyLocQLSP?idloaiSP=${idloaisp}&idchatLieu=${idchatlieu}&idcoAo=${idcoao}&giaMin=${minVal}&giaMax=${maxVal}&trangthai=${trangThai}&currentPage=1&productsPerPage=20000000`
+      );
+      console.log(res.data);
+      if (res.data.sanPham !== undefined) {
+        var datafake = res.data.sanPham.map((item) => {
+          switch (item.trangThai) {
+            case 0:
+              return { ...item, trangThai: "Ngưng bán", color: "red" };
+            case 1:
+              return { ...item, trangThai: "Đang bán", color: "green" };
+            case 2:
+              return {
+                ...item,
+                trangThai: "Chưa quét QR",
+                color: "rgb(234, 184, 120)",
+              };
+            case 3:
+              return { ...item, trangThai: "!", color: "antiquewhite" };
+            default:
+              return { ...item, trangThai: "Ngưng bán", color: "red" };
+          }
+        });
+        setdata(datafake);
+      } else {
+        setdata([]);
+      }
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+  };
+
+  const HandleOnclickLamMoiBoLoc = () => {
+    setMinVal(0);
+    setMaxVal(10000);
+    setidchatlieu("00000000-0000-0000-0000-000000000000");
+    setidcoao("00000000-0000-0000-0000-000000000000");
+    setidlsp("00000000-0000-0000-0000-000000000000");
+    settrangthai("");
+    getdata(1, 0);
+  };
   const use = useSelector((use) => use.user.User);
-  if (show === false) {
+  if (show === 0) {
     return (
       <div className="quanlysanpham">
         <div>
@@ -105,28 +225,89 @@ const QuanLySanPham = () => {
             <h4>Bộ lọc</h4>
           </div>
           <hr></hr>
+          <div className="w-100 p-3 row">
+            <div className="col-1 ps-3 pe-0 mt-1">
+              <label className="form-label">Tìm kiếm:</label>
+            </div>
+            <div className="col-4 p-0">
+              <input
+                type="text"
+                className="form-control ps-3"
+                onChange={(event) => HandleOnchangSearch(event)}
+                value={inputsearch}
+              />
+            </div>
+          </div>
           <div>
+            <div>
+              <div className="w-75 mx-auto row my-3">
+                <div className="col-4">
+                  <Form.Select
+                    aria-label="Default select example"
+                    required
+                    value={idloaisp}
+                    onChange={(event) => setidlsp(event.target.value)}
+                  >
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      Loại sản phẩm
+                    </option>
+                    {dataLSP.length > 0 &&
+                      dataLSP.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.ten}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </div>
+                <div className="col-4">
+                  <Form.Select
+                    aria-label="Default select example"
+                    required
+                    value={idchatlieu}
+                    onChange={(event) => setidchatlieu(event.target.value)}
+                  >
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      Chất liệu
+                    </option>
+                    {dataCL.length > 0 &&
+                      dataCL.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.ten}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </div>
+                <div className="col-4">
+                  <Form.Select
+                    aria-label="Default select example"
+                    required
+                    value={idcoao}
+                    onChange={(event) => setidcoao(event.target.value)}
+                  >
+                    <option value="00000000-0000-0000-0000-000000000000">
+                      Cổ áo
+                    </option>
+                    {dataCoAo.length > 0 &&
+                      dataCoAo.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.ten}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </div>
+              </div>
+            </div>
             <div className="row">
-              <div className="col-4">
-                <form>
-                  <div className="w-100 p-3 row">
-                    <div className="col-4 ps-3 pe-0 mt-1">
-                      <label className="form-label">Tìm kiếm:</label>
-                    </div>
-                    <div className="col-8 p-0">
-                      <input
-                        type="text"
-                        className="form-control ps-0"
-                        onChange={(event) => HandleOnchangSearch(event)}
-                        value={inputsearch}
-                      />
-                    </div>
-                  </div>
-                </form>
+              <div className="col-2">
+                <form></form>
               </div>
               <div className="col-4 mt-3 w-25">
-                <Form.Select aria-label="Default select example">
-                  <option>Trạng thái</option>
+                <Form.Select
+                  value={trangThai}
+                  onChange={(event) => settrangthai(event.target.value)}
+                  aria-label="Default select example"
+                >
+                  <option value="">Trạng thái</option>
                   <option value="0">Ngưng bán </option>
                   <option value="1">Đang bán</option>
                   <option value="2">Chưa quét QR</option>
@@ -183,12 +364,18 @@ const QuanLySanPham = () => {
             <div>
               <div className="mx-auto quanlysanpham_boloc_button d-flex">
                 <div className="mb-4 mt-4 ms-5">
-                  <Button className="me-2 ms-3" variant="primary">
+                  <Button
+                    onClick={HandleOnclickTimKiem}
+                    className="me-2 ms-3"
+                    variant="primary"
+                  >
                     tìm kiếm
                   </Button>
                 </div>
                 <div className="mb-4 mt-4">
-                  <Button variant="danger">Làm mới bộ lọc</Button>
+                  <Button onClick={HandleOnclickLamMoiBoLoc} variant="danger">
+                    Làm mới bộ lọc
+                  </Button>
                 </div>
               </div>
             </div>
@@ -200,9 +387,9 @@ const QuanLySanPham = () => {
           </div>
           <div className="mb-3 ms-2">
             <Button
-              disabled={use.ten === "admin" ? false : true}
+             disabled={use.chucNang === "Admin" ? false : true}
               variant="primary"
-              onClick={() => setShow(true)}
+              onClick={() => setShow(1)}
             >
               Thêm sản phẩm
             </Button>
@@ -217,11 +404,11 @@ const QuanLySanPham = () => {
                   <th>STT</th>
                   <th>Mã sản phấm</th>
                   <th>Tên sản pẩm</th>
-                  <th>Loại sản phẩm</th>
-                  <th>Chất liệu</th>
-                  <th>Mô tả</th>
+                  <th style={{ width: "50px" }}>Loại sản phẩm</th>
+                  <th style={{ width: "70px" }}>Chất liệu</th>
+                  <th style={{ width: "70px" }}>Mô tả</th>
                   <th>Trạng thái</th>
-                  <th>Hành động</th>
+                  <th style={{ width: "340px" }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -236,7 +423,25 @@ const QuanLySanPham = () => {
                       <td>{item.moTa}</td>
                       <td style={{ color: item.color }}>{item.trangThai}</td>
                       <td>
-                        <Button variant="primary">Thông tin</Button>
+                        <Button
+                          // disabled={use.ten === "admin" ? false : true}
+                          variant="info"
+                          onClick={() => HandleOnclickUpdateSp(item)}
+                        >
+                          Thông tin
+                        </Button>
+                        <ModalSuaSanPham
+                          load={load}
+                          setload={setload}
+                          item={item}
+                        />
+                        <Button
+                          onClick={() => HandleOnclickDeleteSP(item)}
+                          variant="danger"
+                          className="ms-2"
+                        >
+                          Xóa
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -251,10 +456,21 @@ const QuanLySanPham = () => {
         </div>
       </div>
     );
+  } else if (show === 1) {
+    return (
+      <div>
+        <ModalQLSP setload={setload} load={load} setShow={setShow} />
+      </div>
+    );
   } else {
     return (
       <div>
-        <ModalQLSP setShow={setShow} />
+        <UpdateSanPham
+          dataupdate={dataupdate}
+          setShow={setShow}
+          setload={setload}
+          load={load}
+        />
       </div>
     );
   }

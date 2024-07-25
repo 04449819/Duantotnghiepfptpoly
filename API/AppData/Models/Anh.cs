@@ -8,7 +8,7 @@ namespace AppData.Models
 {
     public class Anh
     {
-        public Guid ID { get; set; }
+		public Guid ID { get; set; }
         public string? DuongDan { get; set; }
         public int TrangThai { get; set; }
         public Guid? IDChitietsanpham { get; set; }

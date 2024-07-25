@@ -49,16 +49,11 @@ const QuanLyChatLieu = () => {
         const res = await axios.delete(
           `https://localhost:7095/api/ChatLieu/${item.id}`
         );
-        if (res.data === true) {
-          toast.success("Xóa thành công");
-          dispath(SetLoading(false));
-          setloaduseE(!loaduseE);
-        } else {
-          toast.error("Xóa thất bại");
-          dispath(SetLoading(false));
-        }
+        toast.success("Xóa thành công");
+        dispath(SetLoading(false));
+        setloaduseE(!loaduseE);
       } catch (error) {
-        toast.error("Xóa thất bại");
+        toast.error(`Gặp lỗi: ${error.response.data}`);
         dispath(SetLoading(false));
       }
     }, 3000);

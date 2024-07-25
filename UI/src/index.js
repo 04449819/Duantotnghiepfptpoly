@@ -29,6 +29,7 @@ import DashBoard from "./Pages/Admin/Dashboard/DashBoard";
 import { Bounce, ToastContainer } from "react-toastify";
 import MauSac from "./Pages/Admin/QuanLySanPham/MauSac/MauSac";
 import KichThuoc from "./Pages/Admin/QuanLySanPham/KichThuoc/KichThuoc";
+import CoAo from "./Pages/Admin/QuanLySanPham/CoAo/CoAo";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -52,6 +53,7 @@ root.render(
             <Route path="/admin/quanlychatlieu" element={<QuanLyChatLieu />} />
             <Route path="/admin/quanlymausac" element={<MauSac />} />
             <Route path="/admin/quanlykichthuoc" element={<KichThuoc />} />
+            <Route path="/admin/coao" element={<CoAo />} />
             <Route
               path="/admin/quanlyloaisanpham"
               element={<QuanLyLoaiSanPham />}

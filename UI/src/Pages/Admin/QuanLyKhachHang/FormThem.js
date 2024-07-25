@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import "./QuanlyKhachHang.scss";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
-const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
+const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
   const dispath = useDispatch();
   // State to hold form data
   // const [formData, setFormData] = useState({
@@ -28,9 +28,22 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   const [messageName, setMessageName] = useState("");
   const [messagePhone, setMessagePhone] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
+
   const [messageDiaChi, setMessageDiaChi] = useState('');
   const [messagePassword, setMessagePassword] = useState('');
+
+  const [themnhanhh, setThemnhanhh] = useState(true);
+  // const [messageAddress, setMessageAddress] = useState('');
+
   // Handle input change
+
+  useEffect(() => {
+    if (themnhanh !== undefined) {
+      setThemnhanhh(false);
+    } else {
+      setThemnhanhh(true);
+    }
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -118,7 +131,6 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
       }
     }, 3000);
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
@@ -146,12 +158,13 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
-      <p style={{color : "red"}}>{ messagePassword}</p>
-
+      <p style={{color : "red"}}>
+        { messagePassword}</p>
       <div className="form-group">
+
         <label className="label_name" htmlFor="email">
           Email:
         </label>
@@ -165,10 +178,11 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           
         />
       </div>
-      <p style={{color : "red"}}>{messageEmail}</p>
-
+      <p style={{color : "red"}}>
+        {messageEmail}</p>
 
       <div className="form-group">
+
        <label className='label' htmlFor="gioiTinh"> Giới Tính:</label>
         <select className='text_input'
         id="gioiTinh"
@@ -182,6 +196,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         <option value="1">Nữ</option>
        </select>
      </div>
+      <p>{messageEmail}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="ngaySinh">
           Ngày sinh:
@@ -193,7 +208,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="ngaySinh"
           value={formData.ngaySinh}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
       <div className="form-group">
@@ -224,7 +239,8 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           onChange={handleChange}
         />
       </div>
-      <p style={{color : "red"}}>{messagePhone}</p>
+      <p style={{color : "red"}}>
+        {messagePhone}</p>
       <div className="form-group">
         <label className="label_name" htmlFor="diemTich">
           Điểm tích:
@@ -236,10 +252,11 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
           name="diemTich"
           value={formData.diemTich}
           onChange={handleChange}
-          required
+          required={themnhanhh}
         />
       </div>
       <div className="form-group">
+
        <label className='label' htmlFor="trangThai"> Trạng thái:</label>
         <select className='text_input'
         id="trangThai"
@@ -253,6 +270,9 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
         <option value="1">Không hoạt động</option>
        </select>
      </div>
+
+
+
       <button type="submit" className="submit-button">
         Submit
       </button>
@@ -260,7 +280,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   );
 };
 /////////////////////////////////////////////////////////////////////
-const MyModalAdd = ({ show, handleClose, handleSuccess }) => {
+const MyModalAdd = ({ show, handleClose, handleSuccess, themnhanh }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -270,6 +290,7 @@ const MyModalAdd = ({ show, handleClose, handleSuccess }) => {
         <AddQuanLyKH
           handleSuccess={handleSuccess}
           handleClose={handleClose}
+          themnhanh={themnhanh}
         ></AddQuanLyKH>
       </Modal.Body>
       {/* <Modal.Footer>

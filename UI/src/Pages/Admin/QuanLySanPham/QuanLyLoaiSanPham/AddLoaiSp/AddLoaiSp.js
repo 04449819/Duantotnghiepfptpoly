@@ -65,7 +65,7 @@ function AddLoaiSP(props) {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {props.item ? "Sửa" : "Thêm Loại sản phẩm"}
+        {props.item ? "Sửa" : "+"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>

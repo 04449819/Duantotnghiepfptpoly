@@ -87,8 +87,12 @@ const ModalKichThuoc = (props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "Thêm kích thước" : "Sửa"}
+      <Button
+        style={{ height: "28px", width: "70px", paddingTop: "7px" }}
+        variant="primary"
+        onClick={handleShow}
+      >
+        {props.item === undefined ? "+" : "Sửa"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>

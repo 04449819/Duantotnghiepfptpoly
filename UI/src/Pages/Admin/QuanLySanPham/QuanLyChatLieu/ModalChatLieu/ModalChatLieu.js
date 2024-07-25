@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
@@ -8,7 +8,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../../../Rudux/Reducer/LoadingSlice";
-import { IoAdd } from "react-icons/io5";
 const ModalChatLieu = (props) => {
   const [show, setShow] = useState(false);
 
@@ -89,7 +88,7 @@ const ModalChatLieu = (props) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "Thêm chất liệu" : "Sửa"}
+        {props.item === undefined ? "+" : "Sửa"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>

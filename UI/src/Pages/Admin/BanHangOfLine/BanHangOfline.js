@@ -18,7 +18,7 @@ const BanHangOfline = () => {
   const [TongGia, setTongGia] = useState(0);
   const [giabandau, setGiaBandau] = useState(0);
   // const [datasp, setData] = useState([]);
-
+  const [themnhanh, setThemnhanh] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -218,6 +218,7 @@ const BanHangOfline = () => {
         show={showModal}
         // handleSuccess={handleReload}
         handleClose={handleClose}
+        themnhanh={"hahahaa"}
       />
     </div>
   );

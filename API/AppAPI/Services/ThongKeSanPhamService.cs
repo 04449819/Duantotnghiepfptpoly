@@ -16,9 +16,13 @@ namespace AppAPI.Services
 
         public async Task<List<SanPham>> Top10SanPhamTrongNam(int year)
         {
-            var top = await context.ChiTietHoaDons.Include(a => a.ChiTietSanPham).Include(a => a.ChiTietSanPham.SanPham).Where(a => a.HoaDon.NgayTao.Year == year).GroupBy(a => a.ChiTietSanPham.SanPham).OrderByDescending(a => a.Sum(s => s.SoLuong)).Select(a => a.Key).Take(10).ToListAsync();
-            return top;
-        }
+			var top = await context.ChiTietHoaDons.Include(a => a.ChiTietSanPham).Include(a => a.ChiTietSanPham.SanPham).Where(a => a.HoaDon.NgayTao.Year == year).GroupBy(a => a.ChiTietSanPham.SanPham).OrderByDescending(a => a.Sum(s => s.SoLuong)).Select(a => a.Key).Take(10).ToListAsync(); return top;
+
+
+
+
+
+		}
 
         public async Task<List<SanPham>> Top10SanPhamTrongNgay(DateTime date)
         {

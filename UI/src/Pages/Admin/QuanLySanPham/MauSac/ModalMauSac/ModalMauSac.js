@@ -95,8 +95,12 @@ const ModalMauSac = (props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        {props.item === undefined ? "Thêm màu sắc" : "Sửa"}
+      <Button
+        style={{ height: "28px", width: "70px", paddingTop: "7px" }}
+        variant="primary"
+        onClick={handleShow}
+      >
+        {props.item === undefined ? "+" : "Sửa"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -111,7 +115,7 @@ const ModalMauSac = (props) => {
               <Form.Label>Tên màu sắc</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Kích thước"
+                placeholder="Màu sắc"
                 required
                 value={data.ten}
                 onChange={(e) => setdata({ ...data, ten: e.target.value })}

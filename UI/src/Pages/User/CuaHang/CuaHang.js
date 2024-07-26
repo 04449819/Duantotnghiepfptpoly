@@ -306,6 +306,19 @@ const CuaHang = () => {
           <div className="row mt-3">
             <div className="col-3">
               <div className="filter-panel">
+                <div className="filter-group">
+                  <div className="d-flex">
+                    <div
+                      style={{ border: "1px solid black" }}
+                      className="d-flex px-0"
+                    >
+                      <div className="my-0 opacity-50">Blue</div>
+                      <div className="my-0 ms-1 me-2">x</div>
+                    </div>
+                  </div>
+
+                  <hr />
+                </div>
                 <div
                   hidden={loaisp.title !== undefined ? true : false}
                   className="filter-group"

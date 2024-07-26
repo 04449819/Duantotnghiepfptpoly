@@ -3,6 +3,7 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels.BanOffline;
+using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -89,7 +90,8 @@ namespace AppAPI.Services
                 _context.ChiTietHoaDons.Remove(exist);
                 await _context.SaveChangesAsync();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -124,12 +126,12 @@ namespace AppAPI.Services
         //                                                      GiaKM = km == null ? ctsp.GiaBan :
         //            (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
         //            (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
-                                                              
+
         //                                                  }).ToListAsync();
         //    return lsthdct;
         //}
 
-        public async  Task<bool> UpdateSL(Guid id, int sl)
+        public async Task<bool> UpdateSL(Guid id, int sl)
         {
             try
             {
@@ -153,9 +155,39 @@ namespace AppAPI.Services
             }
         }
 
-		public Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<ChiTietHoaDon>> GetChiTietSPBHById(Guid idsp)
+        {
+            var chiTietHoaDons = await  _context.ChiTietHoaDons
+                                     .Where(cthd => cthd.IDHoaDon == idsp)
+
+                                     /*  .Include(cthd => cthd.HoaDon)*/ // Nạp đối tượng HoaDon liên quan
+                                     .ToListAsync(); // Sử dụng ToListAsync() để thực hiện lấy dữ liệu bất đồng bộ
+
+            return chiTietHoaDons;
+            
+
+
+
+        }
+
+        public List<ChiTietHoaDon> GetChiTietSPId(Guid idsp)
+        {
+            throw new NotImplementedException();
+        }
+
+        //public List<ChiTietHoaDon> GetChiTietHoaDonById(Guid idhb)
+        //{
+        //    var chiTietHoaDonList = _context.ChiTietHoaDons
+        //                             .Include(ct => ct.HoaDon) // Đảm bảo include HoaDon để có thể truy cập các thông tin của hóa đơn
+        //                             .Where(ct => ct.IDHoaDon == idhb)
+        //                             .ToList();
+
+        //    return chiTietHoaDonList;
+        //}
+    }
 }

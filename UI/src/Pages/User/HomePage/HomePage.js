@@ -235,7 +235,7 @@ const HomePage = () => {
           </div>
           <div>
             <Slider {...settings}>
-              {data.map((product, index) => (
+              {products.map((product, index) => (
                 <div key={index}>
                   <button
                     onClick={Handleonclickchuyentrang1}
@@ -246,7 +246,7 @@ const HomePage = () => {
                       className="homepage-top-khung"
                     >
                       <img
-                        src={product.anhs[0].duongDan}
+                        src={product.image}
                         alt={product.title}
                         style={{ width: "200px", height: "200px" }}
                       />

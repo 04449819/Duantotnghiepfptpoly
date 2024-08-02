@@ -6,15 +6,20 @@ using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AppAPI.Controllers
 {
-    [Route("api/SanPham")]
+
+
+	[Route("api/SanPham")]
     [ApiController]
     public class SanPhamController : ControllerBase
     {
@@ -37,7 +42,7 @@ namespace AppAPI.Controllers
         [HttpGet("GetAllSanPhamAdmin")]
         public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
         {
-            var listSP = _sanPhamServices.GetAllSanPhamAdmin();
+			var listSP = _sanPhamServices.GetAllSanPhamAdmin();
             return listSP;
         }
      
@@ -247,25 +252,79 @@ namespace AppAPI.Controllers
             return Ok(listCTSP);
         }
 		#endregion
-		#region LoaiSanPhamBanHangOfline
+
+
+		#region LoaiSanPhamBanHangOflineKien
 		[HttpGet("getAllThongTinSPBanHang")]
 		public async Task<IActionResult> GetAllThongTinSanPham()
 		{
-			var loaiSPs = await _dbcontext.LoaiSPs.ToListAsync();
-			var chatLieus = await _dbcontext.ChatLieus.ToListAsync();
+			var loaiSPs = await _dbcontext.LoaiSPs.Where(p=> p.TrangThai != 0).ToListAsync();
+			var chatLieus = await _dbcontext.ChatLieus.Where(p => p.TrangThai != 0).ToListAsync();
+            var coAos = await _dbcontext.CoAos.Where(p => p.trangThai != 0).ToListAsync(); 
             var thongTinSP = new ThongTinSanPham() 
             {
                 loaiSPs = loaiSPs,
                 chatLieus = chatLieus,
+                coAos = coAos,
             };
 
             return Ok(thongTinSP);
 		}
 		#endregion
 
+
+
 		#region SanPhamBanHangOflineKien
 		[HttpGet("getAllSPBanHang")]
 		public async Task<IActionResult> GetAllSanPhamBanHang(int currentPage, int productsPerPage)
+		{
+			int totalProducts = await _dbcontext.SanPhams.CountAsync();
+			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
+
+			var pagedProducts = await _dbcontext.SanPhams.Where(p => p.TrangThai != 0)
+				.Skip((currentPage - 1) * productsPerPage)
+				.Take(productsPerPage)
+				.Select( a => new Sanphamptview
+				{
+					ID = a.ID,
+					Ten = a.Ten,
+					Ma = a.Ma,
+					MoTa = a.MoTa,
+					TrangThai = a.TrangThai,
+					giaBan = _dbcontext.ChiTietSanPhams
+							   .Where(p => p.IDSanPham == a.ID)
+							   .Select(p => p.GiaBan)
+							   .FirstOrDefault(),
+					IDLoaiSP = a.IDLoaiSP,
+					IDChatLieu = a.IDChatLieu,
+                    IDCoAo = a.idCoAo,
+					anhs = _dbcontext.ChiTietSanPhams
+							  .Where(p => p.IDSanPham == a.ID)
+							  .Join(_dbcontext.Anhs, b => b.ID, c => c.IDChitietsanpham, (b, c) => new Anh
+							  {
+								  ID = c.ID,
+								  DuongDan = c.DuongDan,
+								  TrangThai = c.TrangThai,
+								  IDChitietsanpham = c.IDChitietsanpham,
+							  }).ToList(),
+                    chatLieu =  _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+                    loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
+                    coAo = _dbcontext.CoAos.Where(p => p.Id == a.idCoAo).Select(p => p.ten).FirstOrDefault(),
+				})
+				.OrderByDescending(p => p.TrangThai).ToListAsync();
+
+			// Prepare the paginated result
+			var sanPhamPhangTrang = new PhanTrangSanPham
+			{
+				sanPham = pagedProducts,
+				SoTrang = totalPages
+			};
+
+			return Ok(sanPhamPhangTrang);
+		}
+
+		[HttpGet("getAllQLSP")]
+		public async Task<IActionResult> GetAllQLSanPham(int currentPage, int productsPerPage)
 		{
 			int totalProducts = await _dbcontext.SanPhams.CountAsync();
 			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
@@ -286,6 +345,7 @@ namespace AppAPI.Controllers
 							   .FirstOrDefault(),
 					IDLoaiSP = a.IDLoaiSP,
 					IDChatLieu = a.IDChatLieu,
+					IDCoAo = a.idCoAo,
 					anhs = _dbcontext.ChiTietSanPhams
 							  .Where(p => p.IDSanPham == a.ID)
 							  .Join(_dbcontext.Anhs, b => b.ID, c => c.IDChitietsanpham, (b, c) => new Anh
@@ -294,9 +354,12 @@ namespace AppAPI.Controllers
 								  DuongDan = c.DuongDan,
 								  TrangThai = c.TrangThai,
 								  IDChitietsanpham = c.IDChitietsanpham,
-							  }).ToList()
+							  }).ToList(),
+					chatLieu = _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+					loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
+					coAo = _dbcontext.CoAos.Where(p => p.Id == a.idCoAo).Select(p => p.ten).FirstOrDefault(),
 				})
-				.ToListAsync();
+				.OrderByDescending(p => p.TrangThai).ToListAsync();
 
 			// Prepare the paginated result
 			var sanPhamPhangTrang = new PhanTrangSanPham
@@ -313,7 +376,7 @@ namespace AppAPI.Controllers
 		{
 
 			var query = _dbcontext.SanPhams
-						.Where(p => p.Ten.ToLower().Trim().Contains( TenSanPham.ToLower().Trim()));
+						.Where(p => p.Ten.ToLower().Trim().Contains( TenSanPham.ToLower().Trim()) && p.TrangThai != 0);
 
 
 			int totalProducts = await query.CountAsync();
@@ -354,7 +417,9 @@ namespace AppAPI.Controllers
 											  TrangThai = c.TrangThai,
 											  IDChitietsanpham = c.IDChitietsanpham
 										  })
-									.ToList()
+									.ToList(),
+							chatLieu = _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+							loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
 						})
 						.ToListAsync();
 
@@ -368,15 +433,17 @@ namespace AppAPI.Controllers
 		}
 
 		[HttpGet("getSPBanHangbyLoaisp")]
-        public async Task<IActionResult> GetSanPhamBanHangByLoai(Guid idloaiSP, Guid idchatLieu, decimal giaMin, decimal giaMax, int currentPage, int productsPerPage)
+        public async Task<IActionResult> GetSanPhamBanHangByLoai(Guid idloaiSP, Guid idchatLieu,Guid idcoAo, decimal giaMin, decimal giaMax, int currentPage, int productsPerPage)
         {
 
-            var query = _dbcontext.SanPhams
+            var query1 = _dbcontext.SanPhams
                       .Where(p => (idloaiSP.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDLoaiSP == idloaiSP) &&
-                                  (idchatLieu.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDChatLieu == idchatLieu) && ((giaMin == 0 && giaMax == 0) || _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan >= giaMin && _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan <= giaMax));
+                                  (idchatLieu.ToString() == "00000000-0000-0000-0000-000000000000" || p.IDChatLieu == idchatLieu) && (idcoAo.ToString() == "00000000-0000-0000-0000-000000000000" || p.idCoAo == idcoAo) && ((giaMin == 0 && giaMax == 0) || _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan >= giaMin && _dbcontext.ChiTietSanPhams.FirstOrDefault(a => a.IDSanPham == p.ID).GiaBan <= giaMax));
+
+            var query = query1.Where(p => p.TrangThai != 0);
 
 
-            int totalProducts = await query.CountAsync();
+			int totalProducts = await query.CountAsync();
 
             if (totalProducts == 0)
             {
@@ -426,6 +493,7 @@ namespace AppAPI.Controllers
 
             return Ok(sanPhamPhangTrang);
         }
+
 		#endregion
 		#region ChitietSanPhamBanHangOflineKien
 		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
@@ -440,24 +508,35 @@ namespace AppAPI.Controllers
             var idchatlieu = await _dbcontext.SanPhams.Where(a => a.ID == idsp).Select(b => b.IDChatLieu).FirstOrDefaultAsync();
             var Tenchatlieu = await _dbcontext.ChatLieus
                 .Where(c => c.ID == idchatlieu).Select(p => p.Ten).FirstOrDefaultAsync();
+			var idcoao = await _dbcontext.SanPhams.Where(a => a.ID == idsp).Select(b => b.idCoAo).FirstOrDefaultAsync();
+            var tenCoAo = await _dbcontext.CoAos.Where(p => p.Id == idcoao).Select(p => p.ten).FirstOrDefaultAsync();
 
 			var DSCTSP = await _dbcontext.ChiTietSanPhams
                 .Where(x => x.IDSanPham == idsp).ToListAsync();
 
-            var dsctspview =  (from a in DSCTSP
-                             select new
-                             {
-                                 id = a.ID,
-								 idsp = a.IDSanPham,
-								 tenchatlieu = Tenchatlieu,
-                                 GiaBan = a.GiaBan,
-                                 SoLuong = a.SoLuong,
-                                 khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
-                                 MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
-                                 kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b=>b.Ten).FirstOrDefault(),
-                                 img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
-                                 trangthai = true
-							 }).ToList();
+            var dsctspview = (from a in DSCTSP.Where(p => p.TrangThai != 0)
+                              select new
+                              {
+                                  id = a.ID,
+                                  idsp = a.IDSanPham,
+                                  tenchatlieu = Tenchatlieu,
+								  tencoao = tenCoAo,
+								  GiaBan = a.GiaBan,
+                                  SoLuong = a.SoLuong,
+								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
+								  khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
+											   join km in _dbcontext.KhuyenMais
+											   on b.IdKhuyenMai equals km.ID
+											   where b.IdChiTietSanPham == a.ID
+													 && km.TrangThai == 1
+													 && km.NgayApDung < DateTime.Today
+													 && DateTime.Today < km.NgayKetThuc
+											   select km.GiaTri).FirstOrDefault(),
+								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
+                                  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
+                                  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
+                                  trangthai = true
+                              }).ToList();
             return Ok( dsctspview);
 		}
 		[HttpGet("GetChiTietSanPhamByIDKM")]
@@ -467,8 +546,15 @@ namespace AppAPI.Controllers
 			//var Tenchatlieu = await _dbcontext.ChatLieus
 			//	.Where(c => c.ID == idchatlieu).Select(p => p.Ten).FirstOrDefaultAsync();
 
-			var DSCTSP = await _dbcontext.ChiTietSanPhams
-				.Where(x => x.IDKhuyenMai == id).ToListAsync();
+			//var DSCTSP = await _dbcontext.ChiTietSanPhams
+			//	.Where(x => x.IDKhuyenMai == id).ToListAsync();
+			var DSCTSP = await (from a in _dbcontext.KhuyenMaiCTSanPhams.Where(p => p.IdKhuyenMai == id)
+
+								join b in _dbcontext.ChiTietSanPhams on a.IdChiTietSanPham equals b.ID
+                                select b)
+			.Where(p => p.TrangThai != 0).ToListAsync();
+
+			
 
 			var dsctspview = (from a in DSCTSP
 							  select new
@@ -479,7 +565,15 @@ namespace AppAPI.Controllers
 								  tenchatlieu = _dbcontext.ChatLieus.FirstOrDefault(p => p.ID == _dbcontext.SanPhams.FirstOrDefault(b => b.ID == a.IDSanPham).IDChatLieu).Ten,
 								  GiaBan = a.GiaBan,
 								  SoLuong = a.SoLuong,
-								  khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai && b.TrangThai == 1).Select(b => b.GiaTri).FirstOrDefault(),
+								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai && b.TrangThai == 1).Select(b => b.GiaTri).FirstOrDefault(),
+								  khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
+														   join km in _dbcontext.KhuyenMais
+														   on b.IdKhuyenMai equals km.ID
+														   where b.IdChiTietSanPham == a.ID
+																 && km.TrangThai == 1
+																 && km.NgayApDung < DateTime.Today
+																 && DateTime.Today < km.NgayKetThuc
+														   select km.GiaTri).FirstOrDefault(),
 								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
 								  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
 								  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
@@ -488,5 +582,123 @@ namespace AppAPI.Controllers
 			return Ok(dsctspview);
 		}
 		#endregion
-	}
+
+		#region add san pham 
+		[HttpPost("images")]
+		public async Task<IActionResult> UploadImages([FromForm] List<IFormFile> images)
+		{
+			if (images == null || images.Count == 0)
+				return BadRequest("bạn chưa chọn ảnh để upload.");
+
+			var paths = new List<string>();
+			foreach (var image in images)
+			{
+				if (image.Length == 0)
+					continue;
+
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", image.FileName);
+
+				using (var stream = new FileStream(path, FileMode.Create))
+				{
+					await image.CopyToAsync(stream);
+				}
+
+				paths.Add($"/images/{image.FileName}");
+			}
+
+			return Ok("thêm thành công !");
+		}
+
+		[HttpPost("addSanPhamQLSP")]
+		public async Task<IActionResult> AddSanPhamQLSP([FromBody] ADDSanPhamViewModel DataThem)
+		{
+			if (DataThem == null)
+			{
+				return BadRequest("Dữ liệu không hợp lệ");
+			}
+
+			var sp = await _dbcontext.SanPhams.FirstOrDefaultAsync(p => p.Ten.ToLower().Trim() == DataThem.tenSanpham.ToLower().Trim() || p.Ma == DataThem.ma);
+            if (sp != null) return BadRequest("Tên hoặc mã sản phẩm đã tồn tại");
+            var checkctsp = true;
+			foreach (var item in DataThem.listctsp)
+			{
+				var ctspcheck = await _dbcontext.ChiTietSanPhams.FirstOrDefaultAsync(p => p.Ma == item.ma);
+                if (ctspcheck != null) return BadRequest("Tên hoặc mã sản phẩm đã tồn tại");
+			}
+			//if(checkctsp == false) return BadRequest("Tên hoặc mã sản phẩm đã tồn tại");
+			using (var transaction = await _dbcontext.Database.BeginTransactionAsync())
+			{
+				try
+				{
+					var sanpham = new SanPham
+					{
+						ID = Guid.NewGuid(),
+						Ten = DataThem.tenSanpham,
+						Ma = DataThem.ma,
+						MoTa = DataThem.mota,
+						TrangThai = 2,
+						IDLoaiSP = DataThem.idloaisp,
+						IDChatLieu = DataThem.idchatlieu,
+						idCoAo = DataThem.idCoAo
+					};
+
+					foreach (var item in DataThem.listctsp)
+					{
+						var ctsp = new ChiTietSanPham
+						{
+							ID = Guid.NewGuid(),
+							Ma = item.ma,
+							SoLuong = item.soluong,
+							GiaBan = item.giaban,
+							NgayTao = DateTime.Now,
+							TrangThai = 2,
+							IDSanPham = sanpham.ID,
+							IDMauSac = item.idmausac,
+							IDKichCo = item.idkichthuoc
+						};
+
+						foreach (var a in item.img)
+						{
+							var anh = new Anh
+							{
+								ID = Guid.NewGuid(),
+								DuongDan = a.DuongDan,
+								TrangThai = 1,
+								IDChitietsanpham = ctsp.ID
+							};
+							await _dbcontext.Anhs.AddAsync(anh);
+						}
+
+						await _dbcontext.ChiTietSanPhams.AddAsync(ctsp);
+					}
+
+					await _dbcontext.SanPhams.AddAsync(sanpham);
+					await _dbcontext.SaveChangesAsync();
+
+					await transaction.CommitAsync();
+
+					return Ok("Sản phẩm đã được thêm thành công");
+				}
+				catch (Exception ex)
+				{
+					await transaction.RollbackAsync();
+					return StatusCode(500, $"Lỗi trong quá trình thêm sản phẩm: {ex.Message}");
+				}
+			}
+		}
+
+
+
+        #endregion
+
+        #region Tung
+        [HttpGet("GetChiTietSanPhamByIdHD")]
+        public async Task<IActionResult> GetChiTietSanPhamByIdHD(Guid hoaDonId)
+        {
+            var response = _sanPhamServices.GetChiTietSanPhamByIdHD(hoaDonId);
+            return Ok(response);
+        }
+        #endregion
+
+    }
 }

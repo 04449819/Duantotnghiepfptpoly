@@ -4,6 +4,7 @@ using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppAPI.Services
 {
@@ -109,7 +110,7 @@ namespace AppAPI.Services
                 nv.PassWord = password;
                 nv.SDT = sdt;
                 nv.DiaChi = diachi;
-                nv.TrangThai = 1;
+                nv.TrangThai = trangthai;
                 nv.IDVaiTro = vt.ID;
                 _dbContext.NhanViens.Add(nv);
                 _dbContext.SaveChanges();
@@ -134,6 +135,31 @@ namespace AppAPI.Services
 
                 throw;
             }
+        }
+
+        public async Task<(List<NhanVien>, int)> GetAll(int pageIndex, int pageSize)
+        {
+        var offset = (pageIndex - 1) * pageSize;
+            var totalRecords = await _dbContext.NhanViens.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var NhanVien = await (from nv in _dbContext.NhanViens
+                                  .Where (p => p.IDVaiTro.ToString() == "952C1A5D-74FF-4DAF-BA88-135C5440809C")
+                                   select new NhanVien()
+                                   {
+                                       ID = nv.ID,
+                                       Ten = nv.Ten,
+                                       Email = nv.Email,
+                                       PassWord = nv.PassWord,
+                                       SDT = nv.SDT,
+                                       DiaChi = nv.DiaChi,
+                                       TrangThai = nv.TrangThai,                       
+                                   }
+                                )
+                               .Skip(offset)
+                               .Take(pageSize)
+                               .ToListAsync();
+            return (NhanVien, totalPages);
         }
     }
 }

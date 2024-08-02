@@ -1,11 +1,29 @@
 import Header from "./Pages/User/theme/Header/Header";
 import Footerq from "./Pages/User/theme/Footer/Footer";
 import { Outlet } from "react-router-dom";
-import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-function Index() {
+import BarLoader from "react-spinners/BarLoader";
+import BeatLoader from "react-spinners/BeatLoader";
+import { useSelector } from "react-redux";
+const Index = () => {
+  const loading = useSelector((p) => p.Loading.Loading);
+
   return (
     <div className="App">
+      <BarLoader
+        color="rgba(54, 214, 181, 1)"
+        cssOverride={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2001,
+        }}
+        height={4}
+        loading={loading}
+        speedMultiplier={0.5}
+        width={1550}
+      />
       <div className="Header">
         <Header />
       </div>
@@ -15,23 +33,9 @@ function Index() {
       <div className="Footer">
         <Footerq />
       </div>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
-      <ToastContainer />
+      {loading && <div className="overlay"></div>}
     </div>
   );
-}
+};
 
 export default Index;

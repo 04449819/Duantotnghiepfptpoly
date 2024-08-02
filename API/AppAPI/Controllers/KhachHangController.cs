@@ -8,7 +8,11 @@ using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.ConstrainedExecution;
 using System.Security;
+using System.Threading.Tasks;
 
 namespace AppAPI.Controllers
 {
@@ -24,13 +28,26 @@ namespace AppAPI.Controllers
             _dbcontext = new AssignmentDBContext();
             
         }
-        // GET: api/<SanPhamController>
         [HttpGet]
-        public IActionResult GetAllKhachHang(int pageIndex, int pageSize)
+
+        public async Task<IActionResult> GetAll(int pageIndex = 1, int pageSize = 10)
         {
-            var khv = _khachHangService.GetAll(pageIndex, pageSize);
-            return Ok(khv);
+            var result = await _khachHangService.GetAll(pageIndex, pageSize);
+            return Ok(new { Data = result.Item1, TongTrang = result.Item2 });
+
         }
+        //public IActionResult GetAllKhachHang(int pageIndex, int pageSize)
+        //{
+        //    var khv = _khachHangService.GetAll(pageIndex, pageSize);
+        //    return Ok(khv);
+        //}
+        // GET: api/<SanPhamController>
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllKhachHang()
+        //{
+        //    var ds = await _khachHangService.GetAll();
+        //    return Ok(ds);
+        //}
         [Route("TimKiemKH")]
         [HttpGet]
         public List<KhachHang> GetAllKhachHang(string? Ten, string? SDT)
@@ -88,11 +105,7 @@ namespace AppAPI.Controllers
             //return matKhau;
         }
         //Nhinh
-        [HttpGet("getBySDT")]
-        public KhachHang GetBySDT(string sdt)
-        {
-            return _khachHangService.GetBySDT(sdt);
-        }
+      
         [HttpGet("getAllHDKH")]
         public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
         {
@@ -190,8 +203,18 @@ namespace AppAPI.Controllers
             var result = _khachHangService.Delete(id);
             return result;
         }
-
+		#region khachHangHoang
+		#endregion
 		#region KhachHangKien
+		[HttpGet("getBySDT")]
+		public async Task<IActionResult> GetBySDT(string sdt)
+		{
+            var diachinull = "";
+			var khachhang = _khachHangService.GetBySDT(sdt);
+			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == khachhang.IDKhachHang && p.TrangThai == 1);
+			if(diachi == null) return Ok(new { khachhang, diachinull });
+			return Ok(new {khachhang,diachi.DiaChi});
+		}
 
 		[Route("PostKHView1")]
 		[HttpPost]
@@ -254,6 +277,84 @@ namespace AppAPI.Controllers
 			return Ok(0);
 
 		}
-		#endregion
-	}
+
+        [HttpPut("updatekhachhang")]
+        public async Task<IActionResult> UpdateKhachHangBySDT(Guid id, KhachHangAddView khachHang)
+		{
+
+            var check = await _dbcontext.KhachHangs.FindAsync(id);
+			if (check == null)
+			{
+				return NotFound("Khách hàng không tồn tại");
+			}
+			check.Ten = khachHang.Ten;
+            check.GioiTinh = khachHang.GioiTinh;
+            check.NgaySinh = khachHang.NgaySinh;
+			if(check.Email == khachHang.Email)
+            {
+				check.Email = khachHang.Email;
+			}
+			else
+			{
+                var checkEmail = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khachHang.Email);
+                var checkEmailNv = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khachHang.Email);
+                if (checkEmail != null || checkEmailNv != null)
+                {
+                    return Ok("Email đã tồn tại");
+					
+				}
+				check.Email = khachHang.Email;
+			};
+			if (check.SDT == khachHang.SDT)
+			{
+				check.SDT = khachHang.SDT;
+			}
+			else
+			{
+				var checksdt = _dbcontext.KhachHangs.FirstOrDefault(p => p.SDT == khachHang.SDT);
+                var checksdtNv = _dbcontext.NhanViens.FirstOrDefault(p => p.SDT == khachHang.SDT);
+             
+                if (checksdt != null || checksdtNv != null )
+				{
+					return Ok("SĐT đã tồn tại");
+
+				}
+				check.SDT = khachHang.SDT;
+			};
+
+			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == id && p.TrangThai == 1);
+			if(diachi != null)
+			{
+				diachi.DiaChi = khachHang.DiaChi;
+				_dbcontext.diaChiKhachHangs.Update(diachi);
+			}
+			else
+			{
+                DiaChiKhachHang dcKhangHang = new DiaChiKhachHang();
+				dcKhangHang.Id = Guid.NewGuid();
+                dcKhangHang.KhachHangID = id;
+				dcKhangHang.DiaChi = khachHang.DiaChi;
+                dcKhangHang.TrangThai = 1;
+				await _dbcontext.diaChiKhachHangs.AddAsync(dcKhangHang);
+			}
+
+			 _dbcontext.KhachHangs.Update(check);
+			await _dbcontext.SaveChangesAsync();
+			return Ok("Update thành công");
+		}
+        #endregion
+        #region KhachHangTung
+        [HttpGet("tong-hop-diem/{sdtOrMail}")]
+        public IActionResult TongHopDiem(string sdtOrMail)
+        {
+            var khachHang = _khachHangService.GetBySDT(sdtOrMail);
+            if (khachHang == null)
+            {
+                return NotFound("Không tìm thấy khách hàng");
+            }   
+            int diemTich = _khachHangService.TongHopDiem(khachHang.IDKhachHang);
+            return Ok(diemTich);
+        }
+        #endregion
+    }
 }

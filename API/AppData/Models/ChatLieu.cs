@@ -13,6 +13,6 @@ namespace AppData.Models
         [StringLength(20, ErrorMessage = "Tên chất liệu không được vượt quá 20 kí tự ")]
         public string Ten { get; set; }
         public int TrangThai { get; set; }
-        public virtual IEnumerable<SanPham> SanPhams { get; set; }
+        public virtual IEnumerable<SanPham>? SanPhams { get; set; }
     }
 }

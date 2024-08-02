@@ -20,7 +20,9 @@ namespace AppData.Configurations
             builder.Property(x => x.TienShip).HasColumnType("int");
             builder.Property(x => x.TrangThaiGiaoHang).HasColumnType("int");
             builder.HasOne(x => x.NhanVien).WithMany(x => x.HoaDons).HasForeignKey(x => x.IDNhanVien);
-            builder.HasOne(x => x.Voucher).WithMany(x => x.HoaDons).HasForeignKey(x => x.IDVoucher);
+			builder.HasOne(x => x.KhachHang).WithMany(x => x.HoaDons).HasForeignKey(x => x.KhachHangID);
+			builder.HasOne(x => x.PhuongThucThanhToan).WithMany(x => x.HoaDons).HasForeignKey(x => x.phuongThucTTID);
+			builder.HasOne(x => x.Voucher).WithMany(x => x.HoaDons).HasForeignKey(x => x.IDVoucher);
         }
     }
 }

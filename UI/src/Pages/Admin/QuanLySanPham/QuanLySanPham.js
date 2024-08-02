@@ -1,298 +1,265 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Modal, Button } from 'react-bootstrap';
 import "./QuanLySanPham.scss";
+import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import ModalQLSP from "./ModalQLSP";
 const QuanLySanPham = () => {
-  const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({
-    id: null,
-    anh: '',
-    ten: '',
-    ma: '',
-    moTa: '',
-    trangThai: 0,
-    idLoaiSP: '',
-    idChatLieu: '',
-    idmauSac: '',
-  });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [loaiSanPhams, setLoaiSanPhams] = useState([]);
-  const [chatLieus, setChatLieus] = useState([]);
-  const [mauSacs, setMauSacs] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [minVal, setMinVal] = useState(0);
+  const [maxVal, setMaxVal] = useState(10000);
 
+  const [data, setdata] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [inputsearch, setInputSearch] = useState("");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    fetchProducts();
-    fetchLoaiSanPhams();
-    fetchChatLieus();
-    fetchMauSacs();
+    getdata(page, 0);
+    console.log(use);
   }, []);
-
-  const fetchProducts = async () => {
+  const getdata = async (page, trangthai) => {
     try {
-      const response = await axios.get('https://localhost:7095/api/SanPham/getAll');
-
-      setProducts(response.data);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
-  const fetchLoaiSanPhams = async () => {
-    try {
-      const response = await axios.get('https://localhost:7095/api/LoaiSP/getAll');
-      setLoaiSanPhams(response.data);
-    } catch (error) {
-      console.error('Error fetching loai san phams:', error);
-    }
-  };
-  const fetchChatLieus = async () => {
-    try {
-      const response = await axios.get('https://localhost:7095/api/ChatLieu/GetAllChatLieu');
-      setChatLieus(response.data);
-    } catch (error) {
-      console.error('Error fetching chat lieus:', error);
-    }
-  };
-  const fetchMauSacs = async () => {
-    try {
-      const response = await axios.get('https://localhost:7095/api/MauSac/GetAllMauSac');
-      setMauSacs(response.data);
-    } catch (error) {
-      console.error('Error fetching mau sacs:', error);
-    }
-  };
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
-  const handleInputChange = (e) => {
-    setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (isEditing) {
-        await axios.put(`/api/SanPham/UpdateSanPham/${newProduct.id}`, newProduct);
-      } else {
-        await axios.post('/api/SanPham/AddSanPham', newProduct);
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/getAllQLSP?currentPage=${page}&productsPerPage=10000000`
+      );
+      if (res.data.sanPham.length > 0) {
+        var datafake = res.data.sanPham.map((item) => {
+          switch (item.trangThai) {
+            case 0:
+              return { ...item, trangThai: "Ngưng bán", color: "red" };
+            case 1:
+              return { ...item, trangThai: "Đang bán", color: "green" };
+            case 2:
+              return { ...item, trangThai: "Chưa quét QR", color: "red" };
+            default:
+              return { ...item, trangThai: "Ngưng bán", color: "red" };
+          }
+        });
+        if (trangthai === 0) {
+          setdata(datafake);
+          setTotalPage(res.data.soTrang);
+        }
+        if (trangthai === 1) {
+          setdata((pri) => [...pri, ...datafake]);
+        }
       }
-      setNewProduct({
-        id: null,
-        ten: '',
-        ma: '',
-        moTa: '',
-        trangThai: 0,
-        idLoaiSP: '',
-        idChatLieu: '',
-      });
-      setIsEditing(false);
-      fetchProducts();
-    } catch (error) {
-      console.error('Error creating/updating product:', error);
+    } catch (error) {}
+  };
+
+  const HandleOncroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollTop + clientHeight >= scrollHeight - 20) {
+      if (page < totalPage && inputsearch.trim() === "") {
+        getdata(page + 1, 1);
+        setPage(page + 1);
+      }
     }
   };
 
-  const handleEdit = (product) => {
-    setNewProduct(product);
-    setIsEditing(true);
+  const HandleOnchangSearch = async (event) => {
+    setInputSearch(event.target.value);
+    setPage(1);
+    // console.log(event.target.value);
+    if (event.target.value.trim() !== "") {
+      try {
+        const res = await axios.get(
+          `https://localhost:7095/api/SanPham/getSPBanHangbyName?TenSanPham=${event.target.value}&currentPage=1&productsPerPage=6`
+        );
+        console.log(res.data.sanPham);
+        if (res.data.sanPham !== undefined) {
+          var datafake = res.data.sanPham.map((item) => {
+            switch (item.trangThai) {
+              case 0:
+                return { ...item, trangThai: "Ngưng bán", color: "red" };
+              case 1:
+                return { ...item, trangThai: "Đang bán", color: "green" };
+              case 2:
+                return { ...item, trangThai: "Chưa quét QR", color: "red" };
+              case 3:
+                return { ...item, trangThai: "!", color: "antiquewhite" };
+              default:
+                return { ...item, trangThai: "Ngưng bán", color: "red" };
+            }
+          });
+          setdata(datafake);
+        } else {
+          setdata([]);
+        }
+      } catch (error) {}
+    } else {
+      getdata(1, 0);
+    }
   };
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
 
-  const filteredProducts = products.filter((product) =>
-    product.ten.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="container my-4">
-      <div className="row">
-        <div className="col-12 text-center mb-4">
-          <h1>Quản lý sản phẩm</h1>
-
+  const use = useSelector((use) => use.user.User);
+  if (show === false) {
+    return (
+      <div className="quanlysanpham">
+        <div>
+          <h3>Quản lý sản phẩm</h3>
         </div>
-      </div>
-
-      <Button variant="primary" onClick={handleShow}>
-        Tạo sản phẩm
-      </Button>
-      <Modal show={showModal} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Thông Tin Sản Phẩm</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <div className="row">
-            <div className="col-md-6">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="ten" className="form-label">Ảnh sản phẩm</label>
-                  <input
-                    className="form-control"
-                    type="file"
-                    id="anh"
-                    name="anh"
-                    value={newProduct.anh}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="ten" className="form-label">Tên sản phẩm</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="ten"
-                    name="ten"
-                    value={newProduct.ten}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="ma" className="form-label">Mã sản phẩm</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="ma"
-                    name="ma"
-                    value={newProduct.ma}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="moTa" className="form-label">Mô tả sản phẩm</label>
-                  <textarea
-                    className="form-control"
-                    id="moTa"
-                    name="moTa"
-                    value={newProduct.moTa}
-                    onChange={handleInputChange}
-                  ></textarea>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="idLoaiSP" className="form-label">Loại sản phẩm:</label>
-                  <select
-                    className="form-select"
-                    id="idLoaiSP"
-                    name="idLoaiSP"
-                    value={newProduct.idLoaiSP}
-                    onChange={handleInputChange}
+        <div className="quanlysanpham_boloc mx-auto mb-4">
+          <div>
+            <h4>Bộ lọc</h4>
+          </div>
+          <hr></hr>
+          <div>
+            <div className="row">
+              <div className="col-4">
+                <form>
+                  <div className="w-100 p-3 row">
+                    <div className="col-4 ps-3 pe-0 mt-1">
+                      <label className="form-label">Tìm kiếm:</label>
+                    </div>
+                    <div className="col-8 p-0">
+                      <input
+                        type="text"
+                        className="form-control ps-0"
+                        onChange={(event) => HandleOnchangSearch(event)}
+                        value={inputsearch}
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="col-4 mt-3 w-25">
+                <Form.Select aria-label="Default select example">
+                  <option>Trạng thái</option>
+                  <option value="0">Ngưng bán </option>
+                  <option value="1">Đang bán</option>
+                  <option value="2">Chưa quét QR</option>
+                </Form.Select>
+              </div>
+              <div
+                style={{ paddingLeft: "150px" }}
+                className="col-4 quanlysanpham_boloc_inputloc mt-4 ms-5"
+              >
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  className="thumb thumb--zindex-3"
+                  value={minVal}
+                  onChange={(event) => setMinVal(event.target.value)}
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  className="thumb thumb--zindex-4"
+                  value={maxVal}
+                  onChange={(event) => setMaxVal(event.target.value)}
+                />
+                <div className="slider">
+                  <div className="slider__track" />
+                  <div className="slider__range" />
+                  <label
+                    style={{
+                      position: "absolute",
+                      top: "-10px",
+                      left: "-130px",
+                    }}
+                    className="form-label"
                   >
-                    <option value="">-- Chọn loại sản phẩm --</option>
-                    {loaiSanPhams.map((loaiSP) => (
-                      <option key={loaiSP.id} value={loaiSP.id}>
-                        {loaiSP.ten}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="idChatLieu" className="form-label">Chất liệu:</label>
-                  <select
-                    className="form-select"
-                    id="idChatLieu"
-                    name="idChatLieu"
-                    value={newProduct.idChatLieu}
-                    onChange={handleInputChange}
+                    Số lượng tồn:
+                  </label>
+                  <p style={{ position: "absolute", top: "15px" }}>
+                    {minVal > maxVal ? maxVal : minVal}
+                  </p>
+                  <p
+                    style={{
+                      position: "absolute",
+                      top: "15px",
+                      left: "185px",
+                    }}
                   >
-                    <option value="">-- Chọn chất liệu --</option>
-                    {chatLieus.map((chatLieu) => (
-                      <option key={chatLieu.id} value={chatLieu.id}>
-                        {chatLieu.ten}
-                      </option>
-                    ))}
-                  </select>
+                    {maxVal < minVal ? minVal : maxVal}
+                  </p>
                 </div>
-
-
-                <div className="mb-3">
-                  <label htmlFor="idMauSac" className="form-label">Màu sắc:</label>
-                  <select
-                    className="form-select"
-                    id="idMauSac"
-                    name="idMauSac"
-                    value={newProduct.idmauSac}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">-- Chọn màu sắc --</option>
-                    {mauSacs.map((mauSac) => (
-                      <option key={mauSac.id} value={mauSac.id}>
-                        {mauSac.ten}
-                      </option>
-                    ))}
-                  </select>
+              </div>
+            </div>
+            <div>
+              <div className="mx-auto quanlysanpham_boloc_button d-flex">
+                <div className="mb-4 mt-4 ms-5">
+                  <Button className="me-2 ms-3" variant="primary">
+                    tìm kiếm
+                  </Button>
                 </div>
-
-                <div className="mb-3">
-                  <label htmlFor="trangThai" className="form-label">Trạng thái</label>
-                  <select
-                    className="form-select"
-                    id="trangThai"
-                    name="trangThai"
-                    value={newProduct.trangThai}
-                    onChange={handleInputChange}
-                  >
-                    <option value={0}>Hết</option>
-                    <option value={1}>Còn</option>
-                  </select>
+                <div className="mb-4 mt-4">
+                  <Button variant="danger">Làm mới bộ lọc</Button>
                 </div>
-
-                <button type="submit" className="btn btn-primary">
-                  {isEditing ? 'Cập nhật' : 'Tạo '}
-                </button>
-              </form>
+              </div>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
-
-      <div className="row">
-        <div className="col-12">
-          <input
-            className="form-control mb-4 mt-4"
-            placeholder="Tìm kiếm theo tên sản phẩm"
-            type="text"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Tên</th>
-                <th>Mã</th>
-                <th>Mô tả</th>
-                <th>Trạng thái</th>
-                <th>Loại sản phẩm</th>
-                <th>Chất liệu</th>
-                <th>Màu sắc</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>{product.ten}</td>
-                  <td>{product.ma}</td>
-                  <td>{product.moTa}</td>
-                  <td>{product.trangThai === 0 ? 'Hết' : 'Còn'}</td>
-                  <td>{product.loaiSP ? product.loaiSP.ten : ''}</td>
-                  <td>{product.chatLieu ? product.chatLieu.ten : ''}</td>
-                  <td>{product.mauSac ? product.mauSac.ten : ''}</td>
-                  <td>
-                    <button className="btn btn-primary" onClick={() => { handleEdit(product); handleShow(); }}>
-                      Sửa
-                    </button>
-                    <button className="btn btn-danger">Xóa</button>
-                  </td>
+        </div>
+        <div className="quanlysanpham_table_dssp mx-auto">
+          <div>
+            <h3>Danh sách sản phẩm</h3>
+          </div>
+          <div className="mb-3 ms-2">
+            <Button
+              disabled={use.ten === "admin" ? false : true}
+              variant="primary"
+              onClick={() => setShow(true)}
+            >
+              Thêm sản phẩm
+            </Button>
+          </div>
+          <div
+            style={{ height: "400px", overflowY: "auto" }}
+            onScroll={HandleOncroll}
+          >
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã sản phấm</th>
+                  <th>Tên sản pẩm</th>
+                  <th>Loại sản phẩm</th>
+                  <th>Chất liệu</th>
+                  <th>Mô tả</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>{index + 1}</td>
+                      <td>{item.ma}</td>
+                      <td>{item.ten}</td>
+                      <td>{item.loaiSanPham}</td>
+                      <td>{item.chatLieu}</td>
+                      <td>{item.moTa}</td>
+                      <td style={{ color: item.color }}>{item.trangThai}</td>
+                      <td>
+                        <Button variant="primary">Thông tin</Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td>Loading...</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <ModalQLSP setShow={setShow} />
+      </div>
+    );
+  }
 };
 
 export default QuanLySanPham;

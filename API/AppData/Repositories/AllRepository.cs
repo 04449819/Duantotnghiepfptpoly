@@ -17,6 +17,9 @@ namespace AppData.Repositories
         {
 
         }
+       
+      
+
         public AllRepository(AssignmentDBContext context, DbSet<T> dbset)
         {
             this.context = context;

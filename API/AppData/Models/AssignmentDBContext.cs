@@ -23,6 +23,7 @@ namespace AppData.Models
         public DbSet<LichSuTichDiem> LichSuTichDiems { get; set; }
         public DbSet<LoaiSP> LoaiSPs { get; set; }
         public DbSet<KhachHang> KhachHangs { get; set; }
+        public DbSet<KhuyenMaiCTSanPham> KhuyenMaiCTSanPhams { get; set; }
         public DbSet<NhanVien> NhanViens { get; set; }
         public DbSet<DanhGia> DanhGias { get; set; }
         public DbSet<QuyDoiDiem> QuyDoiDiems { get; set; }
@@ -31,7 +32,9 @@ namespace AppData.Models
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
         public DbSet<DiaChiKhachHang> diaChiKhachHangs { get;set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<CoAo> CoAos { get; set; }
+		public DbSet<PhuongThucThanhToan> phuongThucThanhToans { get; set; }
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
 		}

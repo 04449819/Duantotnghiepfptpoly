@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FetchData } from "../../../../Rudux/Reducer/taiKhoanSlice";
+import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
 
 const ModalDangNhap = (props) => {
   const { show, setShow } = props;
@@ -17,17 +18,27 @@ const ModalDangNhap = (props) => {
   const HandleDangNhap = async () => {
     dispatch(FetchData({ name, pass }));
     try {
+      dispatch(SetLoading(true));
       const res = await axios.get(
         `https://localhost:7095/api/QuanLyNguoiDung/DangNhap?lg=${name}&password=${pass}`
       );
       if (res.data.vaiTro === 1) {
-        navigate("/");
-        setShow(false);
+        setTimeout(() => {
+          navigate("/");
+          setShow(false);
+          dispatch(SetLoading(false));
+        }, 2000);
       }
       if (res.data.vaiTro === 0) {
-        navigate("/admin");
+        setTimeout(() => {
+          navigate("/admin");
+          setShow(false);
+          dispatch(SetLoading(false));
+        }, 3000);
       }
-    } catch (error) {}
+    } catch (error) {
+      dispatch(SetLoading(false));
+    }
   };
 
   const handleClose = () => {

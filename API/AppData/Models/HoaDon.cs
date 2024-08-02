@@ -14,12 +14,12 @@
         public int TienShip { get; set; }
         public int? TongTien { get; set; }
         public int LoaiHD { get; set; } // Off-1 // On-0
-        public string? PhuongThucThanhToan { get; set; }
         public string? GhiChu { get; set; }
-        public int TrangThaiGiaoHang { get; set; }
+		//public int TrangThaiTT { get; set; }
+		public int TrangThaiGiaoHang { get; set; }
         //Các trạng thái của đơn hàng
         /*
-         * 1-đơn nháp
+         *  p
          * 2-Chờ xác nhận
          * 3-Đang giao hàng//ko đc hủy
          * 6-thành công //nhận hàng thành công// đc đánh giá // đc hủy nếu ngày thanh toán < 3
@@ -35,9 +35,15 @@
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
-        public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
+		public Guid phuongThucTTID { get; set; }
+        public Guid? KhachHangID { get; set; }
+
+
+		public virtual PhuongThucThanhToan? PhuongThucThanhToan { get; set; }
+		public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual NhanVien? NhanVien { get; set; }
-        public virtual Voucher? Voucher { get; set; }
+		public virtual KhachHang? KhachHang { get; set; }
+		public virtual Voucher? Voucher { get; set; }
         public virtual List<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
     }
 }

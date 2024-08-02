@@ -13,6 +13,8 @@ import Dangki from "./Pages/User/Dangki/Dangki";
 import QuanLyNhanVienPage from "./Pages/Admin/QuanLyNhanVienPage/QuanLyNhanVienPage";
 import BanHangOfline from "./Pages/Admin/BanHangOfLine/BanHangOfline";
 import QuanLySanPham from "./Pages/Admin/QuanLySanPham/QuanLySanPham";
+import QuanLyLoaiSanPham from "./Pages/Admin/QuanLySanPham/QuanLyLoaiSanPham/QuanLyLoaiSanPham";
+import QuanLyChatLieu from "./Pages/Admin/QuanLySanPham/QuanLyChatLieu/QuanLyChatLieu";
 import QuanLyKhachHang from "./Pages/Admin/QuanLyKhachHang/QuanLyKhachHang";
 import QuanLyDoiDiem from "./Pages/Admin/QuanLyDoiDiem/QuanLyDoiDiem";
 import QuanLyVoucher from "./Pages/Admin/QuanLyVoucher/QuanLyVoucher";
@@ -24,6 +26,9 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./Rudux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import DashBoard from "./Pages/Admin/Dashboard/DashBoard";
+import { Bounce, ToastContainer } from "react-toastify";
+import MauSac from "./Pages/Admin/QuanLySanPham/MauSac/MauSac";
+import KichThuoc from "./Pages/Admin/QuanLySanPham/KichThuoc/KichThuoc";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -44,6 +49,13 @@ root.render(
               element={<QuanLyNhanVienPage />}
             />
             <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
+            <Route path="/admin/quanlychatlieu" element={<QuanLyChatLieu />} />
+            <Route path="/admin/quanlymausac" element={<MauSac />} />
+            <Route path="/admin/quanlykichthuoc" element={<KichThuoc />} />
+            <Route
+              path="/admin/quanlyloaisanpham"
+              element={<QuanLyLoaiSanPham />}
+            />
             <Route
               path="/admin/quanlykhachhang"
               element={<QuanLyKhachHang />}
@@ -60,6 +72,21 @@ root.render(
           </Route>
         </Routes>
       </BrowserRouter>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      <ToastContainer />
     </PersistGate>
   </Provider>
 );

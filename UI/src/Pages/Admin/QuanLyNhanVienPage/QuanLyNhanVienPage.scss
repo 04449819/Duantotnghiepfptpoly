@@ -10,44 +10,145 @@
     padding: 0;
     box-sizing: border-box;
 }
+}
+/////////////////////////////////////
 .search{
-  text-align: center;
+  // text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 .search input{
-  
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     max-width: 600px;
     width:40%;
     text-align: center;
 }
+.search button{
+  padding: 10px 20px;
+    font-size: 16px;
+    // color: white;
+    // background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.search button:hover{
+  background-color:dimgray;
+}
+////////////////////////////////////////////
+.form-group {
+  display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
+    justify-content: center;
+}
+.label {
+  width: 150px; 
+  margin-right: 10px;
+  text-align: left; 
+}
+.text_input{
+  flex: 1; /* Allow input to take remaining space */
+  padding: 10px;
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+.text_input:focus {
+  border-color: #aaa;
+  outline: none;
+}
+//////////////////////////////
+
 .DanhMucHienThi{
   font-size: 30px;
   text-align: center;
 }
+///////////////////////////////
 .TNhanVien{
-  text-align: right;
+  text-align: left;
 }
 .TNhanVien button {
-  background-color: gray;
-  color: white;
+  background-color: rgb(221, 23, 23);
+  color: rgb(236, 228, 228);
   border: none;
   padding: 5px 15px;
-  text-align: right;
+  text-align: left;
   text-decoration: none;
   margin: 2px;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.3s;
 }
-.Sua button{
-  background-color: gray;
-  color: white;
-  border: none;
-  padding: 5px 15px;
-  text-align: right;
-  text-decoration: none;
-  margin: 2px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+/////////////////////////////////////
+.edit{
+  background-color: rgb(209, 133, 133);
+    border: none;
+    color: rgb(48, 5, 5);
+    padding: 17px 35px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
 }
+/////////////////////////////////
+.table-container {
+  height: 450px; /* Chiều cao cố định cho bảng */
+  overflow-y: scroll;  /* Bật tính năng cuộn dọc */
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+/////////////////////////////////
+.button{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #ccc; /* Đường viền của form */
+  border-radius: 10px; /* Bo tròn góc */
+  padding: 20px; /* Khoảng cách bên trong */
+  background-color: white; /* Màu nền của form */
+}
+////////////////////////////////
+ .button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25vh;
+  
+}
+
+/* Tùy chỉnh nút submit */
+.submit-button {
+  background-color: #062207; /* Màu nền của nút */
+  border: none; /* Loại bỏ đường viền */
+  color: rgb(240, 234, 234); /* Màu chữ */
+  padding: 15px 25px; /* Khoảng cách bên trong */
+  font-size: 13px; /* Kích thước chữ */
+  cursor: pointer; /* Hình dạng con trỏ */
+  border-radius: 7px; /* Bo tròn góc */
+  transition: background-color 0.3s ease, transform 0.1s ease; /* Hiệu ứng chuyển màu nền và nhấn nút */
+}
+
+/* Hiệu ứng khi di chuột vào nút submit */
+.submit-button:hover {
+  background-color: #6e806f; /* Đổi màu nền khi di chuột */
+}
+
+/* Hiệu ứng khi nhấn vào nút submit */
+.submit-button:active {
+  background-color: #1dc223; /* Đổi màu nền khi nhấn */
+  transform: translateY(2px); /* Hiệu ứng nhấn nút */
 }

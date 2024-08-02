@@ -13,9 +13,11 @@ namespace AppData.Models
      
         public Guid IDLoaiSP { get; set; }
         public Guid IDChatLieu { get; set; }
-        public virtual LoaiSP? LoaiSP { get; set; }
+		public Guid idCoAo { get; set; }
+		public virtual LoaiSP LoaiSP { get; set; }
         public virtual ChatLieu ChatLieu { get; set; }
-        public virtual IEnumerable<ChiTietSanPham> ChiTietSanPhams { get; set; }
+		public virtual CoAo? CoAo { get; set; }
+		public virtual IEnumerable<ChiTietSanPham>? ChiTietSanPhams { get; set; }
        // public virtual IEnumerable<Anh> Anhs { get; set; }
     }
 }

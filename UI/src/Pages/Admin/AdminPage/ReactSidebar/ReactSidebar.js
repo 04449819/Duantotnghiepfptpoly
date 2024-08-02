@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaBars, FaHome } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import "./ReactSidebar.scss";
-import { Form, Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Bounce, ToastContainer } from "react-toastify";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { IoSettings } from "react-icons/io5";
 import { IoMenu } from "react-icons/io5";
@@ -23,6 +22,7 @@ const ReactSideBar = () => {
 
   useEffect(() => {
     setemailUser(localStorage.getItem("useremail"));
+    console.log(user);
   }, []);
   //vaiTro
   const HandleOnclickLogout = () => {
@@ -59,12 +59,15 @@ const ReactSideBar = () => {
         >
           <Sidebar
             collapsed={collapsed}
-            // toggled={toggled}
-            // onBackdropClick={() => setToggled(false)}
+            toggled={toggled}
+            onBackdropClick={() => setToggled(false)}
             onBreakPoint={setBroken}
             breakPoint="md"
-            style={{ position: "fixed" }}
+            style={{ position: "fixed", zIndex: 2 }}
           >
+            <div className="my-4 ms-5">
+              <h1>Shop Man</h1>
+            </div>
             <div
               style={{
                 display: "flex",
@@ -96,16 +99,47 @@ const ReactSideBar = () => {
                     icon={
                       <FaAddressBook style={{ color: "blue", size: "20px" }} />
                     }
+                    hidden={user.chucNang !== "Admin" ? true : false}
                   >
                     Quản lý nhân viên
                   </MenuItem>
                   <hr />
-                  <MenuItem
-                    component={<Link to="/admin/quanlysanpham" />}
+                  <SubMenu
                     icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    label="Quản lý Sản phẩm"
                   >
-                    Quản lý sản phẩm
-                  </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlysanpham" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      sản phẩm
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlychatlieu" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Chất liệu
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlyloaisanpham" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Loại sản phẩm
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlymausac" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Màu sắc
+                    </MenuItem>
+                    <MenuItem
+                      component={<Link to="/admin/quanlykichthuoc" />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    >
+                      Kích thước
+                    </MenuItem>
+                  </SubMenu>
+
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlykhachhang" />}
@@ -166,6 +200,7 @@ const ReactSideBar = () => {
                     height: "65px",
                     paddingBottom: "6px",
                     position: "fixed",
+                    zIndex: 3,
                   }}
                   className="col-11"
                   id="collapse"
@@ -185,6 +220,7 @@ const ReactSideBar = () => {
                   style={{
                     paddingTop: "15px",
                     position: "fixed",
+                    zIndex: 4,
                     left: "1400px",
                   }}
                 >
@@ -221,7 +257,7 @@ const ReactSideBar = () => {
                 {broken && (
                   <button
                     className="sb-button"
-                    // onClick={() => setToggled(!toggled)}
+                    onClick={() => setToggled(!toggled)}
                   >
                     Toggle
                   </button>
@@ -232,21 +268,6 @@ const ReactSideBar = () => {
               </div>
             </div>
           </div>
-
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-          <ToastContainer />
         </div>
       </div>
     );

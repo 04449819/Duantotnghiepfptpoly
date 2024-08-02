@@ -62,7 +62,7 @@ namespace AppAPI.Services
                     var tim = _reposCTSP.GetAll().FirstOrDefault(x => x.ID == km);
                     if (tim != null)
                     {
-                        tim.IDKhuyenMai = IdKhuyenMai;
+                        //tim.IDKhuyenMai = IdKhuyenMai;
                         _reposCTSP.Update(tim);
                     }
                 }
@@ -78,7 +78,7 @@ namespace AppAPI.Services
                 var tim = _reposCTSP.GetAll().FirstOrDefault(x => x.ID == km);
                 if (tim != null)
                 {
-                    tim.IDKhuyenMai = null;
+                    //tim.IDKhuyenMai = null;
                     _reposCTSP.Update(tim);
                 }
 

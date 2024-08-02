@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { GetIDCTSP } from "../../../../../../Rudux/Reducer/IDchitietsanphamSlice";
 import { FetchDataSanPhamGioHang } from "../../../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
+import { SetLoading } from "../../../../../../Rudux/Reducer/LoadingSlice";
 const ModalSearchSPChiTiet = (props) => {
   const [show, setShow] = useState(false);
   const [data, setdata] = useState([]);
@@ -28,8 +29,10 @@ const ModalSearchSPChiTiet = (props) => {
   };
   const handleShow = () => {
     setShow(true);
-    getSanPhamSearch(props.item.id);
-    setTensp(props.item.ten);
+    if (props && props.item.id) {
+      getSanPhamSearch(props.item.id);
+      setTensp(props.item.ten);
+    }
   };
 
   const getSanPhamSearch = async (IDSanPham) => {
@@ -54,7 +57,6 @@ const ModalSearchSPChiTiet = (props) => {
         }
       });
       console.log(res.data[0].img[0].toLocaleString());
-      console.log(ImgTam);
       setImgSmall(ImgTam);
 
       const MauSactam = [];
@@ -115,13 +117,18 @@ const ModalSearchSPChiTiet = (props) => {
   };
   const dispatch = useDispatch();
   const handleOclickMuaHang = () => {
-    const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
-    if (checkMuaHang && checkMuaHang.soluong > 0) {
-      dispatch(FetchDataSanPhamGioHang(idmuaHang));
-      toast.success("Sản phẩm đã được thêm vào giỏ hàng");
-    } else {
-      toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
-    }
+    dispatch(SetLoading(true));
+    setTimeout(() => {
+      const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
+      if (checkMuaHang && checkMuaHang.soluong > 0) {
+        dispatch(FetchDataSanPhamGioHang(idmuaHang));
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng");
+        dispatch(SetLoading(false));
+      } else {
+        toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
+        dispatch(SetLoading(false));
+      }
+    }, 3000);
   };
   return (
     <>
@@ -150,6 +157,9 @@ const ModalSearchSPChiTiet = (props) => {
                   <h4 className="SPduocchon_body_content">{tensp}</h4>
                   <h5 className="SPduocchon_body_content">
                     Chất liệu: {data[0].tenchatlieu}
+                  </h5>
+                  <h5 className="SPduocchon_body_content">
+                    Cổ áo: {data[0].tencoao}
                   </h5>
                   <div className="d-flex SPduocchon_body_content">
                     <h5>Màu sắc:</h5>

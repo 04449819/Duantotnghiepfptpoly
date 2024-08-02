@@ -55,7 +55,7 @@ const DashBoard = () => {
       //console.log(newData, monthpie, yearpie);
       console.log(newData);
       if (newData[0] === 0 && newData[1] === 0) return setdatapie([0, 0, 100]);
-      setdatapie(newData);
+      setdatapie([...newData, 0]);
     } catch (error) {
       toast.error("Thang nam không hợp lệ");
     }

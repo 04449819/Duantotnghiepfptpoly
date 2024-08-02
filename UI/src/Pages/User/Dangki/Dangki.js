@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const Dangki = () => {
   const [name, setname] = useState("");
@@ -18,9 +20,15 @@ const Dangki = () => {
   const [cemail, csetEmail] = useState("");
   const [cpass, csetpass] = useState("");
   const [cpasscomfirm, csetpasscomfirm] = useState("");
-
+  const dispath = useDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    return () => {
+      // Cleanup toast notifications when component unmounts
+      toast.dismiss();
+    };
+  }, []);
   const HandleOnSubmitTaiKhoan = async () => {
     let data = {
       idKhachHang: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -47,7 +55,6 @@ const Dangki = () => {
     } else {
       csetname("");
     }
-
     if (!validatesdt(sdt)) {
       csetsdt("số điện thoại phải có 10 chữ số và bắt đầu bắng số 0");
       return;
@@ -96,11 +103,20 @@ const Dangki = () => {
 
     // let URL = "https://localhost:7095/api/KhachHang";
     // let res = await axios.post(`${URL}`, data);
-    let URL = "https://localhost:7095/api/KhachHang/PostKHView1";
-    let res = await axios.post(`${URL}`, data);
-
-    toast.success("đăng kí thành công");
-    navigate("/");
+    dispath(SetLoading(true));
+    setTimeout(async () => {
+      try {
+        let URL = "https://localhost:7095/api/KhachHang/PostKHView1";
+        let res = await axios.post(`${URL}`, data);
+        toast.success("đăng kí thành công");
+        dispath(SetLoading(false));
+        navigate("/");
+      } catch (error) {
+        dispath(SetLoading(false));
+      }
+    }, 1000);
+    // let URL = "https://localhost:7095/api/KhachHang/PostKHView1";
+    // let res = await axios.post(`${URL}`, data);
   };
 
   const validateEmail = (email) => {

@@ -19,171 +19,173 @@ namespace AppAPI.Controllers
 	public class HoaDonController : ControllerBase
 	{
 		private readonly IHoaDonService _iHoaDonService;
-		public AssignmentDBContext _dbcontext = new AssignmentDBContext();
-		public HoaDonController()
+        private readonly IVNPayService _iVNPayService;
+
+
+        public AssignmentDBContext _dbcontext = new AssignmentDBContext();
+		public HoaDonController(IVNPayService vnPayService)
 		{
 			_iHoaDonService = new HoaDonService();
-		}
+			_iVNPayService = vnPayService;
+        }
 
-		// GET: api/<HoaDOnController>
-		[HttpGet("GetAll")]
-		public List<HoaDon> Get()
-		{
-			return _iHoaDonService.GetAllHoaDon();
-		}
-		[HttpGet("GetById/{idhd}")]
-		public HoaDon GetById(Guid idhd)
-		{
-			return _iHoaDonService.GetHoaDonById(idhd);
-		}
-		[HttpGet("TimKiem")]
-		public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
-		{
-			return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
-		}
-		[HttpGet("CheckVoucher")]
-		public int CheckVoucher(string ten, int tongtien)
-		{
-			return _iHoaDonService.CheckVoucher(ten, tongtien);
-		}
-		[HttpGet("LichSuGiaoDich")]
-		public List<HoaDon> LichSuGiaoDich(Guid idNguoidung)
-		{
-			return _iHoaDonService.LichSuGiaoDich(idNguoidung);
-		}
-		[HttpGet("LichSuGiaoDich/{idhd}")]
-		public LichSuTichDiem LichSuGiaoDichByIdHD(Guid idhd)
-		{
-			return _iHoaDonService.GetLichSuGiaoDichByIdHD(idhd);
-		}
-		[HttpGet("CheckLSGDHD/{idhd}")]
-		public bool CheckLichSuGiaoDichHD(Guid idhd)
-		{
-			return _iHoaDonService.CheckHDHasLSGD(idhd);
-		}
-		[HttpGet("CheckCustomerUseVoucher")]
-		public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
-		{
-			return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
-		}
-		[HttpPost]
-		public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
-		{
-			return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
-		}
-		//[HttpPost("Offline/{idnhanvien}")]
-		//public bool CreateHoaDonOffline(Guid idnhanvien)
-		//{
-		//	return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
-		//}	
-		[HttpPost("Offline")]
-		public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto)
-		{
-			return _iHoaDonService.CreateHoaDonOffline(dto);
-		}
-		[HttpGet("GetAllHDCho")]
-		public IActionResult GetAllHDCho()
-		{
-			var lsthdcho = _iHoaDonService.GetAllHDCho();
-			return Ok(lsthdcho);
-		}
-		[HttpGet("GetHDBanHang/{idhd}")]
-		public IActionResult GetHDBanHang(Guid idhd)
-		{
-			var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
-			return Ok(lsthdcho);
-		}
-		[HttpGet("GetAllHDQly")]
-		public IActionResult GetAllHDQly()
-		{
-			var hdql = _iHoaDonService.GetAllHDQly();
-			return Ok(hdql);
-		}
-		[HttpGet("ChiTietHoaDonQL/{idhd}")]
-		public IActionResult ChiTietHoaDonQL(Guid idhd)
-		{
-			var result = _iHoaDonService.GetCTHDByID(idhd);
-			return Ok(result);
-		}
-		[HttpPut]
-		public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
-		{
-			return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
-		}
+        // GET: api/<HoaDOnController>
+        #region
+        [HttpGet("GetAll")]
+        public List<HoaDon> Get()
+        {
+            return _iHoaDonService.GetAllHoaDon();
+        }
+        [HttpGet("GetById/{idhd}")]
+        public HoaDon GetById(Guid idhd)
+        {
+            return _iHoaDonService.GetHoaDonById(idhd);
+        }
+        [HttpGet("TimKiem")]
+        public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
+        {
+            return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
+        }
+        [HttpGet("CheckVoucher")]
+        public int CheckVoucher(string ten, int tongtien)
+        {
+            return _iHoaDonService.CheckVoucher(ten, tongtien);
+        }
+        [HttpGet("LichSuGiaoDich")]
+        public List<HoaDon> LichSuGiaoDich(Guid idNguoidung)
+        {
+            return _iHoaDonService.LichSuGiaoDich(idNguoidung);
+        }
+        [HttpGet("LichSuGiaoDich/{idhd}")]
+        public LichSuTichDiem LichSuGiaoDichByIdHD(Guid idhd)
+        {
+            return _iHoaDonService.GetLichSuGiaoDichByIdHD(idhd);
+        }
+        [HttpGet("CheckLSGDHD/{idhd}")]
+        public bool CheckLichSuGiaoDichHD(Guid idhd)
+        {
+            return _iHoaDonService.CheckHDHasLSGD(idhd);
+        }
+        [HttpGet("CheckCustomerUseVoucher")]
+        public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
+        {
+            return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
+        }
+        [HttpPost]
+        public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
+        {
+            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
+        }
+        //[HttpPost("Offline/{idnhanvien}")]
+        //public bool CreateHoaDonOffline(Guid idnhanvien)
+        //{
+        //	return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
+        //}	
+        [HttpGet("GetAllHDCho")]
+        public IActionResult GetAllHDCho()
+        {
+            var lsthdcho = _iHoaDonService.GetAllHDCho();
+            return Ok(lsthdcho);
+        }
+        [HttpGet("GetHDBanHang/{idhd}")]
+        public IActionResult GetHDBanHang(Guid idhd)
+        {
+            var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
+            return Ok(lsthdcho);
+        }
+        [HttpGet("GetAllHDQly")]
+        public IActionResult GetAllHDQly()
+        {
+            var hdql = _iHoaDonService.GetAllHDQly();
+            return Ok(hdql);
+        }
+        [HttpGet("ChiTietHoaDonQL/{idhd}")]
+        public IActionResult ChiTietHoaDonQL(Guid idhd)
+        {
+            var result = _iHoaDonService.GetCTHDByID(idhd);
+            return Ok(result);
+        }
+        [HttpPut]
+        public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
+        {
+            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
+        }
 
-		[HttpPut("UpdateHoaDon")]
-		public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
-		{
-			return _iHoaDonService.UpdateHoaDon(hoaDon);
-		}
-		[HttpPut("HuyHD")]
-		public IActionResult HuyHD(Guid idhd, Guid idnv)
-		{
-			var result = _iHoaDonService.HuyHD(idhd, idnv);
-			return Ok(result);
-		}
-		[HttpPut("GiaoThanhCong")]
-		public IActionResult GiaoThanhCong(Guid idhd, Guid idnv)
-		{
-			var result = _iHoaDonService.ThanhCong(idhd, idnv);
-			return Ok(result);
-		}
-		[HttpPut("HoanHD")]
-		public IActionResult HoanHD(Guid idhd, Guid idnv)
-		{
-			var result = _iHoaDonService.HoanHang(idhd, idnv);
-			return Ok(result);
-		}
-		[HttpPut("HoanTCHD")]
-		public IActionResult HoanTCHD(Guid idhd, Guid idnv)
-		{
-			var result = _iHoaDonService.HoanHangThanhCong(idhd, idnv);
-			return Ok(result);
-		}
-		[HttpPut("CopyHD")]
-		public IActionResult TraHD(Guid idhd, Guid idnv)
-		{
-			var result = _iHoaDonService.CopyHD(idhd, idnv);
-			return Ok(result);
-		}
+        [HttpPut("UpdateHoaDon")]
+        public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
+        {
+            return _iHoaDonService.UpdateHoaDon(hoaDon);
+        }
+        [HttpPut("HuyHD")]
+        public IActionResult HuyHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.HuyHD(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("GiaoThanhCong")]
+        public IActionResult GiaoThanhCong(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.ThanhCong(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("HoanHD")]
+        public IActionResult HoanHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.HoanHang(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("HoanTCHD")]
+        public IActionResult HoanTCHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.HoanHangThanhCong(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("CopyHD")]
+        public IActionResult TraHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.CopyHD(idhd, idnv);
+            return Ok(result);
+        }
 
-		[HttpPut("UpdateGhichu")]
-		public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
-		{
-			return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
-		}
+        [HttpPut("UpdateGhichu")]
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        {
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
+        }
 
-		[HttpDelete("deleteHoaDon/{id}")]
-		public bool Delete(Guid id)
-		{
-			return _iHoaDonService.DeleteHoaDon(id);
-		}
+        [HttpDelete("deleteHoaDon/{id}")]
+        public bool Delete(Guid id)
+        {
+            return _iHoaDonService.DeleteHoaDon(id);
+        }
 
 
-		//[HttpGet("PhuongThucThanhToan")]
-		//public List<PhuongThucThanhToan> GetAllPTTT()
-		//{
-		//    return _iHoaDonService.GetAllPTTT();
-		//}
-		//[HttpPost("PhuongThucThanhToan")]
-		//public bool CreatePTT(PhuongThucThanhToan pttt)
-		//{
-		//    return _iHoaDonService.CreatePTTT(pttt);
-		//}
-		//[HttpPut("PhuongThucThanhToan")]
-		//public bool UpdatePTT(PhuongThucThanhToan pttt)
-		//{
-		//    return _iHoaDonService.UpdatePTTT(pttt);
-		//}
-		//[HttpDelete("PhuongThucThanhToan/{id}")]
-		//public bool DeletePTT(Guid id)
-		//{
-		//    return _iHoaDonService.DeletePTTT(id);
-		//}
+        //[HttpGet("PhuongThucThanhToan")]
+        //public List<PhuongThucThanhToan> GetAllPTTT()
+        //{
+        //    return _iHoaDonService.GetAllPTTT();
+        //}
+        //[HttpPost("PhuongThucThanhToan")]
+        //public bool CreatePTT(PhuongThucThanhToan pttt)
+        //{
+        //    return _iHoaDonService.CreatePTTT(pttt);
+        //}
+        //[HttpPut("PhuongThucThanhToan")]
+        //public bool UpdatePTT(PhuongThucThanhToan pttt)
+        //{
+        //    return _iHoaDonService.UpdatePTTT(pttt);
+        //}
+        //[HttpDelete("PhuongThucThanhToan/{id}")]
+        //public bool DeletePTT(Guid id)
+        //{
+        //    return _iHoaDonService.DeletePTTT(id);
+        //}
+        #endregion
 
-		#region DarhboardHoaDonKien
 
-		[HttpGet("getdarhboardHoaDon")]
+        #region DarhboardHoaDonKien
+
+        [HttpGet("getdarhboardHoaDon")]
 		public async Task<List<DarhboardHoaDonViewModel>> DarhboardHoaDon(int year)
 		{
 			var ds = await _dbcontext.HoaDons.Where(p => p.NgayTao.Year == year).ToListAsync();
@@ -225,5 +227,87 @@ namespace AppAPI.Controllers
 			return results;
 		}
 		#endregion
-	}
+		
+        
+        #region Tung
+		[HttpGet("pptt")]
+		public IActionResult GetPhuonThucThanhToan()
+		{
+			var pptt = _dbcontext.phuongThucThanhToans.ToList();
+			return Ok(pptt);
+		}
+        [HttpPost("CreateHoaDonOffline")]
+        public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto)
+        {
+            return _iHoaDonService.CreateHoaDonOffline(dto);
+        }
+        [HttpPut("UpdateHoaDonOffline/{hoaDonId}")]
+        public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto)
+        {
+            return _iHoaDonService.UpdateHoaDonOffline(hoaDonId, dto);
+        }
+
+        [HttpPost("ThanhToanVNPay/{idHoaDon}")]
+        public IActionResult CreatePayment(Guid idHoaDon)
+        {
+            try
+            {
+                var hoaDon = _iHoaDonService.GetHoaDonById(idHoaDon);
+                if (hoaDon == null)
+                {
+                    return NotFound();
+                }
+                // Sử dụng tiền mặt để thanh toán 
+                if (hoaDon.phuongThucTTID == Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c")){
+                    // Thành công sẽ cập nhật trạng thái hóa đơn
+                   _iHoaDonService.ThanhToanDonHang(hoaDon.ID);     
+                    return Ok();
+                }else  // Thanh toán chuyển khoản 
+                {
+                    var paymentUrl = _iVNPayService.CreatePaymentUrl(idHoaDon);
+                    return Ok(new { paymentUrl });
+                }
+               
+               
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("callback")]
+        public IActionResult PaymentCallback()
+        {
+            var vnpayData = Request.Query;
+
+            var isValidSignature = _iVNPayService.ValidateCallback(vnpayData);
+
+            if (isValidSignature)
+            {
+                var vnp_ResponseCode = vnpayData["vnp_ResponseCode"];
+                var vnp_TransactionNo = vnpayData["vnp_TransactionNo"];
+                var vnp_TxnRef = vnpayData["vnp_TxnRef"];
+
+                if (vnp_ResponseCode == "00")
+                {
+                    // Thanh toán thành công, cập nhật database hoặc thực hiện các xử lý khác
+
+                    return Ok(new { message = "Thanh toán thành công" });
+                }
+                else
+                {
+                    // Thanh toán thất bại
+
+                    return BadRequest(new { message = "Thanh toán thất bại" });
+                }
+            }
+            else
+            {   
+                return BadRequest(new { message = "Invalid signature" });
+            }
+        }
+        #endregion
+    }
 }

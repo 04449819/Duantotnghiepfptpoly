@@ -10,6 +10,7 @@ import {
   FetchDataSanPhamGioHang,
   UpdateSoLuong,
 } from "../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
+import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
 const DanhSachSanPham = () => {
   const [inputsearch, setinputsearch] = useState("");
   const dispatch = useDispatch();
@@ -18,8 +19,12 @@ const DanhSachSanPham = () => {
   );
   const HandleOnclickGetData = () => {
     // props.Getdata(inputsearch);
-    dispatch(FetchDataSanPhamGioHang(inputsearch));
-    setinputsearch("");
+    dispatch(SetLoading(true));
+    setTimeout(() => {
+      dispatch(FetchDataSanPhamGioHang(inputsearch));
+      setinputsearch("");
+      dispatch(SetLoading(false));
+    }, 3000);
   };
 
   const HandleOnclicnkDelete = (item) => {
@@ -32,7 +37,7 @@ const DanhSachSanPham = () => {
   };
   const handleOnChangeSoLuong = (e, item) => {
     const newSoLuong = parseInt(e.target.value);
-    if (newSoLuong > 0) {
+    if (newSoLuong >= 1) {
       dispatch(UpdateSoLuong({ soluong: newSoLuong, idctsp: item.idCTSP }));
       // Gửi cập nhật số lượng lên store Redux
       // Bạn có thể gửi action để cập nhật số lượng cho sản phẩm cụ thể
@@ -47,7 +52,7 @@ const DanhSachSanPham = () => {
           type="text"
           className="form-control"
           placeholder="Mã sản phấm"
-          style={{ width: "35%", marginRight: "10px" }}
+          style={{ width: "25%", marginRight: "10px" }}
           value={inputsearch}
           onChange={(event) => setinputsearch(event.target.value)}
         />
@@ -75,8 +80,8 @@ const DanhSachSanPham = () => {
               <th>STT</th>
               <th>Tên sản phẩm</th>
               <th>Số lượng</th>
-              <th>Tên màu</th>
-              <th>Kích cỡ</th>
+              {/* <th>Tên màu</th>
+              <th>Kích cỡ</th> */}
               <th>Giá bán</th>
               <th>Tổng giá</th>
               <th>Khuyến mãi</th>
@@ -90,7 +95,7 @@ const DanhSachSanPham = () => {
               return (
                 <tr key={item.idCTSP}>
                   <td>{index + 1}</td>
-                  <td>{item.tenSanPham}</td>
+                  <td>{item.tenSanPham+"-"+item.tenMau+"-"+item.kichCo}</td>
                   <td>
                     <input
                       style={{ width: "80px" }}
@@ -99,10 +104,10 @@ const DanhSachSanPham = () => {
                       onChange={(event) => handleOnChangeSoLuong(event, item)}
                     />
                   </td>
-                  <td>{item.tenMau}</td>
-                  <td>{item.kichCo}</td>
-                  <td>{item.giaBan - item.giaTriKhuyenMai}</td>
-                  <td>{(item.giaBan - item.giaTriKhuyenMai) * item.soLuongmua }</td>
+                  {/* <td>{item.tenMau}</td>
+                  <td>{item.kichCo}</td> */}
+                  <td>{item.giaBan}</td>
+                  <td>{item.giaBan * item.soLuongmua}</td>
                   <td>{item.giaTriKhuyenMai}</td>
                   <td>
                     <img src={item.duongDanAnh} />
@@ -118,7 +123,7 @@ const DanhSachSanPham = () => {
                 </tr>
               );
             })}
-          </tbody>      
+          </tbody>
         </Table>
       </div>
     </>

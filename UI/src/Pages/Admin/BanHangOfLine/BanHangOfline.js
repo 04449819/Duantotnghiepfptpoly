@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
-// import axios from "axios";
-// import { toast } from "react-toastify";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
+import HoaDon from "./HoaDon/HoaDon";
+import { useDispatch, useSelector } from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+import MyModalAdd from "../QuanLyKhachHang/FormThem";
 import ThongTinThanhToan from "./ThongTinThanhToan/ThongTinThanhToan";
-import { useSelector } from "react-redux";
+import { Table, Button } from "react-bootstrap";
+import { GetChiTietHoaDonByIdHoaDon, resetSanPhamGioHang } from "../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
   const [name, setName] = useState("");
@@ -14,145 +17,93 @@ const BanHangOfline = () => {
   const [email, SetEmail] = useState("");
   const [address, setAddress] = useState("");
   const [inputreadOnly, setinputreadOnly] = useState(true);
-  const [coler, setcoler] = useState("white");
-  const [btnSearch, setbtnSearch] = useState(false);
   const [soSP, setSoSP] = useState(0);
   const [TongGia, setTongGia] = useState(0);
   const [giabandau, setGiaBandau] = useState(0);
   // const [datasp, setData] = useState([]);
-  let inputtrue = !inputreadOnly;
-
+  const [themnhanh, setThemnhanh] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+  const [hoaDonChos, setHoaDonChos] = useState([]);
+  const [hoaDon, setHoaDon] = useState({
+    IdNhanVien: '',
+  });
+  const [hoaDonChoSelected, setHoaDonChoSelected] = useState([]);
+  const dispath = useDispatch();
+  const nv = useSelector((nv) => nv.user.User);
   const HandleOnclickSearchKH = async () => {
-    try {
-      const res = await axios.get(
-        `https://localhost:7095/api/KhachHang/getBySDT?sdt=${search}`
-      );
-      if (res.status === 200) {
-        setName(res.data.ten);
-        setPhone(res.data.sdt);
-        setAddress(res.data.diaChi);
-        SetEmail(res.data.email);
-      } else {
-        toast.error("Số điện thoại or email chưa được đăng kí");
+    dispath(SetLoading(true));
+    setTimeout(async () => {
+      try {
+        const res = await axios.get(
+          `https://localhost:7095/api/KhachHang/getBySDT?sdt=${search}`
+        );
+        if (res.status === 200) {
+          setName(res.data.khachhang.ten);
+          setPhone(res.data.khachhang.sdt);
+          setAddress(res.data.diaChi);
+          SetEmail(res.data.khachhang.email);
+          dispath(SetLoading(false));
+        } else {
+          toast.error("Số điện thoại or email chưa được đăng kí");
+          setName("");
+          setPhone("");
+          setAddress("");
+          SetEmail("");
+          dispath(SetLoading(false));
+        }
+      } catch (error) {
         setName("");
         setPhone("");
         setAddress("");
         SetEmail("");
+        toast.error("Số điện thoại or email chưa được đăng kí");
+        dispath(SetLoading(false));
       }
-    } catch (error) {
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      toast.error("Số điện thoại or email chưa được đăng kí");
-    }
-  };
-  const HandleOnclickAdd = async () => {
-    if (inputreadOnly === true) {
-      setcoler("rgb(107, 101, 101)");
-      setinputreadOnly(inputtrue);
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      setbtnSearch(true);
-    } else {
-      const pass = Math.floor(Math.random(100) * 1000000000).toString();
-      const KhachHang = {
-        idKhachHang: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        email: email,
-        ten: name,
-        sdt: phone,
-        password: pass,
-        confirmPassword: pass,
-        diemTich: 0,
-        trangThai: 0,
-        gioiTinh: 0,
-        ngaySinh: "",
-        diaChi: "",
-      };
-      if (name === "") {
-        toast.error("tên không hợp lệ");
-        setName("");
-        return;
-      }
-      if (!validatesdt(phone)) {
-        toast.error("Số điện thoại không hợp lệ");
-        setPhone("");
-        return;
-      }
-      if (!validateEmail(email)) {
-        toast.error("email không hợp lệ");
-        SetEmail("");
-        return;
-      }
-      try {
-        const res = await axios.post(
-          "https://localhost:7095/api/KhachHang/PostKHView1",
-          KhachHang
-        );
-        console.log(res);
-        if (res.data === true) {
-          toast.success("Thêm khách hàng thành công");
-          setbtnSearch(false);
-        }
-        if (res.data === false) {
-          toast.error("Tài khoản đã tồn tại");
-          return;
-        }
-      } catch (error) {
-        toast.error("lỗi hệ thống");
-        setbtnSearch(false);
-      }
-      setName("");
-      setPhone("");
-      setAddress("");
-      SetEmail("");
-      setinputreadOnly(inputtrue);
-      setcoler("white");
-    }
+    }, 3000);
   };
 
-  const HandleOnclickclose = () => {
-    setName("");
-    setPhone("");
-    setAddress("");
-    SetEmail("");
-    setinputreadOnly(true);
-    setcoler("white");
-    setbtnSearch(false);
-  };
-
-  const validatesdt = (sdt) => {
-    return String(sdt)
-      .toLowerCase()
-      .match(/^(0)([0-9]){9,9}$/);
-  };
-
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
-  //soSP, setSoSP
-  // const [TongGia, setTongGia] = useState(0);
   const data = useSelector((item) => item.sanPhamGioHang.SanPhamGioHang);
+  
+
+ 
+
   useEffect(() => {
-    if (data.length > 0) {
-      const totalSoSP = data.reduce((acc, item) => acc + item.soLuongmua, 0);
-      const TongGiaSP = data.reduce((acc, item) => {
-        return acc + item.soLuongmua * item.giaBan;
-      }, 0);
-      setSoSP(totalSoSP);
-      setTongGia(TongGiaSP);
-    } else {
-      setSoSP(0);
-    }
+    getHoaDonChos();
   }, [data]);
 
-  // const Getdata = async (inputsearch) => {
+  const getHoaDonChos = async () => {
+    try {
+      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
+      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1);
+  
+      // Sort the filtered data by ngayTao in descending order (newest first)
+      const sortedData = filteredData.sort((a, b) => {
+        // Convert ngayTao to Date objects
+        const dateA = new Date(a.ngayTao);
+        const dateB = new Date(b.ngayTao);
+        // Compare Dates (consider both date and time)
+        return dateB - dateA;
+      });
+      //console.log('sortedData:', sortedData);
+      setHoaDonChos(sortedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  // useEffect(() => {
+  //   if (data.length > 0) {
+  //     const totalSoSP = data.reduce((acc, item) => acc + item.soLuongmua, 0);
+  //     const TongGiaSP = data.reduce((acc, item) => {
+  //       return acc + item.soLuongmua * item.giaBan;
+  //     }, 0);
+  //     setSoSP(totalSoSP);
+  //     setTongGia(TongGiaSP);
+  //   } else {
+  //     setSoSP(0);
+  //   }
+  // }, [data]);
   //   try {
   //     const res = await axios.get(
   //       `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
@@ -177,99 +128,83 @@ const BanHangOfline = () => {
   //     toast.error("Thông tin sản phẩm không chính xác");
   //   }
   // };
+  const createHoaDonOffline = async () => {
+    try {
+      const hoaDonCho = {
+        ...hoaDon,
+        IdNhanVien: nv.id,
+      };
+      const res = await axios.post('https://localhost:7095/api/HoaDon/CreateHoaDonOffline', hoaDonCho);
+      getHoaDonChos();
+      toast.success('Tạo mới hóa đơn chờ');
 
+    }
+    catch (error) {
+      toast.error('Tạo hóa đơn chờ thất bại');
+    }
+  };
+  const handleSelectedHoaDonCho =  async (hoaDonCho) => {
+    try {
+      console.log(hoaDonCho);
+      setHoaDonChoSelected(hoaDonCho);
+      dispath(resetSanPhamGioHang());
+      dispath(GetChiTietHoaDonByIdHoaDon(hoaDonCho.id)) ;
+    } catch (error) {
+      
+    }
+  };
+  const handleDeleteHoaDon = async (idHoaDon) => {
+    
+    try {
+      await axios.delete(`https://localhost:7095/api/HoaDon/deleteHoaDon/${idHoaDon}`);
+      toast.success('Xóa hóa đơn chờ thành công');
+      getHoaDonChos();
+    } catch (error) {
+      console.log(error);
+      toast.error('Xóa hóa đơn chờ thất bại');
+    }
+  }
   return (
     <div className="banhangofline">
       <div className="row">
         <div className="col-9 banhangof_content">
-          <div className="BanHangof_khachhang">
-            <form className="form_khachhang_banhangofline">
-              <div className="mb-3 d-flex">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Email or SĐT"
-                  value={search}
-                  style={{ width: "36%" }}
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={HandleOnclickSearchKH}
-                  disabled={btnSearch}
-                  tabIndex="-1"
-                >
-                  Tìm kiếm
-                </button>
-                <div className="banhangofline_title">
-                  <h3>Thông tin khách hàng</h3>
-                </div>
-              </div>
-              <div style={{ backgroundColor: coler }}>
-                <div className="row">
-                  <div className="col-5">
-                    <input
-                      style={{ width: "99.5%" }}
-                      type="text"
-                      className="form-control"
-                      placeholder="Họ và tên"
-                      value={name}
-                      onChange={(event) => setName(event.target.value)}
-                      readOnly={inputreadOnly}
-                    />
-                  </div>
-                  <div className="col-6">
-                    <input
-                      style={{ width: "91.5%" }}
-                      type="text"
-                      className="form-control"
-                      placeholder="Địa chỉ"
-                      value={address}
-                      onChange={(event) => setAddress(event.target.value)}
-                      readOnly={inputreadOnly}
-                    />
-                  </div>
-                </div>
-                <div className="d-flex">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Số điện thoại"
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    readOnly={inputreadOnly}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={HandleOnclickAdd}
-                    tabIndex="-1"
-                  >
-                    Thêm tài khoản mới
-                  </button>
-                  <button
-                    style={{ marginLeft: "20px" }}
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={HandleOnclickclose}
-                    tabIndex="-1"
-                  >
-                    Hủy đăng kí
-                  </button>
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(event) => SetEmail(event.target.value)}
-                    readOnly={inputreadOnly}
-                  />
-                </div>
-              </div>
-            </form>
+          <div className="BanHangof_DSHoaDonCho" >
+          <h3 className="title">Danh sách hóa đơn chờ</h3>
+
+    <div>
+      <Button variant="primary" onClick={createHoaDonOffline}>
+        <i className="fas fa-plus"></i> Tạo Hóa Đơn Mới
+      </Button>
+      <Table striped bordered hover className="HoaDonChoTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Mã Hóa Đơn</th>
+            <th>Ngày Tạo</th>
+            <th>Loại Hóa Đơn</th>
+           
+          </tr>
+        </thead>
+        <tbody>
+          {hoaDonChos.map((hoaDon, index) => (
+            <tr key={hoaDon.id}
+             onClick={() => handleSelectedHoaDonCho(hoaDon)}  
+             className={[ // Combine conditional classes using an array
+              hoaDon.chiTietHoaDons && hoaDon.chiTietHoaDons.length > 0 ? 'table-danger' : '',
+              hoaDon.id === hoaDonChoSelected?.id ? 'selected-row' : '',
+            ].join(' ')}
+             >
+              <td>{index + 1}</td>
+              <td>{hoaDon.maHD}</td>
+              <td>{hoaDon.ngayTao}</td>
+              <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} <button  onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</button></td>
+              
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+              
           </div>
           <div className="BanHangof_giohang">
             {/* <div className="BanHangof_giohang_thongtin">
@@ -296,14 +231,106 @@ const BanHangOfline = () => {
               </div>
             </div> */}
             <div className="BanHangof_giohang_sanphamdamua">
-              <DanhSachSanPham />     
+              <DanhSachSanPham />
             </div>
           </div>
         </div>
         <div className="col-3 banhangof_hoadon">
-          <ThongTinThanhToan name={name} phone={phone} email={email} address={address} />
+        <div className="BanHangof_khachhang">
+            <form className="form_khachhang_banhangofline">
+            <div className="banhangofline_title">
+                  <h3 style={{width: "300px"}}>Thông tin khách hàng</h3>
+                </div>
+              <div className="mb-3 d-flex">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Email or SĐT"
+                  value={search}
+                  style={{ width: "50%" }}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={HandleOnclickSearchKH}
+                  tabIndex="-1"
+                >
+                  Tìm kiếm
+                </button>
+                
+              </div>
+              <div>
+                <div className="row">
+                  <div className="col-5">
+                    <input
+                      style={{ width: "250px" }}
+                      type="text"
+                      className="form-control"
+                      placeholder="Họ và tên"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      readOnly={inputreadOnly}
+                    />
+                  </div>
+                  
+                </div>
+                {/* <div className="col-6">
+                    <input
+                      style={{ width: "250px" }}
+                      type="text"
+                      className="form-control"
+                      placeholder="Địa chỉ"
+                      value={address}
+                      onChange={(event) => setAddress(event.target.value)}
+                      readOnly={inputreadOnly}
+                    />
+                  </div> */}
+                <div className="d-flex">
+                  <input style={{ width: "250px" }}
+                    type="text"
+                    className="form-control"
+                    placeholder="Số điện thoại"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    readOnly={inputreadOnly}
+                  />
+                  
+                </div>
+                {/* <div>
+                  <input style={{ width: "250px" }}
+                    type="text"
+                    className="form-control"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => SetEmail(event.target.value)}
+                    readOnly={inputreadOnly}
+                  />
+                </div> */}
+                <div className="ThemKhachHang">
+                    <button
+                      className="btn btn-primary"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleShow();
+                      }}
+                    >
+                      + Thêm khách hàng
+                    </button>
+                  </div>
+              </div>
+            </form>
+          </div>
+          <hr></hr>
+          <ThongTinThanhToan idHoaDon={hoaDonChoSelected.id} name={name} address={address} phone={phone} email={email}/>
         </div>
       </div>
+      <MyModalAdd
+        show={showModal}
+        // handleSuccess={handleReload}
+        handleClose={handleClose}
+        themnhanh={"hahahaa"}
+      />
     </div>
   );
 };

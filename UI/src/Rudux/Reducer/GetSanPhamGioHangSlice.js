@@ -25,6 +25,22 @@ export const FetchDataSanPhamGioHang = createAsyncThunk(
   }
 );
 
+export const GetChiTietHoaDonByIdHoaDon = createAsyncThunk(
+  "featchdata/GetChiTietHoaDonByIdHoaDon",
+  async (hoaDonId) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIdHD?hoaDonId=${hoaDonId}`
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching invoice details:", error);
+      // Optionally: Handle errors gracefully (e.g., display error message)
+      throw error; // Re-throw the error for potential handling in extraReducers
+    }
+  }
+);
+
 export const GetSanPhamGioHangSlice = createSlice({
   name: "SanPhamGioHang",
   initialState,
@@ -37,14 +53,25 @@ export const GetSanPhamGioHangSlice = createSlice({
     UpdateSoLuong: (state, action) => {
       const data = state.SanPhamGioHang.map((item) => {
         if (item.idCTSP === action.payload.idctsp) {
-          return { ...item, soLuongmua: action.payload.soluong };
+          if (action.payload.soluong <= item.soLuong) {
+            return { ...item, soLuongmua: action.payload.soluong };
+          } else {
+            return { ...item, soLuongmua: item.soLuong };
+          }
         }
         return item;
       });
       state.SanPhamGioHang = data;
     },
+    resetSanPhamGioHang: (state) => {
+      state.SanPhamGioHang = [];
+      console.log("resetSanPhamGioHang:", state.SanPhamGioHang);
+    },
   },
   extraReducers: (builder) => {
+    builder.addCase(GetChiTietHoaDonByIdHoaDon.fulfilled, (state, action) => {
+      state.SanPhamGioHang = action.payload;
+    });
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(FetchDataSanPhamGioHang.pending, (state, action) => {
       state.loadingdata = true;
@@ -84,5 +111,5 @@ export const GetSanPhamGioHangSlice = createSlice({
     });
   },
 });
-export const { DeleteCTSP, UpdateSoLuong } = GetSanPhamGioHangSlice.actions;
+export const { DeleteCTSP, UpdateSoLuong, resetSanPhamGioHang } = GetSanPhamGioHangSlice.actions;
 export default GetSanPhamGioHangSlice.reducer;

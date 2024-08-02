@@ -62,7 +62,8 @@ namespace AppAPI.Controllers
                                      MaCTSP=CTSP.Ma,
                                      TenSanPham = sp.Ten,
                                      TenAnh = "",
-                                     IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
+                                     //IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
+                                     IdKhuyenMai = Guid.NewGuid(),
                                      TenMauSac = mausac.Ten,
                                      MaMauSac=mausac.Ma,
                                      TenKichCo = size.Ten,
@@ -89,7 +90,8 @@ namespace AppAPI.Controllers
                                  {
                                      ID = CTSP.ID,
                                      TenSanPham = sp.Ten,
-                                     IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
+                                     //IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
+                                     IdKhuyenMai = Guid.NewGuid(),
                                      TenMauSac = mausac.Ten,
                                      TenKichCo = size.Ten,
                                      GiaGoc = CTSP.GiaBan,
@@ -101,66 +103,66 @@ namespace AppAPI.Controllers
             return AllCTSP;
         }
 
-        [Route("GetAllSP")]
-        [HttpGet]
+        //[Route("GetAllSP")]
+        //[HttpGet]
 
-        public List<AllViewSp> GetAllSP()
-        {
+        //public List<AllViewSp> GetAllSP()
+        //{
 
-            var result = _dbcontext.SanPhams
+        //    var result = _dbcontext.SanPhams
 
-                            .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
-                            .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
-                            .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp })
-                            .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
-                            .Select(group => new AllViewSp {
-                                ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
-                                SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
-                                Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
-                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
-                                TenAnh = "",
-                                IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
+        //                    .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
+        //                    .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
+        //                    .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp })
+        //                    .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
+        //                    .Select(group => new AllViewSp {
+        //                        ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+        //                        SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
+        //                        Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
+        //                        MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
+        //                        TenAnh = "",
+        //                        IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
                                 
-                                GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
-                                IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
-                                IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
-                                IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
-                                TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
-                            }).ToList();
-            return result;
+        //                        GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
+        //                        IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
+        //                        IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
+        //                        IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
+        //                        TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
+        //                    }).ToList();
+        //    return result;
 
-        }
-        [Route("GetAllSPByKhuyenMai")]
-        [HttpGet]
+        //}
+        //[Route("GetAllSPByKhuyenMai")]
+        //[HttpGet]
 
-        public List<AllViewSp> GetAllSPByKhuyenMai(Guid idkm)
-        {
-            if (!_dbcontext.KhuyenMais.Any(c => c.ID == idkm)) throw new Exception($" khong tim thay san pham co id:{idkm}");
-            var result = _dbcontext.SanPhams
+        //public List<AllViewSp> GetAllSPByKhuyenMai(Guid idkm)
+        //{
+        //    if (!_dbcontext.KhuyenMais.Any(c => c.ID == idkm)) throw new Exception($" khong tim thay san pham co id:{idkm}");
+        //    var result = _dbcontext.SanPhams
 
-                           .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
-                           .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
-                           .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x=>x.chitietsps.TrangThai==1)
-                           .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
-                           .Select(group => new AllViewSp
-                           {
-                               ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
-                               MaSP=group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
-                               SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
-                               Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
-                               MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
-                               TenAnh = "",
-                               IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
+        //                   .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
+        //                   .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
+        //                   .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x=>x.chitietsps.TrangThai==1)
+        //                   .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
+        //                   .Select(group => new AllViewSp
+        //                   {
+        //                       ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+        //                       MaSP=group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
+        //                       SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
+        //                       Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
+        //                       MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
+        //                       TenAnh = "",
+        //                       IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
                              
-                               GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
-                               IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
-                               IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
-                               IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
-                               TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
-                           }).Where(x => x.IdKhuyenMai == idkm).ToList();
-            return result;
+        //                       GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
+        //                       IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
+        //                       IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
+        //                       IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
+        //                       TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
+        //                   }).Where(x => x.IdKhuyenMai == idkm).ToList();
+        //    return result;
 
-        }
+        //}
         //[Route("GetAllSPByKmLoaiSPChatLieu")]
         //[HttpGet]
 
@@ -203,110 +205,110 @@ namespace AppAPI.Controllers
         //    }).ToListAsync();
         //    return result;
         //}
-        [Route("GetAllSPNoKM")]
-        [HttpGet]
+        //[Route("GetAllSPNoKM")]
+        //[HttpGet]
 
-        public List<AllViewSp> GetAllSPNoKm(Guid id)
-        {
-            if (!_dbcontext.KhuyenMais.Any(c => c.ID == id)) throw new Exception($" khong tim thay san pham co id:{id}");
-            var result = _dbcontext.SanPhams
+        //public List<AllViewSp> GetAllSPNoKm(Guid id)
+        //{
+        //    if (!_dbcontext.KhuyenMais.Any(c => c.ID == id)) throw new Exception($" khong tim thay san pham co id:{id}");
+        //    var result = _dbcontext.SanPhams
 
-                           .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
-                           .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
-                           .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x=>x.chitietsps.TrangThai==1)
-                           .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
-                           .Select(group => new AllViewSp
-                           {
-                               ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
-                               MaSP = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
-                               SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
-                               Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
-                               MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
-                               TenAnh = "",
-                               IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
+        //                   .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
+        //                   .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
+        //                   .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x=>x.chitietsps.TrangThai==1)
+        //                   .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
+        //                   .Select(group => new AllViewSp
+        //                   {
+        //                       ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+        //                       MaSP = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
+        //                       SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
+        //                       Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
+        //                       MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
+        //                       TenAnh = "",
+        //                       IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
                               
-                               GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
-                               IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
-                               IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
-                               IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
-                               TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
-                           }).Where(x => x.IdKhuyenMai != id).Where(x => x.TrangThai == 1).ToList();
-            return result;
-        }
-        [Route("GetAllSPNoKMByLoaiSPChatLieu")]
-        [HttpGet]
+        //                       GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
+        //                       IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
+        //                       IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
+        //                       IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
+        //                       TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
+        //                   }).Where(x => x.IdKhuyenMai != id).Where(x => x.TrangThai == 1).ToList();
+        //    return result;
+        //}
+        //[Route("GetAllSPNoKMByLoaiSPChatLieu")]
+        //[HttpGet]
 
-        public List<AllViewSp> TKGetAllSPNoKmByLoaiSPChatLieu(Guid id, Guid? idLoaiSP, Guid? idChatLieu)
-        {
-            if (!_dbcontext.LoaiSPs.Any(c => c.ID == idLoaiSP) && !_dbcontext.ChatLieus.Any(y => y.ID == idChatLieu)) throw new Exception($" khong tim thay san pham co id:{idLoaiSP},{idChatLieu}");
-            //var AllCTSP = (from SP in _dbcontext.SanPhams.AsNoTracking()
-            //               join anh in _dbcontext.Anhs.AsNoTracking() on SP.ID equals anh.IDSanPham
-            //               join loaisp in _dbcontext.LoaiSPs.AsNoTracking() on SP.IDLoaiSP equals loaisp.ID
-            //               join chatlieu in _dbcontext.ChatLieus.AsNoTracking() on SP.IDChatLieu equals chatlieu.ID
-            //               join CTSP in _dbcontext.ChiTietSanPhams.AsNoTracking() on SP.ID equals CTSP.IDSanPham
+        //public List<AllViewSp> TKGetAllSPNoKmByLoaiSPChatLieu(Guid id, Guid? idLoaiSP, Guid? idChatLieu)
+        //{
+        //    if (!_dbcontext.LoaiSPs.Any(c => c.ID == idLoaiSP) && !_dbcontext.ChatLieus.Any(y => y.ID == idChatLieu)) throw new Exception($" khong tim thay san pham co id:{idLoaiSP},{idChatLieu}");
+        //    //var AllCTSP = (from SP in _dbcontext.SanPhams.AsNoTracking()
+        //    //               join anh in _dbcontext.Anhs.AsNoTracking() on SP.ID equals anh.IDSanPham
+        //    //               join loaisp in _dbcontext.LoaiSPs.AsNoTracking() on SP.IDLoaiSP equals loaisp.ID
+        //    //               join chatlieu in _dbcontext.ChatLieus.AsNoTracking() on SP.IDChatLieu equals chatlieu.ID
+        //    //               join CTSP in _dbcontext.ChiTietSanPhams.AsNoTracking() on SP.ID equals CTSP.IDSanPham
 
-            //               select new { SP, anh, loaisp, chatlieu, CTSP });
-            //// Tim Theo LoaiSP,Chat Lieu
+        //    //               select new { SP, anh, loaisp, chatlieu, CTSP });
+        //    //// Tim Theo LoaiSP,Chat Lieu
 
-            //if (!string.IsNullOrEmpty(idLoaiSP.ToString()))
-            //{
-            //    AllCTSP = AllCTSP.AsNoTracking().Where(x => x.loaisp.ID == idLoaiSP);
+        //    //if (!string.IsNullOrEmpty(idLoaiSP.ToString()))
+        //    //{
+        //    //    AllCTSP = AllCTSP.AsNoTracking().Where(x => x.loaisp.ID == idLoaiSP);
 
-            //}
-            //if (!string.IsNullOrEmpty(idChatLieu.ToString()))
-            //{
-            //    AllCTSP = AllCTSP.AsNoTracking().Where(x => x.chatlieu.ID == idChatLieu);
-            //}
-            //var result = await AllCTSP.AsNoTracking().Select(c => new AllViewSp()
-            //{
-            //    ID = c.SP.ID,
-            //    Ten = c.SP.Ten,
-            //    MoTa = c.SP.MoTa,
-            //    TenAnh = c.anh.DuongDan,
-            //    IdKhuyenMai = (from km in _dbcontext.KhuyenMais where c.CTSP.IDKhuyenMai == km.ID select c.CTSP.IDKhuyenMai).FirstOrDefault(),
-            //    TongSoSao = c.SP.TongSoSao,
-            //    TongDanhGia = c.SP.TongDanhGia,
-            //    GiaBan = c.CTSP.GiaBan,
-            //    IDLoaiSP = c.SP.IDLoaiSP,
-            //    IDLoaiSPCha = c.loaisp.IDLoaiSPCha,
-            //    IDChatLieu = c.chatlieu.ID,
-            //    TrangThai = c.CTSP.TrangThai
+        //    //}
+        //    //if (!string.IsNullOrEmpty(idChatLieu.ToString()))
+        //    //{
+        //    //    AllCTSP = AllCTSP.AsNoTracking().Where(x => x.chatlieu.ID == idChatLieu);
+        //    //}
+        //    //var result = await AllCTSP.AsNoTracking().Select(c => new AllViewSp()
+        //    //{
+        //    //    ID = c.SP.ID,
+        //    //    Ten = c.SP.Ten,
+        //    //    MoTa = c.SP.MoTa,
+        //    //    TenAnh = c.anh.DuongDan,
+        //    //    IdKhuyenMai = (from km in _dbcontext.KhuyenMais where c.CTSP.IDKhuyenMai == km.ID select c.CTSP.IDKhuyenMai).FirstOrDefault(),
+        //    //    TongSoSao = c.SP.TongSoSao,
+        //    //    TongDanhGia = c.SP.TongDanhGia,
+        //    //    GiaBan = c.CTSP.GiaBan,
+        //    //    IDLoaiSP = c.SP.IDLoaiSP,
+        //    //    IDLoaiSPCha = c.loaisp.IDLoaiSPCha,
+        //    //    IDChatLieu = c.chatlieu.ID,
+        //    //    TrangThai = c.CTSP.TrangThai
 
-            //}).Where(x=>x.IdKhuyenMai!=id).ToListAsync();
-            //return result;
-            if (!_dbcontext.KhuyenMais.Any(c => c.ID == id)) throw new Exception($" khong tim thay san pham co id:{id}");
-            var result = _dbcontext.SanPhams
+        //    //}).Where(x=>x.IdKhuyenMai!=id).ToListAsync();
+        //    //return result;
+        //    if (!_dbcontext.KhuyenMais.Any(c => c.ID == id)) throw new Exception($" khong tim thay san pham co id:{id}");
+        //    var result = _dbcontext.SanPhams
 
-                           .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
-                           .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
-                           .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x => x.chitietsps.TrangThai == 1)
-                           .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
-                           .Select(group => new AllViewSp
-                           {
-                               ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
-                               SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
-                               Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
-                               MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
-                               TenAnh = "",
-                               IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
+        //                   .Join(_dbcontext.ChatLieus, sp => sp.IDChatLieu, cl => cl.ID, (sp, cl) => new { sp_cl = sp, chatlieus = cl })
+        //                   .Join(_dbcontext.LoaiSPs, sp => sp.sp_cl.IDLoaiSP, lsp => lsp.ID, (sp, lsp) => new { sp_cl_lsp = sp, loaisps = lsp })
+        //                   .Join(_dbcontext.ChiTietSanPhams, sp => sp.sp_cl_lsp.sp_cl.ID, ctsp => ctsp.IDSanPham, (sp, ctsp) => new { sp_cl_lsp_ctsp = sp, chitietsps = ctsp }).Where(x => x.chitietsps.TrangThai == 1)
+        //                   .GroupBy(x => x.sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID)
+        //                   .Select(group => new AllViewSp
+        //                   {
+        //                       ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+        //                       SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
+        //                       Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
+        //                       MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
+        //                       TenAnh = "",
+        //                       IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
                               
-                               GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
-                               IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
-                               IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
-                               IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
-                               TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
-                           }).Where(x => x.IdKhuyenMai != id).ToList();
-            if (!string.IsNullOrEmpty(idLoaiSP.ToString()))
-            {
-                result = result.Where(x => x.IDLoaiSP == idLoaiSP).ToList();
+        //                       GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
+        //                       IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
+        //                       IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
+        //                       IDChatLieu = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.chatlieus.ID,
+        //                       TrangThai = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TrangThai
+        //                   }).Where(x => x.IdKhuyenMai != id).ToList();
+        //    if (!string.IsNullOrEmpty(idLoaiSP.ToString()))
+        //    {
+        //        result = result.Where(x => x.IDLoaiSP == idLoaiSP).ToList();
 
-            }
-            if (!string.IsNullOrEmpty(idChatLieu.ToString()))
-            {
-                result = result.Where(x => x.IDChatLieu == idChatLieu).ToList();
-            }
-            return result;
-        }
+        //    }
+        //    if (!string.IsNullOrEmpty(idChatLieu.ToString()))
+        //    {
+        //        result = result.Where(x => x.IDChatLieu == idChatLieu).ToList();
+        //    }
+        //    return result;
+        //}
 
         // GET api/<KhuyenMaiController>/5
         [HttpGet("{id}")]
@@ -374,47 +376,95 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        [HttpPost("addkhuyenmaitoCTSP")]
+        public async Task<IActionResult> AddKhuyenMaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP, string idkhuyenmai)
+        {
+            if (IDCTSP == null || !IDCTSP.Any())
+            {
+                return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+            }
 
-		#region khuyenmaiKien
-		[HttpPut("addkhuyenmaitoCTSP")]
-		public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
-		{
-			if (IDCTSP == null || !IDCTSP.Any())
-			{
-				return BadRequest("Danh sách IDCTSP rỗng hoặc null");
-			}
+            foreach (var item in IDCTSP)
+            {
+                var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
+                if (dt != null)
+                {
+                    var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
+                        .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
 
-			foreach (var id in IDCTSP)
-			{
-					var dt = await _dbcontext.ChiTietSanPhams.FindAsync(id.id);
-					if (dt != null)
-					{
-						if(id.trangthai == true)
-						{
-							dt.IDKhuyenMai = Guid.Parse(idkhuyenmai);
-						}
-						else
-						{
-							dt.IDKhuyenMai = Guid.Parse("B2B70D39-0658-422B-93B1-C054B374B232");
-						}
-						_dbcontext.ChiTietSanPhams.Update(dt);
-                        _dbcontext.SaveChanges();
-					}
-					else
-					{
-						return NotFound($"Sản phẩm chi tiết với ID {id} không tồn tại.");
-					}
-			}
+                    if (existingRecord == null)
+                    {
+                        if (item.trangthai == true)
+                        {
+                            KhuyenMaiCTSanPham kmctsp = new KhuyenMaiCTSanPham
+                            {
+                                IdChiTietSanPham = dt.ID,
+                                IdKhuyenMai = Guid.Parse(idkhuyenmai)
+                            };
+                            _dbcontext.KhuyenMaiCTSanPhams.Add(kmctsp);
+                        }
+                    }
+                    else
+                    {
+                        if (item.trangthai == false)
+                        {
+                            _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
+                        }
+                    }
+                }
+                else
+                {
+                    return NotFound($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
+                }
+            }
+
+            // Lưu các thay đổi vào database
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok("Cập nhật thành công.");
+
+
+        }
+        #region khuyenmaiKien
+  //      [HttpPut("addkhuyenmaitoCTSP")]
+		//public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
+		//{
+			//if (IDCTSP == null || !IDCTSP.Any())
+			//{
+			//	return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+			//}
+
+			//foreach (var id in IDCTSP)
+			//{
+			//		var dt = await _dbcontext.ChiTietSanPhams.FindAsync(id.id);
+			//		if (dt != null)
+			//		{
+			//			if(id.trangthai == true)
+			//			{
+			//				dt.IDKhuyenMai = Guid.Parse(idkhuyenmai);
+			//			}
+			//			else
+			//			{
+			//				dt.IDKhuyenMai = Guid.Parse("B2B70D39-0658-422B-93B1-C054B374B232");
+			//			}
+			//			_dbcontext.ChiTietSanPhams.Update(dt);
+   //                     _dbcontext.SaveChanges();
+			//		}
+			//		else
+			//		{
+			//			return NotFound($"Sản phẩm chi tiết với ID {id} không tồn tại.");
+			//		}
+			//}
 
 	
 
-			// Lưu các thay đổi vào database
-			await _dbcontext.SaveChangesAsync();
+			//// Lưu các thay đổi vào database
+			//await _dbcontext.SaveChangesAsync();
 
-			return Ok("Update thành công.");
+			//return Ok("Update thành công.");
 		
 
-	    }
+	  //  }
 		#endregion
 	}
 

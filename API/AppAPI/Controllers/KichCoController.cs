@@ -68,9 +68,23 @@ namespace AppAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKichCo(Guid id)
         {
-            var loaiSP = await service.DeleteKichCo(id);
-            return Ok(loaiSP);
-        }
+            var kt = await service.DeleteKichCo(id);
+			switch (kt)
+			{
+				case 0:
+					return BadRequest("Kích thước đã được sử dụng trong sản phẩm");
+
+				case 1:
+					return Ok("Xóa thành công");
+
+				case 2:
+					return BadRequest("Không tìm thấy Kích thước cần xóa");
+
+				default:
+					return BadRequest("Xóa thất bại");
+
+			}
+		}
         #endregion
     }
 }

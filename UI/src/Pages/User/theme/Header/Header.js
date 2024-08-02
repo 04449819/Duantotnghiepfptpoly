@@ -1,14 +1,41 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import { BsPersonCircle } from "react-icons/bs";
 
 import "./Header.scss";
 import { useState } from "react";
 import ModalDangNhap from "../../HomePage/Modaldangnhap/ModalDangNhap";
+import { useDispatch, useSelector } from "react-redux";
+import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
+import Swal from "sweetalert2";
+import { NavDropdown } from "react-bootstrap";
+import "../../CuaHang/cuahang.scss";
 
 const Header = (props) => {
   const [shows, setShows] = useState(false);
+  const user = useSelector((state) => state.user.User);
+  const dispath = useDispatch();
+  const navigate = useNavigate();
+  const HandleOnclickLogout = () => {
+    Swal.fire({
+      title: "Xác nhận",
+      text: "Bạn có muốn đăng xuất không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispath(LogOutTaiKhoan());
+        navigate("/");
+      } else {
+      }
+    });
+  };
 
+  const HandleOnclickGioHang = () => {
+    navigate("/giohang");
+  };
   return (
     <div className="Header">
       <div className="top-header ">
@@ -40,7 +67,7 @@ const Header = (props) => {
               <ul className="navbar-nav ms-auto ">
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link mx-2 active"
+                    className="nav-link mx-2 active hover-underline-animation"
                     aria-current="page"
                     to=""
                   >
@@ -48,12 +75,18 @@ const Header = (props) => {
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link mx-2" to="/cuahang">
+                  <NavLink
+                    className="nav-link mx-2 hover-underline-animation"
+                    to="/cuahang"
+                  >
                     Cửa Hàng
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link mx-2" to="/lienhe">
+                  <NavLink
+                    className="nav-link mx-2 hover-underline-animation"
+                    to="/lienhe"
+                  >
                     Liên hệ
                   </NavLink>
                 </li>
@@ -63,9 +96,40 @@ const Header = (props) => {
                   <button
                     className="buttonHeader"
                     onClick={() => setShows(true)}
+                    hidden={user && user.vaiTro !== 1 ? false : true}
                   >
                     <BsPersonCircle />
                     <span>Đăng nhập</span>
+                  </button>
+                  <button
+                    className="buttonHeader"
+                    // onClick={() => setShows(true)}
+                    hidden={user && user.vaiTro !== 1 ? true : false}
+                  >
+                    <div className="d-flex">
+                      <div className="mt-1">
+                        <BsPersonCircle />
+                      </div>
+
+                      <NavDropdown
+                        id="nav-dropdown-dark-example"
+                        title={user && user.ten}
+                        menuVariant="dark"
+                      >
+                        <NavDropdown.Item
+                          href="#action/3.1"
+                          onClick={HandleOnclickLogout}
+                        >
+                          Đăng xuất
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          href="#action/3.1"
+                          onClick={HandleOnclickLogout}
+                        >
+                          Quản lý tài khoản
+                        </NavDropdown.Item>
+                      </NavDropdown>
+                    </div>
                   </button>
                 </li>
                 <li className="nav-item mx-2">
@@ -76,7 +140,9 @@ const Header = (props) => {
                 <li className="nav-item mx-2">
                   {/* <Link className="nav-link text-dark h5" to="/" target="blank"> */}
                   <button style={{ border: "none", backgroundColor: "white" }}>
-                    <FiShoppingCart />
+                    <div className="mt-1">
+                      <FiShoppingCart onClick={HandleOnclickGioHang} />
+                    </div>
                   </button>
 
                   {/* </Link> */}

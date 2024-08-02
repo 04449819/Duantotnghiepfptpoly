@@ -87,8 +87,21 @@ namespace AppAPI.Controllers
 			try
 			{
 				var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
-				if(loaiSP == false) return BadRequest();
-				return Ok();
+				switch (loaiSP)
+				{
+					case 0:
+						return BadRequest("Loại sản phẩm đã được sử dụng trong sản phẩm");
+
+					case 1:
+						return Ok("Xóa thành công");
+
+					case 2:
+						return BadRequest("Không tìm thấy Loại sản phẩm cần xóa");
+
+					default:
+						return BadRequest("Xóa thất bại");
+
+				}
 			}
 			catch (Exception)
 			{

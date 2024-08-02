@@ -11,6 +11,9 @@ import Modalkichthuoc from "./KichThuoc/ModalKichThuoc/ModalKichThuoc";
 import ModalMauSac from "./MauSac/ModalMauSac/ModalMauSac";
 import PreviewIMG from "./PreviewIMG/PreviewIMG";
 import { toast } from "react-toastify";
+import MoDalCoAo from "./CoAo/ModalCoAo/MoDalCoAo";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 
 const ModalQLSP = (props) => {
   const [loaduseE, setloaduseE] = useState(false);
@@ -21,6 +24,8 @@ const ModalQLSP = (props) => {
   const [dataCL, setdataCL] = useState([]);
   const [dataLSP, setdataLSP] = useState([]);
   const [dataCoAo, setdataCoAo] = useState([]);
+  const [soluongchung, setsoluongchung] = useState(1000);
+  const [giachung, setgiachung] = useState(300000);
   const [TTSanPham, setTTSanPham] = useState({
     ten: "",
     ma: "",
@@ -36,7 +41,8 @@ const ModalQLSP = (props) => {
   //   const [loaduseE, setloaduseE] = useState(false);
 
   const HandleOnclickBack = () => {
-    props.setShow(false);
+    props.setShow(0);
+    props.setload(!props.load);
   };
   const [maSanPhamValid, setMaSanPhamValid] = useState(true);
   const handleOnChangecheck = (event) => {
@@ -174,6 +180,8 @@ const ModalQLSP = (props) => {
     if (form.checkValidity() === false) {
       event.stopPropagation(); // Stop further event propagation if form is invalid
     } else {
+      if (soluongchung < 1 || giachung < 1)
+        return toast.error("Số lượng và kích thước chung không được bé hơn 1");
       const dataTam = dataKT.flatMap((item) => {
         if (item.check) {
           return dataMS
@@ -182,8 +190,8 @@ const ModalQLSP = (props) => {
               id: Math.floor(Math.random() * 100000) + 1,
               masanpham: TTSanPham.ma,
               mactsp: `${TTSanPham.ma}-${Math.floor(Math.random() * 10000)}`,
-              soluong: 1,
-              giaban: 1000,
+              soluong: soluongchung,
+              giaban: giachung,
               check: true,
               kichthuoc: item.ten,
               mausac: item1.ten,
@@ -193,13 +201,49 @@ const ModalQLSP = (props) => {
               loaisp: TTSanPham.loaisp,
               chatlieu: TTSanPham.chatlieu,
               img: [], // Added missing property img
+              soluongms: 1,
+              checkhiden: false,
             }));
         }
         return [];
       });
 
+      // Đếm số lượng sản phẩm theo màu sắc
+      const colorCounts = dataTam.reduce((acc, product) => {
+        if (acc[product.mausac]) {
+          acc[product.mausac]++;
+        } else {
+          acc[product.mausac] = 1;
+        }
+        return acc;
+      }, {});
+
+      // Cập nhật soluongms cho mỗi sản phẩm dựa trên màu sắc
+      const datatam2 = dataTam.map((item) => ({
+        ...item,
+        soluongms: colorCounts[item.mausac],
+      }));
+
+      // Nhóm sản phẩm theo màu sắc
+      const groupedByColor = datatam2.reduce((acc, product) => {
+        if (!acc[product.mausac]) {
+          acc[product.mausac] = [];
+        }
+        acc[product.mausac].push(product);
+        return acc;
+      }, {});
+
+      // Đặt checkhiden=true cho sản phẩm đầu tiên và checkhiden=false cho các sản phẩm còn lại
+      const datatam1 = Object.values(groupedByColor).flatMap((products) => {
+        return products.map((product, index) => ({
+          ...product,
+          checkhiden: index === 0,
+        }));
+      });
+
+      // Kiểm tra sản phẩm đã tồn tại trong TTCTSP hay chưa
       if (TTCTSP.length > 0) {
-        const dataFake = dataTam.map((item1) => {
+        const dataFake = datatam1.map((item1) => {
           const existingItem = TTCTSP.find(
             (item) =>
               item.kichthuoc === item1.kichthuoc &&
@@ -213,7 +257,7 @@ const ModalQLSP = (props) => {
         });
         setTTCTSP(dataFake);
       } else {
-        setTTCTSP(dataTam);
+        setTTCTSP(datatam1);
       }
     }
 
@@ -262,11 +306,10 @@ const ModalQLSP = (props) => {
       toast.error("Độ phân giải quá lớn... Tải lên thất bại!");
     }
   };
-
+  const dispath = useDispatch();
   const handleDelete = (image, item) => {
     const datatam = TTCTSP.map((p) => {
       if (p.mausac === item.mausac) {
-        console.log(p);
         const updatedImages = p.img.filter(
           (img) => img.diemchung !== image.diemchung
         );
@@ -278,7 +321,6 @@ const ModalQLSP = (props) => {
   };
   const HandleOnclickLuuThayDoi = async () => {
     if (TTCTSP.filter((p) => p.check !== false).length > 0) {
-      console.log(TTCTSP);
       const listctsp = TTCTSP.map((p) => {
         if (p.check === true) {
           return {
@@ -314,14 +356,6 @@ const ModalQLSP = (props) => {
       listanh.forEach((file, index) => {
         formData.append("images", file);
       });
-      console.log(listanh);
-      console.log(">>>>>datathem", DataThem);
-      console.log(">>>>>list", formData);
-      console.log(
-        DataThem.listctsp.map((x) => {
-          return x.img.length;
-        })
-      );
       let a = true;
       DataThem.listctsp.map((x) => {
         if (x.img.length <= 0) return (a = false);
@@ -340,9 +374,9 @@ const ModalQLSP = (props) => {
             );
           } catch (error) {
             toast.error(`gặp lỗi: ${error.response.data}`);
-            console.log("gặp lỗi:", error.response.data);
             return;
           }
+
           try {
             const response1 = await axios.post(
               "https://localhost:7095/api/SanPham/addSanPhamQLSP",
@@ -354,6 +388,8 @@ const ModalQLSP = (props) => {
           }
 
           toast.success("thêm thành công !");
+          props.setShow(0);
+          props.setload(!props.load);
         } catch (error) {
           toast.error("gặp lỗi:", error);
         }
@@ -364,6 +400,7 @@ const ModalQLSP = (props) => {
       toast.error("Hãy chọn ít nhất một sản phẩm!");
     }
   };
+
   const HandleOnLoading = () => {
     setloaduseE(!loaduseE);
   };
@@ -511,7 +548,11 @@ const ModalQLSP = (props) => {
               </Form.Select>
             </div>
             <div as={Col} className="w-25">
-              <AddLoaiSP HandleOnLoading={HandleOnLoading} />
+              <MoDalCoAo
+                loaduseE={loaduseE}
+                setloaduseE={setloaduseE}
+                HandleOnLoading={HandleOnLoading}
+              />
             </div>
           </Row>
           <hr />
@@ -526,6 +567,52 @@ const ModalQLSP = (props) => {
             className="mb-4"
           >
             <div className="w-75 mx-auto mt-3">
+              <h4>Màu sắc</h4>
+              <hr />
+              <div className="row">
+                {dataMS.length > 0 &&
+                  dataMS.map((item) => (
+                    <div className="col-2" key={item.id}>
+                      <div
+                        style={{
+                          border:
+                            item.check === false
+                              ? "1px solid black"
+                              : "2px solid #007bff",
+                          borderRadius: "5px",
+                          marginBottom: "10px",
+                          cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
+                        }}
+                        onClick={() => HandleOnclickMS(item)}
+                      >
+                        <div
+                          style={{
+                            backgroundColor: item.ma,
+                            height: "25px",
+                            textAlign: "center",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {item.ma}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                <div className="col-2 mb-3">
+                  <div>
+                    <div className="w-50 ">
+                      <ModalMauSac
+                        loaduseE={loaduseE}
+                        setloaduseE={setloaduseE}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-75 mx-auto mb-3">
               <h4>Kích thước</h4>
               <hr />
               <div className="row">
@@ -537,10 +624,12 @@ const ModalQLSP = (props) => {
                           border:
                             item.check === false
                               ? "1px solid black"
-                              : "3px solid blue",
+                              : "2px solid blue",
                           borderRadius: "5px",
                           marginBottom: "10px",
                           cursor: "pointer",
+                          boxShadow:
+                            item.check === false ? "none" : "0 0 10px #007bff",
                         }}
                         onClick={() => HandleOnclickKT(item)}
                       >
@@ -559,44 +648,27 @@ const ModalQLSP = (props) => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="w-75 mx-auto">
-              <h4>Màu sắc</h4>
-              <hr />
-              <div className="row">
-                {dataMS.length > 0 &&
-                  dataMS.map((item) => (
-                    <div className="col-2" key={item.id}>
-                      <div
-                        style={{
-                          border:
-                            item.check === false
-                              ? "1px solid black"
-                              : "3px solid blue",
-                          borderRadius: "5px",
-                          marginBottom: "10px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => HandleOnclickMS(item)}
-                      >
-                        <div style={{ backgroundColor: item.ma }}>
-                          {item.ma}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                <div className="col-2 mb-3">
-                  <div>
-                    <div className="w-50 ">
-                      <ModalMauSac
-                        loaduseE={loaduseE}
-                        setloaduseE={setloaduseE}
-                      />
-                    </div>
-                  </div>
-                </div>
+              <hr className="my-3" />
+              <div className="d-flex ">
+                <span>Số lượng chung:</span>
+                <input
+                  className="ms-2"
+                  type="number"
+                  value={soluongchung}
+                  onChange={(event) => setsoluongchung(event.target.value)}
+                />
+              </div>
+              <div className="d-flex mt-3">
+                <span>Giá chung:</span>
+                <input
+                  className="ms-5"
+                  type="number"
+                  value={giachung}
+                  onChange={(event) => setgiachung(event.target.value)}
+                />
               </div>
             </div>
+
             <div className="w-25 ms-auto">
               {/* <Button onClick={HandleOnclickChonMSKT} className="mb-3 ">
                 Xác nhận
@@ -644,16 +716,7 @@ const ModalQLSP = (props) => {
                     />
                   </td>
                   <td>{index + 1}</td>
-                  <td>
-                    <input
-                      className="w-100 mt-3"
-                      type="text"
-                      value={item.mactsp}
-                      maxLength="20"
-                      name="mactsp"
-                      onChange={(event) => handleOnChange(event, item)}
-                    />
-                  </td>
+                  <td>{item.mactsp}</td>
                   <th>{item.mausac}</th>
                   <th>{item.kichthuoc}</th>
                   <td>
@@ -674,7 +737,7 @@ const ModalQLSP = (props) => {
                       onChange={(event) => handleOnChange(event, item)}
                     />
                   </td>
-                  <td>
+                  <td rowSpan={item.soluongms} hidden={!item.checkhiden}>
                     <div className="row">
                       {item.img.length > 0 &&
                         item.img.map((p, index) => (

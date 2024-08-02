@@ -17,7 +17,7 @@ export const FetchData = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      toast.error("sai tên đăng nhập or mật khẩu");
+      toast.error("chưa điền thông tin");
     }
   }
 );

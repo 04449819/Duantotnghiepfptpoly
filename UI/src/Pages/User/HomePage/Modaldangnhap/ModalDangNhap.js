@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FetchData } from "../../../../Rudux/Reducer/taiKhoanSlice";
 import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
+import { toast } from "react-toastify";
 
 const ModalDangNhap = (props) => {
   const { show, setShow } = props;
@@ -27,7 +28,7 @@ const ModalDangNhap = (props) => {
           navigate("/");
           setShow(false);
           dispatch(SetLoading(false));
-        }, 2000);
+        }, 3000);
       }
       if (res.data.vaiTro === 0) {
         setTimeout(() => {
@@ -35,6 +36,10 @@ const ModalDangNhap = (props) => {
           setShow(false);
           dispatch(SetLoading(false));
         }, 3000);
+      }
+      if (res.data.vaiTro === null) {
+        dispatch(SetLoading(false));
+        toast.error("Tên đăng nhập hoặc mật khẩu không chính xác");
       }
     } catch (error) {
       dispatch(SetLoading(false));

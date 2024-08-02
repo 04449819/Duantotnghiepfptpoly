@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@trendyol-js/react-carousel": "^3.0.2",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
@@ -27,11 +28,17 @@
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-redux": "^9.1.2",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
+    "react-slick": "^0.30.2",
     "react-spinners": "^0.13.8",
     "react-to-print": "^2.15.1",
     "react-toastify": "^10.0.5",
     "redux-persist": "^6.0.0",
+
     "reselect": "^5.1.1",
+
+    "slick-carousel": "^1.8.1",
+
     "sweetalert2": "^11.11.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"

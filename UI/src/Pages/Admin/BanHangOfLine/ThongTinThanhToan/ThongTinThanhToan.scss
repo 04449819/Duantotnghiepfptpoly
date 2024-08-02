@@ -1,0 +1,30 @@
+.toggle-button {
+    cursor: pointer;
+    display: inline-block;
+    width: 40px; // Độ rộng của nút toggle mới
+    height: 20px; // Độ cao của nút toggle mới
+    background-color: gray; // Màu khi ở trạng thái "tắt"
+    border-radius: 10px; // Bo tròn góc được điều chỉnh cho phù hợp với chiều cao mới
+    position: relative;
+    transition: background-color 0.3s ease; // Hiệu ứng chuyển màu
+  
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px; // Khoảng cách từ mép trên được điều chỉnh cho phù hợp
+      left: 2px; // Khoảng cách từ mép trái
+      width: 16px; // Độ rộng của viên nút được điều chỉnh cho phù hợp
+      height: 16px; // Độ cao của viên nút được điều chỉnh cho phù hợp
+      background-color: white; // Màu sắc của viên nút
+      border-radius: 50%; // Làm tròn viên nút
+      transition: transform 0.3s ease; // Hiệu ứng di chuyển
+    }
+  
+    &.active {
+      background-color: darkslategray; // Màu khi ở trạng thái "bật"
+  
+      &::after {
+        transform: translateX(20px); // Di chuyển viên nút sang phải được điều chỉnh
+      }
+    }
+  }

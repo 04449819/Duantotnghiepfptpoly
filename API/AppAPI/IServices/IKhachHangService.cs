@@ -20,6 +20,12 @@ namespace AppAPI.IServices
         public Task<List<HoaDon>> GetAllHDKH(Guid idkh);
 
 
+
       
+
+        public List<KhachHang> GetKMByName(string Ten);
+        public int TongHopDiem(Guid idkh);
+
+
     }
 }

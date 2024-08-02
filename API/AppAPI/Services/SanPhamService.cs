@@ -1136,6 +1136,50 @@ namespace AppAPI.Services
 
 			return listsp;
 		}
-		#endregion
-	}
+        public List<SanPhamVieww> GetChiTietSanPhamByIdHD(Guid hoaDonId)
+        {
+           
+            // Join tables to get product details from HoaDon (bill)
+            var listsp = (from hd in _context.HoaDons
+                          join cthd in _context.ChiTietHoaDons on hd.ID equals cthd.IDHoaDon  // gwapj vấn đề ở đây
+                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                          join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
+                          join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+                          join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                          join
+          anhs in _context.Anhs on ctsp.ID equals anhs.IDChitietsanpham
+                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                          join ap in (from kmct in _context.KhuyenMaiCTSanPhams
+                                      join km in _context.KhuyenMais on kmct.IdKhuyenMai equals km.ID
+                                      where km.TrangThai == 1 && DateTime.Today > km.NgayApDung && DateTime.Today < km.NgayKetThuc
+                                      select new { kmct.IdChiTietSanPham, km.GiaTri }) on ctsp.ID equals ap.IdChiTietSanPham into apg
+                          from ap in apg.DefaultIfEmpty()
+                          where cthd.IDHoaDon == hoaDonId // filter by HoaDon ID
+                          select new SanPhamVieww
+                          {
+                              idLoaiSP = lsp.ID,
+                              idSP = sp.ID,
+                              idCTSP = ctsp.ID,
+                              idAnh = anhs.ID,
+                              loaiSP = lsp.Ten,
+                              tenchatlieu = cl.Ten,
+                              tenSanPham = sp.Ten,
+                              soLuong = ctsp.SoLuong,
+                              soLuongmua = cthd.SoLuong,
+                              giaBan = ctsp.GiaBan,
+                              ngayTao = ctsp.NgayTao,
+                              trangThai = ctsp.TrangThai,
+                              giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
+                              tenMau = ms.Ten,
+                              maMau = ms.Ma,
+                              duongDanAnh = anhs.DuongDan,
+                              kichCo = kc.Ten
+                          }).ToList();
+
+            return listsp;
+        }
+       
+        #endregion
+    }
 }

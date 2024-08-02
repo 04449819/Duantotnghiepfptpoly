@@ -18,3 +18,63 @@
     }
   }
 }
+
+
+.danh-sach-san-pham-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs-container {
+  display: flex;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 10px 0 10px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab.active {
+  background-color: #fff;
+  border-bottom: 1px solid #fff;
+  margin-bottom: -1px;
+}
+
+.close-icon {
+  margin-left: 10px;
+  font-size: 0.8em;
+  color: #888;
+}
+
+.close-icon:hover {
+  color: #f00;
+}
+
+.add-tab-button {
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-tab-button:hover {
+  background-color: #45a049;
+}
+
+.content-container {
+  padding: 20px;
+}

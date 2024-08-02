@@ -344,5 +344,20 @@ namespace AppAPI.Controllers
 		}
         #endregion
         
+
+        #region KhachHangTung
+        [HttpGet("tong-hop-diem/{sdtOrMail}")]
+        public IActionResult TongHopDiem(string sdtOrMail)
+        {
+            var khachHang = _khachHangService.GetBySDT(sdtOrMail);
+            if (khachHang == null)
+            {
+                return NotFound("Không tìm thấy khách hàng");
+            }   
+            int diemTich = _khachHangService.TongHopDiem(khachHang.IDKhachHang);
+            return Ok(diemTich);
+        }
+        #endregion
+
     }
 }

@@ -1057,6 +1057,16 @@ namespace AppAPI.Controllers
 
 
 
-		#endregion
-	}
+        #endregion
+
+        #region Tung
+        [HttpGet("GetChiTietSanPhamByIdHD")]
+        public async Task<IActionResult> GetChiTietSanPhamByIdHD(Guid hoaDonId)
+        {
+            var response = _sanPhamServices.GetChiTietSanPhamByIdHD(hoaDonId);
+            return Ok(response);
+        }
+        #endregion
+
+    }
 }

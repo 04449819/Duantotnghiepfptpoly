@@ -23,7 +23,8 @@ const QuanLyHoaDon = () => {
 
   useEffect(() => {
     fetchHoaDons();
-  }, [filterStatus]);
+    console.log(hoaDons);
+  }, []);
 
   const fetchHoaDons = async () => {
     try {

@@ -1,3 +1,5 @@
+// src/index.js hoặc src/index.tsx
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
@@ -35,14 +37,17 @@ import LienHe from "./Pages/User/LienHe/LienHe";
 import ChiTietSanPhamKH from "./Pages/User/ChiTietSanPhamKH/ChiTietSanPhamKH";
 import ScrollToTop from "./ScrollToTop";
 import GioHang from "./Pages/User/GioHang/GioHang";
+import XemhoXo from "./Pages/Admin/XemhoXo/XemhoXo";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
-          <Route path="" element={<App />}>
+          <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
             <Route path="/dangki" element={<Dangki />} />
             <Route path="/quenmatkhau" element={<QuenMK />} />
@@ -55,36 +60,25 @@ root.render(
           <Route path="/admin" element={<AdminPage />}>
             <Route index element={<BanHangOfline />} />
             <Route path="/admin/banhangofline" element={<BanHangOfline />} />
-            <Route
-              path="/admin/quanlynhanvien"
-              element={<QuanLyNhanVienPage />}
-            />
+            <Route path="/admin/quanlynhanvien" element={<QuanLyNhanVienPage />} />
             <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
             <Route path="/admin/quanlychatlieu" element={<QuanLyChatLieu />} />
             <Route path="/admin/quanlymausac" element={<MauSac />} />
             <Route path="/admin/quanlykichthuoc" element={<KichThuoc />} />
             <Route path="/admin/coao" element={<CoAo />} />
-            <Route
-              path="/admin/quanlyloaisanpham"
-              element={<QuanLyLoaiSanPham />}
-            />
-            <Route
-              path="/admin/quanlykhachhang"
-              element={<QuanLyKhachHang />}
-            />
+            <Route path="/admin/quanlyloaisanpham" element={<QuanLyLoaiSanPham />} />
+            <Route path="/admin/quanlykhachhang" element={<QuanLyKhachHang />} />
             <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
             <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
             <Route path="/admin/dashboard" element={<DashBoard />} />
-            <Route
-              path="/admin/quanlykhuyenmai"
-              element={<QuanLyKhuyenMai />}
-            />
+            <Route path="/admin/quanlykhuyenmai" element={<QuanLyKhuyenMai />} />
             <Route path="/admin/quanlyhoadon" element={<QuanLyHoaDon />} />
             <Route path="/admin/thongke" element={<ThongKe />} />
+            <Route path="/admin/profile/:userId" element={<XemhoXo />} />
           </Route>
+
         </Routes>
       </BrowserRouter>
-
       <ToastContainer
         position="top-right"
         autoClose={1000}
@@ -98,12 +92,11 @@ root.render(
         theme="light"
         transition={Bounce}
       />
-      <ToastContainer />
     </PersistGate>
   </Provider>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// Nếu bạn muốn bắt đầu đo lường hiệu suất trong ứng dụng của mình, hãy truyền một hàm
+// để ghi lại kết quả (ví dụ: reportWebVitals(console.log))
+// hoặc gửi đến một điểm cuối phân tích. Tìm hiểu thêm: https://bit.ly/CRA-vitals
 reportWebVitals();

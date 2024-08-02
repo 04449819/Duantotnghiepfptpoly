@@ -342,6 +342,7 @@ namespace AppAPI.Controllers
 			await _dbcontext.SaveChangesAsync();
 			return Ok("Update thành công");
 		}
-		#endregion
-	}
+        #endregion
+        
+    }
 }

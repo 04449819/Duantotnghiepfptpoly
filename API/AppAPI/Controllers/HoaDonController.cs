@@ -100,6 +100,12 @@ namespace AppAPI.Controllers
 			var result = _iHoaDonService.GetCTHDByID(idhd);
 			return Ok(result);
 		}
+		[HttpGet("loctheotrngthaigiaohang")]
+		public IActionResult hoadontrangthai(int trangthai)
+		{
+            var result = _iHoaDonService.Loctheotrangthai(trangthai);
+            return Ok(result);
+        }
 		[HttpPut]
 		public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
 		{

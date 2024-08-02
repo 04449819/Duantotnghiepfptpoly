@@ -764,7 +764,7 @@ namespace AppAPI.Services
 
         public List<HoaDon> TimKiemVaLocHoaDon(string ten, int? loc)
         {
-             string tenLowerCase = ten.ToLower();
+            string tenLowerCase = ten.ToLower();
             ////    List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%")).ToList();
             //    string tenLowerCase = ten.ToLower();
             //List<HoaDon> timkiem = reposHoaDon.GetAll()
@@ -1140,24 +1140,34 @@ namespace AppAPI.Services
             }
         }
 
-		public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
-		{
-			throw new NotImplementedException();
-		}
+        public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+        {
+            throw new NotImplementedException();
+        }
 
-		public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
-		{
-			throw new NotImplementedException();
-		}
+        public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
+        {
+            throw new NotImplementedException();
+        }
 
-		public HoaDonViewModelBanHang GetHDBanHang(Guid id)
-		{
-			throw new NotImplementedException();
-		}
+        public HoaDonViewModelBanHang GetHDBanHang(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
-		public ChiTietHoaDonQL GetCTHDByID(Guid idhd)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public ChiTietHoaDonQL GetCTHDByID(Guid idhd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<HoaDon> Loctheotrangthai(int loc)
+        {
+            // Get all invoices and filter based on the delivery status
+            List<HoaDon> timkiem = reposHoaDon.GetAll()
+                .Where(p => p.TrangThaiGiaoHang == loc )
+                .ToList();
+
+            return timkiem;
+        }
+    }
 }

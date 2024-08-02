@@ -16,6 +16,10 @@ const Header = (props) => {
   const user = useSelector((state) => state.user.User);
   const dispath = useDispatch();
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   // Assuming email is used for display purposes, not for profile navigation
+  //   console.log(user);
+  // }, [user]);
   const HandleOnclickLogout = () => {
     Swal.fire({
       title: "Xác nhận",

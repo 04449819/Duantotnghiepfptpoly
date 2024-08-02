@@ -66,7 +66,7 @@ namespace AppData.Repositories
         {
             return dbset.ToList();
         }
-        public bool Update(T item)
+        public bool Update(T item)  
         {
             try
             {

@@ -238,7 +238,11 @@ const ModalSearchSPChiTiet = (props) => {
                     khuyến mãi: {khuyenmai.toLocaleString("vi-VN") + " VNĐ"}
                   </h6>
                   <h5 className="SPduocchon_body_content">
-                    giá bán: {giaBan.toLocaleString("vi-VN") + " VNĐ"}
+                    giá bán:{" "}
+                    {giaBan.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </h5>
                   <Button
                     style={{ marginTop: "50px" }}

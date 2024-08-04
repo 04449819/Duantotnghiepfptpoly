@@ -234,7 +234,9 @@ const ReactSideBar = () => {
                     className="User"
                     style={{ fontSize: "18px", display: "flex" }}
                   >
-                    {user.ten}
+                    {user.ten.length < 6
+                      ? user.ten
+                      : `${user.ten.substring(0, 6)}`}
                     <NavDropdown
                       id="nav-dropdown-dark-example"
                       title=<IoSettings />
@@ -245,7 +247,7 @@ const ReactSideBar = () => {
                         href="#action/3.1"
                         onClick={HandleOnclickLogout}
                       >
-                        Logout
+                        Đăng xuất
                       </NavDropdown.Item>
                     </NavDropdown>
                   </span>

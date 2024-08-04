@@ -320,7 +320,7 @@ const QuanLySanPham = () => {
                 <input
                   type="range"
                   min="0"
-                  max="10000"
+                  max="9999"
                   className="thumb thumb--zindex-3"
                   value={minVal}
                   onChange={(event) => setMinVal(event.target.value)}
@@ -328,7 +328,7 @@ const QuanLySanPham = () => {
                 <input
                   type="range"
                   min="0"
-                  max="10000"
+                  max="9999"
                   className="thumb thumb--zindex-4"
                   value={maxVal}
                   onChange={(event) => setMaxVal(event.target.value)}
@@ -387,6 +387,7 @@ const QuanLySanPham = () => {
           </div>
           <div className="mb-3 ms-2">
             <Button
+
              disabled={use.chucNang === "Admin" ? false : true}
               variant="primary"
               onClick={() => setShow(1)}
@@ -402,9 +403,9 @@ const QuanLySanPham = () => {
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th>Mã sản phấm</th>
+                  <th>Mã</th>
                   <th>Tên sản pẩm</th>
-                  <th style={{ width: "50px" }}>Loại sản phẩm</th>
+                  <th style={{ width: "50px" }}>Loại sp</th>
                   <th style={{ width: "70px" }}>Chất liệu</th>
                   <th style={{ width: "70px" }}>Mô tả</th>
                   <th>Trạng thái</th>

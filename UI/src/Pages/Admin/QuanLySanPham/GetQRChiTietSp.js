@@ -15,7 +15,7 @@ function GetQRChiTietSp(props) {
         var res = await axios.put(
           `https://localhost:7095/api/SanPham/UpdateChiTietSanPhamQLSP?id=${props.value}&trangThai=1`
         );
-        toast.success(`${res.data}`);
+        // toast.success(`${res.data}`);
         dispath(SetLoading(false));
         props.setloaduseE(!props.loaduseE);
         props.setShow(false);

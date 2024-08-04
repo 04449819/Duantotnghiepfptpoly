@@ -38,7 +38,7 @@ namespace AppData.Models
         {
 			optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-B0M2PNO\VIETHOANG;Initial Catalog=duantotnghiepfptt;Integrated Security=True");
 
-		}
+        }
 		//THUYNHU\SQLEXPRESS
 		//DESKTOP-UOIH77U\SQLEXPRESS
 		//LAPTOP-A15NGLBG\SQLEXPRESS

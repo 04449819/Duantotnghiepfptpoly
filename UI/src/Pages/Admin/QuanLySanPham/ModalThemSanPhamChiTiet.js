@@ -287,10 +287,14 @@ function ModalThemSanPhamChiTiet(props) {
                             border:
                               item.check === false
                                 ? "1px solid black"
-                                : "3px solid blue",
+                                : "2px solid blue",
                             borderRadius: "5px",
                             marginBottom: "10px",
                             cursor: "pointer",
+                            boxShadow:
+                              item.check === false
+                                ? "none"
+                                : "0 0 10px #007bff",
                           }}
                           onClick={() => HandleOnclickMS(item)}
                         >
@@ -328,10 +332,14 @@ function ModalThemSanPhamChiTiet(props) {
                             border:
                               item.check === false
                                 ? "1px solid black"
-                                : "3px solid blue",
+                                : "2px solid blue",
                             borderRadius: "5px",
                             marginBottom: "10px",
                             cursor: "pointer",
+                            boxShadow:
+                              item.check === false
+                                ? "none"
+                                : "0 0 10px #007bff",
                           }}
                           onClick={() => HandleOnclickKT(item)}
                         >

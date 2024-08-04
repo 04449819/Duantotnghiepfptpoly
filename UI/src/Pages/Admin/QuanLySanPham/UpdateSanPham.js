@@ -179,12 +179,12 @@ const UpdateSanPham = (props) => {
           <thead>
             <tr>
               <th style={{ width: "30px" }}>STT</th>
-              <th style={{ width: "130px" }}>Mã chi tiết sản phẩm</th>
-              <th style={{ width: "130px" }}>Màu sắc</th>
-              <th style={{ width: "100px" }}>Kích thước</th>
-              <th style={{ width: "100px" }}>Số lượng</th>
-              <th style={{ width: "150px" }}>Giá bán</th>
-              <th style={{ width: "50px" }}>Trạng thái</th>
+              <th style={{ width: "130px" }}>Mã</th>
+              <th style={{ width: "110px" }}>Màu sắc</th>
+              <th style={{ width: "120px" }}>Kích thước</th>
+              <th style={{ width: "110px" }}>Số lượng</th>
+              <th style={{ width: "110px" }}>Giá bán</th>
+              <th style={{ width: "120px" }}>Trạng thái</th>
               <th style={{ width: "150px" }}>img</th>
               <th style={{ width: "290px" }}>Hành động</th>
             </tr>
@@ -209,13 +209,13 @@ const UpdateSanPham = (props) => {
                           <div
                             className="ms-2 col-6 mb-2 px-0 hover-container"
                             style={{
-                              width: "65px",
-                              height: "65px",
+                              width: "45px",
+                              height: "45px",
                             }}
                             key={`${index} - ${p}`}
                           >
                             <img
-                              style={{ width: "65px", height: "65px" }}
+                              style={{ width: "45px", height: "45px" }}
                               src={p}
                             />
                           </div>

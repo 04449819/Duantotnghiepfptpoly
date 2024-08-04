@@ -8,6 +8,7 @@ import MyModalEdit from "./FormEdit";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 import { Table } from "react-bootstrap";
+import { toast } from "react-toastify";
 const QuanLyKhachHang = () => {
   const dispath = useDispatch();
 
@@ -206,7 +207,6 @@ const QuanLyKhachHang = () => {
                     <td>{item.diaChi}</td>
                     <td>{item.diemTich }</td>
                     <td   style={{ color: item.trangThai === 1 ? "green" : "red" }}>{ item.trangThai === 0 ?"Đang Hoạt động" : "Không hoạt động" }</td>
-
                     {
                       <td>
                         <button

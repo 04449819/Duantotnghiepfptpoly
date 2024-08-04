@@ -134,7 +134,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
-        <label className="label_name" htmlFor="ten">
+        <label className="label" htmlFor="ten">
           Tên:
         </label>
         <input
@@ -148,7 +148,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       </div>
       <p style={{color : "red"}}>{messageName}</p>
       <div className="form-group">
-        <label className="label_name" htmlFor="password">
+        <label className="label" htmlFor="password">
           Mật khẩu:
         </label>
         <input
@@ -165,7 +165,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
         { messagePassword}</p>
       <div className="form-group">
 
-        <label className="label_name" htmlFor="email">
+        <label className="label" htmlFor="email">
           Email:
         </label>
         <input
@@ -198,7 +198,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
      </div>
       <p>{messageEmail}</p>
       <div className="form-group">
-        <label className="label_name" htmlFor="ngaySinh">
+        <label  className="label" htmlFor="ngaySinh">
           Ngày sinh:
         </label>
         <input
@@ -212,7 +212,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
         />
       </div>
       <div className="form-group">
-        <label className="label_name" htmlFor="diaChi">
+        <label className="label" htmlFor="diaChi">
           Địa chỉ:
         </label>
         <input
@@ -227,7 +227,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       </div>
        <p>{messageDiaChi}</p> 
       <div className="form-group">
-        <label className="label_name" htmlFor="sdt">
+        <label className="label" htmlFor="sdt">
           Số Điện Thoại:
         </label>
         <input
@@ -242,7 +242,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       <p style={{color : "red"}}>
         {messagePhone}</p>
       <div className="form-group">
-        <label className="label_name" htmlFor="diemTich">
+        <label className="label" htmlFor="diemTich">
           Điểm tích:
         </label>
         <input

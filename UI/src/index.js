@@ -30,16 +30,26 @@ import { Bounce, ToastContainer } from "react-toastify";
 import MauSac from "./Pages/Admin/QuanLySanPham/MauSac/MauSac";
 import KichThuoc from "./Pages/Admin/QuanLySanPham/KichThuoc/KichThuoc";
 import CoAo from "./Pages/Admin/QuanLySanPham/CoAo/CoAo";
+import CuaHang from "./Pages/User/CuaHang/CuaHang";
+import LienHe from "./Pages/User/LienHe/LienHe";
+import ChiTietSanPhamKH from "./Pages/User/ChiTietSanPhamKH/ChiTietSanPhamKH";
+import ScrollToTop from "./ScrollToTop";
+import GioHang from "./Pages/User/GioHang/GioHang";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="" element={<App />}>
             <Route index element={<HomePage />} />
             <Route path="/dangki" element={<Dangki />} />
             <Route path="/quenmatkhau" element={<QuenMK />} />
+            <Route path="/cuahang" element={<CuaHang />} />
+            <Route path="/lienhe" element={<LienHe />} />
+            <Route path="/chitietsanpham" element={<ChiTietSanPhamKH />} />
+            <Route path="/giohang" element={<GioHang />} />
           </Route>
 
           <Route path="/admin" element={<AdminPage />}>

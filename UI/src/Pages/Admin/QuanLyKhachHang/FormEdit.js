@@ -98,7 +98,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
   return (
     <form onSubmit={handleSubmit}  className="TextThem">
       <div>
-        <label  className='label_name' htmlFor="name">Tên:</label>
+        <label  className='label' htmlFor="name">Tên:</label>
         <input className='text_input'
           type="name"
           id="name"
@@ -110,7 +110,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       </div>
       <p style={{color : "red"}}>{messageName}</p>
       <div>
-        <label  className='label_name' htmlFor="ngaySinh">Ngày sinh:</label>
+        <label  className='label' htmlFor="ngaySinh">Ngày sinh:</label>
         <input className='text_input'
           type="ngaySinh"
           id="ngaySinh"
@@ -121,7 +121,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
         />
       </div>
       <div>
-        <label   className='label_name' htmlFor="gioiTinh">Giới tính:</label>
+        <label   className='label' htmlFor="gioiTinh">Giới tính:</label>
         <input className='text_input'
           type="gioiTinh"
           id="gioiTinh"
@@ -133,7 +133,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       </div>
   
       <div>
-        <label className='label_name' htmlFor="Email">Email:</label>
+        <label className='label' htmlFor="Email">Email:</label>
         <input className='text_input'
           type="email"
           id="email"
@@ -146,7 +146,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       <p style={{color : "red"}}>{messageEmail}</p>
 
       <div>
-        <label  className='label_name' htmlFor="sdt">Số điện thoại:</label>
+        <label  className='label' htmlFor="sdt">Số điện thoại:</label>
         <input  className='text_input'
           type="sdt"
           id="sdt"
@@ -158,7 +158,7 @@ const EditQuanLyKH = ({handleSuccess, handleClose , initialFormData}) => {
       </div>
       <p style={{color : "red"}}>{messagePhone}</p>
       <div>
-        <label  className='label_name' htmlFor="sdiaChidt">Địa chỉ :</label>
+        <label  className='label' htmlFor="sdiaChidt">Địa chỉ :</label>
         <input  className='text_input'
           type="sdiaChidt"
           id="sdiaChidt"

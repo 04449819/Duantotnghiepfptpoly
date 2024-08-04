@@ -30,7 +30,7 @@ const ModalSearchSPNangCao = () => {
   );
 
   const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(10000);
   const dispatch = useDispatch();
   const handleClose = () => {
     GetDSSP(1);
@@ -45,7 +45,7 @@ const ModalSearchSPNangCao = () => {
   const GetDSSP = async (page) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=${page}&productsPerPage=6`
+        `https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=${page}&productsPerPage=12`
       );
       const data = res.data;
       SetDataSP(data.sanPham);
@@ -70,7 +70,7 @@ const ModalSearchSPNangCao = () => {
   const GetDSSPbyName = async (name) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getSPBanHangbyName?TenSanPham=${name}&currentPage=1&productsPerPage=6`
+        `https://localhost:7095/api/SanPham/getSPBanHangbyName?TenSanPham=${name}&currentPage=1&productsPerPage=12`
       );
       const data = res.data;
       SetDataSP(data.sanPham);
@@ -114,28 +114,28 @@ const ModalSearchSPNangCao = () => {
 
   const handleMinChange = (event) => {
     const newMinValue = Number(event.target.value);
-    if (newMinValue > maxValue) {
-      setMaxValue(newMinValue);
-    } else {
-      setMinValue(newMinValue);
-    }
+    // if (newMinValue > maxValue) {
+    //   setMaxValue(newMinValue);
+    // } else {
+    setMinValue(newMinValue);
+    // }
   };
 
   const handleMaxChange = (event) => {
     const newMaxValue = Number(event.target.value);
-    if (newMaxValue < minValue) {
-      setMinValue(newMaxValue);
-    } else {
-      setMaxValue(newMaxValue);
-    }
+    // if (newMaxValue < minValue) {
+    //   setMinValue(newMaxValue);
+    // } else {
+    setMaxValue(newMaxValue);
+    // }
   };
 
   const handleOnClickLocSP = async () => {
     try {
       const res = await axios.get(
         `https://localhost:7095/api/SanPham/getSPBanHangbyLoaisp?idloaiSP=${selectedValue}&idchatLieu=${selectedValue1}&idcoAo=${selectedValue2}&giaMin=${
-          minValue * 10000
-        }&giaMax=${maxValue * 10000}&currentPage=1&productsPerPage=6`
+          minValue * 1000
+        }&giaMax=${maxValue * 1000}&currentPage=1&productsPerPage=12`
       );
       const data = res.data;
       SetDataSP(data.sanPham);
@@ -250,7 +250,7 @@ const ModalSearchSPNangCao = () => {
                     <input
                       type="range"
                       min="0"
-                      max="100"
+                      max="10000"
                       value={minValue}
                       className="slider"
                       onChange={handleMinChange}
@@ -259,7 +259,7 @@ const ModalSearchSPNangCao = () => {
                     <input
                       type="range"
                       min="0"
-                      max="100"
+                      max="10000"
                       value={maxValue}
                       className="slider"
                       onChange={handleMaxChange}
@@ -271,15 +271,35 @@ const ModalSearchSPNangCao = () => {
                         left: "80px",
                       }}
                     >
-                      <p style={{ fontSize: "15px" }}>{minValue * 10000}</p>
+                      <p style={{ fontSize: "15px" }}>
+                        {minValue > maxValue
+                          ? (maxValue * 1000).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })
+                          : (minValue * 1000).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                      </p>
                     </div>
                     <div
                       className="value-display max"
                       style={{
-                        left: "250px",
+                        left: "220px",
                       }}
                     >
-                      <p style={{ fontSize: "15px" }}>{maxValue * 10000}</p>
+                      <p style={{ fontSize: "15px" }}>
+                        {maxValue < minValue
+                          ? (minValue * 1000).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })
+                          : (maxValue * 1000).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -300,7 +320,13 @@ const ModalSearchSPNangCao = () => {
                     <div className="col-3 dsspnangcao_sp" key={item.id}>
                       <div className="dsspnangcao_spct">
                         <img src={item.anhs[0] ? item.anhs[0].duongDan : ""} />
-                        <h5>Giá bán: {item.giaBan}</h5>
+                        <h5 className="mt-3">
+                          Giá bán:{" "}
+                          {item.giaBan.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </h5>
                         <h6>{item.ten}</h6>
                         <ModalSearchSPChiTiet item={item} />
                       </div>

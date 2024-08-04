@@ -247,7 +247,8 @@ namespace AppAPI.Services
                         Ten = kh.Ten,
                         SDT = kh.SDT,
                         DiemTich = kh.DiemTich,
-                        DiaChi = dckh.DiaChi,
+                        //DiaChi = dckh.DiaChi,
+                        DiaChi = "",
                         GioiTinh = kh.GioiTinh,
                         NgaySinh = kh.NgaySinh,
                         vaiTro = 1

@@ -1,5 +1,5 @@
 import Header from "./Pages/User/theme/Header/Header";
-import Footerq from "./Pages/User/theme/Footer/Footer";
+import Footer from "./Pages/User/theme/Footer/Footer";
 import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import BarLoader from "react-spinners/BarLoader";
@@ -24,14 +24,20 @@ const Index = () => {
         speedMultiplier={0.5}
         width={1550}
       />
-      <div className="Header">
+      <div
+        style={{ position: "fixed", zIndex: "20", width: "1520px" }}
+        className="Header"
+      >
         <Header />
       </div>
-      <div className="content">
+      <div
+        style={{ paddingTop: "115px", backgroundColor: "#e1e1e1" }}
+        className="content"
+      >
         <Outlet />
       </div>
       <div className="Footer">
-        <Footerq />
+        <Footer />
       </div>
       {loading && <div className="overlay"></div>}
     </div>

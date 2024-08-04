@@ -25,3 +25,49 @@
   text-align: center;
 }
 }
+
+.card-stats {
+  height: 100%; /* Chiều cao tối đa cho thẻ */
+}
+
+.card-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-body-wrapper .row {
+  flex: 1; /* Cho phép phần nội dung co dãn để điền vào chiều cao */
+}
+
+.card-body-wrapper .col-3 {
+  flex: 0 0 30%; /* Phần trăm chiều rộng cố định cho cột 1 */
+}
+
+.card-body-wrapper .col-9 {
+  flex: 1; /* Phần nội dung nở rộng, điền vào khoảng cách được phép */
+}
+
+
+.card {
+  height: 100%; /* Chiều cao tối đa cho thẻ */
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap; /* Flexbox wrap để các cột có thể xuống dòng khi cần */
+}
+
+.col-8,
+.col-4 {
+  display: flex;
+}
+
+.col-8 .card-body,
+.col-4 .card-body {display: flex;
+  flex-direction: column; /* Sử dụng flexbox để canh chỉnh nội dung */
+  justify-content: space-between; 
+  }
+  
+
+

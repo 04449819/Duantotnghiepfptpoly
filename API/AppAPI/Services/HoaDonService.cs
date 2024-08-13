@@ -931,6 +931,18 @@ namespace AppAPI.Services
                         repsCTSanPham.Update(CTsanPham);
                     }
                 }
+                else if (trangThai == 3)
+                {
+                    foreach (var item in chitiethoadon)
+                    {
+                        var CTsanPham =  repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == item.IDCTSP);
+                        if (CTsanPham != null)
+                        {
+                            CTsanPham.SoLuong -= item.SoLuong;
+                             repsCTSanPham.Update(CTsanPham);
+                        }
+                    }
+                }
                 if (trangThai == 6)
                 {
                     var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idHoaDon).ToList();
@@ -948,6 +960,7 @@ namespace AppAPI.Services
                     update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
                     update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
                 }
+                
                 update.TrangThaiGiaoHang = trangThai;
                 update.IDNhanVien = idNhanVien;
                 reposHoaDon.Update(update);
@@ -1381,7 +1394,49 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        #endregion
+
+        public async Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang)
+        {
+            var donHangsDaMua = await context.HoaDons
+              .Where(hd => hd.KhachHangID == idKhachHang && hd.NgayThanhToan.HasValue)
+              .Select(hd => new HoaDonViewModel
+              {
+                  ChiTietHoaDons = hd.ChiTietHoaDons.Select(ct => new ChiTietHoaDonViewModel
+                  {
+                      IDChiTietSanPham = ct.ID,
+                      SoLuong = ct.SoLuong,
+                      DonGia = ct.DonGia,
+
+                  }).ToList(),
+                  id =hd.ID,
+                  Ten = hd.TenNguoiNhan,
+                  SDT = hd.SDT,
+                  Email = hd.Email,
+                  DiaChi = hd.DiaChi,
+                  TienShip = hd.TienShip,
+                  TongTien = hd.TongTien ?? 0,
+                  IDNhanVien = hd.IDNhanVien,
+                  IDNguoiDung = hd.KhachHangID,
+                  NgayThanhToan = hd.NgayThanhToan,
+                  GhiChu = hd.GhiChu
+              })
+              .ToListAsync();
+
+            return donHangsDaMua;
         }
+
+        public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
+        {
+            return context.HoaDons
+                   .Include(h => h.ChiTietHoaDons)
+                       .ThenInclude(ct => ct.ChiTietSanPham) // Bao gồm thông tin ChiTietSanPham
+                           .ThenInclude(ctsp => ctsp.SanPham) // Bao gồm thông tin SanPham
+                       .ThenInclude(ct => ct.ChiTietSanPhams) // Bao gồm thông tin ChiTietSanPham cho ChiTietHoaDon
+                           .ThenInclude(ctsp => ctsp.Anhs) // Bao gồm thông tin Anh từ ChiTietSanPham
+                   .Where(h => h.KhachHangID == idKhachHang)
+                   .ToList();
+        }
+        #endregion
+    }
 
 }

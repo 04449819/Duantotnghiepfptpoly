@@ -113,6 +113,7 @@ namespace AppAPI.Services
 
         public KhachHang GetById(Guid id)
         {
+
             return _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == id);
 
         }
@@ -192,6 +193,8 @@ namespace AppAPI.Services
 
             return diemTich;
         }
+
+       
 
         #endregion
     }

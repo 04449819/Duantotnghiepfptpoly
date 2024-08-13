@@ -3,6 +3,7 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using System;
 
 namespace AppAPI.Services
@@ -32,14 +33,41 @@ namespace AppAPI.Services
             return diaChi;
         }
 
-        public Task DeleteDiaChi(Guid id)
+        public bool DeleteDC(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var kh =  _context.diaChiKhachHangs.FirstOrDefault(x => x.Id == id);
+                if (kh != null)
+                {
+                    _context.diaChiKhachHangs.Remove(kh);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            };
         }
+
 
         public Task<IEnumerable<DiaChiKhachHang>> GetAllDiaChi()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<DiaChiKhachHang>> GetChiTietSPBHById(Guid idhd)
+        {
+            var chiTietHoaDons = await _context.diaChiKhachHangs
+                                   .Where(cthd => cthd.KhachHangID == idhd)
+                                   /*  .Include(cthd => cthd.HoaDon)*/ // Nạp đối tượng HoaDon liên quan
+                                   .ToListAsync(); // Sử dụng ToListAsync() để thực hiện lấy dữ liệu bất đồng bộ
+
+            return chiTietHoaDons;
+
         }
 
         public async Task<DiaChiKhachHang> GetDiaChiById(Guid id)
@@ -49,7 +77,7 @@ namespace AppAPI.Services
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 
-        public Task UpdateDiaChi(Guid id, DCKHViewModel request)
+        public async Task UpdateDiaChi(Guid id, DCKHViewModel request)
         {
             throw new NotImplementedException();
         }

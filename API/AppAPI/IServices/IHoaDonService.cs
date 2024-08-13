@@ -10,6 +10,8 @@ namespace AppAPI.IServices
         public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon);
         public List<HoaDon> GetAllHoaDon();
         public HoaDon GetHoaDonById(Guid idhd);
+        List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang);
+        Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang);
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon);
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai,Guid? idNhanVien);
         public int CheckVoucher(string ten, int tongtien);

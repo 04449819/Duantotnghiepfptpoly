@@ -1,0 +1,26 @@
+.order-items {
+    margin-top: 10px;
+  }
+  
+  .order-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Thay đổi giá trị này để điều chỉnh khoảng cách giữa các đơn hàng */
+    padding: 10px; /* Thêm padding nếu cần thêm khoảng cách bên trong mỗi đơn hàng */
+    border-bottom: 1px solid #ddd; /* Thêm đường viền dưới mỗi đơn hàng để phân cách rõ ràng */
+  }
+  
+  .order-item img {
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+  
+  .order-item-details p {
+    margin: 0;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #e74c3c; /* Thay đổi màu sắc nếu cần */
+  }
+  

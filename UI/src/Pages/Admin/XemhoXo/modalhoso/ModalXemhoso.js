@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 
-function ModalXemhoso({ employee, onEmployeeUpdate }) {
+function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         ten: '',
@@ -13,7 +13,6 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         confirmPassword: '', // Thêm trường xác nhận mật khẩu
         sdt: '',
         diachi: '',
-        trangthai: '1',
         idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c'
     });
     const [errors, setErrors] = useState({});
@@ -27,13 +26,16 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                 confirmPassword: '', // Xử lý mật khẩu xác nhận
                 sdt: employee.sdt || '',
                 diachi: employee.diachi || '',
-                trangthai: employee.trangthai || '1',
                 idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c'
             });
         }
     }, [employee]);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setload(!load);
+        setShow(false)  
+
+    } ;
     const handleShow = () => setShow(true);
 
     const handleChange = (e) => {
@@ -50,7 +52,7 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         // Reset errors
         setErrors({});
 
-        const { ten, email, password, confirmPassword, sdt, diachi, trangthai, idvaitro } = formData;
+        const { ten, email, password, confirmPassword, sdt, diachi, idvaitro } = formData;
         const newErrors = {};
         let valid = true;
 
@@ -65,6 +67,10 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
             newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
             valid = false;
         }
+        if (!diachi) {
+            newErrors.diachi = 'Vui lòng nhập địa chỉ';
+            valid = false;
+        }
 
         // Check confirm password
         if (password !== confirmPassword) {
@@ -73,8 +79,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         // Check phone number length
-        if (!/^\d{10}$/.test(sdt)) {
-            newErrors.sdt = 'Số điện thoại phải có 10 ký tự';
+        if (!/^0\d{9}$/.test(sdt)) {
+            newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự';
             valid = false;
         }
 
@@ -96,7 +102,6 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                 password: password.trim(),
                 sdt: sdt.trim(),
                 diachi: diachi.trim(),
-                trangthai: trangthai.trim(),
                 idvaitro: idvaitro.trim()
             }).toString();
 
@@ -196,18 +201,9 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                                 value={formData.diachi}
                                 onChange={handleChange}
                             />
+                              {errors.diachi && <div className="text-danger">{errors.diachi}</div>}
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formTrangthai">
-                            <Form.Label>Trạng thái</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Nhập trạng thái"
-                                name="trangthai"
-                                value={formData.trangthai}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
                         
                         {/* Trường ID Vai trò ẩn */}
                         <Form.Group className="mb-3" controlId="formIdvaitro">

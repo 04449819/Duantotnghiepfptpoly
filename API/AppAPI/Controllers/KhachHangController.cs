@@ -21,10 +21,12 @@ namespace AppAPI.Controllers
     public class KhachHangController : ControllerBase
     {
         private readonly IKhachHangService _khachHangService;
+        private readonly IHoaDonService _hoadonServices;
         private readonly AssignmentDBContext _dbcontext;
         public KhachHangController()
         {
             _khachHangService = new KhachHangService();
+            _hoadonServices = new HoaDonService();
             _dbcontext = new AssignmentDBContext();
             
         }
@@ -36,6 +38,7 @@ namespace AppAPI.Controllers
             return Ok(new { Data = result.Item1, TongTrang = result.Item2 });
 
         }
+        
         //public IActionResult GetAllKhachHang(int pageIndex, int pageSize)
         //{
         //    var khv = _khachHangService.GetAll(pageIndex, pageSize);

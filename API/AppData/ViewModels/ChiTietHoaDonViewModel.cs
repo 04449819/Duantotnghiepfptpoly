@@ -11,5 +11,6 @@ namespace AppData.ViewModels
         public Guid IDChiTietSanPham { get; set; }
         public int SoLuong { get; set; }
         public int DonGia { get; set; }
+        public ChiTietSanPhamViewModel ChiTietSanPham { get; set; }
     }
 }

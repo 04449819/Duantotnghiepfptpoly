@@ -12,6 +12,7 @@ const XemhoXo = () => {
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [load, setload] = useState(true);
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -27,7 +28,7 @@ const XemhoXo = () => {
     };
 
     fetchEmployee();
-  }, [userId]);
+  }, [userId, load ]);
 
   const handleEmployeeUpdate = (updatedEmployee) => {
     setEmployee(updatedEmployee);
@@ -53,7 +54,7 @@ const XemhoXo = () => {
                 <p className="text-muted mb-1">{employee.ten || 'Vị trí'}</p>
                 <p className="text-muted mb-4">{employee.trangThai === 1 ?" đang hoạt động":"không hoạt đông" || 'Địa chỉ'}</p>
                 <div className="d-flex justify-content-center mb-2">
-                  <ModalXemhoso employee={employee} onEmployeeUpdate={handleEmployeeUpdate} />
+                  <ModalXemhoso employee={employee} onEmployeeUpdate={handleEmployeeUpdate} setload = {setload} load = {load} />
                 </div>
               </MDBCardBody>
             </MDBCard>

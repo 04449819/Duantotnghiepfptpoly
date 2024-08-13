@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import './ModalXacnhan.scss';
 import { useSelector } from 'react-redux';
 
-function ModalXacnhan({ show, onClose, onConfirm, billId }) {
+function ModalHoanThanhCong({ show, onClose, billId }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,9 +44,9 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
     }
   };
 
-  const handleConfirm = async () => {
+  const handleComplete = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=3&idnhanvien=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/HoanTCHD?idhd=${billId}&idnv=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -59,34 +59,11 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
 
       const data = await response.json();
       console.log('Success:', data);
-      if (onConfirm) onConfirm(billId);
+      // Close the modal and trigger any callback if necessary
+      onClose();
     } catch (error) {
       console.error('Error:', error);
-    } finally {
-      onClose();
-    }
-  };
-
-  const handleCancel = async () => {
-    try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/HuyHD?idhd=${billId}&idnv=${user.id}`, {
-        method: 'PUT', // Assuming PUT method, update if needed
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      console.log('Cancel Success:', data);
-      if (onConfirm) onConfirm(billId); // Notify parent component
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      onClose();
+      setError('Có lỗi khi hoàn thành đơn hàng: ' + error.message);
     }
   };
 
@@ -120,7 +97,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Xác nhận Đơn Hàng</Modal.Title>
+        <Modal.Title>Hoàn Thành Đơn Hàng</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {billInfo && (
@@ -163,23 +140,20 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
               <p>Chưa có sản phẩm nào.</p>
             )}
 
-            <p>Bạn có chắc chắn muốn xác nhận đơn hàng này?</p>
+            <p>Bạn có chắc chắn muốn hoàn thành đơn hàng này?</p>
           </div>
         )}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
-          Close
+          Đóng
         </Button>
-        <Button variant="danger" onClick={handleCancel}>
-          Hủy hóa đơn
-        </Button>
-        <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+        <Button variant="primary" onClick={handleComplete}>
+          hoàn thành công
         </Button>
       </Modal.Footer>
     </Modal>
   );
 }
 
-export default ModalXacnhan;
+export default ModalHoanThanhCong;

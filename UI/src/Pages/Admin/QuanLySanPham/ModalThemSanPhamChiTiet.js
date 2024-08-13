@@ -298,8 +298,17 @@ function ModalThemSanPhamChiTiet(props) {
                           }}
                           onClick={() => HandleOnclickMS(item)}
                         >
-                          <div style={{ backgroundColor: item.ma }}>
-                            {item.ma}
+                          <div
+                            style={{
+                              backgroundColor: item.ma,
+                              height: "25px",
+                              textAlign: "center",
+                              fontSize: "12px",
+                              paddingTop: "5px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {item.ten}
                           </div>
                         </div>
                       </div>

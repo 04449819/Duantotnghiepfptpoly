@@ -9,6 +9,7 @@ import axios from "axios";
 import "../CuaHang/cuahang.scss";
 import { useDispatch } from "react-redux";
 import { setidloaisp } from "../../../Rudux/Reducer/IDLoaiSPSlice";
+import { setchitietsp } from "../../../Rudux/Reducer/chitietsanphamonl";
 const HomePage = () => {
   const [data, setdata] = useState([]);
   const [dataLSP, setdataLSP] = useState([]);
@@ -21,10 +22,10 @@ const HomePage = () => {
   const getSanPhamBanHang = async () => {
     try {
       const res = await axios.get(
-        "https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=1&productsPerPage=10"
+        `https://localhost:7095/api/SanPham/getSPbanhangonl?currentPage=1&productsPerPage=20`
       );
-      // console.log(res.data.sanPham);
-      setdata(res.data.sanPham);
+      // console.log(res.data.sp);
+      setdata(res.data.sp);
     } catch (error) {}
   };
 
@@ -80,7 +81,8 @@ const HomePage = () => {
     navigate("/cuahang");
   };
 
-  const Handleonclickchuyentrang1 = () => {
+  const Handleonclickchuyentrang1 = (product) => {
+    dispath(setchitietsp(product));
     navigate("/chitietsanpham");
   };
 
@@ -235,10 +237,10 @@ const HomePage = () => {
           </div>
           <div>
             <Slider {...settings}>
-              {products.map((product, index) => (
+              {data.map((product, index) => (
                 <div key={index}>
                   <button
-                    onClick={Handleonclickchuyentrang1}
+                    onClick={() => Handleonclickchuyentrang1(product)}
                     style={{ border: "none", backgroundColor: "#e1e1e1" }}
                   >
                     <div
@@ -246,8 +248,12 @@ const HomePage = () => {
                       className="homepage-top-khung"
                     >
                       <img
-                        src={product.image}
-                        alt={product.title}
+                        src={
+                          product.ctsp && product.ctsp[0] && product.ctsp[0].anh
+                        }
+                        alt={
+                          product.ctsp && product.ctsp[0] && product.ctsp[0].anh
+                        }
                         style={{ width: "200px", height: "200px" }}
                       />
                     </div>
@@ -268,7 +274,10 @@ const HomePage = () => {
                       style={{ width: "100%", height: "250px" }}
                       className="homepage-top-khung"
                     >
-                      <img src={product.images[0]} alt={product.images[0]} />
+                      <img
+                        src={product.images && product.images[0]}
+                        alt={product.images && product.images[0]}
+                      />
                     </div>
                     <div className="mt-2">
                       <Link

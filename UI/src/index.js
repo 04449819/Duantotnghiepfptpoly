@@ -42,7 +42,7 @@ root.render(
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
-          <Route path="" element={<App />}>
+          <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
             <Route path="/dangki" element={<Dangki />} />
             <Route path="/quenmatkhau" element={<QuenMK />} />

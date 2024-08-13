@@ -24,10 +24,10 @@ namespace AppAPI.Controllers
         }
 
         // POST api/<DangNhapController>
-        [HttpGet("DangNhap")]
-        public async Task<IActionResult> Login(string lg, string password)
+        [HttpPost("DangNhap")]
+        public async Task<IActionResult> Login([FromBody] List<GioHangOnline>? listgh ,string lg, string password)
         {
-            LoginViewModel login = await service.Login(lg, password);
+            LoginViewModel login = await service.Login(lg, password, listgh);
 
             //if (login.IsAccountLocked)
             //{

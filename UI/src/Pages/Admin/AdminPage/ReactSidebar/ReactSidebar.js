@@ -78,7 +78,7 @@ const ReactSideBar = () => {
               <div style={{ flex: 1, marginBottom: "32px" }}>
                 <div style={{ padding: "0 24px", marginBottom: "8px" }}></div>
                 <Menu>
-                  <MenuItem
+                  {/* <MenuItem
                     component={<Link to="/admin/dashboard" />}
                     icon={
                       <AiFillSignal style={{ color: "blue", size: "20px" }} />
@@ -86,7 +86,7 @@ const ReactSideBar = () => {
                   >
                     Dashboard
                   </MenuItem>
-                  <hr />
+                  <hr /> */}
                   <MenuItem
                     component={<Link to="/admin/banhangofline" />}
                     icon={<FaHome style={{ color: "blue", size: "20px" }} />}
@@ -184,7 +184,9 @@ const ReactSideBar = () => {
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/thongke" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={
+                      <AiFillSignal style={{ color: "blue", size: "20px" }} />
+                    }
                   >
                     Thống kê
                   </MenuItem>

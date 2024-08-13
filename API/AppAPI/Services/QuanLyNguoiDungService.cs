@@ -207,7 +207,7 @@ namespace AppAPI.Services
             }
         }
 
-        public async Task<LoginViewModel> Login(string lg, string password)
+        public async Task<LoginViewModel> Login(string lg, string password, List<GioHangOnline>? listgh)
         {
             try
             {
@@ -221,7 +221,7 @@ namespace AppAPI.Services
                             Id = nv.ID,
                             Email = nv.Email,
                             Ten = nv.Ten,
-                            DiaChi = nv.DiaChi,
+                            DiaChinv = nv.DiaChi,
                             SDT = nv.SDT,
                             chucNang =  context.VaiTros.FirstOrDefault(p => p.ID == nv.IDVaiTro) != null ? context.VaiTros.FirstOrDefault(p => p.ID == nv.IDVaiTro).Ten : "",
                             vaiTro = 0
@@ -239,7 +239,38 @@ namespace AppAPI.Services
                 var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) /*&& x.Password == password*/);
                 if (kh != null && kh.Password == password)
                 {
-                    var dckh = await context.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == kh.IDKhachHang && p.TrangThai == 1);
+
+					if (listgh != null)
+					{
+						foreach (var item in listgh)
+						{
+							var sanPham = await context.ChiTietSanPhams.FirstOrDefaultAsync(sp => sp.ID == item.id);
+							var check = await context.ChiTietGioHangs.FirstOrDefaultAsync(p => p.IDCTSP == item.id && p.IDNguoiDung == kh.IDKhachHang);
+							if (sanPham != null && check == null && item.soluongmua <= sanPham.SoLuong)
+							{
+								try
+								{
+									var ctgh = new ChiTietGioHang
+									{
+										ID = Guid.NewGuid(),
+										SoLuong = item.soluongmua,
+										IDNguoiDung = kh.IDKhachHang,
+										IDCTSP = item.id
+									};
+
+									await context.ChiTietGioHangs.AddAsync(ctgh);
+								}
+								catch (Exception)
+								{
+									// Log lỗi ở đây
+								}
+							}
+						}
+						await context.SaveChangesAsync();
+					}
+
+
+					var dckh = await context.diaChiKhachHangs.Where(p => p.KhachHangID == kh.IDKhachHang).ToListAsync();
                     return new LoginViewModel
                     {
                         Id = kh.IDKhachHang,
@@ -248,10 +279,31 @@ namespace AppAPI.Services
                         SDT = kh.SDT,
                         DiemTich = kh.DiemTich,
                         //DiaChi = dckh.DiaChi,
-                        DiaChi = "",
+                        DiaChi = dckh,
                         GioiTinh = kh.GioiTinh,
                         NgaySinh = kh.NgaySinh,
-                        vaiTro = 1
+                        mk = kh.Password,
+						chiTietGioHang =  (from a in context.ChiTietGioHangs.Where(p => p.IDNguoiDung == kh.IDKhachHang)
+												join b in context.ChiTietSanPhams on a.IDCTSP equals b.ID
+												join c in context.SanPhams on b.IDSanPham equals c.ID
+												join d in context.KichCos on b.IDKichCo equals d.ID
+												join e in context.MauSacs on b.IDMauSac equals e.ID
+												select new GioHangOnline()
+												{
+													id = a.IDCTSP,
+													soluong = b.SoLuong,
+													soluongmua = 1,
+													giaban = b.GiaBan,
+													idKichCo = b.IDKichCo,
+													idMauSac = b.IDMauSac,
+													idloaisp = c.IDLoaiSP,
+													ma = b.Ma,
+													tenkt = d.Ten,
+													tenms = e.Ten,
+													tensp = c.Ten,
+													anh = context.Anhs.OrderBy(p => p.DuongDan).FirstOrDefault(p => p.IDChitietsanpham == b.ID).DuongDan,
+												}).ToList(),
+					vaiTro = 1
                     };
                 }
                 return new LoginViewModel

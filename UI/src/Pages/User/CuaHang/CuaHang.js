@@ -2,9 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "./cuahang.scss";
 import { useEffect, useState } from "react";
 import { MdApps, MdViewComfy } from "react-icons/md";
-import { useScroll } from "react-use";
+// import { useScroll } from "react-use";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 import {
@@ -30,6 +30,10 @@ const CuaHang = () => {
   const [sapxep, setSapxep] = useState("");
   const [dataKT, setdataKT] = useState([]);
   const [dataMS, setdataMS] = useState([]);
+  const [ms, setms] = useState("");
+  const [kt, setkt] = useState("");
+  const [mausac, setmausac] = useState("");
+  const [kichthuocc, setkichthuocc] = useState("");
   const navigate = useNavigate();
   const toggleProductGroup = () => {
     setShowProductGroup(!showProductGroup);
@@ -82,8 +86,7 @@ const CuaHang = () => {
     } else {
       setten("Tất cả sản phẩm");
     }
-    getLoaiSanPhamBanHang1();
-    getLoaiSanPhamBanHang2();
+
     const fetchData = async () => {
       if (page === 1) {
         await getSanPhamBanHang(page, loaisp.id);
@@ -99,15 +102,20 @@ const CuaHang = () => {
     // return () => {
     //   window.removeEventListener("scroll", handleScroll);
     // };
-  }, [page, loaisp, sapxep]);
+  }, [page, loaisp, sapxep, ms, kt, minVal, maxVal]);
 
   const getSanPhamBanHang = async (page, idloaisp) => {
     try {
       const url = idloaisp
-        ? `https://localhost:7095/api/SanPham/getSPbanhangonl?loaiSanPham=${idloaisp}&sapxep=${sapxep}&currentPage=${page}&productsPerPage=24`
-        : `https://localhost:7095/api/SanPham/getSPbanhangonl?sapxep=${sapxep}&currentPage=${page}&productsPerPage=24`;
+        ? `https://localhost:7095/api/SanPham/getSPbanhangonl?loaiSanPham=${idloaisp}&sapxep=${sapxep}&idkt=${kt}&idms=${ms}&giaMin=${
+            minVal * 1000
+          }&GiaMax=${maxVal * 1000}&currentPage=${page}&productsPerPage=24`
+        : `https://localhost:7095/api/SanPham/getSPbanhangonl?sapxep=${sapxep}&idkt=${kt}&idms=${ms}&giaMin=${
+            minVal * 1000
+          }&GiaMax=${maxVal * 1000}&currentPage=${page}&productsPerPage=24`;
       const res = await axios.get(url);
       setdata(res.data.sp);
+      console.log(res.data.sp);
       setsotrang(res.data.sotrang);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -128,18 +136,6 @@ const CuaHang = () => {
     } catch (error) {}
   };
 
-  const getLoaiSanPhamBanHang1 = async () => {
-    try {
-      const res = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
-      console.log(res.data);
-    } catch (error) {}
-  };
-  const getLoaiSanPhamBanHang2 = async () => {
-    try {
-      const res = await axios.get("https://esgoo.net/api-tinhthanh/2/01.htm");
-      console.log(res.data);
-    } catch (error) {}
-  };
   const getdataKT = async () => {
     try {
       const res = await axios.get(
@@ -201,6 +197,8 @@ const CuaHang = () => {
     });
 
     setdataKT(ds);
+    setkt(data.id);
+    setkichthuocc(data.ten);
   };
   const HandleOnclickChonMS = (data) => {
     const ds = dataMS.map((p) => {
@@ -211,7 +209,19 @@ const CuaHang = () => {
     });
 
     setdataMS(ds);
+    setms(data.id);
+    setmausac(data.ten);
   };
+  const HandleOnclickDeleteKT = () => {
+    setkichthuocc("");
+    setkt("");
+  };
+
+  const HandleOnclickDeleteMS = () => {
+    setmausac("");
+    setms("");
+  };
+
   return (
     <div>
       <div className="w-75 mx-auto" style={{ backgroundColor: "white" }}>
@@ -295,7 +305,7 @@ const CuaHang = () => {
                   <option value="">Sắp xếp theo</option>
                   <option value="1">Giá cao nhất</option>
                   <option value="2">Giá rẻ nhất</option>
-                  {/* <option value="rating">Bán chạy nhất</option> */}
+                  <option value="3">Mới nhất</option>
                 </select>
               </div>
             </div>
@@ -307,17 +317,45 @@ const CuaHang = () => {
             <div className="col-3">
               <div className="filter-panel">
                 <div className="filter-group">
-                  <div className="d-flex">
+                  <div>
                     <div
-                      style={{ border: "1px solid black" }}
-                      className="d-flex px-0"
+                      className="row w-75 mx-auto"
+                      hidden={mausac === "" ? true : false}
+                      style={{
+                        border: "1px solid black",
+                        padding: "3px",
+                        fontSize: "12px",
+                      }}
                     >
-                      <div className="my-0 opacity-50">Blue</div>
-                      <div className="my-0 ms-1 me-2">x</div>
+                      <div className="col-10 my-0">{mausac}</div>
+                      <div
+                        onClick={HandleOnclickDeleteMS}
+                        style={{ cursor: "pointer" }}
+                        className="col-2 my-0"
+                      >
+                        x
+                      </div>
+                    </div>
+                    <div
+                      className="row w-75 mx-auto"
+                      hidden={kichthuocc === "" ? true : false}
+                      style={{
+                        border: "1px solid black",
+                        marginLeft: "10px",
+                        padding: "3px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <div className="col-10 my-0">{kichthuocc}</div>
+                      <div
+                        onClick={HandleOnclickDeleteKT}
+                        style={{ cursor: "pointer" }}
+                        className="col-2 my-0 "
+                      >
+                        x
+                      </div>
                     </div>
                   </div>
-
-                  <hr />
                 </div>
                 <div
                   hidden={loaisp.title !== undefined ? true : false}

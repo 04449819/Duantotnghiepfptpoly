@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppData.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,12 +18,15 @@ namespace AppData.ViewModels
         public int? DiemTich { get; set; }
         public int? GioiTinh { get; set; }
         public DateTime? NgaySinh { get; set; }
-        public string? DiaChi { get; set; }
-        //0 - Nhan Vien
-        //1 - Khach Hang
-        public int? vaiTro { get; set; }
+        public List<DiaChiKhachHang>? DiaChi { get; set; }
+		public string? DiaChinv { get; set; }
+		//0 - Nhan Vien
+		//1 - Khach Hang
+		public int? vaiTro { get; set; }
         public bool IsAccountLocked { get; set; } // New property for locked account
         public string Message { get; set; }
         public string? chucNang { get; set; }
+        public string? mk { get; set; }
+		public List<GioHangOnline>? chiTietGioHang { get; set; }
 	}
 }

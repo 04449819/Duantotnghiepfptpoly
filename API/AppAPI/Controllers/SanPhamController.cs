@@ -597,12 +597,7 @@ namespace AppAPI.Controllers
 
 		#endregion
 		#region ChitietSanPhamBanHangOflineKien
-		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
-		public  async Task<IActionResult> GetChiTietSanPhamByID(Guid id)
-		{
-			var response =  _sanPhamServices.GetChiTietSanPhamByID(id);
-			return Ok(response);
-		}
+
         [HttpGet("getChiTietSPBanHangbyIDsp")]
         public async Task<IActionResult> GetChiTietSanPhamByIDSP(Guid idsp)
         {
@@ -1081,26 +1076,28 @@ namespace AppAPI.Controllers
 		}
 
 		[HttpGet("getSPbanhangonl")]
-		public async Task<IActionResult> GetAllSanPhamonl(Guid? loaiSanPham,int? sapxep, int currentPage, int productsPerPage)
+		public async Task<IActionResult> GetAllSanPhamonl(Guid? loaiSanPham,int? sapxep, Guid ? idkt, Guid? idms,int? giaMin,int? GiaMax, int currentPage, int productsPerPage)
 		{
-			
-			
 
-		
+
+
+
 
 			var listlSP = await (
 				from spct in _dbcontext.ChiTietSanPhams
 				where spct.TrangThai != 0 && spct.SoLuong > 0
 				join sp in _dbcontext.SanPhams on spct.IDSanPham equals sp.ID
 				join kt in _dbcontext.KichCos on spct.IDKichCo equals kt.ID
+				join ms in _dbcontext.MauSacs on spct.IDMauSac equals ms.ID
 				join a in _dbcontext.Anhs on spct.ID equals a.IDChitietsanpham into anhs
 				from a in anhs.DefaultIfEmpty()
-				group new { spct, sp, a,kt } by new { spct.IDSanPham, spct.IDMauSac } into g
+				group new { spct,a, sp, kt, ms } by new { spct.IDSanPham, spct.IDMauSac } into g
 				select new
 				{
 					id = g.Key.IDSanPham,
 					idMauSac = g.Key.IDMauSac,
-					ctsp = g.Select(p => new {
+					ctsp = g.Select(p => new
+					{
 						id = p.spct.ID,
 						ma = p.spct.Ma,
 						soluong = p.spct.SoLuong,
@@ -1111,6 +1108,8 @@ namespace AppAPI.Controllers
 						p.spct.IDMauSac,
 						p.spct.IDKichCo,
 						tenkt = p.kt.Ten,
+						tenms = p.ms.Ten,
+						//anh = _dbcontext.Anhs.FirstOrDefault(x => x.IDChitietsanpham == p.spct.ID).DuongDan,
 						anh = p.a != null ? p.a.DuongDan : null,
 						idloaisp = p.sp.IDLoaiSP,
 					}).ToList()
@@ -1118,7 +1117,13 @@ namespace AppAPI.Controllers
 
 
 			var filteredProducts = listlSP
-		   .Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null);
+			.Where(p => (loaiSanPham == null || p.ctsp[0].idloaisp == loaiSanPham) &&
+						(idkt == null || p.ctsp.FirstOrDefault(p => p.IDKichCo == idkt) != null ) &&
+						(idms == null || p.ctsp[0].IDMauSac == idms) &&
+						(giaMin == null || p.ctsp.Any(ctsp => ctsp.giaban >= giaMin)) &&
+					(GiaMax == null || p.ctsp.Any(ctsp => ctsp.giaban <= GiaMax)));
+
+
 
 			if (sapxep == 1)
 			{
@@ -1130,19 +1135,29 @@ namespace AppAPI.Controllers
 				filteredProducts = filteredProducts
 					.OrderBy(p => p.ctsp.Min(ctsp => ctsp.giaban));
 			}
+			else if (sapxep == 3)
+			{
+				filteredProducts = filteredProducts
+					.OrderByDescending(p => p.ctsp.Min(ctsp => ctsp.ngaytao));
+			}
 
 			var pagedProducts = filteredProducts
 	       .Skip((currentPage - 1) * productsPerPage)
 	       .Take(productsPerPage)
 	       .ToList();
 
-			int totalProducts = listlSP.Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null).Count();
+			int totalProducts = filteredProducts.Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null).Count();
 			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
 			return Ok(new {sp = pagedProducts, sotrang = totalPages });
 
 
+		}
 
-
+		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
+		public async Task<IActionResult> GetChiTietSanPhamByID(string id)
+		{
+			var response = _sanPhamServices.GetChiTietSanPhamByID(id);
+			return Ok(response);
 		}
 
 		#endregion

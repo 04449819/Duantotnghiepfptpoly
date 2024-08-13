@@ -1,17 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import "./ProductPage.css";
 import "./style.scss";
 import Slider from "react-slick";
 import { Link, useNavigate } from "react-router-dom";
 import { BiChevronRight } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { setchitietspgiohang } from "../../../Rudux/Reducer/taiKhoanSlice";
+import axios from "axios";
+import { setchitietsp } from "../../../Rudux/Reducer/chitietsanphamonl";
 const ChiTietSanPhamKH = () => {
+  const [chonsize, setchonsize] = useState("");
+  const [soluong, setsoluong] = useState(0);
+  const [giaban, setgiaban] = useState(0);
   const navigate = useNavigate();
+  const [data, setdata] = useState([]);
+  const [kt, setkt] = useState({});
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 7,
+    slidesToShow: 6,
     slidesToScroll: 1,
     autoplay: true, // Thêm thuộc tính autoplay
     autoplaySpeed: 3000, // Thay đổi thời gian chuyển slide (3000ms = 3 giây)
@@ -42,52 +51,113 @@ const ChiTietSanPhamKH = () => {
       },
     ],
   };
-
-  const Handleonclickchuyentrang1 = () => {
-    navigate("/cuahang");
+  const user = useSelector((p) => p.user.User);
+  const Handleonclickchuyentrang1 = (product) => {
+    dispath(setchitietsp(product));
+    // const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // thêm hiệu ứng cuộn mượt mà
+    });
+    // };
   };
   const chitietsanpham = useSelector((p) => p.setchitietsp.chitietsp);
   useEffect(() => {
     console.log(chitietsanpham);
-  }, []);
+    const groupedBySize = chitietsanpham.ctsp.reduce((acc, product) => {
+      const size = product.idKichCo;
 
-  const products = [
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s",
-      title: "Áo",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjkPIlhIdx6LHsQkLpAGRi5K10fgE0hUL8Rw&s",
-      title: "Hoodie - Sweater",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fGWWwfxh8YFRD_nFsE1yl30fMiTe7oPaHA&s",
-      title: "Áo Khoác",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX-_h3lQV0U6fhZdBo3MYcK5lTupdqQoN6vg&s",
-      title: "Áo Sơ mi",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm7FDjsHKFiOsje28d5xHFtGk9zbkA4iV4Yw&s",
-      title: "Áo Thun",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyhdWrvgaByHH59L4NJHL3zf8NihxADPl14Q&s",
-      title: "Áo Polos",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX-_h3lQV0U6fhZdBo3MYcK5lTupdqQoN6vg&s",
-      title: "Áo Sơ mi",
-    },
-  ];
+      if (!acc[size]) {
+        acc[size] = [];
+      }
+
+      acc[size].push(product);
+      return acc;
+    }, {});
+    // console.log(groupedBySize);
+    setkt(groupedBySize);
+
+    getSanPhamBanHang();
+    if (chitietsanpham && chitietsanpham.ctsp) {
+      const sanphamcantim = chitietsanpham.ctsp.find(
+        (p) => p.idKichCo === chonsize
+      );
+      if (sanphamcantim !== undefined) {
+        setsoluong(sanphamcantim.soluong);
+        setgiaban(sanphamcantim.giaban);
+      } else {
+        chitietsanpham.ctsp[0] && setsoluong(chitietsanpham.ctsp[0].soluong);
+        chitietsanpham.ctsp[0] && setgiaban(chitietsanpham.ctsp[0].giaban);
+      }
+    }
+  }, [chonsize]);
+  const dispath = useDispatch();
+  const HandleOnclickDatMuaNgay = async () => {
+    if (chonsize === "") return toast.error("Bạn chưa chọn size cho sản phẩm");
+    const sanphamcantim = chitietsanpham.ctsp.find(
+      (p) => p.idKichCo === chonsize
+    );
+    console.log("spcantim", sanphamcantim);
+    const sanphamcanmua = { ...sanphamcantim, soluongmua: 1 }; //
+    if (user && user.sdt !== "" && user.vaiTro === 1) {
+      try {
+        const res = await axios.post(
+          `https://localhost:7095/api/GioHang/Addchitietgiohang?idnguoidung=${user.id}&idctsp=${sanphamcanmua.id}&soluong=1`
+        );
+        toast.success(`${res.data}`);
+        const sp = { ...sanphamcanmua, check: true };
+        dispath(setchitietspgiohang(sp));
+        navigate("/giohang");
+      } catch (error) {
+        toast.error(`Gặp lỗi: ${error.response?.data || error.message}`);
+      }
+    } else {
+      const sp = { ...sanphamcanmua, check: true };
+      dispath(setchitietspgiohang(sp));
+      navigate("/giohang");
+    }
+  };
+
+  const HandleOnclickThemVaoGioHang = async () => {
+    if (chonsize === "") return toast.error("Bạn chưa chọn size cho sản phẩm");
+
+    const sanphamcantim = chitietsanpham.ctsp.find(
+      (p) => p.idKichCo === chonsize
+    );
+
+    if (!sanphamcantim)
+      return toast.error("Không tìm thấy sản phẩm phù hợp với size đã chọn");
+
+    const sanphamcanmua = { ...sanphamcantim, soluongmua: 1 };
+
+    if (user && user.sdt !== "" && user.vaiTro === 1) {
+      try {
+        const res = await axios.post(
+          `https://localhost:7095/api/GioHang/Addchitietgiohang?idnguoidung=${user.id}&idctsp=${sanphamcanmua.id}&soluong=1`
+        );
+        toast.success(`${res.data}`);
+        const sp = { ...sanphamcanmua, check: false };
+        dispath(setchitietspgiohang(sp));
+      } catch (error) {
+        toast.error(`Gặp lỗi: ${error.response?.data || error.message}`);
+      }
+    } else {
+      const sp = { ...sanphamcanmua, check: false };
+      dispath(setchitietspgiohang(sp));
+      toast.success("Đã thêm!");
+    }
+  };
+
+  const getSanPhamBanHang = async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/getSPbanhangonl?currentPage=1&productsPerPage=20`
+      );
+      // console.log(res.data.sp);
+      setdata(res.data.sp);
+    } catch (error) {}
+  };
+
   return (
     <div>
       <div className="ChiTietSanPhamKH">
@@ -146,7 +216,14 @@ const ChiTietSanPhamKH = () => {
               <div className="product-page__image col-9 ms-5">
                 {/* Hình ảnh chính */}
                 {chitietsanpham.ctsp && chitietsanpham.ctsp[0] && (
-                  <img src={chitietsanpham.ctsp[0].anh} alt="product" />
+                  <img
+                    src={
+                      chitietsanpham.ctsp &&
+                      chitietsanpham.ctsp[0] &&
+                      chitietsanpham.ctsp[0].anh
+                    }
+                    alt="product"
+                  />
                 )}
               </div>
             </div>
@@ -154,39 +231,36 @@ const ChiTietSanPhamKH = () => {
               <h3>
                 {chitietsanpham.ctsp &&
                   chitietsanpham.ctsp[0] &&
-                  `${chitietsanpham.ctsp[0].tensp} - ${chitietsanpham.ctsp[0].ma} - ${chitietsanpham.ctsp[0].ma}`}
+                  `${chitietsanpham.ctsp[0].tensp} - ${chitietsanpham.ctsp[0].ma} - ${chitietsanpham.ctsp[0].tenms}`}
               </h3>
-              {/* <p>Mã sản phẩm - ATDE88593</p> */}
-              <p>
+              <p className="mt-3">Hiện có: {soluong} sản phẩm</p>
+              <h5>
                 Giá bán: &nbsp;
-                {chitietsanpham.ctsp &&
-                  chitietsanpham.ctsp[0] &&
-                  chitietsanpham.ctsp[0].giaban.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-              </p>
+                {giaban.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </h5>
               <div className="product-page__sizes">
                 {/* <label htmlFor="size">Kích thước size:</label> */}
 
-                <select id="size">
+                <select
+                  onChange={(event) => setchonsize(event.target.value)}
+                  id="size"
+                >
                   <option value="">Chọn size</option>
-                  {chitietsanpham.ctsp &&
-                    chitietsanpham.ctsp.map((item) => (
-                      <option
-                        className="select-option"
-                        key={item.idKichCo}
-                        value={item.idKichCo}
-                      >
-                        {item.tenkt}
-                      </option>
-                    ))}
+                  {Object.keys(kt).map((size) => (
+                    <option className="select-option" key={size} value={size}>
+                      {kt[size][0].tenkt}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="">
                 <button
                   style={{ fontSize: "14px", borderRadius: "5px" }}
                   className="product-page__buy-btn"
+                  onClick={() => HandleOnclickDatMuaNgay()}
                 >
                   ĐẶT MUA NGAY
                 </button>
@@ -195,6 +269,7 @@ const ChiTietSanPhamKH = () => {
               <button
                 className="product-page__buy-btn"
                 style={{ fontSize: "14px", borderRadius: "5px" }}
+                onClick={() => HandleOnclickThemVaoGioHang()}
               >
                 THÊM VÀO GIỎ HÀNG
               </button>
@@ -313,11 +388,19 @@ const ChiTietSanPhamKH = () => {
             </div>
             <div className="size-chart__product col-5">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s"
+                src={
+                  chitietsanpham.ctsp &&
+                  chitietsanpham.ctsp[0] &&
+                  chitietsanpham.ctsp[0].anh
+                }
                 alt="ATDE88593"
                 className="size-chart__product-image"
               />
-              <p>ATDE88593</p>
+              <p>
+                {chitietsanpham.ctsp &&
+                  chitietsanpham.ctsp[0] &&
+                  chitietsanpham.ctsp[0].ma}
+              </p>
             </div>
           </div>
         </div>
@@ -330,10 +413,10 @@ const ChiTietSanPhamKH = () => {
       </div>
       <div className="ChiTietSanPhamKH mt-3">
         <Slider {...settings}>
-          {products.map((product, index) => (
+          {data.map((product, index) => (
             <div key={index}>
               <button
-                onClick={Handleonclickchuyentrang1}
+                onClick={() => Handleonclickchuyentrang1(product)}
                 style={{ border: "none", backgroundColor: "#e1e1e1" }}
               >
                 <div
@@ -341,9 +424,9 @@ const ChiTietSanPhamKH = () => {
                   className="homepage-top-khung"
                 >
                   <img
-                    src={product.image}
-                    alt={product.title}
-                    style={{ width: "150px", height: "200px" }}
+                    src={product.ctsp && product.ctsp[0] && product.ctsp[0].anh}
+                    alt={product.ctsp && product.ctsp[0] && product.ctsp[0].anh}
+                    style={{ width: "170px", height: "200px" }}
                   />
                 </div>
               </button>

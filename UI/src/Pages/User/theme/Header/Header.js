@@ -16,6 +16,10 @@ const Header = (props) => {
   const user = useSelector((state) => state.user.User);
   const dispath = useDispatch();
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   // Assuming email is used for display purposes, not for profile navigation
+  //   console.log(user);
+  // }, [user]);
   const HandleOnclickLogout = () => {
     Swal.fire({
       title: "Xác nhận",
@@ -98,7 +102,7 @@ const Header = (props) => {
                   <button
                     className="buttonHeader"
                     onClick={() => setShows(true)}
-                    hidden={user && user.vaiTro !== 1 ? false : true}
+                    hidden={user && user.vaiTro === 1 ? true : false}
                   >
                     <BsPersonCircle />
                     <span>Đăng nhập</span>
@@ -106,7 +110,7 @@ const Header = (props) => {
                   <button
                     className="buttonHeader"
                     // onClick={() => setShows(true)}
-                    hidden={user && user.vaiTro !== 1 ? true : false}
+                    hidden={user && user.vaiTro === 1 ? false : true}
                   >
                     <div className="d-flex">
                       <div className="mt-1">

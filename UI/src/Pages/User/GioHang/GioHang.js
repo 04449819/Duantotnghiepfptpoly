@@ -240,7 +240,7 @@ const GioHang = () => {
       <div className="checkout-container mt-5">
         <div className="customer-info">
           <h3>THÔNG TIN KHÁCH HÀNG</h3>
-          {user.vaiTro === 1 ? (
+          {user && user.vaiTro === 1 ? (
             <div className="mt-4">
               {dckh &&
                 dckh.map((p) => (

@@ -19,7 +19,7 @@
 		public int TrangThaiGiaoHang { get; set; }
         //Các trạng thái của đơn hàng
         /*
-         * 1-đơn nháp
+         *  p
          * 2-Chờ xác nhận
          * 3-Đang giao hàng//ko đc hủy
          * 6-thành công //nhận hàng thành công// đc đánh giá // đc hủy nếu ngày thanh toán < 3
@@ -44,6 +44,6 @@
         public virtual NhanVien? NhanVien { get; set; }
 		public virtual KhachHang? KhachHang { get; set; }
 		public virtual Voucher? Voucher { get; set; }
-        public virtual IEnumerable<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
+        public virtual List<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
     }
 }

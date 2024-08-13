@@ -376,11 +376,59 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        [HttpPost("addkhuyenmaitoCTSP")]
+        public async Task<IActionResult> AddKhuyenMaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP, string idkhuyenmai)
+        {
+            if (IDCTSP == null || !IDCTSP.Any())
+            {
+                return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+            }
 
-		#region khuyenmaiKien
-		[HttpPut("addkhuyenmaitoCTSP")]
-		public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
-		{
+            foreach (var item in IDCTSP)
+            {
+                var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
+                if (dt != null)
+                {
+                    var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
+                        .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
+
+                    if (existingRecord == null)
+                    {
+                        if (item.trangthai == true)
+                        {
+                            KhuyenMaiCTSanPham kmctsp = new KhuyenMaiCTSanPham
+                            {
+                                IdChiTietSanPham = dt.ID,
+                                IdKhuyenMai = Guid.Parse(idkhuyenmai)
+                            };
+                            _dbcontext.KhuyenMaiCTSanPhams.Add(kmctsp);
+                        }
+                    }
+                    else
+                    {
+                        if (item.trangthai == false)
+                        {
+                            _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
+                        }
+                    }
+                }
+                else
+                {
+                    return NotFound($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
+                }
+            }
+
+            // Lưu các thay đổi vào database
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok("Cập nhật thành công.");
+
+
+        }
+        #region khuyenmaiKien
+  //      [HttpPut("addkhuyenmaitoCTSP")]
+		//public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
+		//{
 			//if (IDCTSP == null || !IDCTSP.Any())
 			//{
 			//	return BadRequest("Danh sách IDCTSP rỗng hoặc null");
@@ -413,10 +461,10 @@ namespace AppAPI.Controllers
 			//// Lưu các thay đổi vào database
 			//await _dbcontext.SaveChangesAsync();
 
-			return Ok("Update thành công.");
+			//return Ok("Update thành công.");
 		
 
-	    }
+	  //  }
 		#endregion
 	}
 

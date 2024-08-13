@@ -52,6 +52,7 @@ namespace AppAPI.Services
                                                     {
                                                         IdChiTietSanPham = g.Key,
                                                         TongTien = g.Sum(c => c.DonGia)
+                                                        
                                                     })
                                                     .ToList();
             var sortedProducts = groupedChiTietHoaDons.OrderByDescending(g => g.TongTien)

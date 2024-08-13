@@ -169,10 +169,6 @@ namespace AppAPI.Services
                                      .ToListAsync(); // Sử dụng ToListAsync() để thực hiện lấy dữ liệu bất đồng bộ
 
             return chiTietHoaDons;
-            
-
-
-
         }
 
         public List<ChiTietHoaDon> GetChiTietSPId(Guid idsp)

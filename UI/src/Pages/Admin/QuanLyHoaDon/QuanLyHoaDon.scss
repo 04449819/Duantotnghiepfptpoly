@@ -2,4 +2,97 @@
   h1 {
     color: red;
   }
+  /* General Styles */
+/* QuanLyHoaDon.scss */
+
+/* General styles for the container */
+.invoice-management {
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
+
+/* Style for the table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f4f4f4;
+}
+
+/* Search bar styles */
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Button group styles */
+.button-group {
+  margin-bottom: 20px;
+}
+
+.button-group .btn {
+  margin-right: 5px;
+}
+
+/* Modal styles */
+.modal-lg .modal-dialog {
+  max-width: 90%;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 15px;
+}
+
+/* Add any additional styling for modal content here */
+
+}
+/* QuanLyHoaDon.scss */
+
+.notification-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.notification-dot {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  
+  span {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+.notification-text {
+  font-size: 16px;
+  color: #f60b0b;
+}
+

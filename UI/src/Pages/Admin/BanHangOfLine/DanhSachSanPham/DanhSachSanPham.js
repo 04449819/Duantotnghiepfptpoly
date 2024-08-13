@@ -52,7 +52,7 @@ const DanhSachSanPham = () => {
           type="text"
           className="form-control"
           placeholder="Mã sản phấm"
-          style={{ width: "35%", marginRight: "10px" }}
+          style={{ width: "25%", marginRight: "10px" }}
           value={inputsearch}
           onChange={(event) => setinputsearch(event.target.value)}
         />
@@ -80,8 +80,8 @@ const DanhSachSanPham = () => {
               <th>STT</th>
               <th>Tên sản phẩm</th>
               <th>Số lượng</th>
-              <th>Tên màu</th>
-              <th>Kích cỡ</th>
+              {/* <th>Tên màu</th>
+              <th>Kích cỡ</th> */}
               <th>Giá bán</th>
               <th>Tổng giá</th>
               <th>Khuyến mãi</th>
@@ -95,7 +95,7 @@ const DanhSachSanPham = () => {
               return (
                 <tr key={item.idCTSP}>
                   <td>{index + 1}</td>
-                  <td>{item.tenSanPham}</td>
+                  <td>{item.tenSanPham+"-"+item.tenMau+"-"+item.kichCo}</td>
                   <td>
                     <input
                       style={{ width: "80px" }}
@@ -104,8 +104,8 @@ const DanhSachSanPham = () => {
                       onChange={(event) => handleOnChangeSoLuong(event, item)}
                     />
                   </td>
-                  <td>{item.tenMau}</td>
-                  <td>{item.kichCo}</td>
+                  {/* <td>{item.tenMau}</td>
+                  <td>{item.kichCo}</td> */}
                   <td>{item.giaBan}</td>
                   <td>{item.giaBan * item.soLuongmua}</td>
                   <td>{item.giaTriKhuyenMai}</td>

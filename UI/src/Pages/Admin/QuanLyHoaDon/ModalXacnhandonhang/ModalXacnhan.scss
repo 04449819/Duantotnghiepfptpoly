@@ -1,0 +1,52 @@
+/* QuanLyHoaDon.scss */
+
+/* Thông tin khách hàng */
+.modal-body h4 {
+    margin-top: 20px;
+    font-size: 1.2em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+  
+  /* Bảng chi tiết sản phẩm */
+  .table {
+    margin-top: 20px;
+  }
+  
+  .table th, .table td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .table th {
+    background-color: #f4f4f4;
+  }
+  
+  .table td {
+    border: 1px solid #ddd;
+  }
+  
+  .table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  /* QuanLyHoaDon.scss */
+
+/* Custom class for the modal */
+.custom-modal .modal-dialog {
+    max-width: 80%; /* Thay đổi kích thước tối đa của modal (ví dụ: 80% của chiều rộng màn hình) */
+    width: 80%; /* Chiều rộng cụ thể của modal */
+  }
+  
+  .custom-modal .modal-content {
+    padding: 20px; /* Padding bên trong modal để nội dung không chạm vào cạnh */
+  }
+  
+  .custom-modal .modal-header, .custom-modal .modal-footer {
+    padding: 15px; /* Padding cho header và footer của modal */
+  }
+  
+  .custom-modal .modal-body {
+    padding: 20px; /* Padding cho phần nội dung của modal */
+  }
+  
+  

@@ -83,23 +83,23 @@ function ModalApplyKM(props) {
     }
   };
 
-  //   const getDataCTSPXoa = async (idsp) => {
-  //     try {
-  //       const res = await axios.get(
-  //         `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${idsp}`
-  //       );
-  //       if (res.data && res.data.length > 0) {
-  //         res.data.map((item) => {
-  //           const CTSP = dataCTSP.find((p) => p.id === item.id);
-  //           if (CTSP) {
-  //             setdataCTSP((prevDataCTSP) =>
-  //               prevDataCTSP.filter((item) => item.id !== CTSP.id)
-  //             );
-  //           }
-  //         });
-  //       }
-  //     } catch (error) {}
-  //   };
+    // const getDataCTSPXoa = async (idsp) => {
+    //   try {
+    //     const res = await axios.get(
+    //       `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${idsp}`
+    //     );
+    //     if (res.data && res.data.length > 0) {
+    //       res.data.map((item) => {
+    //         const CTSP = dataCTSP.find((p) => p.id === item.id);
+    //         if (CTSP) {
+    //           setdataCTSP((prevDataCTSP) =>
+    //             prevDataCTSP.filter((item) => item.id !== CTSP.id)
+    //           );
+    //         }
+    //       });
+    //     }
+    //   } catch (error) {}
+    // };
 
   const GetDataChitietSanPhamDaAD = async (idsp) => {
     //https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDKM?id=e107cc6d-5a68-4d5b-836e-4d70b088dd1f
@@ -119,6 +119,7 @@ function ModalApplyKM(props) {
   useEffect(() => {
     setdata([]);
     setdataCTSP([]);
+    console.log(dataCTSP);
     getDataSP(page);
     setpage(1);
     GetDataChitietSanPhamDaAD(props.item.id);
@@ -140,14 +141,18 @@ function ModalApplyKM(props) {
         if (event.target.checked === true) {
           getDataCTSP(item1.id, item1.ten);
         } else {
-          //   getDataCTSPXoa(item1.id);
-          const dataTamm = dataCTSP.map((p) => {
-            if (p.idsp === item1.id) {
-              return { ...p, check: false };
-            }
-            return p;
-          });
-          setdataCTSP(dataTamm);
+          // Sửa
+          const dataTamCTSP = dataCTSP.filter((p) => p.idsp !== item1.id);
+          setdataCTSP(dataTamCTSP);
+          
+          //  getDataCTSPXoa(item1.id);
+          // const dataTamm = dataCTSP.map((p) => {
+            // if (p.idsp === item1.id) {
+            //   return { ...p, check: false };
+            // }
+            //return p;
+          //});
+          //setdataCTSP(dataTamm);
         }
         return { ...item, check: event.target.checked };
       } else {
@@ -165,6 +170,10 @@ function ModalApplyKM(props) {
         return item;
       }
     });
+    if (!event.target.checked) {
+      const dataTamCTSP = dataCTSP.filter((p) => p.id !== item1.id);
+      setdataCTSP(dataTamCTSP);
+    }
     setdataCTSP(dataTam);
   };
 
@@ -196,7 +205,7 @@ function ModalApplyKM(props) {
           return { id: item.id, trangthai: item.check };
         });
       try {
-        var res = await axios.put(
+        var res = await axios.post(
           `https://localhost:7095/api/KhuyenMai/addkhuyenmaitoCTSP?idkhuyenmai=${props.item.id}`,
           listIDCTSP
         );

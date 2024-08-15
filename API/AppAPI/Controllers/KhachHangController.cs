@@ -355,6 +355,5 @@ namespace AppAPI.Controllers
             int diemTich = _khachHangService.TongHopDiem(khachHang.IDKhachHang);
             return Ok(diemTich);
         }
-        #endregion
     }
 }

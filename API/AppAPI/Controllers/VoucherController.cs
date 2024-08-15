@@ -92,5 +92,16 @@ namespace AppAPI.Controllers
         {
             return _services.GetAllVoucherByTien(tongTien);
         }
+
+
+        #region Tung
+        [HttpGet("fillvoucher/{tongTien}")]
+        public async Task<IActionResult> FillVoucher(int tongTien)
+        {
+            var voucher = _services.FillVoucher(tongTien);
+            return Ok(new { voucher });
+        }
+        #endregion
+
     }
 }

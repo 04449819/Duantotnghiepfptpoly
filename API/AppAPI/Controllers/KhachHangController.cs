@@ -343,17 +343,16 @@ namespace AppAPI.Controllers
 			return Ok("Update thành công");
 		}
         #endregion
-        #region KhachHangTung
-        [HttpGet("tong-hop-diem/{sdtOrMail}")]
-        public IActionResult TongHopDiem(string sdtOrMail)
+
+        #region Tung
+        [HttpGet("GetDiemKH")]
+        public async Task<IActionResult> GetDiemKhachHang(string input)
         {
-            var khachHang = _khachHangService.GetBySDT(sdtOrMail);
-            if (khachHang == null)
-            {
-                return NotFound("Không tìm thấy khách hàng");
-            }   
-            int diemTich = _khachHangService.TongHopDiem(khachHang.IDKhachHang);
-            return Ok(diemTich);
+            var diemKH = _khachHangService.GetBySDT(input).DiemTich;
+            return Ok( new { diemKH });
         }
+        #endregion
+
+
     }
 }

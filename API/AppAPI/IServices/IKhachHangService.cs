@@ -21,7 +21,6 @@ namespace AppAPI.IServices
 
 
         public List<KhachHang> GetKMByName(string Ten);
-        public int TongHopDiem(Guid idkh);
 
     }
 }

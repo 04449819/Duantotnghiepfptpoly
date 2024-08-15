@@ -68,6 +68,32 @@
   flex-direction: column; /* Sử dụng flexbox để canh chỉnh nội dung */
   justify-content: space-between; 
   }
+  .table-custom th,
+.table-custom td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Tùy chỉnh màu chữ trong header */
+.table-custom thead th {
+  color: #333;
+}
+
+/* Tùy chỉnh hàng nằm dưới cùng */
+.table-custom tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Tùy chỉnh màu nền cho các hàng chẵn */
+.table-custom tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Tùy chỉnh màu nền khi di chuột vào */
+.table-custom tbody tr:hover {
+  background-color: #f1f1f1;
+}
   
 
 

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./QuanLyHoaDon.scss";
 import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
-import { Bar } from "react-chartjs-2";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
+import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
 
 const QuanLyHoaDon = () => {
   const [hoaDons, setHoaDons] = useState([]);
@@ -10,7 +12,14 @@ const QuanLyHoaDon = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBillId, setSelectedBillId] = useState(null);
   const [selectedBillDetails, setSelectedBillDetails] = useState(null);
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [filterStatus, setFilterStatus] = useState(null); 
+  const [showModal, setShowModal] = useState(false); 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [billToConfirm, setBillToConfirm] = useState(null);
+  const [showDangGiaoHangModal, setShowDangGiaoHangModal] = useState(false); 
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [unconfirmedOrderCount, setUnconfirmedOrderCount] = useState(0);
 
   useEffect(() => {
     fetchHoaDons();
@@ -19,9 +28,17 @@ const QuanLyHoaDon = () => {
 
   const fetchHoaDons = async () => {
     try {
-      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
+      const url = filterStatus ? 
+        `https://localhost:7095/api/HoaDon/loctheotrngthaigiaohang?trangthai=${filterStatus}` : 
+        'https://localhost:7095/api/HoaDon/GetAll';
+      const response = await axios.get(url);
       setHoaDons(response.data);
       setError(null);
+
+      // Tính số lượng đơn hàng chưa xác nhận
+      const unconfirmedOrders = response.data.filter(order => order.trangThaiGiaoHang === 2);
+      setUnconfirmedOrderCount(unconfirmedOrders.length);
+
     } catch (error) {
       console.error('Có lỗi khi fetch hóa đơn:', error);
       setError('Có lỗi khi fetch hóa đơn: ' + error.message);
@@ -43,12 +60,12 @@ const QuanLyHoaDon = () => {
     return trangThaiGiaoHangDict[trangThai] || 'Không xác định';
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (tenkhachhang) => {
     try {
-      if (searchTerm.trim() === "") {
+      if (tenkhachhang.trim() === "") {
         await fetchHoaDons();
       } else {
-        const response = await axios.get(`https://localhost:7095/api/HoaDon/TimKiem?ten=${searchTerm}&loc=1`);
+        const response = await axios.get(`https://localhost:7095/api/HoaDon/TimKiem?ten=${tenkhachhang}&loc=1`);
         setHoaDons(response.data);
       }
     } catch (error) {
@@ -59,59 +76,90 @@ const QuanLyHoaDon = () => {
 
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
-    handleSearch();
+    handleSearch(event.target.value);
   };
 
   const fetchBillDetails = async (billId) => {
     try {
       const response = await axios.get(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}`);
       setSelectedBillDetails(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error('Có lỗi khi fetch chi tiết hóa đơn:', error);
       setError('Có lỗi khi fetch chi tiết hóa đơn: ' + error.message);
-    }
-  };
-  const [sanPhamDetails, setSanPhamDetails] = useState([]);
-  const fetchSanPhamDetails = async (productId) => {
-    try {
-      const response = await axios.get(`https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${productId}`);
-      setSanPhamDetails(response.data);
-    } catch (error) {
-      console.error('Có lỗi khi fetch sản phẩm:', error);
-      setError('Có lỗi khi fetch sản phẩm: ' + error.message);
     }
   };
 
   const handleBillClick = (billId) => {
     setSelectedBillId(billId);
     fetchBillDetails(billId);
-    setShowModal(true); // Show modal when clicking on a bill
-    fetchSanPhamDetails(billId); // Fetch product details based on billId
+    setShowModal(true); 
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false); // Hide modal
-    setSelectedBillDetails(null); // Clear selected bill details when modal closes
+  const handleFilterClick = (status) => {
+    setFilterStatus(status);
+    fetchHoaDons();
+  };
+
+  const handleShowConfirmModal = (billId) => {
+    setBillToConfirm(billId);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirm = (billId) => {
+    fetchHoaDons();
+    setShowConfirmModal(false);
+  };
+
+  const handleShowDangGiaoHangModal = (bill) => {
+    setSelectedBillId(bill.id);
+    setCustomerName(bill.tenNguoiNhan);
+    setCustomerPhone(bill.sdt);
+    setShowDangGiaoHangModal(true);
   };
 
   return (
-    <div>
+    <div className="invoice-management">
       <h2>Quản lý Hóa Đơn</h2>
-      <div>
+      <div className="notification-container">
+        {unconfirmedOrderCount > 0 && (
+          <div className="notification-dot">
+            <span>{unconfirmedOrderCount}</span>
+          </div>
+        )}
+        {unconfirmedOrderCount > 0 && (
+          <div className="notification-text">
+            Có đơn chưa xác nhận
+          </div>
+        )}
+      </div>
+
+      <div className="search-bar">
         <input
           type="text"
-          placeholder="searchTerm..."
+          placeholder="Tìm kiếm..."
           value={searchTerm}
           onChange={handleChangeSearchTerm}
         />
       </div>
+      
+      <div className="button-group">
+        <ButtonGroup aria-label="Basic example">
+          <Button variant="secondary" onClick={() => { setFilterStatus(null); fetchHoaDons(); }}>Tất cả</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(1)}>Đơn nháp</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(2)}>Chờ xác nhận</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(3)}>Đang giao hàng</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(6)}>Thành công</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(7)}>Đơn hủy</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(8)}>Chờ xác nhận hủy</Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(9)}>Chờ xác nhận hoàn hàng</Button>
+        </ButtonGroup>
+      </div>
+
       {error && <p>{error}</p>}
+
       <table className="table">
         <thead>
           <tr>
-            <th>Ngày thanh toán</th>
-            <th>Ngày nhận hàng</th>
             <th>Người Nhận</th>
             <th>SDT</th>
             <th>Địa Chỉ</th>
@@ -124,60 +172,86 @@ const QuanLyHoaDon = () => {
         <tbody>
           {hoaDons.map((hoaDon) => (
             <tr key={hoaDon.id} onClick={() => handleBillClick(hoaDon.id)}>
-              <td>{hoaDon.ngayThanhToan}</td>
-              <td>{hoaDon.ngayNhanHang}</td>
               <td>{hoaDon.tenNguoiNhan}</td>
               <td>{hoaDon.sdt}</td>
               <td>{hoaDon.diaChi}</td>
               <td>{renderTrangThaiGiaoHang(hoaDon.trangThaiGiaoHang)}</td>
               <td>{hoaDon.tongTien ? `${hoaDon.tongTien} VND` : 'Chưa xác định'}</td>
-              <td>{hoaDon.LoaiHD ? 'Off' : 'On'}</td>
-              <td>{hoaDon.phuongThucThanhToan}</td>
-             
+              <td>{hoaDon.LoaiHD ? 'Off' : 'On'}</td> 
+              <td  >
+                {hoaDon.trangThaiGiaoHang === 2 && (
+                  <Button variant="primary" onClick={(e) => { e.stopPropagation(); handleShowConfirmModal(hoaDon.id); }}>
+                    Xác nhận
+                  </Button>
+                )}
+                {hoaDon.trangThaiGiaoHang === 3 && (
+                  <Button variant="warning" onClick={(e) => { e.stopPropagation(); handleShowDangGiaoHangModal(hoaDon); }}>
+                    Đang giao hàng
+                  </Button>
+                )}
+                {hoaDon.trangThaiGiaoHang === 6 && (
+                  <Button disabled={hoaDon.trangThaiGiaoHang===6?true : false}  variant="danger" onClick={(e) => { e.stopPropagation(); handleShowConfirmModal(hoaDon.id); }}>
+                    Hủy Đơn
+                  </Button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Modal to display bill details */}
-      <Modal show={showModal} onHide={handleCloseModal} className="modal-lg" >
+      {/* Modal để hiển thị chi tiết hóa đơn */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} className="modal-lg">
         <Modal.Header closeButton>
           <Modal.Title>Chi tiết hóa đơn</Modal.Title>
         </Modal.Header>
-      <Modal.Body>
-  <table className="table">
-    <thead>
-      <tr>
-     <th>Ảnh</th>
-        <th>Tên sản phẩm</th>
-        <th>Đơn giá</th>
-        <th>số lượng</th>
-        <th>trạng thái</th>
-        
-        {/* Add more headers as needed */}
-      </tr>
-    </thead>
-    <tbody>
-      {selectedBillDetails && selectedBillDetails.map((bill) => (
-        <tr key={bill.chiTietHoaDon.id}>
-          <img src={bill.anh.duongDan} alt="Ảnh sản phẩm" style={{ width: '125px', height: '125px' }} />
-          <td>{bill.sanPham.ten}</td> 
-          <td>{bill.chiTietHoaDon.donGia}</td>
-          <td>{bill.chiTietHoaDon.soLuong}</td>
-          <td>{bill.chiTietSanPham.trangThai}</td>
-          {/* Render more details here */}
-        </tr>
-      ))} 
-    </tbody>
-  </table>
-</Modal.Body>
-
+        <Modal.Body>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedBillDetails && selectedBillDetails.map((bill) => (
+                <tr key={bill.chiTietHoaDon.id}>
+                  <td><img src={bill.anh.duongDan} alt="Ảnh sản phẩm" style={{ width: '125px', height: '125px' }} /></td>
+                  <td>{bill.sanPham.ten}</td> 
+                  <td>{bill.chiTietHoaDon.donGia}</td>
+                  <td>{bill.chiTietHoaDon.soLuong}</td>
+                  <td>{bill.chiTietSanPham.trangThai}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Modal xác nhận đơn hàng */}
+      <ModalXacNhan 
+        show={showConfirmModal} 
+        onClose={() => setShowConfirmModal(false)} 
+        onConfirm={handleConfirm} 
+        billId={billToConfirm} 
+      />
+
+      {/* Modal Đang giao hàng */}
+      <ModalDangGiaoHang 
+        show={showDangGiaoHangModal} 
+        onClose={() => setShowDangGiaoHangModal(false)} 
+        billId={selectedBillId} 
+        customerName={customerName}
+        customerPhone={customerPhone}
+      />
     </div>
   );
 };

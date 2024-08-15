@@ -14,6 +14,7 @@ namespace AppAPI.IServices
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai,Guid? idNhanVien);
         public int CheckVoucher(string ten, int tongtien);
         public List<HoaDon> TimKiemVaLocHoaDon(string ten,int? loc);
+        public List<HoaDon> Loctheotrangthai(int loc);
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung);
         //Nhinh sửa
         public bool HoanHang(Guid idhd, Guid idnv);

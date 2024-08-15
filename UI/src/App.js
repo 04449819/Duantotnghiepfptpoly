@@ -3,10 +3,19 @@ import Footer from "./Pages/User/theme/Footer/Footer";
 import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import BarLoader from "react-spinners/BarLoader";
-import BeatLoader from "react-spinners/BeatLoader";
+
 import { useSelector } from "react-redux";
-const Index = () => {
+import { useEffect } from "react";
+const App = () => {
   const loading = useSelector((p) => p.Loading.Loading);
+
+  const user = useSelector((p) => p.user.giohangonl);
+  useEffect(() => {
+    console.log("ok", user);
+    if (user && user.vaiTro === 1) {
+      console.log(user);
+    }
+  }, [user]);
 
   return (
     <div className="App">
@@ -44,4 +53,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default App;

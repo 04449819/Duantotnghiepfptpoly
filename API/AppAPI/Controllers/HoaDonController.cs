@@ -29,87 +29,95 @@ namespace AppAPI.Controllers
 			_iVNPayService = vnPayService;
         }
 
-        // GET: api/<HoaDOnController>
-        #region
-        [HttpGet("GetAll")]
-        public List<HoaDon> Get()
-        {
-            return _iHoaDonService.GetAllHoaDon();
-        }
-        [HttpGet("GetById/{idhd}")]
-        public HoaDon GetById(Guid idhd)
-        {
-            return _iHoaDonService.GetHoaDonById(idhd);
-        }
-        [HttpGet("TimKiem")]
-        public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
-        {
-            return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
-        }
-        [HttpGet("CheckVoucher")]
-        public int CheckVoucher(string ten, int tongtien)
-        {
-            return _iHoaDonService.CheckVoucher(ten, tongtien);
-        }
-        [HttpGet("LichSuGiaoDich")]
-        public List<HoaDon> LichSuGiaoDich(Guid idNguoidung)
-        {
-            return _iHoaDonService.LichSuGiaoDich(idNguoidung);
-        }
-        [HttpGet("LichSuGiaoDich/{idhd}")]
-        public LichSuTichDiem LichSuGiaoDichByIdHD(Guid idhd)
-        {
-            return _iHoaDonService.GetLichSuGiaoDichByIdHD(idhd);
-        }
-        [HttpGet("CheckLSGDHD/{idhd}")]
-        public bool CheckLichSuGiaoDichHD(Guid idhd)
-        {
-            return _iHoaDonService.CheckHDHasLSGD(idhd);
-        }
-        [HttpGet("CheckCustomerUseVoucher")]
-        public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
-        {
-            return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
-        }
-        [HttpPost]
-        public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
-        {
-            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
-        }
-        //[HttpPost("Offline/{idnhanvien}")]
-        //public bool CreateHoaDonOffline(Guid idnhanvien)
-        //{
-        //	return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
-        //}	
-        [HttpGet("GetAllHDCho")]
-        public IActionResult GetAllHDCho()
-        {
-            var lsthdcho = _iHoaDonService.GetAllHDCho();
-            return Ok(lsthdcho);
-        }
-        [HttpGet("GetHDBanHang/{idhd}")]
-        public IActionResult GetHDBanHang(Guid idhd)
-        {
-            var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
-            return Ok(lsthdcho);
-        }
-        [HttpGet("GetAllHDQly")]
-        public IActionResult GetAllHDQly()
-        {
-            var hdql = _iHoaDonService.GetAllHDQly();
-            return Ok(hdql);
-        }
-        [HttpGet("ChiTietHoaDonQL/{idhd}")]
-        public IActionResult ChiTietHoaDonQL(Guid idhd)
-        {
-            var result = _iHoaDonService.GetCTHDByID(idhd);
+		// GET: api/<HoaDOnController>
+		[HttpGet("GetAll")]
+		public List<HoaDon> Get()
+		{
+			return _iHoaDonService.GetAllHoaDon();
+		}
+		[HttpGet("GetById/{idhd}")]
+		public HoaDon GetById(Guid idhd)
+		{
+			return _iHoaDonService.GetHoaDonById(idhd);
+		}
+		[HttpGet("TimKiem")]
+		public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
+		{
+			return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
+		}
+		[HttpGet("CheckVoucher")]
+		public int CheckVoucher(string ten, int tongtien)
+		{
+			return _iHoaDonService.CheckVoucher(ten, tongtien);
+		}
+		[HttpGet("LichSuGiaoDich")]
+		public List<HoaDon> LichSuGiaoDich(Guid idNguoidung)
+		{
+			return _iHoaDonService.LichSuGiaoDich(idNguoidung);
+		}
+		[HttpGet("LichSuGiaoDich/{idhd}")]
+		public LichSuTichDiem LichSuGiaoDichByIdHD(Guid idhd)
+		{
+			return _iHoaDonService.GetLichSuGiaoDichByIdHD(idhd);
+		}
+		[HttpGet("CheckLSGDHD/{idhd}")]
+		public bool CheckLichSuGiaoDichHD(Guid idhd)
+		{
+			return _iHoaDonService.CheckHDHasLSGD(idhd);
+		}
+		[HttpGet("CheckCustomerUseVoucher")]
+		public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
+		{
+			return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
+		}
+		[HttpPost]
+		public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
+		{
+			return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
+		}
+		[HttpPost("Offline/{idnhanvien}")]
+		public bool CreateHoaDonOffline(Guid idnhanvien)
+		{
+            var to = new CreateHoaDonOfflineDTO();
+            to.IdNhanVien= idnhanvien;
+			return _iHoaDonService.CreateHoaDonOffline(to);
+		}
+		[HttpGet("GetAllHDCho")]
+		public IActionResult GetAllHDCho()
+		{
+			var lsthdcho = _iHoaDonService.GetAllHDCho();
+			return Ok(lsthdcho);
+		}
+		[HttpGet("GetHDBanHang/{idhd}")]
+		public IActionResult GetHDBanHang(Guid idhd)
+		{
+			var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
+			return Ok(lsthdcho);
+		}
+		[HttpGet("GetAllHDQly")]
+		public IActionResult GetAllHDQly()
+		{
+			var hdql = _iHoaDonService.GetAllHDQly();
+			return Ok(hdql);
+		}
+		[HttpGet("ChiTietHoaDonQL/{idhd}")]
+		public IActionResult ChiTietHoaDonQL(Guid idhd)
+		{
+			var result = _iHoaDonService.GetCTHDByID(idhd);
+			return Ok(result);
+		}
+		[HttpGet("loctheotrngthaigiaohang")]
+		public IActionResult hoadontrangthai(int trangthai)
+		{
+            var result = _iHoaDonService.Loctheotrangthai(trangthai);
             return Ok(result);
         }
-        [HttpPut]
-        public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
-        {
-            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
-        }
+		[HttpPut]
+		public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
+		{
+			return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
+		}
+
 
         [HttpPut("UpdateHoaDon")]
         public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
@@ -180,7 +188,6 @@ namespace AppAPI.Controllers
         //{
         //    return _iHoaDonService.DeletePTTT(id);
         //}
-        #endregion
 
 
         #region DarhboardHoaDonKien

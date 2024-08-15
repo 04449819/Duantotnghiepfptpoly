@@ -7,19 +7,36 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../CuaHang/cuahang.scss";
+import { useDispatch } from "react-redux";
+import { setidloaisp } from "../../../Rudux/Reducer/IDLoaiSPSlice";
+import { setchitietsp } from "../../../Rudux/Reducer/chitietsanphamonl";
 const HomePage = () => {
   const [data, setdata] = useState([]);
+  const [dataLSP, setdataLSP] = useState([]);
   useEffect(() => {
     // toast.dismiss();
     getSanPhamBanHang();
+    getLoaiSanPhamBanHang();
   }, []);
 
   const getSanPhamBanHang = async () => {
-    const res = await axios.get(
-      "https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=1&productsPerPage=10"
-    );
-    // console.log(res.data.sanPham);
-    setdata(res.data.sanPham);
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/SanPham/getSPbanhangonl?currentPage=1&productsPerPage=20`
+      );
+      // console.log(res.data.sp);
+      setdata(res.data.sp);
+    } catch (error) {}
+  };
+
+  const getLoaiSanPhamBanHang = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/SanPham/getLoaiSPbanhangonl"
+      );
+      // console.log(res.data);
+      setdataLSP(res.data);
+    } catch (error) {}
   };
 
   const navigate = useNavigate();
@@ -28,7 +45,7 @@ const HomePage = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 8,
+    slidesToShow: 6,
     slidesToScroll: 1,
     autoplay: true, // Thêm thuộc tính autoplay
     autoplaySpeed: 3000, // Thay đổi thời gian chuyển slide (3000ms = 3 giây)
@@ -59,57 +76,64 @@ const HomePage = () => {
       },
     ],
   };
-
+  const dispath = useDispatch();
   const Handleonclickchuyentrang = () => {
     navigate("/cuahang");
   };
 
-  const Handleonclickchuyentrang1 = () => {
+  const Handleonclickchuyentrang1 = (product) => {
+    dispath(setchitietsp(product));
     navigate("/chitietsanpham");
   };
 
-  const products = [
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s",
-      title: "Áo",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjkPIlhIdx6LHsQkLpAGRi5K10fgE0hUL8Rw&s",
-      title: "Hoodie - Sweater",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fGWWwfxh8YFRD_nFsE1yl30fMiTe7oPaHA&s",
-      title: "Áo Khoác",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX-_h3lQV0U6fhZdBo3MYcK5lTupdqQoN6vg&s",
-      title: "Áo Sơ mi",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm7FDjsHKFiOsje28d5xHFtGk9zbkA4iV4Yw&s",
-      title: "Áo Thun",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyhdWrvgaByHH59L4NJHL3zf8NihxADPl14Q&s",
-      title: "Áo Polos",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmDoF-gZPGl2KpHeDWjt4hMjjIx5EIv7cOFw&s",
-      title: "Áo Polos",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw7HM7t_dAWuriht_wWGSCM0ipRg7wk8_xfw&s",
-      title: "Áo Polos",
-    },
-  ];
+  const Handleonclickchuyentrang2 = (product) => {
+    // alert("Product");
+    dispath(setidloaisp(product));
+    navigate("/cuahang");
+  };
+
+  // const products = [
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s",
+  //     title: "Áo",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjkPIlhIdx6LHsQkLpAGRi5K10fgE0hUL8Rw&s",
+  //     title: "Hoodie - Sweater",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fGWWwfxh8YFRD_nFsE1yl30fMiTe7oPaHA&s",
+  //     title: "Áo Khoác",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX-_h3lQV0U6fhZdBo3MYcK5lTupdqQoN6vg&s",
+  //     title: "Áo Sơ mi",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm7FDjsHKFiOsje28d5xHFtGk9zbkA4iV4Yw&s",
+  //     title: "Áo Thun",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyhdWrvgaByHH59L4NJHL3zf8NihxADPl14Q&s",
+  //     title: "Áo Polos",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmDoF-gZPGl2KpHeDWjt4hMjjIx5EIv7cOFw&s",
+  //     title: "Áo Polos",
+  //   },
+  //   {
+  //     image:
+  //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw7HM7t_dAWuriht_wWGSCM0ipRg7wk8_xfw&s",
+  //     title: "Áo Polos",
+  //   },
+  // ];
 
   return (
     <>
@@ -213,10 +237,10 @@ const HomePage = () => {
           </div>
           <div>
             <Slider {...settings}>
-              {products.map((product, index) => (
+              {data.map((product, index) => (
                 <div key={index}>
                   <button
-                    onClick={Handleonclickchuyentrang1}
+                    onClick={() => Handleonclickchuyentrang1(product)}
                     style={{ border: "none", backgroundColor: "#e1e1e1" }}
                   >
                     <div
@@ -224,9 +248,13 @@ const HomePage = () => {
                       className="homepage-top-khung"
                     >
                       <img
-                        src={product.image}
-                        alt={product.title}
-                        style={{ width: "150px", height: "200px" }}
+                        src={
+                          product.ctsp && product.ctsp[0] && product.ctsp[0].anh
+                        }
+                        alt={
+                          product.ctsp && product.ctsp[0] && product.ctsp[0].anh
+                        }
+                        style={{ width: "200px", height: "200px" }}
                       />
                     </div>
                   </button>
@@ -238,17 +266,22 @@ const HomePage = () => {
         <div className="mt-4">
           <div style={{ backgroundColor: "white" }} className="w-75 mx-auto">
             <div className="row">
-              {products.map((product, index) => (
+              {dataLSP.map((product, index) => (
                 <div key={index} className="col-3 my-3">
                   <div style={{ width: "80%" }} className="mx-auto">
                     <div
+                      onClick={() => Handleonclickchuyentrang2(product)}
                       style={{ width: "100%", height: "250px" }}
                       className="homepage-top-khung"
                     >
-                      <img src={product.image} alt={product.image} />
+                      <img
+                        src={product.images && product.images[0]}
+                        alt={product.images && product.images[0]}
+                      />
                     </div>
                     <div className="mt-2">
                       <Link
+                        onClick={() => Handleonclickchuyentrang2(product)}
                         to={"/cuahang"}
                         style={{ opacity: "1" }}
                         className="product-title hover-underline-animation"

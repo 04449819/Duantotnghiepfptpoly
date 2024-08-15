@@ -57,7 +57,7 @@ const QuenMK = () => {
   };
 
   const CheckEmail = async (email) => {
-    dispatch(SetLoading(true));
+    // dispatch(SetLoading(true));
     setchecktaik(true);
     setTimeout(async () => {
       try {

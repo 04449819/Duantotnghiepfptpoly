@@ -55,11 +55,14 @@ namespace AppAPI.Controllers
                         join chiTietSanPham in _context.ChiTietSanPhams on chitiethoadon.IDCTSP equals chiTietSanPham.ID    
                         join ANH in _context.Anhs on chiTietSanPham.ID equals ANH.ID
                         join sanPham in _context.SanPhams on chiTietSanPham.IDSanPham equals sanPham.ID
+                        join hoaDon in _context.HoaDons on chitiethoadon.IDHoaDon equals hoaDon.ID
+
                         select new
                         {
                             ChiTietHoaDon = chitiethoadon,
                             ChiTietSanPham = chiTietSanPham,
                             SanPham = sanPham,
+                            HoaDon = hoaDon,
                             ANH = ANH
                         };
             return Ok(query);

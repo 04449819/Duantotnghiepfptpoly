@@ -12,6 +12,8 @@ namespace AppData.Models
 	{
 		public Guid Id { get; set; }
 		public Guid KhachHangID { get; set; }
+		public string? TenKhachHang {get; set; }
+		public string? sdt { get; set; }
 		public string DiaChi { get; set; }
 		public int TrangThai {get; set;}
 

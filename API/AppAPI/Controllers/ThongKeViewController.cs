@@ -20,7 +20,7 @@ namespace AppAPI.Controllers
         //GET: api/<ThongKeViewController>
         [HttpGet("ThongKeMSSanPhamBan")]
         public List<ThongKeMSSanPhamTheoSoLuong> ThongKeSanPhamMuaSapXep()
-        {
+        {   
             var result = _dbContext.ChiTietHoaDons
                 .Join(_dbContext.ChiTietSanPhams, cthd => cthd.IDCTSP, cts => cts.ID, (cthd, cts) => new { ChiTietHoaDon = cthd, ChiTietSanPham = cts })
                 .Join(_dbContext.SanPhams, cthd_cts => cthd_cts.ChiTietSanPham.IDSanPham, sp => sp.ID, (cthd_cts, sp) => new { ChiTietHoaDon_ChiTietSanPham = cthd_cts, SanPham = sp })

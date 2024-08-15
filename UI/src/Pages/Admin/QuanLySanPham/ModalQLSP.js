@@ -180,6 +180,19 @@ const ModalQLSP = (props) => {
     if (form.checkValidity() === false) {
       event.stopPropagation(); // Stop further event propagation if form is invalid
     } else {
+      // console.log(dataKT);
+      const checkdatakt = dataKT.find((p) => p.check === true);
+      // console.log(checkdatakt);
+      const checkdatams = dataMS.find((p) => p.check === true);
+      if (!checkdatams) {
+        setTTCTSP([]);
+        return toast.error("Vui lòng chọn màu sắc");
+      }
+      if (!checkdatakt) {
+        setTTCTSP([]);
+        return toast.error("Vui lòng chọn kích thước");
+      }
+
       if (soluongchung < 1 || giachung < 1)
         return toast.error("Số lượng và kích thước chung không được bé hơn 1");
       const dataTam = dataKT.flatMap((item) => {
@@ -320,6 +333,10 @@ const ModalQLSP = (props) => {
     setTTCTSP(datatam);
   };
   const HandleOnclickLuuThayDoi = async () => {
+    const checksl = TTCTSP.find((p) => p.soluong < 1);
+    const checkgb = TTCTSP.find((p) => p.giaban < 1);
+    if (checksl) return toast.error("số lượng không được < 1");
+    if (checkgb) return toast.error("giá bán không được < 1");
     if (TTCTSP.filter((p) => p.check !== false).length > 0) {
       const listctsp = TTCTSP.map((p) => {
         if (p.check === true) {
@@ -592,10 +609,12 @@ const ModalQLSP = (props) => {
                             backgroundColor: item.ma,
                             height: "25px",
                             textAlign: "center",
-                            fontSize: "16px",
+                            fontSize: "12px",
+                            paddingTop: "5px",
+                            overflow: "hidden",
                           }}
                         >
-                          {item.ma}
+                          {item.ten}
                         </div>
                       </div>
                     </div>
@@ -723,6 +742,7 @@ const ModalQLSP = (props) => {
                     <input
                       className="w-100 mt-3"
                       type="number"
+                      // min="1"
                       value={item.soluong}
                       name="soluong"
                       onChange={(event) => handleOnChange(event, item)}

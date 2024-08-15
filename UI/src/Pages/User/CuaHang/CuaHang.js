@@ -2,18 +2,38 @@ import { Link, useNavigate } from "react-router-dom";
 import "./cuahang.scss";
 import { useEffect, useState } from "react";
 import { MdApps, MdViewComfy } from "react-icons/md";
-import { FaBeer } from "react-icons/fa";
+// import { useScroll } from "react-use";
 import axios from "axios";
+// import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import ReactPaginate from "react-paginate";
+import {
+  DeleteLoaisp,
+  setidloaisp,
+} from "../../../Rudux/Reducer/IDLoaiSPSlice";
+import { setchitietsp } from "../../../Rudux/Reducer/chitietsanphamonl";
 const CuaHang = () => {
   const [showProductGroup, setShowProductGroup] = useState(false);
   const [showProductGroup1, setShowProductGroup1] = useState(false);
   const [showProductGroup2, setShowProductGroup2] = useState(false);
   const [showProductGroup3, setShowProductGroup3] = useState(false);
-  const [kichthuoc, setkichthuoc] = useState({ ktanh: "300px", kt: "col-4" });
+  const [kichthuoc, setkichthuoc] = useState({ ktanh: "250px", kt: "col-4" });
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(10000);
   const [view, setView] = useState("list");
   const [data, setdata] = useState([]);
+  const [dataLSP, setdataLSP] = useState([]);
+  const [page, setpage] = useState(1);
+  const [sotrang, setsotrang] = useState(0);
+  const [ten, setten] = useState("Tất cả sản phẩm");
+  const loaisp = useSelector((p) => p.setidloaisp.loaisp);
+  const [sapxep, setSapxep] = useState("");
+  const [dataKT, setdataKT] = useState([]);
+  const [dataMS, setdataMS] = useState([]);
+  const [ms, setms] = useState("");
+  const [kt, setkt] = useState("");
+  const [mausac, setmausac] = useState("");
+  const [kichthuocc, setkichthuocc] = useState("");
   const navigate = useNavigate();
   const toggleProductGroup = () => {
     setShowProductGroup(!showProductGroup);
@@ -30,136 +50,178 @@ const CuaHang = () => {
 
   const HandleOclicksetkt = () => {
     setView("grid");
-    setkichthuoc({ ktanh: "200px", kt: "col-3" });
+    setkichthuoc({ ktanh: "150px", kt: "col-3" });
   };
   const HandleOclicksetkt1 = () => {
     setView("list");
-    setkichthuoc({ ktanh: "300px", kt: "col-4" });
+    setkichthuoc({ ktanh: "250px", kt: "col-4" });
   };
 
-  const Handleonclickchuyentrang = () => {
+  const Handleonclickchuyentrang = (product) => {
+    // console.log(product);
+    dispath(setchitietsp(product));
     navigate("/chitietsanpham");
   };
 
-  useEffect(() => {
-    // toast.dismiss();
-    getSanPhamBanHang();
-  }, []);
+  // const { scrollY } = useScroll();
 
-  const getSanPhamBanHang = async () => {
-    const res = await axios.get(
-      "https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=1&productsPerPage=15"
-    );
-    console.log(res.data.sanPham);
-    setdata(res.data.sanPham);
+  // const handleScroll = () => {
+  //   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+  //     toast.success("ok");
+  //     // if (page < sotrang) {
+  //     setpage(page + 1);
+  //     // }
+  //   }
+  // };
+
+  const scrollToTop = (event) => {
+    setpage(event.selected + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const products = [
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEZX2-naUl3LtHD7jRXWXnF-_ek5uep8R2YA&s",
-      title: "Áo",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjkPIlhIdx6LHsQkLpAGRi5K10fgE0hUL8Rw&s",
-      title: "Hoodie - Sweater",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fGWWwfxh8YFRD_nFsE1yl30fMiTe7oPaHA&s",
-      title: "Áo Khoác",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX-_h3lQV0U6fhZdBo3MYcK5lTupdqQoN6vg&s",
-      title: "Áo Sơ mi",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm7FDjsHKFiOsje28d5xHFtGk9zbkA4iV4Yw&s",
-      title: "Áo Thun",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyhdWrvgaByHH59L4NJHL3zf8NihxADPl14Q&s",
-      title: "Áo Polos",
-    },
-  ];
-  const products1 = [
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-8nz-A_F5dqMvpmlTYLhkwI3Gmv7AkbVIYQ&s",
-      name: "Áo Thun Họa Tiết Catus Long Tee Old Sailor",
-      code: "ATDE88593",
-      price: 315.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyhdWrvgaByHH59L4NJHL3zf8NihxADPl14Q&s",
-      name: "Áo Thun Họa Tiết Catus Long Tee Old Sailor",
-      code: "ATGA88593",
-      price: 15.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNMw0HUO-cZNVW_hHp2LyzQN1IkBKEJIV7cw&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqP5KATE4sVMZbzQa8Zqat-1E5SptjXNWv3Q&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmDoF-gZPGl2KpHeDWjt4hMjjIx5EIv7cOFw&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ0QMfTniq-qX4IYLIHY-99tLdnPd979ARkA&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH33noIuAii9spah65aLVu4-rlFaDdruD4AA&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Gzdy3TtJt8p1Scz9nO4aXOE1j4Rk7GtRGw&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Gzdy3TtJt8p1Scz9nO4aXOE1j4Rk7GtRGw&s",
-      name: "Áo Sơ Mi Kẻ Sọc Vải Sợi Tre Old Sailor",
-      code: "SMXD88598",
-      price: 400.000,
-    },
-  ];
+  useEffect(() => {
+    // console.log(loaisp);
+    if (loaisp.title !== undefined) {
+      setten(loaisp.title);
+    } else {
+      setten("Tất cả sản phẩm");
+    }
 
-  const sizes = [["S", "m", "l", "xl", "2xl", "3xl"]];
+    const fetchData = async () => {
+      if (page === 1) {
+        await getSanPhamBanHang(page, loaisp.id);
+        await getLoaiSanPhamBanHang();
+        await getdataKT();
+        await getdataMS();
+      } else {
+        await getSanPhamBanHang(page, loaisp.id);
+      }
+    };
+    fetchData();
+    // window.addEventListener("scroll", handleScroll);
+    // return () => {
+    //   window.removeEventListener("scroll", handleScroll);
+    // };
+  }, [page, loaisp, sapxep, ms, kt, minVal, maxVal]);
 
-  const colors = [
-    { name: "Ruốc", color: "#D8A8B6" },
-    { name: "Be", color: "#D1B689" },
-    { name: "Rêu", color: "#8A9A5B" },
-    { name: "Xanh lá", color: "#4CAF50" },
-  ];
+  const getSanPhamBanHang = async (page, idloaisp) => {
+    try {
+      const url = idloaisp
+        ? `https://localhost:7095/api/SanPham/getSPbanhangonl?loaiSanPham=${idloaisp}&sapxep=${sapxep}&idkt=${kt}&idms=${ms}&giaMin=${
+            minVal * 1000
+          }&GiaMax=${maxVal * 1000}&currentPage=${page}&productsPerPage=24`
+        : `https://localhost:7095/api/SanPham/getSPbanhangonl?sapxep=${sapxep}&idkt=${kt}&idms=${ms}&giaMin=${
+            minVal * 1000
+          }&GiaMax=${maxVal * 1000}&currentPage=${page}&productsPerPage=24`;
+      const res = await axios.get(url);
+      setdata(res.data.sp);
+      console.log(res.data.sp);
+      setsotrang(res.data.sotrang);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Handle error (e.g., show a toast notification)
+    }
+  };
+
+  const getLoaiSanPhamBanHang = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/SanPham/getLoaiSPbanhangonl"
+      );
+      // console.log(res.data.sanPham);
+      const dslsp = res.data.map((p) => {
+        return { ...p, check: false };
+      });
+      setdataLSP(dslsp);
+    } catch (error) {}
+  };
+
+  const getdataKT = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/KichCo/GetAllKichCo"
+      );
+      if (res.data.length > 0) {
+        const dataa = res.data.map((item) => {
+          return { ...item, check: false };
+        });
+        setdataKT(dataa.filter((p) => p.trangThai !== 0));
+        // setdataKT(dataa);
+      }
+    } catch (error) {}
+  };
+
+  const getdataMS = async () => {
+    try {
+      const res = await axios.get(
+        "https://localhost:7095/api/MauSac/GetAllMauSac"
+      );
+      if (res.data.length > 0) {
+        const dataa = res.data.map((item) => {
+          return { ...item, check: false };
+        });
+        setdataMS(dataa.filter((p) => p.trangThai !== 0));
+      }
+    } catch (error) {}
+  };
+  const dispath = useDispatch();
+  const handleOnclickLoaisp = (product) => {
+    dispath(setidloaisp(product));
+    setpage(1);
+  };
+
+  const HandleoclickTitledelete = () => {
+    dispath(DeleteLoaisp());
+    setpage(1);
+  };
+
+  const HandleOnchangeCheck = (data) => {
+    console.log(data);
+    dispath(setidloaisp(data));
+    const ds = dataLSP.map((p) => {
+      if (p.id === data.id) {
+        return { ...p, check: !p.check };
+      }
+      return { ...p, check: false };
+    });
+
+    setdataLSP(ds);
+  };
+
+  const HandleOnclickChonKT = (data) => {
+    const ds = dataKT.map((p) => {
+      if (p.id === data.id) {
+        return { ...p, check: !p.check };
+      }
+      return { ...p, check: false };
+    });
+
+    setdataKT(ds);
+    setkt(data.id);
+    setkichthuocc(data.ten);
+  };
+  const HandleOnclickChonMS = (data) => {
+    const ds = dataMS.map((p) => {
+      if (p.id === data.id) {
+        return { ...p, check: !p.check };
+      }
+      return { ...p, check: false };
+    });
+
+    setdataMS(ds);
+    setms(data.id);
+    setmausac(data.ten);
+  };
+  const HandleOnclickDeleteKT = () => {
+    setkichthuocc("");
+    setkt("");
+  };
+
+  const HandleOnclickDeleteMS = () => {
+    setmausac("");
+    setms("");
+  };
+
   return (
     <div>
       <div className="w-75 mx-auto" style={{ backgroundColor: "white" }}>
@@ -169,25 +231,31 @@ const CuaHang = () => {
         {/* <hr /> */}
         <div className=" mx-auto" style={{ width: "85%" }}>
           <div className="product-list">
-            {products.map((product, index) => (
-              <div className="product-card" key={index}>
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="product-image"
-                />
-
-                {/* <p className="product-title">{product.title}</p> */}
-                <div className="mt-3">
-                  <Link
-                    to="/cuahang"
-                    className="product-title hover-underline-animation"
+            {dataLSP &&
+              dataLSP.map((product, index) => (
+                <div className="product-card" key={index}>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleOnclickLoaisp(product)}
                   >
-                    {product.title}
-                  </Link>
+                    <img
+                      src={product.images[0]}
+                      alt={product.title}
+                      className="product-image"
+                    />
+                  </div>
+
+                  {/* <p className="product-title">{product.title}</p> */}
+                  <div className="mt-3">
+                    <Link
+                      onClick={() => handleOnclickLoaisp(product)}
+                      className="product-title hover-underline-animation"
+                    >
+                      {product.title}
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
         <div className="mt-5">
@@ -202,28 +270,44 @@ const CuaHang = () => {
           </div>
         </div>
         <div>
-          <div className="sort-options ms-auto mt-3 me-3">
-            <div className="view-icons">
-              <span
-                className={`icon ${view === "list" ? "active" : ""}`}
-                onClick={HandleOclicksetkt1}
-              >
-                <MdViewComfy />
-              </span>
-              <span
-                className={`icon ${view === "grid" ? "active" : ""}`}
-                onClick={HandleOclicksetkt}
-              >
-                <MdApps />
-              </span>
+          <div className="row mt-4 ">
+            <div className="col-9">
+              <div className="w-50 ms-auto">
+                <div className="d-flex">
+                  <h3 className="mt-2 me-1">{ten}</h3>
+                  <div
+                    onClick={HandleoclickTitledelete}
+                    className=" tilte-delete"
+                    hidden={loaisp.title === undefined ? true : false}
+                  >
+                    <p>x</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="sort-by">
-              <select>
-                <option value="price">Sắp xếp theo</option>
-                <option value="price">Giá cao nhất</option>
-                <option value="popularity">Giá rẻ nhất</option>
-                <option value="rating">Bán chạy nhất</option>
-              </select>
+            <div className="sort-options col-3">
+              <div className="view-icons">
+                <span
+                  className={`icon ${view === "list" ? "active" : ""}`}
+                  onClick={HandleOclicksetkt1}
+                >
+                  <MdViewComfy />
+                </span>
+                <span
+                  className={`icon ${view === "grid" ? "active" : ""}`}
+                  onClick={HandleOclicksetkt}
+                >
+                  <MdApps />
+                </span>
+              </div>
+              <div className="sort-by">
+                <select onChange={(event) => setSapxep(event.target.value)}>
+                  <option value="">Sắp xếp theo</option>
+                  <option value="1">Giá cao nhất</option>
+                  <option value="2">Giá rẻ nhất</option>
+                  <option value="3">Mới nhất</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -233,6 +317,50 @@ const CuaHang = () => {
             <div className="col-3">
               <div className="filter-panel">
                 <div className="filter-group">
+                  <div>
+                    <div
+                      className="row w-75 mx-auto"
+                      hidden={mausac === "" ? true : false}
+                      style={{
+                        border: "1px solid black",
+                        padding: "3px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <div className="col-10 my-0">{mausac}</div>
+                      <div
+                        onClick={HandleOnclickDeleteMS}
+                        style={{ cursor: "pointer" }}
+                        className="col-2 my-0"
+                      >
+                        x
+                      </div>
+                    </div>
+                    <div
+                      className="row w-75 mx-auto"
+                      hidden={kichthuocc === "" ? true : false}
+                      style={{
+                        border: "1px solid black",
+                        marginLeft: "10px",
+                        padding: "3px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <div className="col-10 my-0">{kichthuocc}</div>
+                      <div
+                        onClick={HandleOnclickDeleteKT}
+                        style={{ cursor: "pointer" }}
+                        className="col-2 my-0 "
+                      >
+                        x
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  hidden={loaisp.title !== undefined ? true : false}
+                  className="filter-group"
+                >
                   <h4 onClick={toggleProductGroup}>
                     NHÓM SẢN PHẨM
                     <span className="toggle-icon">
@@ -241,26 +369,18 @@ const CuaHang = () => {
                   </h4>
                   {showProductGroup && (
                     <div className="filter-options">
-                      <div>
-                        <input type="checkbox" id="hoodie" />
-                        <label htmlFor="hoodie">Hoodie - Sweater</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="aokhoac" />
-                        <label htmlFor="aokhoac">Áo Khoác</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="aosomi" />
-                        <label htmlFor="aosomi">Áo Sơ mi</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="aothun" />
-                        <label htmlFor="aothun">Áo Thun</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="aopolos" />
-                        <label htmlFor="aopolos">Áo Polos</label>
-                      </div>
+                      {dataLSP &&
+                        dataLSP.map((data) => (
+                          <div key={data.id}>
+                            <label
+                              style={{ cursor: "pointer" }}
+                              onClick={() => HandleOnchangeCheck(data)}
+                              htmlFor="hoodie"
+                            >
+                              {data.title}
+                            </label>
+                          </div>
+                        ))}
                     </div>
                   )}
                 </div>
@@ -268,20 +388,33 @@ const CuaHang = () => {
                   <h4 onClick={toggleProductGroup1}>
                     SIZE
                     <span className="toggle-icon">
-                      {showProductGroup ? "▲" : "▼"}
+                      {showProductGroup1 ? "▲" : "▼"}
                     </span>
                   </h4>
                   {showProductGroup1 && (
                     <div className="size-grid">
-                      {sizes.map((row, rowIndex) => (
-                        <div key={rowIndex} className="size-row">
-                          {row.map((size, colIndex) => (
-                            <div key={colIndex} className="size-item">
-                              {size}
+                      {dataKT &&
+                        dataKT.map((kt) => (
+                          <div key={kt.id} className="row">
+                            <div
+                              style={{
+                                border: "1px solid black",
+                                width: "40px",
+                                padding: "0px",
+                                textAlign: "center",
+                                margin: "0px",
+                                cursor: "pointer",
+                                color: kt.check === true ? "white" : "black",
+                                backgroundColor:
+                                  kt.check === true ? "black" : "white",
+                              }}
+                              className="col-2"
+                              onClick={() => HandleOnclickChonKT(kt)}
+                            >
+                              {kt.ten}
                             </div>
-                          ))}
-                        </div>
-                      ))}
+                          </div>
+                        ))}
                     </div>
                   )}
                 </div>
@@ -289,18 +422,29 @@ const CuaHang = () => {
                   <h4 onClick={toggleProductGroup2}>
                     MÀU SẮC
                     <span className="toggle-icon">
-                      {showProductGroup ? "▲" : "▼"}
+                      {showProductGroup2 ? "▲" : "▼"}
                     </span>
                   </h4>
                   {showProductGroup2 && (
                     <div className="color-list">
-                      {colors.map((color, index) => (
-                        <div key={index} className="color-item">
+                      {dataMS.map((ms) => (
+                        <div
+                          key={ms.id}
+                          className="color-item"
+                          style={{
+                            color: ms.check === true ? "white" : "black",
+                            cursor: "pointer",
+                            backgroundColor:
+                              ms.check === true ? "gray" : "white",
+                            margin: "0px",
+                          }}
+                          onClick={() => HandleOnclickChonMS(ms)}
+                        >
                           <span
                             className="color-box"
-                            style={{ backgroundColor: color.color }}
+                            style={{ backgroundColor: ms.ma }}
                           ></span>
-                          {color.name}
+                          {ms.ten}
                         </div>
                       ))}
                     </div>
@@ -377,49 +521,62 @@ const CuaHang = () => {
             </div>
             <div className="col-9">
               <div className="row">
-                {products.map((product, index) => (
-                  <div key={index} className={`${kichthuoc.kt} mt-1`}>
-                    <div className="product-listt mx-auto product-card1">
-                      <button
-                        onClick={Handleonclickchuyentrang}
-                        style={{ border: "none", backgroundColor: "#e1e1e1" }}
-                      >
-                        <img
-                          style={{ height: kichthuoc.ktanh }}
-                          src={product.image}
-                          alt={product.image}
-                        />
-                      </button>
-                      <button
-                        onClick={Handleonclickchuyentrang}
-                        style={{ border: "none", backgroundColor: "#e1e1e1" }}
-                      >
-                        <div className="product-info">
-                          <h3>{product.title}</h3>
-                          <p>{product.code}</p>
-                          <p>
-                            {product.price
-                            }
-                          </p>
-                        </div>
-                      </button>
+                {data &&
+                  data.map((product, index) => (
+                    <div key={index} className={`${kichthuoc.kt} mt-1`}>
+                      <div className="product-listt mx-auto product-card1">
+                        <button
+                          onClick={() => Handleonclickchuyentrang(product)}
+                          style={{ border: "none", backgroundColor: "#e1e1e1" }}
+                        >
+                          <img
+                            style={{ height: kichthuoc.ktanh }}
+                            src={product.ctsp[0].anh}
+                            alt={product.ctsp[0].anh}
+                          />
+                        </button>
+                        <button
+                          onClick={() => Handleonclickchuyentrang(product)}
+                          style={{ border: "none", backgroundColor: "#e1e1e1" }}
+                        >
+                          <div className="product-info">
+                            <h3>{product.ctsp[0].tensp}</h3>
+                            <p>{product.ctsp[0].ma}</p>
+                            <p>
+                              {product.ctsp[0].giaban.toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </p>
+                          </div>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
               <div>
-                <div className="w-25 mx-auto">
+                <div className="w-50 mx-auto mt-5">
                   <div className="w-75 mx-auto">
-                    <button
-                      style={{
-                        fontSize: "20px",
-                        opacity: "0.8",
-                        borderRadius: "5px",
-                      }}
-                      className="ms-4 mt-4"
-                    >
-                      Hiện thêm
-                    </button>
+                    <ReactPaginate
+                      nextLabel="Trang kế >"
+                      onPageChange={scrollToTop}
+                      pageRangeDisplayed={3}
+                      marginPagesDisplayed={2}
+                      pageCount={sotrang}
+                      previousLabel="< Trang trước"
+                      pageClassName="page-item"
+                      pageLinkClassName="page-link"
+                      previousClassName="page-item"
+                      previousLinkClassName="page-link"
+                      nextClassName="page-item"
+                      nextLinkClassName="page-link"
+                      breakLabel="..."
+                      breakClassName="page-item"
+                      breakLinkClassName="page-link"
+                      containerClassName="pagination"
+                      activeClassName="active"
+                      renderOnZeroPageCount={null}
+                    />
                   </div>
                 </div>
               </div>

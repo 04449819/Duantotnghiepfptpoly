@@ -37,6 +37,7 @@ namespace AppData.Models
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
+
 		}
 		//THUYNHU\SQLEXPRESS
 		//DESKTOP-UOIH77U\SQLEXPRESS

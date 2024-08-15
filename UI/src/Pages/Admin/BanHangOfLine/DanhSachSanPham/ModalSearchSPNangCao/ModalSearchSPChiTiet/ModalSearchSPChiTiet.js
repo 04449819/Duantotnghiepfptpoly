@@ -118,6 +118,12 @@ const ModalSearchSPChiTiet = (props) => {
   };
   const dispatch = useDispatch();
   const handleOclickMuaHang = () => {
+    console.log(MauSac);
+    console.log(kichthuoc);
+    const checkms = MauSac.find((p) => p.trangthai === false);
+    if (checkms === undefined) return toast.error("Vui lòng chọn màu sắc");
+    const checkkt = kichthuoc.find((p) => p.trangthai === false);
+    if (checkkt === undefined) return toast.error("Vui lòng chọn kích thước");
     dispatch(SetLoading(true));
     setTimeout(() => {
       const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
@@ -126,7 +132,7 @@ const ModalSearchSPChiTiet = (props) => {
         toast.success("Sản phẩm đã được thêm vào giỏ hàng");
         dispatch(SetLoading(false));
       } else {
-        toast.error("Chọn màu sắc và kích thước trước khi mua hàng");
+        toast.error("Thêm sản phẩm thất bại");
         dispatch(SetLoading(false));
       }
     }, 3000);
@@ -153,10 +159,9 @@ const ModalSearchSPChiTiet = (props) => {
                   </div>
                   <div className="SPduocchon_body_imgsmall d-flex">
                     {imgSmall.map((item, index) => (
-                      <div style={{ cursor: "pointer" }}>
+                      <div key={index} style={{ cursor: "pointer" }}>
                         <img
                           onClick={() => HandleOnclickCHonAnh(item)}
-                          key={index}
                           src={item}
                           alt="Product"
                         />

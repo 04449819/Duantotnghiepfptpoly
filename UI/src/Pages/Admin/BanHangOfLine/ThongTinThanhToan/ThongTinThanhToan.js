@@ -46,56 +46,6 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [tienGiamVoucher, setTienGiamVoucher] = useState(0);
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const componentRef = useRef();
-  
-  
-  // const getVoucher = async () => {
-  //   try {
-  //     const res = await axios.get(`https://localhost:7095/api/Voucher/fillvoucher/${TongGia}`);
-  //     setVoucher(res.data.voucher);
-      
-  //     // set tong gia cùng vs 
-  //     let TongGiaSP = hoaDon.SanPhams.reduce((acc, item) => {
-  //       // Cung cấp giá trị mặc định nếu giá trị không tồn tại hoặc không hợp lệ
-  //       const giaBan = Number(item.GiaBan) || 0;
-  //       const soLuongMua = Number(item.SoLuongMua) || 0;
-  //       const giaTriKhuyenMai = Number(item.giaTriKhuyenMai) || 0;
-  //       // Tính toán giá trị đã điều chỉnh sau khuyến mãi
-  //       const adjustedPrice = (giaBan - giaTriKhuyenMai) * soLuongMua;
-  //       // Tích lũy vào tổng 
-  //       return acc + adjustedPrice;
-  //     }, 0);
-  
-  //     let tienGiamVoucher = 0;
-  //     if(voucher && TongGiaSP >= voucher.soTienCan){
-  //       if(voucher.hinhThucGiamGia === 0) {
-  //         tienGiamVoucher = voucher.giaTri;
-  //       } else {
-  //         tienGiamVoucher = TongGiaSP * (voucher.giaTri / 100);
-  //       }
-  //       TongGiaSP -= tienGiamVoucher;
-  //     }
-  //     setTienGiamVoucher(tienGiamVoucher);
-  //     if(isGiaoHang){
-  //       if(hoaDon.TienShip){
-  //         TongGiaSP += Number(hoaDon.TienShip);
-  //       }
-  //     }
-  
-  //     let tienGiamDiem = 0;
-  //     let soDiemDung = 0;
-  //     if (isDiemTichLuy) {
-  //       tienGiamDiem = Math.min(diemTichLuy * 100, TongGiaSP);
-  //       soDiemDung = Math.ceil(tienGiamDiem / 100);
-  //       TongGiaSP = Math.max(0, TongGiaSP - tienGiamDiem);
-  //     }
-      
-  //     setTienGiamDiem(tienGiamDiem);
-  //     setSoDiemSuDung(soDiemDung);
-  //     setTongGia(TongGiaSP);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
  
 const calculateTotalPrice = (products) => {
   return products.reduce((acc, item) => {
@@ -199,9 +149,7 @@ useEffect(() => {
   useEffect(() => {
     getPTTTByIdHoaDon();
   }, [idHoaDon]);
-  // useEffect(() => {
-  //   getVoucher();
-  // },[idHoaDon, isDiemTichLuy, hoaDon.SanPhams ]);
+
   useEffect(() => {
     fetchPttts();
   },[]);
@@ -221,6 +169,7 @@ useEffect(() => {
         SanPhams: sanPhamsUpdate,
     }));
     
+    console.log("DATA: ",data);
     
   
 }, [ data, name, phone, email, address]);
@@ -228,10 +177,7 @@ useEffect(() => {
   getDiemTichLuy();
   
 }, [isDiemTichLuy, diemTichLuy, phone]);
-  // useEffect(() => {
-  //   updateTongTien();
-
-  // }, [ hoaDon.SanPhams, isDiemTichLuy, diemTichLuy, data, isGiaoHang,hoaDon.TienShip ]);
+ 
 
   useEffect(() => {
     setHoaDon(prevState => ({
@@ -239,48 +185,7 @@ useEffect(() => {
       SoDiemSuDung: soDiemSuDung
     }));
   }, [soDiemSuDung]);
-  // Tính toán tổng giá tiền, kèm theo xử lý voucher
-  // const updateTongTien = () => {
-  //   let TongGiaSP = hoaDon.SanPhams.reduce((acc, item) => {
-  //     // Cung cấp giá trị mặc định nếu giá trị không tồn tại hoặc không hợp lệ
-  //     const giaBan = Number(item.GiaBan) || 0;
-  //     const soLuongMua = Number(item.SoLuongMua) || 0;
-  //     const giaTriKhuyenMai = Number(item.giaTriKhuyenMai) || 0;
-  //     // Tính toán giá trị đã điều chỉnh sau khuyến mãi
-  //     const adjustedPrice = (giaBan - giaTriKhuyenMai) * soLuongMua;
-  //     // Tích lũy vào tổng 
-  //     return acc + adjustedPrice;
-  //   }, 0);
-
-  //   let tienGiamVoucher = 0;
-  //   if(voucher && TongGiaSP >= voucher.soTienCan){
-  //     if(voucher.hinhThucGiamGia === 0) {
-  //       tienGiamVoucher = voucher.giaTri;
-  //     } else {
-  //       tienGiamVoucher = TongGiaSP * (voucher.giaTri / 100);
-  //     }
-  //     TongGiaSP -= tienGiamVoucher;
-  //   }
-  //   setTienGiamVoucher(tienGiamVoucher);
-  //   if(isGiaoHang){
-  //     if(hoaDon.TienShip){
-  //       TongGiaSP += Number(hoaDon.TienShip);
-  //     }
-  //   }
-
-  //   let tienGiamDiem = 0;
-  //   let soDiemDung = 0;
-  //   if (isDiemTichLuy) {
-  //     tienGiamDiem = Math.min(diemTichLuy * 100, TongGiaSP);
-  //     soDiemDung = Math.ceil(tienGiamDiem / 100);
-  //     TongGiaSP = Math.max(0, TongGiaSP - tienGiamDiem);
-  //   }
-    
-  //   setTienGiamDiem(tienGiamDiem);
-  //   setSoDiemSuDung(soDiemDung);
-  //   setTongGia(TongGiaSP);
-   
-  // };
+  
   const handleClickGiaoHang = () => {
     setIsGiaoHang(!isGiaoHang);
   };
@@ -343,10 +248,10 @@ useEffect(() => {
     }
     return error;
   };
-  const handleSelectVoucher = (voucher) => {
-    setSelectedVoucher(voucher); 
-    setShowModal(false); 
-  }
+  // const handleSelectVoucher = (voucher) => {
+  //   setSelectedVoucher(voucher); 
+  //   setShowModal(false); 
+  // }
   const handleSelectPttt = (pttt) => {
     setSelectedPttt(pttt); 
     setShowModalPttt(false); 

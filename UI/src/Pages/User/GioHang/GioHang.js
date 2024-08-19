@@ -26,10 +26,52 @@ const GioHang = () => {
   const dispath = useDispatch();
   const [dsspgiohangs, setdsspgiohangs] = useState([]);
   const [provinces, setprovinces] = useState([]);
-  const [districts, setdistricts] = useState([]);
+  const [districts, setdistricts] = useState([]); 
   const [dckh, setdckh] = useState([]);
   const [tongTien, setTongTien] = useState(0);
   const [load, setload] = useState(false);
+  const [hoaDonOnline, setHoaDonOnline] = useState({
+    TenKhachHang: '',
+    SDT: '',
+    Email: '',
+    DiaChi: '',
+    SanPhams: [],
+    IdVoucher: '',
+    GhiChu: '',
+    TrangThaiGiaoHang: 1,
+    TienShip: 0, 
+    IdPhuongThucThanhToan: '',
+    SoDiemSuDung: 0,
+    TongTienHoaDon: 0
+  });
+  const [voucher, setVoucher] = useState();
+  const soDiemSuDung = 0;
+
+  useEffect(() => {
+    console.log("DSSPGIOHANG: ",dsspgiohangs);
+    
+    const chiTietSanPhamGioHangs = dsspgiohangs.map(spgh => ({
+      IDCTSP: spgh.id,
+      SoLuongMua: spgh.soluongmua,
+      GiaBan: spgh.giaBan,
+      //giaTriKhuyenMai: spgh.giaTriKhuyenMai ?? 0,  
+  }));
+  setHoaDonOnline(prevState => ({
+    ...prevState,
+    SanPhams: chiTietSanPhamGioHangs,
+}));
+  },[dsspgiohangs])
+  useEffect(() => {
+    setHoaDonOnline(prevState => ({
+      ...prevState,
+      SoDiemSuDung: soDiemSuDung
+    }));
+  }, [soDiemSuDung]);
+  useEffect(() => {
+    console.log("User", user);
+    
+  }, [user]);
+
 
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
@@ -142,6 +184,30 @@ const GioHang = () => {
       toast.error(`Gặp lỗi: ${error.response.data}`);
     }
   };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setHoaDonOnline((prevHoaDonOnline) => ({
+      ...prevHoaDonOnline,
+      [id]: value
+    }));
+  }
+  const HandleDatHang = async () => {
+    try {
+      const hoaDonOnlineSubmit = {
+        ...hoaDonOnline,
+        IdVoucher: voucher ? voucher.id : null,
+      }
+      const res = await axios.post(
+        `https://localhost:7095/api/HoaDon/CreateHoaDonOnline, ${hoaDonOnlineSubmit} `
+      );
+      toast.success("Đặt hàng thành công");
+      setload(!load);
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+  };
+  
   return (
     <div className="GioHang pb-4">
       <div className="cart-container">
@@ -392,6 +458,7 @@ const GioHang = () => {
           <button
             className="complete-order-button"
             style={{ borderRadius: "5px" }}
+            onChange={HandleDatHang}
           >
             ĐẶT HÀNG
           </button>

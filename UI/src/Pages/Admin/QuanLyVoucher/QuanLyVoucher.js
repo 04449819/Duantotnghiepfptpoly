@@ -25,42 +25,44 @@ const QuanLyVoucher = () => {
   const [total, setTotal] = useState();
 
   useEffect(() => {
-    fetchVouchers(page);
+    fetchVouchers(page,false);
   }, []);
- 
 
-  const fetchVouchers = async (page1) => {
+  const fetchVouchers = async (page, refresh = false) => {
     try {
-      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page1}&pageSize=${ROWS_PER_PAGE}`);
+      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page}&pageSize=${ROWS_PER_PAGE}`);
       const data = res.data;
-      setVouchers(prev => [...prev, ...data.data]);
+  
+      // Nếu refresh là true, thay thế dữ liệu hiện tại. Nếu không, thêm vào cuối.
+      refresh ? setVouchers(data.data) : setVouchers(prev => [...prev, ...data.data]);
+      
       setTotal(data.total);
     } catch (error) {
-      
+      console.error('Lỗi khi tải dữ liệu:', error);
     }
-
   };
- 
     const handleScroll = async (e) => {
        const { scrollTop, scrollHeight, clientHeight } = e.target;
        const isBottom = scrollTop + clientHeight >= scrollHeight - 5;
        if (isBottom) {
         if(page < total){
-          fetchVouchers(page + 1);
+          fetchVouchers(page + 1,false);
           setPage(page + 1);
         }
        }
      
     };
-
+    
   const handleDelete = async (voucherId) => {
     try {
       await axios.delete(`https://localhost:7095/api/Voucher/${voucherId}`);
-      fetchVouchers(1);
+      // Gọi với refresh để làm mới dữ liệu
+      fetchVouchers(1, true);
+      setPage(1); 
     } catch (error) {
-      console.error('Error deleting voucher:', error);
+      console.error('Lỗi khi xóa voucher:', error);
     }
-  };            
+  };
   const handleShowModal = () => {
     setShowModal(true); 
   }
@@ -111,7 +113,8 @@ const QuanLyVoucher = () => {
         moTa: '',
         trangThai: 0,
       });
-      fetchVouchers(1);       
+      fetchVouchers(1, true);
+      setPage(1); 
     } catch (error) {
       console.error('Error creating/updating voucher:', error);
     }

@@ -21,9 +21,12 @@ const ReactSideBar = () => {
   const user = useSelector((state) => state.user.User);
 
   useEffect(() => {
-    setemailUser(localStorage.getItem("useremail"));
+    // Assuming email is used for display purposes, not for profile navigation
     console.log(user);
-  }, []);
+  }, [user]);
+  const handleViewProfile = () => {
+    navigate(`/admin/profile/${user.id}`);
+  };
   //vaiTro
   const HandleOnclickLogout = () => {
     Swal.fire({
@@ -243,6 +246,11 @@ const ReactSideBar = () => {
                       menuVariant="dark"
                       style={{ marginLeft: "10px" }}
                     >
+
+                      <NavDropdown.Item onClick={handleViewProfile}>
+                        Xem hồ sơ
+                      </NavDropdown.Item>
+
                       <NavDropdown.Item
                         href="#action/3.1"
                         onClick={HandleOnclickLogout}

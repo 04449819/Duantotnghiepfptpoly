@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import BarLoader from "react-spinners/BarLoader";
 import BeatLoader from "react-spinners/BeatLoader";
 import { useSelector } from "react-redux";
+
 const Index = () => {
   const loading = useSelector((p) => p.Loading.Loading);
 

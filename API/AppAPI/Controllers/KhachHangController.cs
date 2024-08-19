@@ -60,6 +60,7 @@ namespace AppAPI.Controllers
                 SDT=p.SDT,
                 DiemTich=p.DiemTich,
                 TrangThai=p.TrangThai,
+                email=p.Email,
                 DiaChi = _dbcontext.diaChiKhachHangs.FirstOrDefault(a=>a.KhachHangID==p.IDKhachHang && a.TrangThai==1).DiaChi,
             }).ToListAsync();
             return Ok(kh);
@@ -315,9 +316,10 @@ namespace AppAPI.Controllers
 		{
 
             var check = await _dbcontext.KhachHangs.FindAsync(id);
+
 			if (check == null)
 			{
-				return NotFound("Khách hàng không tồn tại");
+				return NotFound("Khách hàng không tồn tại");    
 			}
 			check.Ten = khachHang.Ten;
             check.GioiTinh = khachHang.GioiTinh;
@@ -332,13 +334,13 @@ namespace AppAPI.Controllers
                 var checkEmailNv = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khachHang.Email);
                 if (checkEmail != null || checkEmailNv != null)
                 {
-                    return Ok("Email đã tồn tại");
+                    return Ok("1");
 					
 				}
 				check.Email = khachHang.Email;
 			};
 			if (check.SDT == khachHang.SDT)
-			{
+			{   
 				check.SDT = khachHang.SDT;
 			}
 			else
@@ -348,7 +350,7 @@ namespace AppAPI.Controllers
              
                 if (checksdt != null || checksdtNv != null )
 				{
-					return Ok("SĐT đã tồn tại");
+					return Ok("2");
 
 				}
 				check.SDT = khachHang.SDT;
@@ -372,8 +374,24 @@ namespace AppAPI.Controllers
 
 			 _dbcontext.KhachHangs.Update(check);
 			await _dbcontext.SaveChangesAsync();
-			return Ok("Update thành công");
+			return Ok("0");
 		}
-		#endregion
-	}
+        #endregion
+        
+
+        #region KhachHangTung
+        [HttpGet("tong-hop-diem/{sdtOrMail}")]
+        public IActionResult TongHopDiem(string sdtOrMail)
+        {
+            var khachHang = _khachHangService.GetBySDT(sdtOrMail);
+            if (khachHang == null)
+            {
+                return NotFound("Không tìm thấy khách hàng");
+            }   
+            int diemTich = _khachHangService.TongHopDiem(khachHang.IDKhachHang);
+            return Ok(diemTich);
+        }
+        #endregion
+
+    }
 }

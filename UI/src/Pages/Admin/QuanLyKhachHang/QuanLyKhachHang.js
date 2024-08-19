@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 import { Table } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { set } from "lodash";
 const QuanLyKhachHang = () => {
   const dispath = useDispatch();
 
@@ -93,10 +94,7 @@ const QuanLyKhachHang = () => {
 
  const handleClickSearch = async (event) =>{
   event.preventDefault();
- 
- 
   if (inputValue === ""){
-   
     handleReload();
   }else{
     dispath(SetLoading(true));
@@ -106,15 +104,17 @@ const QuanLyKhachHang = () => {
         // Kiểm tra nếu inputValue là số điện thoại (chỉ chứa số và có độ dài 10-11 ký tự)
         const phoneRegex = /^[0-9]{10,11}$/;
         if (phoneRegex.test(inputValue)) {
-            res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?sdt=${inputValue}`);
+            res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?sdt=${inputValue}`)
         } else  {
-          res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);
+          res = await axios.get(`https://localhost:7095/api/KhachHang/TimKiemKH?Ten=${inputValue}`);    
         } 
         console.error('success', res.data);
         setdata(res.data);
          dispath(SetLoading(false));
          if(res.data.length < 1){
           toast.error("Không tìm thấy khách hàng ")
+          laydata(1);
+          SetSotrang(1);
           dispath(SetLoading(false));
            return;
          } 
@@ -167,7 +167,7 @@ const QuanLyKhachHang = () => {
     //  }
   };
 
-  if (data.length > 0) {
+  if (data) {
     return (
       <div className="QlKhachHang">
         <div className="DanhMucHienThi">Trang Khách Hàng</div>
@@ -206,7 +206,7 @@ const QuanLyKhachHang = () => {
                     <td>{item.sdt}</td>
                     <td>{item.diaChi}</td>
                     <td>{item.diemTich }</td>
-                    <td   style={{ color: item.trangThai === 1 ? "green" : "red" }}>{ item.trangThai === 0 ?"Đang Hoạt động" : "Không hoạt động" }</td>
+                    <td   style={{ color: item.trangThai === 1 ? "" : "red" }}>{ item.trangThai === 0 ?"Đang Hoạt động" : "Không hoạt động" }</td>
                     {
                       <td>
                         <button

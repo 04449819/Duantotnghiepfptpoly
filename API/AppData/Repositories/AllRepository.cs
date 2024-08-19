@@ -66,7 +66,7 @@ namespace AppData.Repositories
         {
             return dbset.ToList();
         }
-        public bool Update(T item)
+        public bool Update(T item)  
         {
             try
             {
@@ -78,6 +78,11 @@ namespace AppData.Repositories
             {
                 return false;
             }
+        }
+
+        public T GetById(Guid id)
+        {
+            return dbset.Find(id);
         }
     }
 }

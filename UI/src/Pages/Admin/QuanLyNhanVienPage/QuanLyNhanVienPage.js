@@ -70,12 +70,12 @@ const QuanLyNhanVienPage = () => {
         name: res.data.ten,
         email: res.data.email,
         sdt: res.data.sdt,
-        password: res.data.password,
+        password: res.data.passWord,
         diaChi: res.data.diaChi,
         vaitro: res.data.vaitro == null ? "" : res.data.vaitro,
         trangThai: res.data.trangThai == null ? "" : res.data.trangThai,
       });
-
+    
       console.log("data form", formData);
       handleShowEdit();
     }

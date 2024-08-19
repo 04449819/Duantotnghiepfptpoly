@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import "./QuanlyKhachHang.scss";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
+import { toast } from "react-toastify";
 
-const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
+const AddQuanLyKH = ({ handleSuccess, handleClose }) => {
   const dispath = useDispatch();
   // State to hold form data
   // const [formData, setFormData] = useState({
@@ -16,7 +17,6 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
     ten: "",
     email: "",
     password: "",
-    //confirmPassword: "",
     gioiTinh: "",
     ngaySinh: "",
     diaChi: "",
@@ -28,22 +28,15 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
   const [messageName, setMessageName] = useState("");
   const [messagePhone, setMessagePhone] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
-
-  const [messageDiaChi, setMessageDiaChi] = useState('');
+  const [messageAddress, setMessageAddress] = useState('');
   const [messagePassword, setMessagePassword] = useState('');
-
-  const [themnhanhh, setThemnhanhh] = useState(true);
-  // const [messageAddress, setMessageAddress] = useState('');
-
+  const [messageSex, setMessageSex] = useState('');
+  const [messageStatus, setMessageStatus] = useState('');
+  const [messagePoint, setMessagePoint] = useState('');
+  
+  
+  const [messageNgaySinh, setMessageNgaySinh] = useState('');
   // Handle input change
-
-  useEffect(() => {
-    if (themnhanh !== undefined) {
-      setThemnhanhh(false);
-    } else {
-      setThemnhanhh(true);
-    }
-  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -51,56 +44,115 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       [name]: value,
     });
   };
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-     // Perform form validation or submission logic here
-     console.log('Form submitted:', formData);
-     // Validate tên
-    // const nameRegex = /^[\p{L}\s]+$/u;
-     if ( formData.ten === undefined ) {
-       setMessageName('Tên không được để trống. Vui lòng nhập  ký tự.');
-       return;
-     } else if (formData.ten.length > 50) {
-       setMessageName('Tên quá dài. Vui lòng nhập không quá 50 ký tự.');
-       return;
-     }else if (formData.ten.length < 2) {
-      setMessageName('Tên quá ngắn. Vui lòng nhập trên 2 ký tự.');
+    
+    // Perform form validation or submission logic here
+    console.log("Form submitted:", formData);
+// Validate tên
+const trimmedName = formData.ten.trim();
+
+if (formData.ten !== trimmedName) {
+  setMessageName("Tên không được chứa khoảng trắng ở đầu hoặc cuối.");
+  return;
+} else if (trimmedName.length < 2) {
+  setMessageName("Tên quá ngắn. Vui lòng nhập ít nhất 2 ký tự.");
+  return;
+} else if (trimmedName.length > 50) {
+  setMessageName("Tên quá dài. Vui lòng nhập không quá 50 ký tự.");
+  return;
+} else {
+  setMessageName(""); // Clear the validation message if the name is valid
+}
+
+  ///validate ngày sinh
+  if (!formData.ngaySinh) {
+    setMessageNgaySinh("Vui lòng chọn ngày sinh. Ngày sinh không được để trống.");
+} else {
+    setMessageNgaySinh(""); // Clear the validation message if a date is selected
+}
+
+    // Validate password
+const passwordMinLength = 8;
+const trimmedPassword = formData.password ? formData.password.trim() : '';
+
+if (trimmedPassword === '') {
+  setMessagePassword("Mật khẩu không được để trống.");
+  return;
+} else if (trimmedPassword.length <= passwordMinLength) {
+  setMessagePassword(`Mật khẩu phải chứa nhiều hơn ${passwordMinLength} ký tự.`);
+  return;
+} else if (formData.password !== trimmedPassword) {
+  setMessagePassword("Mật khẩu không được chứa khoảng trắng ở đầu hoặc cuối.");
+  return;
+} else {
+  setMessagePassword(""); // Clear the validation message if the password is valid
+}
+
+    //  Validate Số email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (formData.email.trim() === '') {
+        setMessageEmail("Địa chỉ email không được để trống.");
+        return;
+    } else if (!emailRegex.test(formData.email)) {
+        setMessageEmail("Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.");
+        return;
+    } else {
+        setMessageEmail(""); // Clear the validation message if the email is valid and not empty
+    }
+    // Giới Tính 
+    if (!formData.gioiTinh) {
+      setMessageSex("Vui lòng chọn giới tính.");
       return;
-     }
-    //   else if (!nameRegex.test(formData.ten)) {
-    //    setMessageName('Tên không hợp lệ. Vui lòng chỉ nhập các chữ cái.');
-    //    return;
-    //  }
-    ////////////////////////////////////////////
-     //  Validate Số emai
-     const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-     if (!emailRegex.test(formData.email)) {
-       setMessageEmail('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.');
-       return;
-     }
-     // Validate Số Điện thoại
-     ///  /^[0-9]{10}$/
-     const phoneRegex = /^0\d{9}$/;
-     if (!formData.sdt || !phoneRegex.test(formData.sdt)) {
-         setMessagePhone(formData.sdt.length === 0 ? 
-             'Số điện thoại không được để trống.' : 
-             'Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.');
-         return;
-     }
-     // validate password
-     const passwordMinLength = 8;
-     if (!formData.password || formData.password.length < passwordMinLength) {
-         setMessagePassword(formData.password.length === 0 ? 
-             "Mật khẩu không được để trống." : 
-             `Mật khẩu quá ngắn. Vui lòng nhập ít nhất ${passwordMinLength} ký tự.`);
-         return;
-     }
-     // địa chỉ
-     if (!formData.address || formData.address.length === 0) {
-      setMessageDiaChi("Địa chỉ không được để trống.");
+  } else {
+    setMessageSex(""); // Clear the validation message if a gender is selected
+  } 
+  // Validate địa chỉ
+const trimmedAddress = formData.diaChi.trim();
+if (formData.diaChi !== trimmedAddress) {
+  setMessageAddress('Địa chỉ không được chứa khoảng trắng ở đầu hoặc cuối.');
+  return;
+} else if (trimmedAddress === '') {
+  setMessageAddress('Địa chỉ không được để trống.');
+  return;
+} else {
+  setMessageAddress(''); // Clear the validation message if the address is valid
+}
+    // Validate Số Điện thoại
+    const phoneRegex = /^0\d{9}$/;
+
+    if (!formData.sdt) {
+        setMessagePhone("Số điện thoại không được để trống.");
+        return;
+    } else if (!phoneRegex.test(formData.sdt)) {
+        setMessagePhone("Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.");
+        return;
+    } else {
+        setMessagePhone(""); // Clear the validation message if the phone number is valid
+    }
+    //Validate điểm tích 
+    // Validate điểm tích
+const diemTich = Number(formData.diemTich);
+
+if (isNaN(diemTich)) {
+  setMessagePoint("Điểm tích phải là một số.");
+  return;
+} else if (diemTich < 0) {
+  setMessagePoint("Điểm tích không được là số âm.");
+  return;
+} else {
+  setMessagePoint(""); // Clear the validation message if the điểm tích is valid
+}
+    //validate trạng thais
+    if (!formData.trangThai) {
+      setMessageStatus("Vui lòng chọn Trạng thái.");
       return;
-  }
+  } else {
+    setMessageStatus(""); // Clear the validation message if a gender is selected
+  } 
+
+    dispath(SetLoading(true));
     setTimeout(async () => {
       try {
         const response = await axios.post(
@@ -110,8 +162,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
             ten: formData.ten,
             email: formData.email,
             sdt: formData.sdt,
-            password: formData.password,
-            //confirmPassword: formData.confirmPassword,
+            password: formData.password,  
             gioiTinh: formData.gioiTinh,
             ngaySinh: formData.ngaySinh,
             diaChi: formData.diaChi,
@@ -120,6 +171,11 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           }
         );
         if (response.status === 200) {
+          if(response.data === true){
+            toast.success("Thêm thành công")
+          }else if(response.data === false){
+            toast.error("Số điện thoại hoặc email đã tồn tại")
+          }
           handleClose();
           handleSuccess();
         } else {
@@ -131,6 +187,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       }
     }, 3000);
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
@@ -149,7 +206,7 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
       <p style={{color : "red"}}>{messageName}</p>
       <div className="form-group">
         <label className="label" htmlFor="password">
-          Mật khẩu:
+          Password:
         </label>
         <input
           className="text_input"
@@ -158,13 +215,10 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          required={themnhanhh}
         />
       </div>
-      <p style={{color : "red"}}>
-        { messagePassword}</p>
+      <p style={{color : "red"}}>{messagePassword}</p>
       <div className="form-group">
-
         <label className="label" htmlFor="email">
           Email:
         </label>
@@ -175,31 +229,27 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          
         />
       </div>
-      <p style={{color : "red"}}>
-        {messageEmail}</p>
-
+      <p style={{color : "red"}}>{messageEmail}</p>
       <div className="form-group">
-
-       <label className='label' htmlFor="gioiTinh"> Giới Tính:</label>
+       <label className='label' htmlFor="gioiTinh"> Giới tính:</label>
         <select className='text_input'
         id="gioiTinh"
         name="gioiTinh"
         value={formData.gioiTinh}
         onChange={handleChange}
-        required
+       //required
          >
         <option value="">Chọn Giới Tính</option>
         <option value="0">Nam</option>
         <option value="1">Nữ</option>
        </select>
      </div>
-      <p>{messageEmail}</p>
+     <p style={{color : "red"}}>{messageSex}</p> 
       <div className="form-group">
-        <label  className="label" htmlFor="ngaySinh">
-          Ngày sinh:
+        <label className="label" htmlFor="ngaySinh">
+          Ngay sinh:
         </label>
         <input
           className="text_input"
@@ -208,9 +258,9 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           name="ngaySinh"
           value={formData.ngaySinh}
           onChange={handleChange}
-          required={themnhanhh}
         />
       </div>
+      <p>{messageNgaySinh}</p> 
       <div className="form-group">
         <label className="label" htmlFor="diaChi">
           Địa chỉ:
@@ -222,10 +272,9 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           name="diaChi"
           value={formData.diaChi}
           onChange={handleChange}
-          required
         />
       </div>
-       <p>{messageDiaChi}</p> 
+      <p style={{color : "red"}}>{messageAddress}</p>
       <div className="form-group">
         <label className="label" htmlFor="sdt">
           Số Điện Thoại:
@@ -239,48 +288,44 @@ const AddQuanLyKH = ({ handleSuccess, handleClose, themnhanh }) => {
           onChange={handleChange}
         />
       </div>
-      <p style={{color : "red"}}>
-        {messagePhone}</p>
+      <p style={{color : "red"}}>{messagePhone}</p>
+
       <div className="form-group">
         <label className="label" htmlFor="diemTich">
-          Điểm tích:
+          Diem Tich:
         </label>
         <input
           className="text_input"
-          type="text"
+          type="number"
           id="diemTich"
           name="diemTich"
           value={formData.diemTich}
           onChange={handleChange}
-          required={themnhanhh}
         />
       </div>
+      <p style={{color : "red"}}>{messagePoint}</p>
       <div className="form-group">
-
        <label className='label' htmlFor="trangThai"> Trạng thái:</label>
         <select className='text_input'
         id="trangThai"
         name="trangThai"
         value={formData.trangThai}
         onChange={handleChange}
-        required
          >
         <option value="">Chọn Trang thái</option>
         <option value="0">Đang hoạt động</option>
         <option value="1">Không hoạt động</option>
        </select>
+        <p style={{color : "red"}}>{messageStatus}</p> 
      </div>
-
-
-
       <button type="submit" className="submit-button">
-        Submit
+        Thêm
       </button>
     </form>
   );
 };
 /////////////////////////////////////////////////////////////////////
-const MyModalAdd = ({ show, handleClose, handleSuccess, themnhanh }) => {
+const MyModalAdd = ({ show, handleClose, handleSuccess }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -290,7 +335,6 @@ const MyModalAdd = ({ show, handleClose, handleSuccess, themnhanh }) => {
         <AddQuanLyKH
           handleSuccess={handleSuccess}
           handleClose={handleClose}
-          themnhanh={themnhanh}
         ></AddQuanLyKH>
       </Modal.Body>
       {/* <Modal.Footer>

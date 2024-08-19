@@ -604,7 +604,7 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Ma")
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MoTa")
                         .HasColumnType("nvarchar(300)");

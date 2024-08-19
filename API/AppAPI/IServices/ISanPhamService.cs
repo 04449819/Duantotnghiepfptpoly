@@ -54,6 +54,7 @@ namespace AppAPI.IServices
         Task<List<MauSac>> GetAllMauSac();
         Task<List<KichCo>> GetAllKichCo();
         Task<List<ChatLieu>> GetAllChatLieu();
+        List<SanPhamVieww> GetChiTietSanPhamByIdHD(Guid hoaDonId);
         //Nhinh thêm
         #region SanPhamBanHang
         Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu();

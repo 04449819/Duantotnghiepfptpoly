@@ -1097,13 +1097,53 @@ namespace AppAPI.Services
 		//    return result;
 		//}
 
-		public SanPhamVieww GetChiTietSanPhamByID(Guid id)
+		public SanPhamVieww GetChiTietSanPhamByID(string id)
 		{
-			var activePromotions = from kmct in _context.KhuyenMaiCTSanPhams
+            var activePromotions = from kmct in _context.KhuyenMaiCTSanPhams
 								   join km in _context.KhuyenMais on kmct.IdKhuyenMai equals km.ID
 								   where km.TrangThai == 1 && DateTime.Today > km.NgayApDung && DateTime.Today < km.NgayKetThuc
 								   select new { kmct.IdChiTietSanPham, km.GiaTri };
-			var listsp = (from sp in _context.SanPhams
+
+            try
+            {
+				var listsp = (from sp in _context.SanPhams
+							  join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
+							  join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+							  join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
+							  join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+							  join anhs in _context.Anhs on ctsp.ID equals anhs.IDChitietsanpham
+							  join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+							  join ap in activePromotions on ctsp.ID equals ap.IdChiTietSanPham into apg
+							  from ap in apg.DefaultIfEmpty()
+							  where ctsp.ID == Guid.Parse(id) // filter the specific product
+							  select new SanPhamVieww
+							  {
+								  idLoaiSP = lsp.ID,
+								  idSP = sp.ID,
+								  idCTSP = ctsp.ID,
+								  idAnh = anhs.ID,
+								  loaiSP = lsp.Ten,
+								  tenchatlieu = cl.Ten,
+								  tenSanPham = sp.Ten,
+								  soLuong = ctsp.SoLuong,
+								  soLuongmua = 1,
+								  giaBan = ctsp.GiaBan,
+								  ngayTao = ctsp.NgayTao,
+								  trangThai = ctsp.TrangThai,
+								  giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
+								  tenMau = ms.Ten,
+								  maMau = ms.Ma,
+								  maSP = ctsp.Ma,
+								  duongDanAnh = anhs.DuongDan,
+								  kichCo = kc.Ten
+							  }).FirstOrDefault();
+
+				return listsp;
+			}
+            catch (Exception)
+            {
+
+               var listsp = (from sp in _context.SanPhams
 						  join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
 						  join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
 						  join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
@@ -1112,7 +1152,7 @@ namespace AppAPI.Services
 						  join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
 						  join ap in activePromotions on ctsp.ID equals ap.IdChiTietSanPham into apg
 						  from ap in apg.DefaultIfEmpty()
-						  where ctsp.ID == id // filter the specific product
+						  where  ctsp.Ma == id // filter the specific product
 						  select new SanPhamVieww
 						  {
 							  idLoaiSP = lsp.ID,
@@ -1130,11 +1170,47 @@ namespace AppAPI.Services
 							  giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
 							  tenMau = ms.Ten,
 							  maMau = ms.Ma,
+							  maSP = ctsp.Ma,
 							  duongDanAnh = anhs.DuongDan,
 							  kichCo = kc.Ten
 						  }).FirstOrDefault();
 
 			return listsp;
+            }
+			
+			//var listsp = (from sp in _context.SanPhams
+			//			  join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
+			//			  join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+			//			  join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
+			//			  join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+			//			  join anhs in _context.Anhs on ctsp.ID equals anhs.IDChitietsanpham
+			//			  join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+			//			  join ap in activePromotions on ctsp.ID equals ap.IdChiTietSanPham into apg
+			//			  from ap in apg.DefaultIfEmpty()
+			//			  where ctsp.ID == Guid.Parse( id) || ctsp.Ma == id // filter the specific product
+			//			  select new SanPhamVieww
+			//			  {
+			//				  idLoaiSP = lsp.ID,
+			//				  idSP = sp.ID,
+			//				  idCTSP = ctsp.ID,
+			//				  idAnh = anhs.ID,
+			//				  loaiSP = lsp.Ten,
+			//				  tenchatlieu = cl.Ten,
+			//				  tenSanPham = sp.Ten,
+			//				  soLuong = ctsp.SoLuong,
+			//				  soLuongmua = 1,
+			//				  giaBan = ctsp.GiaBan,
+			//				  ngayTao = ctsp.NgayTao,
+			//				  trangThai = ctsp.TrangThai,
+			//				  giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
+			//				  tenMau = ms.Ten,
+			//				  maMau = ms.Ma,
+			//				  maSP = ctsp.Ma,
+			//				  duongDanAnh = anhs.DuongDan,
+			//				  kichCo = kc.Ten
+			//			  }).FirstOrDefault();
+
+			//return listsp;
 		}
         public List<SanPhamVieww> GetChiTietSanPhamByIdHD(Guid hoaDonId)
         {

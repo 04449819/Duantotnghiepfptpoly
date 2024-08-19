@@ -4,6 +4,24 @@
   flex: 1;
   border-left: 1px solid black;
 }
+.tilte-delete {
+  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  position: relative;
+  p {
+    margin-left: 4px;
+    position: absolute;
+    top: -5px;
+    left: 1px;
+  }
+}
+.tilte-delete:hover {
+  color: red;
+
+  cursor: pointer;
+}
 
 .product-list :first-child {
   // border-left: 1px solid black !important;
@@ -191,17 +209,21 @@
   border-radius: 3px;
   height: 5px;
   position: absolute;
+  top: -10px;
 }
 
 .slider__track {
   background-color: #ced4da;
   width: 100%;
   z-index: 1;
+  width: 200px;
 }
 
 .slider__range {
   background-color: #9fe5e1;
   z-index: 2;
+  // position: absolute;
+  // top: 20px;
 }
 
 /* Removing the default appearance */
@@ -222,10 +244,14 @@
 
 .thumb--zindex-3 {
   z-index: 3;
+  // position: absolute;
+  // top: 985px;
 }
 
 .thumb--zindex-4 {
   z-index: 4;
+  // position: absolute;
+  // top: 985px;
 }
 
 /* For Chrome browsers */

@@ -17,6 +17,14 @@ const QuanLyKhuyenMai = () => {
     moTa: "",
     trangThai: 0,
   });
+  const [errors, setErrors] = useState({
+    ten: '',
+    giaTri: '',
+    ngayApDung: '',
+    ngayKetThuc: '',
+    moTa: '',
+    trangThai: '',
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -54,6 +62,7 @@ const QuanLyKhuyenMai = () => {
   const handleClose = () => setShowModal(false);
 
   const handleShow = () => {
+    setIsEditing(false);
     setShowModal(true);
   };
 
@@ -68,16 +77,86 @@ const QuanLyKhuyenMai = () => {
   };
 
   const handleEdit = (km) => {
+    setIsEditing(!true);
     setNewPromotion(km);
-    setIsEditing(true);
   };
+ 
 
+  const validateInput = (id, value) => {
+    let error = "";
+    switch (id) {
+      case "ten":
+        if (!value.trim()) {
+          error = "Tên khuyến mại không được để trống";
+        }
+        break;
+      case "giaTri":
+        if (isNaN(value) || value <= 0) {
+          error = "Giá trị phải là số lớn hơn 0";
+        }
+        break;
+      case "ngayApDung":
+        if (!value) {
+          error = "Ngày áp dụng không được để trống";
+        }
+        break;
+      case "ngayKetThuc":
+        if (!value) {
+          error = "Ngày kết thúc không được để trống";
+        } else if (newPromotion.ngayApDung && new Date(value) < new Date(newPromotion.ngayApDung)) {
+          error = "Ngày kết thúc phải sau ngày áp dụng";
+        }
+        break;
+      case "moTa":
+        if (!value.trim()) {
+          error = "Mô tả không được để trống";
+        }
+        break;
+      case "trangThai":
+        if (value === "") {
+          error = "Trạng thái không được để trống";
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
   const handleInputChange = (e) => {
-    setNewPromotion({ ...newPromotion, [e.target.name]: e.target.value });
+    //setNewPromotion({ ...newPromotion, [e.target.name]: e.target.value });
+    const { id, value } = e.target;
+    setNewPromotion((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+
+    const error = validateInput(id, value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: error,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {
+      ten: validateInput("ten", newPromotion.ten),
+      giaTri: validateInput("giaTri", newPromotion.giaTri),
+      ngayApDung: validateInput("ngayApDung", newPromotion.ngayApDung),
+      ngayKetThuc: validateInput("ngayKetThuc", newPromotion.ngayKetThuc),
+      moTa: validateInput("moTa", newPromotion.moTa),
+      trangThai: validateInput("trangThai", newPromotion.trangThai),
+    };
+  
+    setErrors(newErrors);
+  
+    // Kiểm tra nếu có lỗi
+    const hasError = Object.values(newErrors).some(error => error !== "");
+    if (hasError) {
+      toast.error("Vui lòng kiểm tra và sửa các lỗi trước khi tiếp tục.");
+      return; // Ngăn submit nếu có lỗi
+    }
+  
     try {
       if (!isEditing) {
         try {
@@ -152,7 +231,7 @@ const QuanLyKhuyenMai = () => {
           </Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        {/* <Modal.Body>
           <form onSubmit={handleSubmit} className="mb-4">
             <div className="mb-3">
               <label htmlFor="ten" className="form-label">
@@ -239,7 +318,108 @@ const QuanLyKhuyenMai = () => {
               {isEditing ? "Cập nhật" : "Tạo "}
             </button>
           </form>
-        </Modal.Body>
+        </Modal.Body> */}
+        <Modal.Body>
+        <form onSubmit={handleSubmit} className="mb-4">
+          <div className="mb-3">
+            <label htmlFor="ten" className="form-label">
+              Tên khuyến mại:
+            </label>
+            <input
+              type="text"
+              id="ten"
+              name="ten"
+              className="form-control"
+              value={newPromotion.ten}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ten}
+            />
+            {errors.ten && <div className="text-danger">{errors.ten}</div>}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="giaTri" className="form-label">
+              Giá trị:
+            </label>
+            <input
+              type="number"
+              id="giaTri"
+              name="giaTri"
+              className="form-control"
+              value={newPromotion.giaTri}
+              onChange={handleInputChange}
+              isInvalid={!!errors.giaTri}
+            />
+            {errors.giaTri && <div className="text-danger">{errors.giaTri}</div>}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="ngayApDung" className="form-label">
+              Ngày áp dụng:
+            </label>
+            <input
+              type="date"
+              id="ngayApDung"
+              name="ngayApDung"
+              className="form-control"
+              value={newPromotion.ngayApDung}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ngayApDung}
+            />
+            {errors.ngayApDung && <div className="text-danger">{errors.ngayApDung}</div>}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="ngayKetThuc" className="form-label">
+              Ngày kết thúc:
+            </label>
+            <input
+              type="date"
+              id="ngayKetThuc"
+              name="ngayKetThuc"
+              className="form-control"
+              value={newPromotion.ngayKetThuc}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ngayKetThuc}
+            />
+            {errors.ngayKetThuc && <div className="text-danger">{errors.ngayKetThuc}</div>}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="moTa" className="form-label">
+              Mô tả:
+            </label>
+            <textarea
+              id="moTa"
+              name="moTa"
+              className="form-control"
+              value={newPromotion.moTa}
+              onChange={handleInputChange}
+              isInvalid={!!errors.moTa}
+            ></textarea>
+            {errors.moTa && <div className="text-danger">{errors.moTa}</div>}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="trangThai" className="form-label">
+              Trạng thái:
+            </label>
+            <select
+              id="trangThai"
+              name="trangThai"
+              className="form-select"
+              value={newPromotion.trangThai}
+              onChange={handleInputChange}
+              isInvalid={!!errors.trangThai}
+            >
+              <option value="">Chọn trạng thái</option>
+              <option value={0}>Tiền mặt</option>
+              <option value={1}>Phần trăm</option>
+              <option value={2}>Xóa từ tiền mặt</option>
+              <option value={3}>Xóa từ phần trăm</option>
+            </select>
+            {errors.trangThai && <div className="text-danger">{errors.trangThai}</div>}
+          </div>
+          <button type="submit" className="btn btn-primary">
+            {isEditing ? "Cập nhật" : "Tạo mới"}
+          </button>
+        </form>
+      </Modal.Body>
       </Modal>
 
       <hr></hr>

@@ -126,13 +126,13 @@ const ModalMauSac = (props) => {
             </Form.Group>
             <Form.Group>
               <Row>
-                <Col xs={3}>
+                <Col xs={9}>
                   <Form.Label style={{ marginTop: "50px" }}>
-                    Mã màu sắc:
+                    Chọn màu sắc:
                   </Form.Label>
                 </Col>
-                <Col xs={9}>
-                  <div
+                <Col xs={8}>
+                  {/* <div
                     style={{
                       width: "100px",
                       height: "25px",
@@ -145,7 +145,7 @@ const ModalMauSac = (props) => {
                     <p style={{ textAlign: "center", margin: 0 }}>
                       {data.mausac}
                     </p>
-                  </div>
+                  </div> */}
                 </Col>
               </Row>
               <SketchPicker

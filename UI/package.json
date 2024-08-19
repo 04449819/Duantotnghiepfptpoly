@@ -33,12 +33,10 @@
     "react-spinners": "^0.13.8",
     "react-to-print": "^2.15.1",
     "react-toastify": "^10.0.5",
+    "react-use": "^17.5.1",
     "redux-persist": "^6.0.0",
-
     "reselect": "^5.1.1",
-
     "slick-carousel": "^1.8.1",
-
     "sweetalert2": "^11.11.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"

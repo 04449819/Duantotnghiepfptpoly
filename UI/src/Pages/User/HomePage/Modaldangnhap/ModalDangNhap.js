@@ -2,10 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FetchData } from "../../../../Rudux/Reducer/taiKhoanSlice";
-import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
+// import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
 import { toast } from "react-toastify";
 
 const ModalDangNhap = (props) => {
@@ -16,35 +16,28 @@ const ModalDangNhap = (props) => {
   const [pass, setPass] = useState("");
   const dispatch = useDispatch();
 
+  const user = useSelector((p) => p.user.User);
   const HandleDangNhap = async () => {
-    dispatch(FetchData({ name, pass }));
-    try {
-      dispatch(SetLoading(true));
-      const res = await axios.get(
-        `https://localhost:7095/api/QuanLyNguoiDung/DangNhap?lg=${name}&password=${pass}`
-      );
-      if (res.data.vaiTro === 1) {
-        setTimeout(() => {
-          navigate("/");
-          setShow(false);
-          dispatch(SetLoading(false));
-        }, 3000);
-      }
-      if (res.data.vaiTro === 0) {
-        setTimeout(() => {
-          navigate("/admin");
-          setShow(false);
-          dispatch(SetLoading(false));
-        }, 3000);
-      }
-      if (res.data.vaiTro === null) {
-        dispatch(SetLoading(false));
-        toast.error("Tên đăng nhập hoặc mật khẩu không chính xác");
-      }
-    } catch (error) {
-      dispatch(SetLoading(false));
-    }
+    dispatch(FetchData({ name, pass, dssp }));
   };
+  const dssp = useSelector((p) => p.user.giohangonl);
+  // const AddProductsInCart = async () => {
+  //   console.log("Add Products In Cart", dssp);
+  // };
+
+  useEffect(() => {
+    if (user && user.vaiTro === 1) {
+      // AddProductsInCart();
+      setShow(false);
+    }
+    if (user && user.vaiTro === 0) {
+      navigate("/admin");
+      setShow(false);
+    }
+    if (user && user.vaiTro === null) {
+      toast.error("Tên đăng nhập hoặc mật khẩu không chính xác");
+    }
+  }, [user]);
 
   const handleClose = () => {
     setShow(false);

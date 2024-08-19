@@ -37,6 +37,7 @@ import LienHe from "./Pages/User/LienHe/LienHe";
 import ChiTietSanPhamKH from "./Pages/User/ChiTietSanPhamKH/ChiTietSanPhamKH";
 import ScrollToTop from "./ScrollToTop";
 import GioHang from "./Pages/User/GioHang/GioHang";
+import ThanhToanThanhCong from "./Pages/User/ThanhToanThanhCong/ThanhToanThanhCong";
 import XemhoXo from "./Pages/Admin/XemhoXo/XemhoXo";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -55,6 +56,7 @@ root.render(
             <Route path="/lienhe" element={<LienHe />} />
             <Route path="/chitietsanpham" element={<ChiTietSanPhamKH />} />
             <Route path="/giohang" element={<GioHang />} />
+            <Route path="/thanhtoanthanhcong" element={<ThanhToanThanhCong />}></Route>
           </Route>
 
           <Route path="/admin" element={<AdminPage />}>

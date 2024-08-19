@@ -9,10 +9,12 @@ namespace AppAPI.Services
     public class VoucherServices : IVoucherServices
     {
         private readonly IAllRepository<Voucher> _allRepository;
+        private readonly IAllRepository<HoaDon> _respoHoaDon;
         AssignmentDBContext context= new AssignmentDBContext();
         public VoucherServices()
         {
             _allRepository= new AllRepository<Voucher>(context,context.Vouchers);
+            _respoHoaDon= new AllRepository<HoaDon>(context,context.HoaDons);
         }
         public bool Add(VoucherView voucherview)
         {
@@ -94,5 +96,33 @@ namespace AppAPI.Services
         {
             return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0 && x.SoLuong>0).ToList();
         }
+
+        #region Tung
+        public Voucher? FillVoucher(int tongTien)
+        {
+            
+            var dateNow = DateTime.Now;
+            var vouchers = context.Vouchers
+                            .Where(x => x.SoTienCan <= tongTien 
+                                    && dateNow >= x.NgayApDung 
+                                    && dateNow <= x.NgayKetThuc)
+                            .ToList();
+            if (!vouchers.Any())
+            {
+                return null;
+            }
+            var bestVoucher = vouchers
+                .Select(vouchers => new
+                {
+                    Voucher = vouchers,
+                    GiaGiam = vouchers.HinhThucGiamGia == 0
+                            ? vouchers.GiaTri
+                            : tongTien - (tongTien * vouchers.GiaTri / 100)
+                })
+                .OrderByDescending(v => v.GiaGiam)
+                .FirstOrDefault()?.Voucher;
+            return bestVoucher;
+        }
+        #endregion 
     }
 }

@@ -218,8 +218,14 @@ namespace AppData.Migrations
                     b.Property<Guid>("KhachHangID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("TenKhachHang")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
+
+                    b.Property<string>("sdt")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

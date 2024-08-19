@@ -24,7 +24,7 @@ namespace AppAPI.IServices
         Task<bool> CopyHD(Guid idhd, Guid idnv);
         public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto);
         public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto);
-        public bool ThanhToanDonHang(Guid idhd);
+        public bool ThanhToanDonHang(Guid idhd, int soDiemTru, bool isGiaoHang);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
         public bool UpdateGhiChuHD(Guid idhd,Guid idnv, string ghichu);

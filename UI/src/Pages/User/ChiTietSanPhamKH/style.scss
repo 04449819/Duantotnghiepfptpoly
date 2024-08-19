@@ -57,6 +57,13 @@
 
   .product-page__sizes {
     margin-top: 10px;
+
+    select {
+      width: 120px;
+      height: 40px;
+      font-size: 13px;
+      text-align: center;
+    }
   }
 
   .product-page__buy-btn {

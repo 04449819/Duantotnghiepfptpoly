@@ -37,6 +37,8 @@ const Header = (props) => {
     });
   };
 
+  const soluongsp = useSelector((p) => p.user.giohangonl);
+
   const HandleOnclickGioHang = () => {
     navigate("/giohang");
   };
@@ -100,7 +102,7 @@ const Header = (props) => {
                   <button
                     className="buttonHeader"
                     onClick={() => setShows(true)}
-                    hidden={user && user.vaiTro !== 1 ? false : true}
+                    hidden={user && user.vaiTro === 1 ? true : false}
                   >
                     <BsPersonCircle />
                     <span>Đăng nhập</span>
@@ -108,7 +110,7 @@ const Header = (props) => {
                   <button
                     className="buttonHeader"
                     // onClick={() => setShows(true)}
-                    hidden={user && user.vaiTro !== 1 ? true : false}
+                    hidden={user && user.vaiTro === 1 ? false : true}
                   >
                     <div className="d-flex">
                       <div className="mt-1">
@@ -137,15 +139,34 @@ const Header = (props) => {
                   </button>
                 </li>
                 <li className="nav-item mx-2">
-                  <Link className="nav-link text-dark h5" to="" target="blank">
-                    {/* <i className="fab fa-twitter"></i> */}
-                  </Link>
+                  <Link
+                    className="nav-link text-dark h5"
+                    to=""
+                    target="blank"
+                  ></Link>
                 </li>
                 <li className="nav-item mx-2">
-                  {/* <Link className="nav-link text-dark h5" to="/" target="blank"> */}
                   <button style={{ border: "none", backgroundColor: "white" }}>
-                    <div className="mt-1">
+                    <div className="mt-1" style={{ position: "relative" }}>
                       <FiShoppingCart onClick={HandleOnclickGioHang} />
+                      <div
+                        hidden={
+                          soluongsp && soluongsp.length > 0 ? false : true
+                        }
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          position: "absolute",
+                          top: "-12px",
+                          left: "20px",
+                          border: "1px solid black",
+                          borderRadius: "30px",
+                          fontSize: "12px",
+                          color: "red",
+                        }}
+                      >
+                        {soluongsp !== undefined ? soluongsp.length : 0}
+                      </div>
                     </div>
                   </button>
 

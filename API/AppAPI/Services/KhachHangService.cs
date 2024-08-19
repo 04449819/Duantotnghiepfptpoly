@@ -156,44 +156,6 @@ namespace AppAPI.Services
 			return _dbContext.KhachHangs.FirstOrDefault(c => c.SDT == sdt || c.Email == sdt);
 		}
         #endregion
-        #region Tung
-        public int TongHopDiem(Guid idKhachHang)
-        {
-            // Lấy lịch sử tích điểm của khách hàng có ID tương ứng
-            List<LichSuTichDiem> lichSuTichDiems = _dbContext.LichSuTichDiems
-                .Where(ls => ls.IDKhachHang == idKhachHang)
-                .ToList();
-
-            // Tính tổng điểm dựa trên các trạng thái
-            int diemTich = lichSuTichDiems
-                .Select(ls =>
-                {
-                    switch (ls.TrangThai)
-                    {
-                        case 1: // Tích điểm
-                        case 2: // Cộng điểm do hủy
-                        case 4: // Cộng điểm do trả
-                            return ls.Diem;
-                        case 3: // Trừ điểm do trả
-                        case 0: // Tiêu điểm
-                            return -ls.Diem;
-                        default:
-                            return 0;
-                    }
-                })
-                .Sum();
-
-            // Cập nhật điểm tích lũy vào khách hàng
-            var khachHang = _dbContext.KhachHangs.FirstOrDefault(kh => kh.IDKhachHang == idKhachHang);
-            if (khachHang != null)
-            {
-                khachHang.DiemTich = diemTich;
-                _dbContext.SaveChanges();
-            }
-
-            return diemTich;
-        }
-
-        #endregion
+   
     }
 }

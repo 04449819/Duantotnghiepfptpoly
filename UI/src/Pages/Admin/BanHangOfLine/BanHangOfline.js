@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,6 +9,7 @@ import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 import MyModalAdd from "../QuanLyKhachHang/FormThem";
 import ThongTinThanhToan from "./ThongTinThanhToan/ThongTinThanhToan";
 import { Table, Button } from "react-bootstrap";
+import { useReactToPrint } from 'react-to-print';
 import { GetChiTietHoaDonByIdHoaDon, resetSanPhamGioHang } from "../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 const BanHangOfline = () => {
   const [search, setSearch] = useState("");
@@ -30,6 +31,7 @@ const BanHangOfline = () => {
     IdNhanVien: '',
   });
   const [hoaDonChoSelected, setHoaDonChoSelected] = useState([]);
+  const componentRef = useRef();
   const dispath = useDispatch();
   const nv = useSelector((nv) => nv.user.User);
   const HandleOnclickSearchKH = async () => {
@@ -73,7 +75,7 @@ const BanHangOfline = () => {
     getHoaDonChos();
   }, [data]);
 
-  const getHoaDonChos = async () => {
+  const                                                                                                                                                                                                 getHoaDonChos = async () => {
     try {
       const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
       const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1);
@@ -145,7 +147,7 @@ const BanHangOfline = () => {
   };
   const handleSelectedHoaDonCho =  async (hoaDonCho) => {
     try {
-      console.log(hoaDonCho);
+
       setHoaDonChoSelected(hoaDonCho);
       dispath(resetSanPhamGioHang());
       dispath(GetChiTietHoaDonByIdHoaDon(hoaDonCho.id)) ;
@@ -164,6 +166,11 @@ const BanHangOfline = () => {
       toast.error('Xóa hóa đơn chờ thất bại');
     }
   }
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "HoaDon",
+  });
+ 
   return (
     <div className="banhangofline">
       <div className="row">
@@ -197,13 +204,15 @@ const BanHangOfline = () => {
               <td>{index + 1}</td>
               <td>{hoaDon.maHD}</td>
               <td>{hoaDon.ngayTao}</td>
-              <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} <button  onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</button></td>
+              <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} </td>
+              <td><Button className="btn-danger" onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</Button></td>
               
             </tr>
           ))}
         </tbody>
       </Table>
     </div>
+ 
               
           </div>
           <div className="BanHangof_giohang">
@@ -323,6 +332,17 @@ const BanHangOfline = () => {
           </div>
           <hr></hr>
           <ThongTinThanhToan idHoaDon={hoaDonChoSelected.id} name={name} address={address} phone={phone} email={email}/>
+        
+          {/* <br></br>
+          <button onClick={handlePrint} >Xem hóa đơn</button>
+          <div style={{
+              position: 'absolute',
+              top: '-1000px',
+              left: '-1000px'
+            }}>
+              <HoaDon props={setHoaDonChoSelected} ref={componentRef} />
+            </div> */}
+
         </div>
       </div>
       <MyModalAdd

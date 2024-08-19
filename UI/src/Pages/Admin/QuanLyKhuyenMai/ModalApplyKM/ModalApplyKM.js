@@ -358,7 +358,7 @@ function ModalApplyKM(props) {
                         <td>
                           <img style={{ width: "25px" }} src={item.img[0]} />
                         </td>
-                        {item.trangthai !== true ? (
+                        {item.trangthai === 0 ? (
                           <td style={{ width: "150px", color: "red" }}>
                             Ngưng bán
                           </td>

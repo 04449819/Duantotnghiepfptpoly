@@ -387,7 +387,8 @@ const QuanLySanPham = () => {
           </div>
           <div className="mb-3 ms-2">
             <Button
-              disabled={use.chucNang === "Admin" ? false : true}
+
+             disabled={use.chucNang === "Admin" ? false : true}
               variant="primary"
               onClick={() => setShow(1)}
             >

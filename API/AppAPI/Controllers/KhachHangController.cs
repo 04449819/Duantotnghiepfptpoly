@@ -50,10 +50,43 @@ namespace AppAPI.Controllers
         //}
         [Route("TimKiemKH")]
         [HttpGet]
-        public List<KhachHang> GetAllKhachHang(string? Ten, string? SDT)
+        public async Task<IActionResult> GetAllKhachHang(string? Ten, string? SDT)
         {
-            return _dbcontext.KhachHangs.Where(x=>x.SDT.Contains(SDT)|| x.Ten.Contains(Ten)|| x.SDT.Contains(SDT) || x.Ten.Contains(Ten)).ToList();
+            var kh = await _dbcontext.KhachHangs.Where(x => x.SDT.Contains(SDT) || x.Ten.Contains(Ten) || x.SDT.Contains(SDT) || x.Ten.Contains(Ten)).Select(p => new {
+                id = p.IDKhachHang,
+                Ten=p.Ten,
+                GioiTinh=p.GioiTinh,
+                NgaySinh=p.NgaySinh,
+                SDT=p.SDT,
+                DiemTich=p.DiemTich,
+                TrangThai=p.TrangThai,
+                email=p.Email,
+                DiaChi = _dbcontext.diaChiKhachHangs.FirstOrDefault(a=>a.KhachHangID==p.IDKhachHang && a.TrangThai==1).DiaChi,
+            }).ToListAsync();
+            return Ok(kh);
         }
+
+        //public Guid IDKhachHang { get; set; }
+        //[Required]
+        //public string Ten { get; set; }
+        //[Required]
+        //public string Password { get; set; }
+        //public int? GioiTinh { get; set; }
+        //public DateTime? NgaySinh { get; set; }
+        //[EmailAddress]
+        //public string? Email { get; set; }
+        //public string? SDT { get; set; }
+        //public int? DiemTich { get; set; }
+        //public int? TrangThai { get; set; }
+        //public virtual GioHang? GioHang { get; set; }
+        //public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
+        //public virtual IEnumerable<DiaChiKhachHang>? DiaChiKhachHangs { get; set; }
+
+
+
+
+
+
         [Route("GetById")]
         [HttpGet]
         public KhachHang GetById(Guid id)
@@ -128,7 +161,7 @@ namespace AppAPI.Controllers
             //kh.DiaChi=khv.DiaChi?.Trim();
             kh.SDT = khv.SDT?.Trim();
             kh.TrangThai=1;
-            kh.DiemTich = 0;
+            kh.DiemTich = kh.DiemTich;
             _dbcontext.KhachHangs.Add(kh);
             GioHang gh= new GioHang();
             gh.IDKhachHang=kh.IDKhachHang;
@@ -235,8 +268,8 @@ namespace AppAPI.Controllers
 			}
 			kh.Email = khv.Email?.Trim();
 			kh.SDT = khv.SDT?.Trim();
-			kh.TrangThai = 1;
-			kh.DiemTich = 0;
+			kh.TrangThai = khv.TrangThai;
+			kh.DiemTich = khv.DiemTich;
 			_dbcontext.KhachHangs.Add(kh);
 			GioHang gh = new GioHang();
 			gh.IDKhachHang = kh.IDKhachHang;
@@ -283,9 +316,10 @@ namespace AppAPI.Controllers
 		{
 
             var check = await _dbcontext.KhachHangs.FindAsync(id);
+
 			if (check == null)
 			{
-				return NotFound("Khách hàng không tồn tại");
+				return NotFound("Khách hàng không tồn tại");    
 			}
 			check.Ten = khachHang.Ten;
             check.GioiTinh = khachHang.GioiTinh;
@@ -300,13 +334,13 @@ namespace AppAPI.Controllers
                 var checkEmailNv = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khachHang.Email);
                 if (checkEmail != null || checkEmailNv != null)
                 {
-                    return Ok("Email đã tồn tại");
+                    return Ok("1");
 					
 				}
 				check.Email = khachHang.Email;
 			};
 			if (check.SDT == khachHang.SDT)
-			{
+			{   
 				check.SDT = khachHang.SDT;
 			}
 			else
@@ -316,7 +350,7 @@ namespace AppAPI.Controllers
              
                 if (checksdt != null || checksdtNv != null )
 				{
-					return Ok("SĐT đã tồn tại");
+					return Ok("2");
 
 				}
 				check.SDT = khachHang.SDT;
@@ -340,7 +374,7 @@ namespace AppAPI.Controllers
 
 			 _dbcontext.KhachHangs.Update(check);
 			await _dbcontext.SaveChangesAsync();
-			return Ok("Update thành công");
+			return Ok("0");
 		}
         #endregion
 

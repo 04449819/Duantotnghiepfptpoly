@@ -280,73 +280,156 @@ namespace AppAPI.Controllers
 			return Ok(0);
 
 		}
+        
 
         [HttpPut("updatekhachhang")]
         public async Task<IActionResult> UpdateKhachHangBySDT(Guid id, KhachHangAddView khachHang)
-		{
-
+        {
+            // Tìm khách hàng dựa trên ID
             var check = await _dbcontext.KhachHangs.FindAsync(id);
-			if (check == null)
-			{
-				return NotFound("Khách hàng không tồn tại");
-			}
-			check.Ten = khachHang.Ten;
+            if (check == null)
+            {
+                return NotFound("Khách hàng không tồn tại");
+            }
+
+            // Cập nhật thông tin khách hàng
+            check.Ten = khachHang.Ten;
             check.GioiTinh = khachHang.GioiTinh;
             check.NgaySinh = khachHang.NgaySinh;
-			if(check.Email == khachHang.Email)
+
+            // Kiểm tra và cập nhật Email nếu cần
+            if (check.Email != khachHang.Email)
             {
-				check.Email = khachHang.Email;
-			}
-			else
-			{
-                var checkEmail = _dbcontext.KhachHangs.FirstOrDefault(p => p.Email == khachHang.Email);
-                var checkEmailNv = _dbcontext.NhanViens.FirstOrDefault(p => p.Email == khachHang.Email);
+                var checkEmail = await _dbcontext.KhachHangs.FirstOrDefaultAsync(p => p.Email == khachHang.Email);
+                var checkEmailNv = await _dbcontext.NhanViens.FirstOrDefaultAsync(p => p.Email == khachHang.Email);
+
                 if (checkEmail != null || checkEmailNv != null)
                 {
-                    return Ok("Email đã tồn tại");
-					
-				}
-				check.Email = khachHang.Email;
-			};
-			if (check.SDT == khachHang.SDT)
-			{
-				check.SDT = khachHang.SDT;
-			}
-			else
-			{
-				var checksdt = _dbcontext.KhachHangs.FirstOrDefault(p => p.SDT == khachHang.SDT);
-                var checksdtNv = _dbcontext.NhanViens.FirstOrDefault(p => p.SDT == khachHang.SDT);
-             
-                if (checksdt != null || checksdtNv != null )
-				{
-					return Ok("SĐT đã tồn tại");
+                    return BadRequest("Email đã tồn tại");
+                }
+                check.Email = khachHang.Email;
+            }
 
-				}
-				check.SDT = khachHang.SDT;
-			};
+            // Kiểm tra và cập nhật Số điện thoại nếu cần
+            if (check.SDT != khachHang.SDT)
+            {
+                var checksdt = await _dbcontext.KhachHangs.FirstOrDefaultAsync(p => p.SDT == khachHang.SDT);
+                var checksdtNv = await _dbcontext.NhanViens.FirstOrDefaultAsync(p => p.SDT == khachHang.SDT);
 
-			var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == id && p.TrangThai == 1);
-			if(diachi != null)
-			{
-				diachi.DiaChi = khachHang.DiaChi;
-				_dbcontext.diaChiKhachHangs.Update(diachi);
-			}
-			else
-			{
-                DiaChiKhachHang dcKhangHang = new DiaChiKhachHang();
-				dcKhangHang.Id = Guid.NewGuid();
-                dcKhangHang.KhachHangID = id;
-				dcKhangHang.DiaChi = khachHang.DiaChi;
-                dcKhangHang.TrangThai = 1;
-				await _dbcontext.diaChiKhachHangs.AddAsync(dcKhangHang);
-			}
+                if (checksdt != null || checksdtNv != null)
+                {
+                    return BadRequest("SĐT đã tồn tại");
+                }
+                check.SDT = khachHang.SDT;
+            }
 
-			 _dbcontext.KhachHangs.Update(check);
-			await _dbcontext.SaveChangesAsync();
-			return Ok("Update thành công");
-		}
+            // Cập nhật hoặc thêm địa chỉ khách hàng
+            var diachi = await _dbcontext.diaChiKhachHangs.FirstOrDefaultAsync(p => p.KhachHangID == id && p.TrangThai == 1);
+            if (diachi != null)
+            {
+                diachi.DiaChi = khachHang.DiaChi;
+                _dbcontext.diaChiKhachHangs.Update(diachi);
+            }
+            else
+            {
+                var dcKhangHang = new DiaChiKhachHang
+                {
+                    Id = Guid.NewGuid(),
+                    KhachHangID = id,
+                    DiaChi = khachHang.DiaChi,
+                    TrangThai = 1
+                };
+                await _dbcontext.diaChiKhachHangs.AddAsync(dcKhangHang);
+            }
+
+            // Cập nhật khách hàng và lưu thay đổi
+            _dbcontext.KhachHangs.Update(check);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok("Cập nhật thành công");
+        }
+        [HttpPut("updatekhachhangabc")]
+        public async Task<IActionResult> UpdateKhac(Guid id, SuathongtinkhModel khachHang)
+        {
+            // Tìm khách hàng dựa trên ID
+            var check = await _dbcontext.KhachHangs.FindAsync(id);
+            if (check == null)
+            {
+                return NotFound("Khách hàng không tồn tại");
+            }
+            // Cập nhật thông tin khách hàng
+            check.Ten = khachHang.Ten;
+            check.GioiTinh = khachHang.GioiTinh;
+            check.NgaySinh = khachHang.NgaySinh;
+
+            // Kiểm tra và cập nhật Email nếu cần
+            if (check.Email != khachHang.Email)
+            {
+                var checkEmail = await _dbcontext.KhachHangs.FirstOrDefaultAsync(p => p.Email == khachHang.Email);
+                var checkEmailNv = await _dbcontext.NhanViens.FirstOrDefaultAsync(p => p.Email == khachHang.Email);
+
+                if (checkEmail != null || checkEmailNv != null)
+                {
+                    return BadRequest("Email đã tồn tại");
+                }
+                check.Email = khachHang.Email;
+            }
+
+            // Kiểm tra và cập nhật Số điện thoại nếu cần
+            if (check.SDT != khachHang.SDT)
+            {
+                var checksdt = await _dbcontext.KhachHangs.FirstOrDefaultAsync(p => p.SDT == khachHang.SDT);
+                var checksdtNv = await _dbcontext.NhanViens.FirstOrDefaultAsync(p => p.SDT == khachHang.SDT);
+
+                if (checksdt != null || checksdtNv != null)
+                {
+                    return BadRequest("SĐT đã tồn tại");
+                }
+                check.SDT = khachHang.SDT;
+            }
+
+            // Cập nhật hoặc thêm địa chỉ khách hàng
+    
+            // Cập nhật khách hàng và lưu thay đổi
+            _dbcontext.KhachHangs.Update(check);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok("Cập nhật thành công");
+        }
+
         #endregion
-        
+
+        [HttpPut("changepassword")]
+        public async Task<IActionResult> ChangePassword(Guid id, Passworkmodel model)
+        {
+            // Tìm khách hàng dựa trên ID
+            var customer = await _dbcontext.KhachHangs.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound("Khách hàng không tồn tại");
+            }
+
+            // Kiểm tra mật khẩu hiện tại
+            if (customer.Password != model.CurrentPassword)
+            {
+                return BadRequest("Mật khẩu hiện tại không chính xác");
+            }
+
+            // Kiểm tra mật khẩu mới có khớp với xác nhận không
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                return BadRequest("Mật khẩu mới và xác nhận mật khẩu không khớp");
+            }
+
+            // Cập nhật mật khẩu
+            customer.Password = model.NewPassword;
+
+            // Cập nhật khách hàng và lưu thay đổi
+            _dbcontext.KhachHangs.Update(customer);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok("Đổi mật khẩu thành công");
+        }
 
         #region KhachHangTung
         [HttpGet("tong-hop-diem/{sdtOrMail}")]

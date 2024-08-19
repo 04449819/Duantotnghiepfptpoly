@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 
-function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
+function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         ten: '',
@@ -13,7 +13,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
         confirmPassword: '', // Thêm trường xác nhận mật khẩu
         sdt: '',
         diachi: '',
-        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c'
+        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c',
+        trangThai: 1 // Thêm trạng thái
     });
     const [errors, setErrors] = useState({});
 
@@ -26,16 +27,17 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
                 confirmPassword: '', // Xử lý mật khẩu xác nhận
                 sdt: employee.sdt || '',
                 diachi: employee.diachi || '',
-                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c'
+                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c',
+                trangThai: employee.trangThai || 1 // Cập nhật trạng thái
             });
         }
     }, [employee]);
 
     const handleClose = () => {
         setload(!load);
-        setShow(false)  
+        setShow(false);
+    };
 
-    } ;
     const handleShow = () => setShow(true);
 
     const handleChange = (e) => {
@@ -52,7 +54,7 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
         // Reset errors
         setErrors({});
 
-        const { ten, email, password, confirmPassword, sdt, diachi, idvaitro } = formData;
+        const { ten, email, password, confirmPassword, sdt, diachi, idvaitro, trangThai } = formData;
         const newErrors = {};
         let valid = true;
 
@@ -65,10 +67,6 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
         // Check password length
         if (password && password.length < 6) {
             newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
-            valid = false;
-        }
-        if (!diachi) {
-            newErrors.diachi = 'Vui lòng nhập địa chỉ';
             valid = false;
         }
 
@@ -102,7 +100,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
                 password: password.trim(),
                 sdt: sdt.trim(),
                 diachi: diachi.trim(),
-                idvaitro: idvaitro.trim()
+                idvaitro: idvaitro.trim(),
+                trangThai: trangThai // Thêm trạng thái vào tham số truy vấn
             }).toString();
 
             // Thực hiện PUT request với tham số truy vấn
@@ -201,16 +200,24 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload,load }) {
                                 value={formData.diachi}
                                 onChange={handleChange}
                             />
-                              {errors.diachi && <div className="text-danger">{errors.diachi}</div>}
+                            {errors.diachi && <div className="text-danger">{errors.diachi}</div>}
                         </Form.Group>
 
-                        
                         {/* Trường ID Vai trò ẩn */}
                         <Form.Group className="mb-3" controlId="formIdvaitro">
                             <Form.Control
                                 type="hidden"
                                 name="idvaitro"
                                 value={formData.idvaitro}
+                            />
+                        </Form.Group>
+
+                        {/* Trường Trang Thái ẩn */}
+                        <Form.Group className="mb-3" controlId="formTrangThai">
+                            <Form.Control
+                                type="hidden"
+                                name="trangThai"
+                                value={formData.trangThai}
                             />
                         </Form.Group>
 

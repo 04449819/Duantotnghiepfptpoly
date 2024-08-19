@@ -79,7 +79,16 @@ namespace AppAPI.Services
 
         public async Task UpdateDiaChi(Guid id, DCKHViewModel request)
         {
-            throw new NotImplementedException();
+            var address = await _context.diaChiKhachHangs.FindAsync(id);
+            address.TenKhachHang = request.tenKhachHang;
+               address.sdt=request.sdt;
+            address.DiaChi = request.DiaChi;
+            address.TrangThai = (int)request.TrangThai; // Convert enum to int
+            
+            // 3. Save the changes to the database
+            _context.diaChiKhachHangs
+                .Update(address); // Update the entity
+            await _context.SaveChangesAsync(); 
         }
     }
 }

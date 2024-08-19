@@ -1,0 +1,48 @@
+.contact-form {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.section-header {
+  font-weight: bold;
+  color: #666;
+  padding: 8px 0;
+  background-color: #f2f2f2;
+}
+
+.form-group {
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+// .label {
+//   display: block;
+//   color: #999;
+//   margin-bottom: 5px;
+// }
+
+.input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+}
+
+.btn_sua {
+  cursor: pointer;
+  padding-top: 8%;
+  font-size: 15px;
+}
+.btn_sua:hover {
+  color: rgb(171, 196, 31);
+}
+.btn_xoa {
+  cursor: pointer;
+  font-size: 20px;
+}
+.btn_xoa:hover {
+  color: red;
+}

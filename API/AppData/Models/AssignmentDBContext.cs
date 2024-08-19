@@ -37,16 +37,15 @@ namespace AppData.Models
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 			optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-HJACSO0\SQLEXPRESS;Initial Catalog=duantotng;Integrated Security=True");
-		}
-        //THUYNHU\SQLEXPRESS
 
-        //DESKTOP-UOIH77U\SQLEXPRESS
-        //LAPTOP-A15NGLBG\SQLEXPRESS
-        // lam DESKTOP-S6G7NFV\SQLEXPRESS // 1AppBanQuanAoThoiTrangNam
-        //LAPTOP-G189FU38\SQLEXPRESS
-        //optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfpt;Integrated Security=True");
-        //optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-HJACSO0\SQLEXPRESS;Initial Catalog=duantotng;Integrated Security=True");
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		}
+		//THUYNHU\SQLEXPRESS
+		//DESKTOP-UOIH77U\SQLEXPRESS
+		//LAPTOP-A15NGLBG\SQLEXPRESS
+		// lam DESKTOP-S6G7NFV\SQLEXPRESS // 1AppBanQuanAoThoiTrangNam
+		//LAPTOP-G189FU38\SQLEXPRESS
+		//optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfpt;Integrated Security=True");
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

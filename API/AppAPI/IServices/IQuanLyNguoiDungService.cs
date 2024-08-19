@@ -6,7 +6,7 @@ namespace AppAPI.IServices
 {
     public interface IQuanLyNguoiDungService
     {
-        Task<LoginViewModel> Login(string lg, string password);
+        Task<LoginViewModel> Login(string lg, string password, List<GioHangOnline>? listgh);
         Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang);
         Task<NhanVien> RegisterNhanVien(NhanVienViewModel nhanVien);
         Task<bool> ChangePassword(string email, string password, string newPassword);

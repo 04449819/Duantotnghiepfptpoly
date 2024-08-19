@@ -5,9 +5,12 @@ import {
   MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody,
   MDBCardImage, MDBListGroup, MDBListGroupItem, MDBBtn
 } from 'mdb-react-ui-kit';
-import EditAddressModal from './ModalSuaHoso/EditAddressModal';
 import "./hoso.scss";
-
+import ModalThemDiaChiMoi from '../GioHang/ModalThemDiaChiMoi';
+import ModalSuaDiaChi from './ModalSuaHoso/ModalSuaDiaChi';
+import Modalsua from './ModalSuaHoso/Modalsua';
+import Modalhang from './ModalSuaHoso/Modalhang';
+import ChangePasswordModal from './ModalSuaHoso/ChangePasswordModal';
 const HosoKh = () => {
   const { userId } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -17,36 +20,40 @@ const HosoKh = () => {
   const [error, setError] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [shows, setShows] = useState(false);
+  const [editCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [load, setload] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false); // State cho modal đổi mật khẩu
 
   const fetchCustomerData = async () => {
     try {
       const response = await axios.get(`https://localhost:7095/api/KhachHang/GetById?id=${userId}`);
       setCustomer(response.data);
     } catch (error) {
-      console.error('Error fetching customer data:', error.response || error.message);
-      setError('Cannot fetch customer data.');
+      console.error('Lỗi khi tải dữ liệu khách hàng:', error.response || error.message);
+      setError('Không thể tải thông tin khách hàng.');
     }
   };
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`https://localhost:7095/api/DiaChiKhachHang/getByIdkh/${userId}`);
+      const response = await axios.get(`https://localhost:7095/api/DiaChiKhachHang/getalldiachikh?id=${userId}`);
       setAddresses(response.data);
     } catch (error) {
-      console.error('Error fetching addresses:', error.response || error.message);
-      setError('Cannot fetch addresses.');
+      console.error('Lỗi khi tải danh sách địa chỉ:', error.response || error.message);
+      setError('Không thể tải địa chỉ.');
     }
   };
 
   const fetchOrders = async () => {
     try {
       const response = await axios.get(`https://localhost:7095/api/HoaDon/khachhana/${userId}`);
-      // Ensure response.data is an array, even if empty
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      // Handle error if fetching orders fails, but do not break the component
-      console.error('Error fetching orders:', error.response || error.message);
-      setOrders([]); // Set orders to an empty array on error
+      console.error('Lỗi khi tải danh sách đơn hàng:', error.response || error.message);
+      setOrders([]);
     }
   };
 
@@ -62,8 +69,8 @@ const HosoKh = () => {
           fetchOrders(),
         ]);
       } catch (fetchError) {
-        console.error('Error in fetching data:', fetchError.response || fetchError.message);
-        setError('Error fetching data.');
+        console.error('Lỗi khi tải dữ liệu:', fetchError.response || fetchError.message);
+        setError('Lỗi khi tải dữ liệu.');
       } finally {
         setLoading(false);
       }
@@ -86,15 +93,60 @@ const HosoKh = () => {
     try {
       await fetchAddresses();
     } catch (error) {
-      console.error('Error updating addresses:', error.response || error.message);
+      console.error('Lỗi khi cập nhật địa chỉ:', error.response || error.message);
     }
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  const handleEditCustomer = () => {
+    setEditCustomerModalOpen(true);
+  };
+
+  const handleCloseCustomerModal = () => {
+    setEditCustomerModalOpen(false);
+  };
+
+  const handleSaveCustomer = async () => {
+    try {
+      await fetchCustomerData();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật thông tin khách hàng:', error.response || error.message);
+    }
+    handleCloseCustomerModal();
+  };
+
+  const handleShowOrderDetails = (orderId) => {
+    setSelectedOrder(orderId);
+    setOrderModalOpen(true);
+  };
+
+  const handleCloseOrderModal = () => {
+    setOrderModalOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const handleOpenChangePasswordModal = () => {
+    setChangePasswordModalOpen(true);
+  };
+
+  const handleCloseChangePasswordModal = () => {
+    setChangePasswordModalOpen(false);
+  };
+
+  if (loading) return <div className="loading">Đang tải...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <section style={{ backgroundColor: '#eee' }}>
+      <div>
+        <div
+          onClick={() => setShows(true)}
+          className="w-25 mx-auto d-flex"
+          style={{ cursor: "pointer" }}
+        >
+          <div>+</div>
+          <div>Thêm mới địa chỉ</div>
+        </div>
+      </div>
       <MDBContainer className="py-5">
         <MDBRow>
           <MDBCol lg="4">
@@ -107,10 +159,12 @@ const HosoKh = () => {
                   style={{ width: '150px' }}
                   fluid
                 />
-                <p className="text-muted mb-1">{customer?.ten || 'Position'}</p>
+                <p className="text-muted mb-1">{customer?.ten || 'Chức vụ'}</p>
                 <p className="text-muted mb-4">
-                  {customer?.trangThai === 1 ? "Active" : "Inactive" || 'N/A'}
+                  {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
                 </p>
+                <MDBBtn onClick={handleEditCustomer}>Sửa Thông Tin Khách Hàng</MDBBtn>
+                <MDBBtn className="mt-2" onClick={handleOpenChangePasswordModal}>Đổi Mật Khẩu</MDBBtn> {/* Nút mở modal đổi mật khẩu */}
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
@@ -119,7 +173,7 @@ const HosoKh = () => {
               <MDBCardBody>
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Full Name</MDBCardText>
+                    <MDBCardText>Họ và Tên</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">{customer?.ten || 'N/A'}</MDBCardText>
@@ -137,7 +191,7 @@ const HosoKh = () => {
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Phone Number</MDBCardText>
+                    <MDBCardText>Số Điện Thoại</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">{customer?.sdt || 'N/A'}</MDBCardText>
@@ -146,34 +200,34 @@ const HosoKh = () => {
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Status</MDBCardText>
+                    <MDBCardText>Trạng Thái</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      {customer?.trangThai === 1 ? "Active" : "Inactive" || 'N/A'}
+                      {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Addresses</MDBCardText>
+                    <MDBCardText>Địa Chỉ</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBListGroup>
                       {addresses.length > 0 ? addresses.map((addr) => (
                         <MDBListGroupItem key={addr.id}>
-                          {addr.diaChiKhachHang.diaChi || 'N/A'}
+                          {addr.diaChi || 'N/A'}
                           <MDBBtn
                             className="float-end"
                             size="sm"
                             onClick={() => handleEditClick(addr)}
                           >
-                            Edit
+                            Sửa
                           </MDBBtn>
                         </MDBListGroupItem>
                       )) : (
-                        <MDBCardText className="text-muted">No addresses available.</MDBCardText>
+                        <MDBCardText className="text-muted">Không có địa chỉ.</MDBCardText>
                       )}
                     </MDBListGroup>
                   </MDBCol>
@@ -183,64 +237,108 @@ const HosoKh = () => {
           </MDBCol>
         </MDBRow>
 
-        {/* Orders Section */}
+        {/* Phần Đơn Hàng */}
         <MDBRow className="mt-4">
           <MDBCol lg="12">
             <MDBCard className="mb-4">
               <MDBCardBody>
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Đơn hàng đã mau </MDBCardText>
+                    <MDBCardText>Đơn Hàng</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                  <MDBListGroup>
-  {orders.length > 0 ? orders.map((order) => (
-    <MDBListGroupItem key={order.id}>
-      <MDBCardText><strong>Ngày mua hàng:</strong> {new Date(order.ngayThanhToan).toLocaleDateString()}</MDBCardText>
-      <MDBCardText><strong>Ngày nhận hàng:</strong> {new Date(order.ngayNhanHang).toLocaleDateString()}</MDBCardText>
-      <MDBCardText><strong>Tổng tiền:</strong> {order.tongTien.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</MDBCardText>
-
-      {order.chiTietHoaDons && order.chiTietHoaDons.length > 0 ? (
-        <div className="order-items">
-          {order.chiTietHoaDons.map((item) => (
-            <div className="order-item" key={item.id}>
-              {/* Assuming `anhs` is an array and you are taking the first image */}
-              <img src={item.chiTietSanPham.anhs[0]?.duongDan || 'default-image-url.jpg'} alt={item.chiTietSanPham.sanPham.ten} style={{ width: '100px', height: 'auto' }} />
-              <div className="order-item-details">
-                <p><strong>{item.chiTietSanPham.sanPham.ten}</strong></p>
-                <p>Phân loại hàng: {item.chiTietSanPham.mauSac?.ten || 'Không có màu sắc'} | Size: {item.chiTietSanPham.kichCo?.ten || 'Không có kích cỡ'}</p>
-                <p className="price">{(item.donGia * item.soLuong).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <MDBCardText className="text-muted">No details available.</MDBCardText>
-      )}
-    </MDBListGroupItem>
-  )) : (
-    <MDBCardText className="text-muted">No orders available.</MDBCardText>
-  )}
-</MDBListGroup>
-
-
+                    <MDBListGroup>
+                      {orders.length > 0 ? orders.map(order => (
+                        <MDBListGroupItem key={order.id}>
+                          <MDBCardText>
+                            <div className="order-header">
+                              <strong>{order.maHD}</strong> - {order.ngayTao}
+                            </div>
+                            <div className="order-details">
+                              {order.chiTietHoaDons.map(detail => (
+                                <div key={detail.id} className="order-item">
+                                  <img
+                                    src={detail.chiTietSanPham.anhs[0]?.duongDan || 'https://via.placeholder.com/100'}
+                                    alt={detail.chiTietSanPham.sanPham.ten}
+                                    style={{ width: '100px', height: 'auto', marginRight: '1rem' }}
+                                  />
+                                  <div className="order-item-details">
+                                    <p>
+                                      <strong>{detail.chiTietSanPham.sanPham.ten}</strong>
+                                    </p>
+                                    <p>
+                                      Phân loại hàng: {detail.chiTietSanPham.idMauSac} | Size: {detail.chiTietSanPham.idKichCo}
+                                    </p>
+                                    <p className="price">{detail.donGia.toLocaleString()} đ</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="total-price mt-2">
+                              <strong>Tổng tiền: {order.tongTien.toLocaleString()} đ</strong>
+                            </div>
+                            <MDBBtn
+                              className="float-end mt-2"
+                              size="sm"
+                              onClick={() => handleShowOrderDetails(order.id)}
+                            >
+                              Xem Chi Tiết
+                            </MDBBtn>
+                          </MDBCardText>
+                        </MDBListGroupItem>
+                      )) : (
+                        <MDBCardText className="text-muted">Không có đơn hàng.</MDBCardText>
+                      )}
+                    </MDBListGroup>
                   </MDBCol>
                 </MDBRow>
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
         </MDBRow>
-      </MDBContainer>
 
-      {/* Integrate the EditAddressModal component */}
-      {selectedAddress && (
-        <EditAddressModal
-          isOpen={modalOpen}
-          onClose={handleCloseModal}
-          address={selectedAddress}
-          onSave={handleSave}
-        />
-      )}
+        {/* Modal Chi Tiết Đơn Hàng */}
+        {selectedOrder && (
+          <Modalhang
+            isOpen={orderModalOpen}
+            onClose={handleCloseOrderModal}
+            orderId={selectedOrder}
+          />
+        )}
+
+        {/* Các modal khác */}
+        {modalOpen && (
+          <ModalSuaDiaChi
+            isOpen={modalOpen}
+            onClose={handleCloseModal}
+            address={selectedAddress}
+            onSave={handleSave}
+          />
+        )}
+        {editCustomerModalOpen && (
+          <Modalsua
+            isOpen={editCustomerModalOpen}
+            onClose={handleCloseCustomerModal}
+            onSave={handleSaveCustomer}
+            customer={customer}
+          />
+        )}
+        {shows && (
+          <ModalThemDiaChiMoi
+            show={shows}
+            setShow={setShows}
+            setload={setload}
+            load={load}
+          />
+        )}
+        {changePasswordModalOpen && (
+          <ChangePasswordModal
+            show={changePasswordModalOpen}
+            handleClose={handleCloseChangePasswordModal}
+            userId={userId}
+          />
+        )}
+      </MDBContainer>
     </section>
   );
 };

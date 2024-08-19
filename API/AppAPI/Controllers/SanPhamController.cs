@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
@@ -272,48 +273,90 @@ namespace AppAPI.Controllers
 
             return Ok(thongTinSP);
 		}
-		#endregion
+        #endregion
+        [HttpGet("getAllSPBanHa222ng")]
+        public async Task<IActionResult> GetSanPhamByHoaDonId(Guid hoaDonId)
+        {
+            // Lấy thông tin hóa đơn với các chi tiết sản phẩm liên quan
+            var hoaDon = await _dbcontext.HoaDons
+                .Where(hd => hd.ID == hoaDonId)
+                .Select(hd => new
+                {
+                    hd.ID,
+                    hd.MaHD,
+                    hd.NgayTao,
+                    hd.NgayThanhToan,
+                    hd.NgayNhanHang,
+                    hd.TenNguoiNhan,
+                    hd.SDT,
+                    hd.Email,
+                    hd.DiaChi,
+                    hd.TongTien,
+                    hd.TienShip,
+                    hd.GhiChu,
+                    hd.TrangThaiGiaoHang,
+                    SanPhamDetails = hd.ChiTietHoaDons.Select(cthd => new
+                    {
+                        SanPhamId = cthd.ChiTietSanPham.IDSanPham,
+                        TenSanPham = cthd.ChiTietSanPham.SanPham.Ten,
+                        AnhSanPham = _dbcontext.Anhs
+                            .Where(a => a.IDChitietsanpham == cthd.ChiTietSanPham.ID)
+                            .Select(a => a.DuongDan)
+                            .FirstOrDefault(),
+                        MauSac = cthd.ChiTietSanPham.MauSac.Ten,
+                        KichCo = cthd.ChiTietSanPham.KichCo.Ten,
+                        DonGia = cthd.DonGia,
+                        SoLuong = cthd.SoLuong,
+                        TongTien = cthd.DonGia * cthd.SoLuong
+                    })
+                })
+                .FirstOrDefaultAsync();
 
+            if (hoaDon == null)
+            {
+                return NotFound("Hóa đơn không tồn tại.");
+            }
 
+            return Ok(hoaDon);
+        }
+        #region SanPhamBanHangOflineKien
+        [HttpGet("getAllSPBanHang")]
+			public async Task<IActionResult> GetAllSanPhamBanHang(int currentPage, int productsPerPage)
+			{
+				int totalProducts = await _dbcontext.SanPhams.CountAsync();
+				int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
 
-		#region SanPhamBanHangOflineKien
-		[HttpGet("getAllSPBanHang")]
-		public async Task<IActionResult> GetAllSanPhamBanHang(int currentPage, int productsPerPage)
-		{
-			int totalProducts = await _dbcontext.SanPhams.CountAsync();
-			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
-
-			var pagedProducts = await _dbcontext.SanPhams.Where(p => p.TrangThai != 0)
-				.Skip((currentPage - 1) * productsPerPage)
-				.Take(productsPerPage)
-				.Select( a => new Sanphamptview
-				{
-					ID = a.ID,
-					Ten = a.Ten,
-					Ma = a.Ma,
-					MoTa = a.MoTa,
-					TrangThai = a.TrangThai,
-					giaBan = _dbcontext.ChiTietSanPhams
-							   .Where(p => p.IDSanPham == a.ID)
-							   .Select(p => p.GiaBan)
-							   .FirstOrDefault(),
-					IDLoaiSP = a.IDLoaiSP,
-					IDChatLieu = a.IDChatLieu,
-                    IDCoAo = a.idCoAo,
-					anhs = _dbcontext.ChiTietSanPhams
-							  .Where(p => p.IDSanPham == a.ID)
-							  .Join(_dbcontext.Anhs, b => b.ID, c => c.IDChitietsanpham, (b, c) => new Anh
-							  {
-								  ID = c.ID,
-								  DuongDan = c.DuongDan,
-								  TrangThai = c.TrangThai,
-								  IDChitietsanpham = c.IDChitietsanpham,
-							  }).ToList(),
-                    chatLieu =  _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
-                    loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
-                    coAo = _dbcontext.CoAos.Where(p => p.Id == a.idCoAo).Select(p => p.ten).FirstOrDefault(),
-				})
-				.OrderByDescending(p => p.TrangThai).ToListAsync();
+				var pagedProducts = await _dbcontext.SanPhams.Where(p => p.TrangThai != 0)
+					.Skip((currentPage - 1) * productsPerPage)
+					.Take(productsPerPage)
+					.Select( a => new Sanphamptview
+					{
+						ID = a.ID,
+						Ten = a.Ten,
+						Ma = a.Ma,
+						MoTa = a.MoTa,
+						TrangThai = a.TrangThai,
+						giaBan = _dbcontext.ChiTietSanPhams
+								   .Where(p => p.IDSanPham == a.ID)
+								   .Select(p => p.GiaBan)
+								   .FirstOrDefault(),
+						IDLoaiSP = a.IDLoaiSP,
+						IDChatLieu = a.IDChatLieu,
+						IDCoAo = a.idCoAo,
+						anhs = _dbcontext.ChiTietSanPhams
+								  .Where(p => p.IDSanPham == a.ID)
+								  .Join(_dbcontext.Anhs, b => b.ID, c => c.IDChitietsanpham, (b, c) => new Anh
+								  {
+									  ID = c.ID,
+									  DuongDan = c.DuongDan,
+									  TrangThai = c.TrangThai,
+									  IDChitietsanpham = c.IDChitietsanpham,
+								  }).ToList(),
+						chatLieu =  _dbcontext.ChatLieus.Where(p => p.ID == a.IDChatLieu).Select(p => p.Ten).FirstOrDefault(),
+						loaiSanPham = _dbcontext.LoaiSPs.Where(p => p.ID == a.IDLoaiSP).Select(p => p.Ten).FirstOrDefault(),
+						coAo = _dbcontext.CoAos.Where(p => p.Id == a.idCoAo).Select(p => p.ten).FirstOrDefault(),
+					})
+					.OrderByDescending(p => p.TrangThai).ToListAsync();
 
 			// Prepare the paginated result
 			var sanPhamPhangTrang = new PhanTrangSanPham
@@ -598,12 +641,7 @@ namespace AppAPI.Controllers
 
 		#endregion
 		#region ChitietSanPhamBanHangOflineKien
-		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
-		public  async Task<IActionResult> GetChiTietSanPhamByID(Guid id)
-		{
-			var response =  _sanPhamServices.GetChiTietSanPhamByID(id);
-			return Ok(response);
-		}
+
         [HttpGet("getChiTietSPBanHangbyIDsp")]
         public async Task<IActionResult> GetChiTietSanPhamByIDSP(Guid idsp)
         {
@@ -725,7 +763,6 @@ namespace AppAPI.Controllers
 			return Ok(dsctspview);
 		}
 		#endregion
-
 		#region add san pham 
 		[HttpPost("images")]
 		public async Task<IActionResult> UploadImages([FromForm] List<IFormFile> images)
@@ -1057,7 +1094,119 @@ namespace AppAPI.Controllers
 
 
 
-        #endregion
+
+		#endregion
+
+		#region sanphambanhangonl
+		[HttpGet("getLoaiSPbanhangonl")]
+		public async Task<IActionResult> GetAllLSPSanPhamonl()
+		{
+			var listlSP = await (from lsp in _dbcontext.LoaiSPs
+								 where lsp.TrangThai == 1
+								 join sp in _dbcontext.SanPhams on lsp.ID equals sp.IDLoaiSP
+								 where sp.TrangThai != 0
+								 join spct in _dbcontext.ChiTietSanPhams on sp.ID equals spct.IDSanPham
+								 where spct.TrangThai != 0
+								 join a in _dbcontext.Anhs on spct.ID equals a.IDChitietsanpham
+								 where a.TrangThai != 0
+								 group new { lsp, a } by lsp.ID into g
+								 select new
+								 {
+									 id = g.Key,
+									 images = g.Select(x => x.a.DuongDan).ToList(),
+									 title = g.FirstOrDefault().lsp.Ten
+								 }).ToListAsync();
+
+			return Ok(listlSP);
+		}
+
+		[HttpGet("getSPbanhangonl")]
+		public async Task<IActionResult> GetAllSanPhamonl(Guid? loaiSanPham,int? sapxep, Guid ? idkt, Guid? idms,int? giaMin,int? GiaMax, int currentPage, int productsPerPage)
+		{
+
+
+
+
+
+			var listlSP = await (
+				from spct in _dbcontext.ChiTietSanPhams
+				where spct.TrangThai != 0 && spct.SoLuong > 0
+				join sp in _dbcontext.SanPhams on spct.IDSanPham equals sp.ID
+				join kt in _dbcontext.KichCos on spct.IDKichCo equals kt.ID
+				join ms in _dbcontext.MauSacs on spct.IDMauSac equals ms.ID
+				join a in _dbcontext.Anhs on spct.ID equals a.IDChitietsanpham into anhs
+				from a in anhs.DefaultIfEmpty()
+				group new { spct,a, sp, kt, ms } by new { spct.IDSanPham, spct.IDMauSac } into g
+				select new
+				{
+					id = g.Key.IDSanPham,
+					idMauSac = g.Key.IDMauSac,
+					ctsp = g.Select(p => new
+					{
+						id = p.spct.ID,
+						ma = p.spct.Ma,
+						soluong = p.spct.SoLuong,
+						giaban = p.spct.GiaBan,
+						ngaytao = p.spct.NgayTao,
+						trangthai = p.spct.TrangThai,
+						tensp = p.sp.Ten,
+						p.spct.IDMauSac,
+						p.spct.IDKichCo,
+						tenkt = p.kt.Ten,
+						tenms = p.ms.Ten,
+						//anh = _dbcontext.Anhs.FirstOrDefault(x => x.IDChitietsanpham == p.spct.ID).DuongDan,
+						anh = p.a != null ? p.a.DuongDan : null,
+						idloaisp = p.sp.IDLoaiSP,
+					}).ToList()
+				}).ToListAsync();
+
+
+			var filteredProducts = listlSP
+			.Where(p => (loaiSanPham == null || p.ctsp[0].idloaisp == loaiSanPham) &&
+						(idkt == null || p.ctsp.FirstOrDefault(p => p.IDKichCo == idkt) != null ) &&
+						(idms == null || p.ctsp[0].IDMauSac == idms) &&
+						(giaMin == null || p.ctsp.Any(ctsp => ctsp.giaban >= giaMin)) &&
+					(GiaMax == null || p.ctsp.Any(ctsp => ctsp.giaban <= GiaMax)));
+
+
+
+			if (sapxep == 1)
+			{
+				filteredProducts = filteredProducts
+					.OrderByDescending(p => p.ctsp.Min(ctsp => ctsp.giaban));
+			}
+			else if (sapxep == 2)
+			{
+				filteredProducts = filteredProducts
+					.OrderBy(p => p.ctsp.Min(ctsp => ctsp.giaban));
+			}
+			else if (sapxep == 3)
+			{
+				filteredProducts = filteredProducts
+					.OrderByDescending(p => p.ctsp.Min(ctsp => ctsp.ngaytao));
+			}
+
+			var pagedProducts = filteredProducts
+	       .Skip((currentPage - 1) * productsPerPage)
+	       .Take(productsPerPage)
+	       .ToList();
+
+			int totalProducts = filteredProducts.Where(p => p.ctsp[0].idloaisp == loaiSanPham || loaiSanPham == null).Count();
+			int totalPages = (int)Math.Ceiling((double)totalProducts / productsPerPage);
+			return Ok(new {sp = pagedProducts, sotrang = totalPages });
+
+
+		}
+
+		[HttpGet("GetChiTietSanPhamByIDChiTietSanPham")]
+		public async Task<IActionResult> GetChiTietSanPhamByID(string id)
+		{
+			var response = _sanPhamServices.GetChiTietSanPhamByID(id);
+			return Ok(response);
+		}
+
+		#endregion
+
 
         #region Tung
         [HttpGet("GetChiTietSanPhamByIdHD")]

@@ -1,75 +1,159 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using AppAPI.Services;
 using AppData.Models;
-using AppAPI.IServices;
-using Microsoft.AspNetCore.Mvc;
 using AppData.ViewModels;
-using AppAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace AppAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DiaChiKhachHangController : ControllerBase
-    {
-        private readonly IDCKHServices _dckhServices;
-        private readonly AssignmentDBContext _context;
 
-        public DiaChiKhachHangController()
+	[Route("api/[controller]")]
+	[ApiController]
+	public class DiaChiKhachHangConTroller : ControllerBase
+	{
+		private readonly AssignmentDBContext _dbContext;
+		private readonly DCKHServices _ckhServices;
+        public DiaChiKhachHangConTroller()
         {
-            _dckhServices = new DCKHServices();
-            _context = new AssignmentDBContext();
+			_dbContext = new AssignmentDBContext();
+			_ckhServices= new DCKHServices();
         }
-        [HttpPost("add")]
-        public async Task<IActionResult> AddDiaChi([FromBody] DCKHViewModel request)
+
+		[HttpGet("getalldiachikh")]
+		public async Task<IActionResult> GetAllDiaChiKhachHang(Guid id) {
+			try
+			{
+				var dckh = await _dbContext.diaChiKhachHangs.Where(x => x.KhachHangID == id).OrderByDescending(p => p.TrangThai).ToListAsync();
+				return Ok(dckh);
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+
+		}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDiaChi(Guid id, [FromBody] DCKHViewModel request)
         {
             if (request == null)
             {
-                return BadRequest("Dữ liệu không hợp lệ.");
+                return BadRequest("Yêu cầu không hợp lệ.");
             }
 
             try
             {
-                var diaChi = await _dckhServices.AddDiaChi(request);
-                return Ok(diaChi);
+                // Gọi phương thức từ dịch vụ để cập nhật địa chỉ
+                await _ckhServices.UpdateDiaChi(id, request);
+                return Ok("Cập nhật địa chỉ thành công.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
+                // Xử lý lỗi và ghi log nếu cần
+                // Ví dụ: _logger.LogError(ex, "Error updating address.");
+                return StatusCode(500, $"Đã xảy ra lỗi không mong muốn: {ex.Message}");
             }
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDiaChiById(Guid id)
-        {
-            var diaChi = await _dckhServices.GetDiaChiById(id);
-            if (diaChi == null)
-            {
-                return NotFound("Địa chỉ không tồn tại.");
-            }
-            return Ok(diaChi);
-        }
-        [HttpGet("getByIdkh/{idkh}")]
-        public async Task<IActionResult> GetByIdKH(Guid idkh)
-        {
 
-            var listSP = await _dckhServices.GetChiTietSPBHById(idkh);
-            var query = from DiaChiKhachHang in listSP
-                        join KhachHang in _context.KhachHangs on DiaChiKhachHang.KhachHangID equals KhachHang.IDKhachHang
-                        select new
-                        {
-                            DiaChiKhachHang = DiaChiKhachHang,
-                            KhachHangID = KhachHang,
-                        };
-            return Ok(query);
-        }
-        [HttpDelete("{id}")]
-        public bool Delete(Guid id)
-        {
-            var result = _dckhServices.DeleteDC(id);
-            return result;
-        }
+        [HttpPut("updatedckh")]
+		public async Task<IActionResult> UpdateTrangThaiDCKH(Guid id)
+		{
+			try
+			{
+				var dckh = await _dbContext.diaChiKhachHangs.FindAsync(id);
+				if (dckh == null)
+				{
+					return BadRequest("Địa chỉ khách hàng không tồn tại");
+				}
+
+				if (dckh.TrangThai == 1)
+				{
+					return Ok();
+				}
+
+				// Cập nhật trạng thái của địa chỉ khách hàng được chọn
+				dckh.TrangThai = 1;
+
+				// Cập nhật trạng thái của các địa chỉ khác về 0
+				var otherDCKHs = _dbContext.diaChiKhachHangs.Where(d => d.Id != id && d.TrangThai == 1);
+				foreach (var d in otherDCKHs)
+				{
+					d.TrangThai = 0;
+				}
+
+				await _dbContext.SaveChangesAsync();
+
+				return Ok("Cập nhật thành công");
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+
+		}
 
 
-    }
+		[HttpDelete("xoadckh")]
+		public async Task<IActionResult> DeleteDiaChiKhachHang(Guid id)
+		{
+			var dckh = await _dbContext.diaChiKhachHangs.FindAsync(id);
+			if (dckh == null)
+			{
+				return NotFound("Địa chỉ khách hàng không tồn tại");
+			}
+
+			if (dckh.TrangThai == 1)
+			{
+				return BadRequest("Địa chỉ khách hàng đang được sử dụng không thể xóa");
+			}
+
+			_dbContext.diaChiKhachHangs.Remove(dckh);
+			await _dbContext.SaveChangesAsync();
+			return Ok("Xóa thành công");
+		}
+
+		[HttpPost("themdiachikhachhangmoi")]
+		public async Task<IActionResult> ADDDiaChiKhachHang(string tenkh,string sdt,string diachi,Guid idkh)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(tenkh) || string.IsNullOrEmpty(sdt) || string.IsNullOrEmpty(diachi) || idkh == Guid.Empty)
+				{
+					return BadRequest("Dữ liệu đầu vào không hợp lệ");
+				}
+				var check = await _dbContext.KhachHangs.FindAsync(idkh);
+				if(check == null)
+		        {
+					return BadRequest("Không tìm thấy thông tin khách hàng");
+				}
+				// Cập nhật tất cả địa chỉ của khách hàng thành trạng thái 0
+				var diaChiKhachHangs = _dbContext.diaChiKhachHangs.Where(d => d.KhachHangID == idkh);
+				await diaChiKhachHangs.ForEachAsync(d => d.TrangThai = 0);
+
+				var dckh = new DiaChiKhachHang();
+				dckh.Id = Guid.NewGuid();
+				dckh.TenKhachHang = tenkh;
+				dckh.sdt = sdt;
+				dckh.DiaChi = diachi;
+				dckh.KhachHangID = idkh;
+				dckh.TrangThai = 1;
+				await _dbContext.diaChiKhachHangs.AddAsync(dckh);
+				await _dbContext.SaveChangesAsync();
+				return Ok("Thêm thành công");
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+
+		}
+
+	}
 }

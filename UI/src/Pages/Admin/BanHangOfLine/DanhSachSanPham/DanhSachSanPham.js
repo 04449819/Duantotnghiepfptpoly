@@ -86,7 +86,7 @@ const DanhSachSanPham = () => {
               <th>Tổng giá</th>
               <th>Khuyến mãi</th>
               <th>Img</th>
-              <th>Action</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>

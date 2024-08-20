@@ -184,7 +184,7 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
               onChange={handleProvinceChange}
               options={provinces}
               placeholder="Chọn Tỉnh/ Thành phố"
-            />
+            />  
           </div>
           <hr className="mt-4" />
           <label hidden={massageprovince} className="text-danger">

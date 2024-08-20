@@ -65,8 +65,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         }
 
         // Check password length
-        if (password && password.length < 6) {
-            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        if (password && password.length < 8) {
+            newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
             valid = false;
         }
 
@@ -77,9 +77,10 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         }
 
         // Check phone number length
-        if (!/^0\d{9}$/.test(sdt)) {
+        if (!/^0\d{9}$/.test(sdt.trim())){
             newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự';
             valid = false;
+            
         }
 
         if (!valid) {
@@ -93,19 +94,28 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         }
 
         try {
+            // Create parameters object
+        const params = {
+            ten: ten.trim(),
+            email: email.trim(),
+            sdt: sdt.trim(),
+            diachi: diachi.trim(),
+            idvaitro: idvaitro.trim(),
+            trangThai: trangThai
+        };
+
+        // Add password if not empty
+        if (password.trim() !== '') {
+            params.password = password.trim();
+        }
+
+        // Convert to query string
+        const queryString = new URLSearchParams(params).toString();
             // Chuẩn bị dữ liệu
-            const params = new URLSearchParams({
-                ten: ten.trim(),
-                email: email.trim(),
-                password: password.trim(),
-                sdt: sdt.trim(),
-                diachi: diachi.trim(),
-                idvaitro: idvaitro.trim(),
-                trangThai: trangThai // Thêm trạng thái vào tham số truy vấn
-            }).toString();
+            
 
             // Thực hiện PUT request với tham số truy vấn
-            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${params}`);
+            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${queryString}`);
             console.log('Cập nhật thành công:', response.data);
             onEmployeeUpdate(response.data); // Thông báo cho component cha về cập nhật
             handleClose();

@@ -65,7 +65,6 @@ export const GetSanPhamGioHangSlice = createSlice({
     },
     resetSanPhamGioHang: (state) => {
       state.SanPhamGioHang = [];
-      console.log("resetSanPhamGioHang:", state.SanPhamGioHang);
     },
   },
   extraReducers: (builder) => {

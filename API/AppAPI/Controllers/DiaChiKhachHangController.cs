@@ -1,51 +1,37 @@
-﻿using AppAPI.Services;
+﻿using System;
+using System.Threading.Tasks;
 using AppData.Models;
-using AppData.ViewModels;
+using AppAPI.IServices;
 using Microsoft.AspNetCore.Mvc;
+using AppData.ViewModels;
+using AppAPI.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace AppAPI.Controllers
 {
-
-	[Route("api/[controller]")]
-	[ApiController]
-	public class DiaChiKhachHangConTroller : ControllerBase
-	{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DiaChiKhachHangController : ControllerBase
+    {
+        private readonly IDCKHServices _dckhServices;
 		private readonly AssignmentDBContext _dbContext;
-		private readonly DCKHServices _ckhServices;
-        public DiaChiKhachHangConTroller()
+
+        public DiaChiKhachHangController()
         {
-			_dbContext = new AssignmentDBContext();
-			_ckhServices= new DCKHServices();
+            _dckhServices= new DCKHServices();
         }
-
-		[HttpGet("getalldiachikh")]
-		public async Task<IActionResult> GetAllDiaChiKhachHang(Guid id) {
-			try
-			{
-				var dckh = await _dbContext.diaChiKhachHangs.Where(x => x.KhachHangID == id).OrderByDescending(p => p.TrangThai).ToListAsync();
-				return Ok(dckh);
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-
-		}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDiaChi(Guid id, [FromBody] DCKHViewModel request)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddDiaChi([FromBody] DCKHViewModel request)
         {
             if (request == null)
             {
-                return BadRequest("Yêu cầu không hợp lệ.");
+                return BadRequest("Dữ liệu không hợp lệ.");
             }
 
             try
             {
                 // Gọi phương thức từ dịch vụ để cập nhật địa chỉ
-                await _ckhServices.UpdateDiaChi(id, request);
+                await _dckhServices.UpdateDiaChi(id, request);
                 return Ok("Cập nhật địa chỉ thành công.");
             }
             catch (KeyNotFoundException ex)
@@ -137,7 +123,7 @@ namespace AppAPI.Controllers
 				await diaChiKhachHangs.ForEachAsync(d => d.TrangThai = 0);
 
 				var dckh = new DiaChiKhachHang();
-				dckh.Id = Guid.NewGuid();
+				dckh.Id = Guid.NewGuid();	
 				dckh.TenKhachHang = tenkh;
 				dckh.sdt = sdt;
 				dckh.DiaChi = diachi;

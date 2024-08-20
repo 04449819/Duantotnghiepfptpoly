@@ -11,6 +11,8 @@ import ModalSuaDiaChi from './ModalSuaHoso/ModalSuaDiaChi';
 import Modalsua from './ModalSuaHoso/Modalsua';
 import Modalhang from './ModalSuaHoso/Modalhang';
 import ChangePasswordModal from './ModalSuaHoso/ChangePasswordModal';
+import { TiDelete } from "react-icons/ti";
+import { toast } from 'react-toastify';
 const HosoKh = () => {
   const { userId } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -88,6 +90,17 @@ const HosoKh = () => {
     setModalOpen(false);
     setSelectedAddress(null);
   };
+  const HandleOnclickDeleteDC = async (item) => {
+    try {
+      const res = await axios.delete(
+        `https://localhost:7095/api/DiaChiKhachHang/xoadckh?id=${item.id}`
+      );
+      toast.success(`${res.data}`);
+      setload(!load);
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+  };
 
   const handleSave = async () => {
     try {
@@ -137,106 +150,119 @@ const HosoKh = () => {
 
   return (
     <section style={{ backgroundColor: '#eee' }}>
-      <div>
-        <div
-          onClick={() => setShows(true)}
-          className="w-25 mx-auto d-flex"
-          style={{ cursor: "pointer" }}
-        >
-          <div>+</div>
-          <div>Thêm mới địa chỉ</div>
-        </div>
-      </div>
-      <MDBContainer className="py-5">
-        <MDBRow>
-          <MDBCol lg="4">
-            <MDBCard className="mb-4">
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src={customer?.profilePicture || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
-                  alt="avatar"
-                  className="rounded-circle"
-                  style={{ width: '150px' }}
-                  fluid
-                />
-                <p className="text-muted mb-1">{customer?.ten || 'Chức vụ'}</p>
-                <p className="text-muted mb-4">
-                  {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
-                </p>
-                <MDBBtn onClick={handleEditCustomer}>Sửa Thông Tin Khách Hàng</MDBBtn>
-                <MDBBtn className="mt-2" onClick={handleOpenChangePasswordModal}>Đổi Mật Khẩu</MDBBtn> {/* Nút mở modal đổi mật khẩu */}
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-          <MDBCol lg="8">
-            <MDBCard className="mb-4">
-              <MDBCardBody>
-                <MDBRow>
-                  <MDBCol sm="3">
-                    <MDBCardText>Họ và Tên</MDBCardText>
-                  </MDBCol>
-                  <MDBCol sm="9">
-                    <MDBCardText className="text-muted">{customer?.ten || 'N/A'}</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol sm="3">
-                    <MDBCardText>Email</MDBCardText>
-                  </MDBCol>
-                  <MDBCol sm="9">
-                    <MDBCardText className="text-muted">{customer?.email || 'N/A'}</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol sm="3">
-                    <MDBCardText>Số Điện Thoại</MDBCardText>
-                  </MDBCol>
-                  <MDBCol sm="9">
-                    <MDBCardText className="text-muted">{customer?.sdt || 'N/A'}</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol sm="3">
-                    <MDBCardText>Trạng Thái</MDBCardText>
-                  </MDBCol>
-                  <MDBCol sm="9">
-                    <MDBCardText className="text-muted">
-                      {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
-                    </MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol sm="3">
-                    <MDBCardText>Địa Chỉ</MDBCardText>
-                  </MDBCol>
-                  <MDBCol sm="9">
-                    <MDBListGroup>
-                      {addresses.length > 0 ? addresses.map((addr) => (
-                        <MDBListGroupItem key={addr.id}>
-                          {addr.diaChi || 'N/A'}
-                          <MDBBtn
-                            className="float-end"
-                            size="sm"
-                            onClick={() => handleEditClick(addr)}
-                          >
-                            Sửa
-                          </MDBBtn>
-                        </MDBListGroupItem>
-                      )) : (
-                        <MDBCardText className="text-muted">Không có địa chỉ.</MDBCardText>
-                      )}
-                    </MDBListGroup>
-                  </MDBCol>
-                </MDBRow>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
 
+
+      <MDBContainer className="py-5">
+      <MDBRow>
+    <MDBCol lg="4">
+      <MDBCard className="mb-4">
+        <MDBCardBody className="text-center">
+          <MDBCardImage
+            src={customer?.profilePicture || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
+            alt="avatar"
+            className="rounded-circle"
+            style={{ width: '150px' }}
+            fluid
+          />
+          <p className="text-muted mb-1 info-value">{customer?.ten || 'Chức vụ'}</p>
+          <p className="text-muted mb-4 info-value">
+            {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
+          </p>
+          <MDBBtn onClick={handleEditCustomer} className="btn">Sửa Thông Tin Khách Hàng</MDBBtn>
+          <MDBBtn className="mt-2 btn" onClick={handleOpenChangePasswordModal}>Đổi Mật Khẩu</MDBBtn>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBCol>
+    <MDBCol lg="8">
+      <MDBCard className="mb-4">
+        <MDBCardBody className="customer-info">
+          <MDBRow>
+            <MDBCol sm="3">
+              <MDBCardText className="info-label">Họ và Tên</MDBCardText>
+            </MDBCol>
+            <MDBCol sm="9">
+              <MDBCardText className="info-value">{customer?.ten || 'N/A'}</MDBCardText>
+            </MDBCol>
+          </MDBRow>
+          <hr />
+          <MDBRow>
+            <MDBCol sm="3">
+              <MDBCardText className="info-label">Email</MDBCardText>
+            </MDBCol>
+            <MDBCol sm="9">
+              <MDBCardText className="info-value">{customer?.email || 'N/A'}</MDBCardText>
+            </MDBCol>
+          </MDBRow>
+          <hr />
+          <MDBRow>
+            <MDBCol sm="3">
+              <MDBCardText className="info-label">Số Điện Thoại</MDBCardText>
+            </MDBCol>
+            <MDBCol sm="9">
+              <MDBCardText className="info-value">{customer?.sdt || 'N/A'}</MDBCardText>
+            </MDBCol>
+          </MDBRow>
+          <hr />
+          <MDBRow>
+            <MDBCol sm="3">
+              <MDBCardText className="info-label">Trạng Thái</MDBCardText>
+            </MDBCol>
+            <MDBCol sm="9">
+              <MDBCardText className="info-value">
+                {customer?.trangThai === 1 ? "Hoạt Động" : "Ngừng Hoạt Động" || 'N/A'}
+              </MDBCardText>
+            </MDBCol>
+          </MDBRow>
+          <hr />
+          <MDBRow>
+            <MDBCol sm="3">
+              <MDBCardText className="info-label">Địa Chỉ</MDBCardText>
+              <div className="text-center">
+                <MDBBtn
+                  onClick={() => setShows(true)}
+                  color="primary"
+                  className="btn"
+                >
+                  Thêm mới địa chỉ
+                </MDBBtn>
+              </div>
+            </MDBCol>
+
+            <MDBCol sm="9">
+              <MDBListGroup>
+                {addresses.length > 0 ? addresses.map((addr) => (
+                  <MDBListGroupItem key={addr.id}>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span>{addr.diaChi || 'N/A'}</span>
+                      <div>
+                        <MDBBtn
+                          className="me-2 btn"
+                          size="sm"
+                          onClick={() => handleEditClick(addr)}
+                        >
+                          Sửa
+                        </MDBBtn>
+                        <MDBBtn
+                          color="danger"
+                          size="sm"
+                          className="btn"
+                          onClick={() => HandleOnclickDeleteDC(addr)}
+                        >
+                          Xóa
+                        </MDBBtn>
+                      </div>
+                    </div>
+                  </MDBListGroupItem>
+                )) : (
+                  <MDBCardText className="text-muted">Không có địa chỉ.</MDBCardText>
+                )}
+              </MDBListGroup>
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBCol>
+  </MDBRow>
         {/* Phần Đơn Hàng */}
         <MDBRow className="mt-4">
           <MDBCol lg="12">
@@ -247,50 +273,50 @@ const HosoKh = () => {
                     <MDBCardText>Đơn Hàng</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBListGroup>
-                      {orders.length > 0 ? orders.map(order => (
-                        <MDBListGroupItem key={order.id}>
-                          <MDBCardText>
-                            <div className="order-header">
-                              <strong>{order.maHD}</strong> - {order.ngayTao}
-                            </div>
-                            <div className="order-details">
-                              {order.chiTietHoaDons.map(detail => (
-                                <div key={detail.id} className="order-item">
-                                  <img
-                                    src={detail.chiTietSanPham.anhs[0]?.duongDan || 'https://via.placeholder.com/100'}
-                                    alt={detail.chiTietSanPham.sanPham.ten}
-                                    style={{ width: '100px', height: 'auto', marginRight: '1rem' }}
-                                  />
-                                  <div className="order-item-details">
-                                    <p>
-                                      <strong>{detail.chiTietSanPham.sanPham.ten}</strong>
-                                    </p>
-                                    <p>
-                                      Phân loại hàng: {detail.chiTietSanPham.idMauSac} | Size: {detail.chiTietSanPham.idKichCo}
-                                    </p>
-                                    <p className="price">{detail.donGia.toLocaleString()} đ</p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                            <div className="total-price mt-2">
-                              <strong>Tổng tiền: {order.tongTien.toLocaleString()} đ</strong>
-                            </div>
-                            <MDBBtn
-                              className="float-end mt-2"
-                              size="sm"
-                              onClick={() => handleShowOrderDetails(order.id)}
-                            >
-                              Xem Chi Tiết
-                            </MDBBtn>
-                          </MDBCardText>
-                        </MDBListGroupItem>
-                      )) : (
-                        <MDBCardText className="text-muted">Không có đơn hàng.</MDBCardText>
-                      )}
-                    </MDBListGroup>
-                  </MDBCol>
+  <MDBListGroup>
+    {orders.length > 0 ? orders.map(order => (
+      <MDBListGroupItem key={order.id}>
+        <MDBCardText>
+          <div className="order-header">
+            <strong>{order.maHD}</strong> - {order.ngayTao}
+          </div>
+          <div className="order-details">
+            {order.chiTietHoaDons.length > 0 && (
+              <div key={order.chiTietHoaDons[0].id} className="order-item">
+                <img
+                  src={order.chiTietHoaDons[0].chiTietSanPham.anhs[0]?.duongDan || 'https://via.placeholder.com/100'}
+                  alt={order.chiTietHoaDons[0].chiTietSanPham.sanPham.ten}
+                  style={{ width: '100px', height: 'auto', marginRight: '1rem' }}
+                />
+                <div className="order-item-details">
+                  <p>
+                    <strong>{order.chiTietHoaDons[0].chiTietSanPham.sanPham.ten}</strong>
+                  </p>
+                  <p>
+                    Phân loại hàng: {order.chiTietHoaDons[0].chiTietSanPham.idMauSac} | Size: {order.chiTietHoaDons[0].chiTietSanPham.idKichCo}
+                  </p>
+                  <p className="price">{order.chiTietHoaDons[0].donGia.toLocaleString()} đ</p>
+                </div>
+              </div>
+            )}
+          </div>
+         
+
+          <MDBBtn
+            className="float-end mt-2"
+            size="sm"
+            onClick={() => handleShowOrderDetails(order.id)}
+          >
+            Xem Chi Tiết
+          </MDBBtn>
+        </MDBCardText>
+      </MDBListGroupItem>
+    )) : (
+      <MDBCardText className="text-muted">Không có đơn hàng.</MDBCardText>
+    )}
+  </MDBListGroup>
+</MDBCol>
+
                 </MDBRow>
               </MDBCardBody>
             </MDBCard>

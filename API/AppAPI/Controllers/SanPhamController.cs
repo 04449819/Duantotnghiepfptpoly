@@ -291,7 +291,7 @@ namespace AppAPI.Controllers
                     hd.SDT,
                     hd.Email,
                     hd.DiaChi,
-                    hd.TongTien,
+                    TongTien = hd.ChiTietHoaDons.Sum(cthd => cthd.DonGia * cthd.SoLuong),
                     hd.TienShip,
                     hd.GhiChu,
                     hd.TrangThaiGiaoHang,

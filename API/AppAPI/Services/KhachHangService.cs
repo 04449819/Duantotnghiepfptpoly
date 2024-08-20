@@ -27,6 +27,7 @@ namespace AppAPI.Services
                 Email = nv.Email,
                 Password = nv.Password,
                 SDT = nv.SDT,
+                
 
             };
             await _dbContext.KhachHangs.AddAsync(kh);
@@ -169,6 +170,7 @@ namespace AppAPI.Services
 			return _dbContext.KhachHangs.FirstOrDefault(c => c.SDT == sdt || c.Email == sdt);
 		}
         #endregion
+
         #region Tung
         public int TongHopDiem(Guid idKhachHang)
         {
@@ -210,5 +212,8 @@ namespace AppAPI.Services
        
 
         #endregion
+
+   
+
     }
 }

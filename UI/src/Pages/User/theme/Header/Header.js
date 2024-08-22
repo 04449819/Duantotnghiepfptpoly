@@ -14,12 +14,9 @@ import "../../CuaHang/cuahang.scss";
 const Header = (props) => {
   const [shows, setShows] = useState(false);
   const user = useSelector((state) => state.user.User);
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   // Assuming email is used for display purposes, not for profile navigation
-  //   console.log(user);
-  // }, [user]);
+
   const HandleOnclickLogout = () => {
     Swal.fire({
       title: "Xác nhận",
@@ -30,9 +27,8 @@ const Header = (props) => {
       cancelButtonText: "Không",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispath(LogOutTaiKhoan());
+        dispatch(LogOutTaiKhoan());
         navigate("/");
-      } else {
       }
     });
   };
@@ -42,9 +38,20 @@ const Header = (props) => {
   const HandleOnclickGioHang = () => {
     navigate("/giohang");
   };
+
+  const HandleOnclickManageAccount = () => {
+    // Điều hướng đến trang xem profile
+    if (user && user.id) {
+      navigate(`/HosoKh/${user.id}`); // Đảm bảo user.id có giá trị hợp lệ
+    } else {
+      // Xử lý trường hợp không có user.id, có thể thông báo lỗi hoặc điều hướng đến trang lỗi
+      navigate("/login"); // Ví dụ: điều hướng đến trang đăng nhập nếu không có ID
+    }
+  };
+
   return (
     <div className="Header">
-      <div className="top-header ">
+      <div className="top-header">
         <p>
           FREESHIP 15K mọi đơn hàng &nbsp; &nbsp; - &nbsp; &nbsp; Mua online
           nhận nhanh tại cửa hàng &nbsp; &nbsp;- &nbsp; &nbsp; TP. Hồ Chí Minh
@@ -52,7 +59,7 @@ const Header = (props) => {
         </p>
       </div>
       <div className="bot-header">
-        <nav className="navbar navbar-expand-lg  navbar-light bg-info p-3">
+        <nav className="navbar navbar-expand-lg navbar-light bg-info p-3">
           <div className="container-fluid">
             <Link className="navbar-brand" to="">
               <h2>SHOP MAN</h2>
@@ -69,8 +76,8 @@ const Header = (props) => {
               <span className="navbar-toggler-icon"></span>
             </button>
 
-            <div className=" collapse navbar-collapse" id="navbarNavDropdown">
-              <ul className="navbar-nav ms-auto ">
+            <div className="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul className="navbar-nav ms-auto">
                 <li className="nav-item">
                   <NavLink
                     className="nav-link mx-2 active hover-underline-animation"
@@ -109,8 +116,10 @@ const Header = (props) => {
                   </button>
                   <button
                     className="buttonHeader"
+
                     // onClick={() => setShows(true)}
                     hidden={user && user.vaiTro === 1 ? false : true}
+
                   >
                     <div className="d-flex">
                       <div className="mt-1">
@@ -122,16 +131,10 @@ const Header = (props) => {
                         title={user && user.ten}
                         menuVariant="dark"
                       >
-                        <NavDropdown.Item
-                          href="#action/3.1"
-                          onClick={HandleOnclickLogout}
-                        >
+                        <NavDropdown.Item onClick={HandleOnclickLogout}>
                           Đăng xuất
                         </NavDropdown.Item>
-                        <NavDropdown.Item
-                          href="#action/3.1"
-                          onClick={HandleOnclickLogout}
-                        >
+                        <NavDropdown.Item onClick={HandleOnclickManageAccount}>
                           Quản lý tài khoản
                         </NavDropdown.Item>
                       </NavDropdown>
@@ -139,6 +142,7 @@ const Header = (props) => {
                   </button>
                 </li>
                 <li className="nav-item mx-2">
+
                   <Link
                     className="nav-link text-dark h5"
                     to=""
@@ -146,6 +150,7 @@ const Header = (props) => {
                   ></Link>
                 </li>
                 <li className="nav-item mx-2">
+
                   <button style={{ border: "none", backgroundColor: "white" }}>
                     <div className="mt-1" style={{ position: "relative" }}>
                       <FiShoppingCart onClick={HandleOnclickGioHang} />
@@ -169,8 +174,6 @@ const Header = (props) => {
                       </div>
                     </div>
                   </button>
-
-                  {/* </Link> */}
                 </li>
               </ul>
             </div>

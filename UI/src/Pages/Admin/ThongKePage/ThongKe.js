@@ -302,22 +302,7 @@ const ThongKe = () => {
     <>
       <Container fluid>
         <Row>
-        <Col lg="3" sm="6">
-            <Card className="card-stats">
-              <Card.Body>
-                <Row>
-                  <Col xs="7">
-                    <div>
-                      <h2>Tổng Hóa đơn hàng đã bán </h2>
-                     
-                      
-                    
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
+        
           <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>

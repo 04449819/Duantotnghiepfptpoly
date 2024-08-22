@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import "./ModalXacnhan.scss"
+import { useSelector } from 'react-redux';
 
 function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const user = useSelector(state => state.user.User); 
   useEffect(() => {
     if (show && billId) {
       fetchBillInfo();
@@ -42,7 +43,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=6`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=6&idnhanvien=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

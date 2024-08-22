@@ -1,37 +1,52 @@
-﻿using AppData.Models;
+﻿using System;
+using System.Threading.Tasks;
+using AppData.Models;
+using AppAPI.IServices;
 using Microsoft.AspNetCore.Mvc;
+using AppData.ViewModels;
+using AppAPI.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace AppAPI.Controllers
 {
-
-	[Route("api/[controller]")]
-	[ApiController]
-	public class DiaChiKhachHangConTroller : ControllerBase
-	{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DiaChiKhachHangController : ControllerBase
+    {
+        private readonly IDCKHServices _dckhServices;
 		private readonly AssignmentDBContext _dbContext;
-        public DiaChiKhachHangConTroller()
+
+        public DiaChiKhachHangController()
         {
-			_dbContext = new AssignmentDBContext();
+            _dckhServices= new DCKHServices();
+        }
+        [HttpPost("add")]
+        public async Task<IActionResult> AddDiaChi([FromBody] DCKHViewModel request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+
+            try
+            {
+                // Gọi phương thức từ dịch vụ để cập nhật địa chỉ
+                await _dckhServices.UpdateDiaChi(id, request);
+                return Ok("Cập nhật địa chỉ thành công.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ghi log nếu cần
+                // Ví dụ: _logger.LogError(ex, "Error updating address.");
+                return StatusCode(500, $"Đã xảy ra lỗi không mong muốn: {ex.Message}");
+            }
         }
 
-		[HttpGet("getalldiachikh")]
-		public async Task<IActionResult> GetAllDiaChiKhachHang(Guid id) {
-			try
-			{
-				var dckh = await _dbContext.diaChiKhachHangs.Where(x => x.KhachHangID == id).OrderByDescending(p => p.TrangThai).ToListAsync();
-				return Ok(dckh);
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-
-		}
-
-		[HttpPut("updatedckh")]
+        [HttpPut("updatedckh")]
 		public async Task<IActionResult> UpdateTrangThaiDCKH(Guid id)
 		{
 			try
@@ -68,6 +83,7 @@ namespace AppAPI.Controllers
 			}
 
 		}
+
 
 		[HttpDelete("xoadckh")]
 		public async Task<IActionResult> DeleteDiaChiKhachHang(Guid id)
@@ -107,7 +123,7 @@ namespace AppAPI.Controllers
 				await diaChiKhachHangs.ForEachAsync(d => d.TrangThai = 0);
 
 				var dckh = new DiaChiKhachHang();
-				dckh.Id = Guid.NewGuid();
+				dckh.Id = Guid.NewGuid();	
 				dckh.TenKhachHang = tenkh;
 				dckh.sdt = sdt;
 				dckh.DiaChi = diachi;

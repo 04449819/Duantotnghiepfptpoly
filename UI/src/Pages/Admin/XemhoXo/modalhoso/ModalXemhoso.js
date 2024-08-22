@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 
-function ModalXemhoso({ employee, onEmployeeUpdate }) {
+function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         ten: '',
@@ -13,8 +13,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         confirmPassword: '', // Thêm trường xác nhận mật khẩu
         sdt: '',
         diachi: '',
-        trangthai: '1',
-        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c'
+        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c',
+        trangThai: 1 // Thêm trạng thái
     });
     const [errors, setErrors] = useState({});
 
@@ -27,13 +27,17 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                 confirmPassword: '', // Xử lý mật khẩu xác nhận
                 sdt: employee.sdt || '',
                 diachi: employee.diachi || '',
-                trangthai: employee.trangthai || '1',
-                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c'
+                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c',
+                trangThai: employee.trangThai || 1 // Cập nhật trạng thái
             });
         }
     }, [employee]);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setload(!load);
+        setShow(false);
+    };
+
     const handleShow = () => setShow(true);
 
     const handleChange = (e) => {
@@ -50,7 +54,7 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         // Reset errors
         setErrors({});
 
-        const { ten, email, password, confirmPassword, sdt, diachi, trangthai, idvaitro } = formData;
+        const { ten, email, password, confirmPassword, sdt, diachi, idvaitro, trangThai } = formData;
         const newErrors = {};
         let valid = true;
 
@@ -61,8 +65,8 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         // Check password length
-        if (password && password.length < 6) {
-            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        if (password && password.length < 8) {
+            newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
             valid = false;
         }
 
@@ -73,9 +77,10 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         // Check phone number length
-        if (!/^\d{10}$/.test(sdt)) {
-            newErrors.sdt = 'Số điện thoại phải có 10 ký tự';
+        if (!/^0\d{9}$/.test(sdt.trim())){
+            newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự';
             valid = false;
+            
         }
 
         if (!valid) {
@@ -89,19 +94,28 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         try {
+            // Create parameters object
+        const params = {
+            ten: ten.trim(),
+            email: email.trim(),
+            sdt: sdt.trim(),
+            diachi: diachi.trim(),
+            idvaitro: idvaitro.trim(),
+            trangThai: trangThai
+        };
+
+        // Add password if not empty
+        if (password.trim() !== '') {
+            params.password = password.trim();
+        }
+
+        // Convert to query string
+        const queryString = new URLSearchParams(params).toString();
             // Chuẩn bị dữ liệu
-            const params = new URLSearchParams({
-                ten: ten.trim(),
-                email: email.trim(),
-                password: password.trim(),
-                sdt: sdt.trim(),
-                diachi: diachi.trim(),
-                trangthai: trangthai.trim(),
-                idvaitro: idvaitro.trim()
-            }).toString();
+            
 
             // Thực hiện PUT request với tham số truy vấn
-            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${params}`);
+            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${queryString}`);
             console.log('Cập nhật thành công:', response.data);
             onEmployeeUpdate(response.data); // Thông báo cho component cha về cập nhật
             handleClose();
@@ -196,25 +210,24 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                                 value={formData.diachi}
                                 onChange={handleChange}
                             />
+                            {errors.diachi && <div className="text-danger">{errors.diachi}</div>}
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formTrangthai">
-                            <Form.Label>Trạng thái</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Nhập trạng thái"
-                                name="trangthai"
-                                value={formData.trangthai}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                        
                         {/* Trường ID Vai trò ẩn */}
                         <Form.Group className="mb-3" controlId="formIdvaitro">
                             <Form.Control
                                 type="hidden"
                                 name="idvaitro"
                                 value={formData.idvaitro}
+                            />
+                        </Form.Group>
+
+                        {/* Trường Trang Thái ẩn */}
+                        <Form.Group className="mb-3" controlId="formTrangThai">
+                            <Form.Control
+                                type="hidden"
+                                name="trangThai"
+                                value={formData.trangThai}
                             />
                         </Form.Group>
 

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './kk.scss';
 
 const ModalHang = ({ isOpen, onClose, orderId }) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -39,6 +42,10 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
     return trangThaiGiaoHangDict[trangThai] || 'Không xác định';
   };
 
+  const handleCompleteReturn = () => {
+    navigate(`/hoan-hang/${orderId}`);
+  };
+
   if (loading) return <div>Đang tải...</div>;
   if (error) return <div className="text-danger">{error}</div>;
 
@@ -49,21 +56,75 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
       </Modal.Header>
       <Modal.Body>
         {orderDetails ? (
-          <div>
+          <div className="modal-content">
+            {/* Stepper */}
+            <div className="stepper">
+              {orderDetails.trangThaiGiaoHang >= 2 && (
+                <div className="stepper__step stepper__step--finish">
+                  <div className="stepper__step-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 8v8m4-4H8"></path>
+                    </svg>
+                  </div>
+                  <div className="stepper__step-text">Đã xác nhận thông tin thanh toán</div>
+                  <div className="stepper__step-date">
+                    {orderDetails.ngayThanhToan ? new Date(orderDetails.ngayTao).toLocaleDateString() + ' ' + new Date(orderDetails.ngayThanhToan).toLocaleTimeString() : 'Chưa xác nhận'}
+                  </div>
+                </div>
+              )}
+             
+              {orderDetails.trangThaiGiaoHang >= 4 && (
+                <div className="stepper__step stepper__step--finish">
+                  <div className="stepper__step-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 15l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                  <div className="stepper__step-text">Đã nhận được hàng</div>
+                  <div className="stepper__step-date">
+                    {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() + ' ' + new Date(orderDetails.ngayNhanHang).toLocaleTimeString() : 'Chưa nhận'}
+                  </div>
+                </div>
+              )}
+              {orderDetails.trangThaiGiaoHang >= 6 && (
+                <div className="stepper__step stepper__step--finish">
+                  <div className="stepper__step-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 4l2.5 7h7.5l-6 4.5 2.5 7.5-6-4.5-6 4.5L8.5 16 2 8.5h7.5z"></path>
+                    </svg>
+                  </div>
+                  <div className="stepper__step-text">Đơn hàng đã hoàn thành</div>
+                  <div className="stepper__step-date">
+                    {orderDetails.ngayHoanThanh ? new Date(orderDetails.ngayThanhToan).toLocaleDateString() + ' ' + new Date(orderDetails.ngayHoanThanh).toLocaleTimeString() : 'Chưa hoàn thành'}
+                  </div>
+                </div>
+              )}
+              <div className="stepper__line">
+                <div className="stepper__line-foreground" style={{ width: `${(orderDetails.trangThaiGiaoHang / 6) * 100}%` }}></div>
+              </div>
+            </div>
+
+            {/* Nội dung chi tiết đơn hàng */}
             <div className="order-info">
               <h5>Thông Tin Đơn Hàng</h5>
-              <p><strong>Mã HD:</strong> {orderDetails.maHD}</p>
-              <p><strong>Ngày Tạo:</strong> {new Date(orderDetails.ngayTao).toLocaleDateString()}</p>
-              <p><strong>Ngày Thanh Toán:</strong> {orderDetails.ngayThanhToan ? new Date(orderDetails.ngayThanhToan).toLocaleDateString() : 'Chưa thanh toán'}</p>
-              <p><strong>Ngày Nhận:</strong> {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() : 'Chưa nhận hàng'}</p>
-              <p><strong>Tên Người Nhận:</strong> {orderDetails.tenNguoiNhan}</p>
-              <p><strong>SDT:</strong> {orderDetails.sdt}</p>
-              <p><strong>Email:</strong> {orderDetails.email}</p>
-              <p><strong>Địa Chỉ:</strong> {orderDetails.diaChi}</p>
-              <p><strong>Tổng Tiền:</strong> {orderDetails.tongTien !== undefined ? orderDetails.tongTien.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có tổng tiền'}</p>
-              <p><strong>Tiền Ship:</strong> {orderDetails.tienShip !== undefined ? orderDetails.tienShip.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có tiền ship'}</p>
-              <p><strong>Ghi Chú:</strong> {orderDetails.ghiChu || 'Không có ghi chú'}</p>
-              <p><strong>Trạng Thái Giao Hàng:</strong> {renderTrangThaiGiaoHang(orderDetails.trangThaiGiaoHang)}</p>
+              <div className="order-info-row">
+                <div className="order-info-column">
+                  <p><strong>Mã HD:</strong> {orderDetails.maHD}</p>
+                  <p><strong>Ngày Tạo:</strong> {new Date(orderDetails.ngayTao).toLocaleDateString()}</p>
+                  <p><strong>Ngày Thanh Toán:</strong> {orderDetails.ngayThanhToan ? new Date(orderDetails.ngayThanhToan).toLocaleDateString() : 'Chưa thanh toán'}</p>
+                  <p><strong>Ngày Nhận:</strong> {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() : 'Chưa nhận hàng'}</p>
+                  <p><strong>Trạng Thái Giao Hàng:</strong> {renderTrangThaiGiaoHang(orderDetails.trangThaiGiaoHang)}</p>
+                  <p><strong>Tên Người Nhận:</strong> {orderDetails.tenNguoiNhan}</p>
+                </div>
+                <div className="order-info-column">
+                  <p><strong>SDT:</strong> {orderDetails.sdt}</p>
+                  <p><strong>Email:</strong> {orderDetails.email}</p>
+                  <p><strong>Địa Chỉ:</strong> {orderDetails.diaChi}</p>
+                  <p><strong>Tổng Tiền:</strong> {orderDetails.tongTien !== undefined ? orderDetails.tongTien.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có tổng tiền'}</p>
+                  <p><strong>Tiền Ship:</strong> {orderDetails.tienShip !== undefined ? orderDetails.tienShip.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có tiền ship'}</p>
+                  <p><strong>Ghi Chú:</strong> {orderDetails.ghiChu || 'Không có ghi chú'}</p>
+                </div>
+              </div>
             </div>
 
             <div className="order-items">
@@ -78,7 +139,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
                     />
                     <div className="order-item-details">
                       <p><strong>{item.tenSanPham}</strong></p>
-                      <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuong || 'Không có kích cỡ'}</p>
+                      <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuong || 'Không có số lượng'}</p>
                       <p className="price">
                         {item.tongTien !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                       </p>
@@ -95,6 +156,11 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
+        {orderDetails && orderDetails.trangThaiGiaoHang === 6 && (
+          <Button variant="primary" onClick={handleCompleteReturn}>
+            Hoàn Hàng
+          </Button>
+        )}
         <Button variant="secondary" onClick={onClose}>
           Đóng
         </Button>

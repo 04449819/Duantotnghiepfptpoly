@@ -784,7 +784,7 @@ namespace AppAPI.Services
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
         {
             try
             {
@@ -796,6 +796,7 @@ namespace AppAPI.Services
                 }
                 else
                 {
+                    hd.TrangThaiGiaoHang= trangThai;
                     hd.GhiChu = ghichu;
                 }
                 reposHoaDon.Update(hd);

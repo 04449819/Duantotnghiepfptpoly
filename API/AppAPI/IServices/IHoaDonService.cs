@@ -29,7 +29,7 @@ namespace AppAPI.IServices
         public bool ThanhToanDonHang(Guid idhd, int soDiemTru, bool isGiaoHang);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
-        public bool UpdateGhiChuHD(Guid idhd,Guid idnv, string ghichu);
+        public bool UpdateGhiChuHD(Guid idhd,Guid idnv,int trangThai, string ghichu);
         public bool CheckHDHasLSGD( Guid idHoaDon);
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon);
         public List<HoaDon> GetAllHDCho();

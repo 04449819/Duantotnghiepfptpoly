@@ -46,7 +46,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=3&idnhanvien=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=1&idnhanvien=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -169,13 +169,13 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
-          Close
+          Đóng
         </Button>
         <Button variant="danger" onClick={handleCancel}>
           Hủy hóa đơn
         </Button>
         <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+          Chuẩn bị hàng
         </Button>
       </Modal.Footer>
     </Modal>

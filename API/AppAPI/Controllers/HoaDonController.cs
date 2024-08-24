@@ -199,9 +199,9 @@ namespace AppAPI.Controllers
         }
 
         [HttpPut("UpdateGhichu")]
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
         {
-            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv,trangThai, ghichu);
         }
 
         [HttpDelete("deleteHoaDon/{id}")]

@@ -10,11 +10,11 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         ten: '',
         email: '',
         password: '',
-        confirmPassword: '', // Thêm trường xác nhận mật khẩu
+        confirmPassword: '',
         sdt: '',
-        diachi: '',
+        diaChi: '', // Updated key to match your database field
         idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c',
-        trangThai: 1 // Thêm trạng thái
+        trangThai: 1
     });
     const [errors, setErrors] = useState({});
 
@@ -26,7 +26,7 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
                 password: '', // Xử lý mật khẩu cẩn thận
                 confirmPassword: '', // Xử lý mật khẩu xác nhận
                 sdt: employee.sdt || '',
-                diachi: employee.diachi || '',
+                diaChi: employee.diaChi || '', // Updated key to match your database field
                 idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c',
                 trangThai: employee.trangThai || 1 // Cập nhật trạng thái
             });
@@ -54,12 +54,12 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         // Reset errors
         setErrors({});
 
-        const { ten, email, password, confirmPassword, sdt, diachi, idvaitro, trangThai } = formData;
+        const { ten, email, password, confirmPassword, sdt, diaChi, idvaitro, trangThai } = formData;
         const newErrors = {};
         let valid = true;
 
         // Check required fields
-        if (!ten || !email || !sdt || !diachi) {
+        if (!ten || !email || !sdt || !diaChi) {
             newErrors.general = 'Vui lòng điền đầy đủ thông tin';
             valid = false;
         }
@@ -77,10 +77,15 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
         }
 
         // Check phone number length
-        if (!/^0\d{9}$/.test(sdt.trim())){
+        if (!/^0\d{9}$/.test(sdt.trim())) {
             newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự';
             valid = false;
-            
+        }
+
+        // Validate address
+        if (!diaChi.trim()) {
+            newErrors.diaChi = 'Địa chỉ không được để trống';
+            valid = false;
         }
 
         if (!valid) {
@@ -95,24 +100,22 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
 
         try {
             // Create parameters object
-        const params = {
-            ten: ten.trim(),
-            email: email.trim(),
-            sdt: sdt.trim(),
-            diachi: diachi.trim(),
-            idvaitro: idvaitro.trim(),
-            trangThai: trangThai
-        };
+            const params = {
+                ten: ten.trim(),
+                email: email.trim(),
+                sdt: sdt.trim(),
+                diaChi: diaChi.trim(), // Updated key to match your database field
+                idvaitro: idvaitro.trim(),
+                trangThai: trangThai
+            };
 
-        // Add password if not empty
-        if (password.trim() !== '') {
-            params.password = password.trim();
-        }
+            // Add password if not empty
+            if (password.trim() !== '') {
+                params.password = password.trim();
+            }
 
-        // Convert to query string
-        const queryString = new URLSearchParams(params).toString();
-            // Chuẩn bị dữ liệu
-            
+            // Convert to query string
+            const queryString = new URLSearchParams(params).toString();
 
             // Thực hiện PUT request với tham số truy vấn
             const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${queryString}`);
@@ -206,11 +209,11 @@ function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
                             <Form.Control
                                 type="text"
                                 placeholder="Nhập địa chỉ"
-                                name="diachi"
-                                value={formData.diachi}
+                                name="diaChi" // Updated name to match your form data
+                                value={formData.diaChi} // Updated value to match your form data
                                 onChange={handleChange}
                             />
-                            {errors.diachi && <div className="text-danger">{errors.diachi}</div>}
+                            {errors.diaChi && <div className="text-danger">{errors.diaChi}</div>}
                         </Form.Group>
 
                         {/* Trường ID Vai trò ẩn */}

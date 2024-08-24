@@ -14,6 +14,7 @@ namespace AppData.Models
         public Guid? IDChitietsanpham { get; set; }
        // public Guid? IDSanPham { get; set; }
         public virtual ChiTietSanPham? ChiTietSanPham { get; set; }
-       // public virtual SanPham? SanPham { get; set; }
+        public string? Url { get; set; }
+        // public virtual SanPham? SanPham { get; set; }
     }
 }

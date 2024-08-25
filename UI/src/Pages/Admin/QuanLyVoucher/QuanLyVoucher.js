@@ -40,7 +40,7 @@ const QuanLyVoucher = () => {
 
   const fetchVouchers = async (page, refresh = false) => {
     try {
-      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page}&pageSize=${ROWS_PER_PAGE}`);
+      const res = await axios.get(` `);
       const data = res.data;
   
       // Nếu refresh là true, thay thế dữ liệu hiện tại. Nếu không, thêm vào cuối.
@@ -167,7 +167,7 @@ const QuanLyVoucher = () => {
     // Kiểm tra nếu có lỗi
     const hasError = Object.values(newErrors).some(error => error !== "");
     if (hasError) {
-      return; // Ngăn submit nếu có lỗi
+      return; 
     }
     try {
       if (isEditing) {

@@ -288,20 +288,23 @@ namespace AppAPI.Services
 												join c in context.SanPhams on b.IDSanPham equals c.ID
 												join d in context.KichCos on b.IDKichCo equals d.ID
 												join e in context.MauSacs on b.IDMauSac equals e.ID
-												select new GioHangOnline()
+                                                join f in context.KhuyenMaiCTSanPhams on b.ID equals f.IdChiTietSanPham
+                                                join g in context.KhuyenMais on f.IdKhuyenMai equals g.ID 
+                                                select new GioHangOnline()
 												{
-													id = a.IDCTSP,
-													soluong = b.SoLuong,
-													soluongmua = 1,
-													giaban = b.GiaBan,
-													idKichCo = b.IDKichCo,
-													idMauSac = b.IDMauSac,
-													idloaisp = c.IDLoaiSP,
-													ma = b.Ma,
-													tenkt = d.Ten,
-													tenms = e.Ten,
-													tensp = c.Ten,
-													anh = context.Anhs.OrderBy(p => p.DuongDan).FirstOrDefault(p => p.IDChitietsanpham == b.ID).DuongDan,
+													    id = a.IDCTSP,
+                                                        giatrikhuyenmai = g.GiaTri, 
+                                                        soluong = b.SoLuong,
+													    soluongmua = 1,
+													    giaban = b.GiaBan,
+													    idKichCo = b.IDKichCo,
+													    idMauSac = b.IDMauSac,
+													    idloaisp = c.IDLoaiSP,
+													    ma = b.Ma,
+													    tenkt = d.Ten,
+													    tenms = e.Ten,
+													    tensp = c.Ten,
+													    anh = context.Anhs.OrderBy(p => p.DuongDan).FirstOrDefault(p => p.IDChitietsanpham == b.ID).DuongDan,
 												}).ToList(),
 					vaiTro = 1
                     };

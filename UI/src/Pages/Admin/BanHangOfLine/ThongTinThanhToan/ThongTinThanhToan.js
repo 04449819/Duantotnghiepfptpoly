@@ -79,10 +79,8 @@ const getVoucherAndCalculateTotal = async () => {
     let totalPrice = calculateTotalPrice(hoaDon.SanPhams);
     
     // Thêm tiền ship nếu có
-    if (isGiaoHang && hoaDon.TienShip) {
-      totalPrice += Number(hoaDon.TienShip) ;
-      
-      
+    if (hoaDon.TienShip) {
+      totalPrice += Number(hoaDon.TienShip) ;  
     }
 
     // Lấy voucher dựa trên tổng giá ban đầu
@@ -548,7 +546,7 @@ useEffect(() => {
           top: '-1000px',
           left: '-1000px'
         }}>
-          <HoaDon props={idHoaDon} ref={componentRef}  />
+          <HoaDon props={idHoaDon} ref={componentRef}   />
         </div>
      
       

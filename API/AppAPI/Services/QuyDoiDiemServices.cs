@@ -2,26 +2,35 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
 
 namespace AppAPI.Services
 {
     public class QuyDoiDiemServices : IQuyDoiDiemServices
     {
         private readonly IAllRepository<QuyDoiDiem> _allRepository;
-        AssignmentDBContext context= new AssignmentDBContext();
+        AssignmentDBContext context = new AssignmentDBContext();
         public QuyDoiDiemServices()
         {
-            _allRepository=new AllRepository<QuyDoiDiem>(context,context.QuyDoiDiems);
+            _allRepository = new AllRepository<QuyDoiDiem>(context, context.QuyDoiDiems);
         }
-        public bool Add(/*int sodiem,*/ int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
+        public bool Add(QuyDoiDiemView quyDoi)
         {
-            var quydoidiem = new QuyDoiDiem();
-            quydoidiem.ID=Guid.NewGuid();
-            //quydoidiem.SoDiem = sodiem;
-            quydoidiem.TiLeTichDiem = TiLeTichDiem;
-            quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
-            quydoidiem.TrangThai = TrangThai;
-            return _allRepository.Add(quydoidiem);
+            var  quyDoiDiem = new QuyDoiDiem
+            {
+                ID = Guid.NewGuid(),
+                TiLeTichDiem = quyDoi.TiLeTichDiem,
+                TiLeTieuDiem = quyDoi.TiLeTieuDiem,
+                ngayBatDau = quyDoi.NgayBatDau,
+                ngayKetThuc = quyDoi.NgayKetThuc,
+                TrangThai = quyDoi.TrangThai,
+            };
+            if(quyDoiDiem.ngayBatDau > quyDoiDiem.ngayKetThuc) 
+            {
+                return false; 
+            }
+
+            return _allRepository.Add(quyDoiDiem);
         }
 
         public bool Delete(Guid Id)
@@ -48,15 +57,22 @@ namespace AppAPI.Services
             return _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
         }
 
-        public bool Update(Guid Id, int TrangThai)
+        public bool Update(Guid Id, QuyDoiDiemView quyDoi)
         {
             var quydoidiem= _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
             if(quydoidiem != null)
             {
-                //quydoidiem.SoDiem = sodiem;
-                //quydoidiem.TiLeTichDiem = TiLeTichDiem;
-                //quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
-                quydoidiem.TrangThai = TrangThai;
+
+                quydoidiem.TiLeTichDiem = quyDoi.TiLeTichDiem;
+                quydoidiem.TiLeTieuDiem = quyDoi.TiLeTieuDiem;
+                quydoidiem.ngayBatDau = quyDoi.NgayBatDau;
+                quydoidiem.ngayKetThuc = quyDoi.NgayKetThuc;
+                quydoidiem.TrangThai = quyDoi.TrangThai;
+                
+                if(quydoidiem.ngayBatDau > quydoidiem.ngayKetThuc)
+                {
+                    return false;
+                }
                 return _allRepository.Update(quydoidiem);
             }
             else

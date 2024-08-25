@@ -79,10 +79,10 @@ const BanHangOfline = () => {
     
   }, [hoaDonChos]);
 
-  const                                                                                                                                                                                                 getHoaDonChos = async () => {
+const getHoaDonChos = async () => {
     try {
       const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
-      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1);
+      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1 && hoaDon.loaiHD === 1);
   
       // Sort the filtered data by ngayTao in descending order (newest first)
       const sortedData = filteredData.sort((a, b) => {
@@ -155,7 +155,9 @@ const BanHangOfline = () => {
           <tr>
             <th>#</th>
             <th>Mã Hóa Đơn</th>
-            <th>Ngày Tạo</th>
+            <th>Khách hàng</th>
+            {/* <th>Ngày Tạo</th> */}
+            
             <th>Loại Hóa Đơn</th>
            
           </tr>
@@ -171,7 +173,8 @@ const BanHangOfline = () => {
              >
               <td>{index + 1}</td>
               <td>{hoaDon.maHD}</td>
-              <td>{hoaDon.ngayTao}</td>
+              <td>{hoaDon.tenNguoiNhan}</td>
+              {/* <td>{hoaDon.ngayTao}</td> */}
               <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} </td>
               <td><Button className="btn-danger" onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</Button></td>
               

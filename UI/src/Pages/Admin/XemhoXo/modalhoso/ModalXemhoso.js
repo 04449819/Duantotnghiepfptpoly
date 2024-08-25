@@ -4,17 +4,17 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 
-function ModalXemhoso({ employee, onEmployeeUpdate }) {
+function ModalXemhoso({ employee, onEmployeeUpdate, setload, load }) {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         ten: '',
         email: '',
         password: '',
-        confirmPassword: '', // Thêm trường xác nhận mật khẩu
+        confirmPassword: '',
         sdt: '',
-        diachi: '',
-        trangthai: '1',
-        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c'
+        diaChi: '', // Updated key to match your database field
+        idvaitro: '952c1a5d-74ff-4daf-ba88-135c5440809c',
+        trangThai: 1
     });
     const [errors, setErrors] = useState({});
 
@@ -26,14 +26,18 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                 password: '', // Xử lý mật khẩu cẩn thận
                 confirmPassword: '', // Xử lý mật khẩu xác nhận
                 sdt: employee.sdt || '',
-                diachi: employee.diachi || '',
-                trangthai: employee.trangthai || '1',
-                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c'
+                diaChi: employee.diaChi || '', // Updated key to match your database field
+                idvaitro: employee.idvaitro || '952c1a5d-74ff-4daf-ba88-135c5440809c',
+                trangThai: employee.trangThai || 1 // Cập nhật trạng thái
             });
         }
     }, [employee]);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setload(!load);
+        setShow(false);
+    };
+
     const handleShow = () => setShow(true);
 
     const handleChange = (e) => {
@@ -50,19 +54,19 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         // Reset errors
         setErrors({});
 
-        const { ten, email, password, confirmPassword, sdt, diachi, trangthai, idvaitro } = formData;
+        const { ten, email, password, confirmPassword, sdt, diaChi, idvaitro, trangThai } = formData;
         const newErrors = {};
         let valid = true;
 
         // Check required fields
-        if (!ten || !email || !sdt || !diachi) {
+        if (!ten || !email || !sdt || !diaChi) {
             newErrors.general = 'Vui lòng điền đầy đủ thông tin';
             valid = false;
         }
 
         // Check password length
-        if (password && password.length < 6) {
-            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        if (password && password.length < 8) {
+            newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
             valid = false;
         }
 
@@ -73,8 +77,14 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         // Check phone number length
-        if (!/^\d{10}$/.test(sdt)) {
-            newErrors.sdt = 'Số điện thoại phải có 10 ký tự';
+        if (!/^0\d{9}$/.test(sdt.trim())) {
+            newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự';
+            valid = false;
+        }
+
+        // Validate address
+        if (!diaChi.trim()) {
+            newErrors.diaChi = 'Địa chỉ không được để trống';
             valid = false;
         }
 
@@ -89,19 +99,26 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
         }
 
         try {
-            // Chuẩn bị dữ liệu
-            const params = new URLSearchParams({
+            // Create parameters object
+            const params = {
                 ten: ten.trim(),
                 email: email.trim(),
-                password: password.trim(),
                 sdt: sdt.trim(),
-                diachi: diachi.trim(),
-                trangthai: trangthai.trim(),
-                idvaitro: idvaitro.trim()
-            }).toString();
+                diaChi: diaChi.trim(), // Updated key to match your database field
+                idvaitro: idvaitro.trim(),
+                trangThai: trangThai
+            };
+
+            // Add password if not empty
+            if (password.trim() !== '') {
+                params.password = password.trim();
+            }
+
+            // Convert to query string
+            const queryString = new URLSearchParams(params).toString();
 
             // Thực hiện PUT request với tham số truy vấn
-            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${params}`);
+            const response = await axios.put(`https://localhost:7095/api/NhanVien/${employee.id}?${queryString}`);
             console.log('Cập nhật thành công:', response.data);
             onEmployeeUpdate(response.data); // Thông báo cho component cha về cập nhật
             handleClose();
@@ -192,29 +209,28 @@ function ModalXemhoso({ employee, onEmployeeUpdate }) {
                             <Form.Control
                                 type="text"
                                 placeholder="Nhập địa chỉ"
-                                name="diachi"
-                                value={formData.diachi}
+                                name="diaChi" // Updated name to match your form data
+                                value={formData.diaChi} // Updated value to match your form data
                                 onChange={handleChange}
                             />
+                            {errors.diaChi && <div className="text-danger">{errors.diaChi}</div>}
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formTrangthai">
-                            <Form.Label>Trạng thái</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Nhập trạng thái"
-                                name="trangthai"
-                                value={formData.trangthai}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                        
                         {/* Trường ID Vai trò ẩn */}
                         <Form.Group className="mb-3" controlId="formIdvaitro">
                             <Form.Control
                                 type="hidden"
                                 name="idvaitro"
                                 value={formData.idvaitro}
+                            />
+                        </Form.Group>
+
+                        {/* Trường Trang Thái ẩn */}
+                        <Form.Group className="mb-3" controlId="formTrangThai">
+                            <Form.Control
+                                type="hidden"
+                                name="trangThai"
+                                value={formData.trangThai}
                             />
                         </Form.Group>
 

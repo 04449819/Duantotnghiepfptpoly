@@ -7,9 +7,10 @@ namespace AppAPI.IServices
     {
         Task<DiaChiKhachHang> AddDiaChi(DCKHViewModel request);
         Task<DiaChiKhachHang> GetDiaChiById(Guid id);
+        public Task<List<DiaChiKhachHang>> GetChiTietSPBHById(Guid idhd);
         Task<IEnumerable<DiaChiKhachHang>> GetAllDiaChi();
         Task UpdateDiaChi(Guid id, DCKHViewModel request);
-        Task DeleteDiaChi(Guid id);
+        public bool DeleteDC(Guid id);
 
     }
 }

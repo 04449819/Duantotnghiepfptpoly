@@ -59,9 +59,9 @@ namespace AppAPI.Controllers
 
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put1(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai)
+        public async Task<IActionResult> Put1(Guid id, string ten, string email, string ?password, string sdt, string diachi, int trangthai)
         {
-            if (id == Guid.Empty || string.IsNullOrEmpty(ten) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(sdt) || string.IsNullOrEmpty(diachi ))
+            if (id == Guid.Empty || string.IsNullOrEmpty(ten) || string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(sdt) || string.IsNullOrEmpty(diachi ))
             {
                 return BadRequest("Invalid input parameters.");
             }
@@ -108,7 +108,11 @@ namespace AppAPI.Controllers
 
                 nv.Ten = ten;
                 nv.Email = email;
-                nv.PassWord = password; // Consider hashing the password before saving
+                if (password != null)
+                {
+                    nv.PassWord = password;
+                }
+                // Consider hashing the password before saving
                 nv.SDT = sdt;
                 nv.DiaChi = diachi;
                 nv.TrangThai = trangthai;

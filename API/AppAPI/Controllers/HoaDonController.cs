@@ -41,7 +41,50 @@ namespace AppAPI.Controllers
 		{
 			return _iHoaDonService.GetHoaDonById(idhd);
 		}
-		[HttpGet("TimKiem")]
+        [HttpGet("khachhana/{idKhachHang}")]
+        public IActionResult GetHoaDonByKhachHangId(Guid idKhachHang)
+        {
+            if (idKhachHang == Guid.Empty)
+            {
+                return BadRequest("ID khách hàng không hợp lệ.");
+            }
+
+            try
+            {
+                var hoaDons = _iHoaDonService.GetHoaDonByKhachHangId(idKhachHang);
+                if (hoaDons == null || !hoaDons.Any())
+                {
+                    return NotFound("Không tìm thấy hóa đơn cho khách hàng này.");
+                }
+
+                return Ok(hoaDons);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                return StatusCode(500, $"Lỗi máy chủ: {ex.Message}");
+            }
+        }
+        [HttpGet("khachhang/{idKhachHang}")]
+        public async Task<IActionResult> GetDonHangsDaMua(Guid idKhachHang)
+        {
+            if (idKhachHang == Guid.Empty)
+            {
+                return BadRequest("ID khách hàng không hợp lệ.");
+            }
+
+            try
+            {
+                var donHangs = await _iHoaDonService.GetDonHangsDaMuaAsync(idKhachHang);
+                return Ok(donHangs);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                return StatusCode(500, $"Lỗi máy chủ: {ex.Message}");
+            }
+        }
+        [HttpGet("TimKiem")]
 		public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
 		{
 			return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
@@ -157,9 +200,9 @@ namespace AppAPI.Controllers
         }
 
         [HttpPut("UpdateGhichu")]
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
         {
-            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv,trangThai, ghichu);
         }
 
         [HttpDelete("deleteHoaDon/{id}")]

@@ -1151,7 +1151,7 @@ namespace AppAPI.Services
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
         {
             try
             {
@@ -1163,6 +1163,7 @@ namespace AppAPI.Services
                 }
                 else
                 {
+                    hd.TrangThaiGiaoHang= trangThai;
                     hd.GhiChu = ghichu;
                 }
                 reposHoaDon.Update(hd);
@@ -1299,6 +1300,18 @@ namespace AppAPI.Services
                         repsCTSanPham.Update(CTsanPham);
                     }
                 }
+                else if (trangThai == 3)
+                {
+                    foreach (var item in chitiethoadon)
+                    {
+                        var CTsanPham =  repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == item.IDCTSP);
+                        if (CTsanPham != null)
+                        {
+                            CTsanPham.SoLuong -= item.SoLuong;
+                             repsCTSanPham.Update(CTsanPham);
+                        }
+                    }
+                }
                 if (trangThai == 6)
                 {
                     var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idHoaDon).ToList();
@@ -1316,6 +1329,7 @@ namespace AppAPI.Services
                     update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
                     update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
                 }
+                
                 update.TrangThaiGiaoHang = trangThai;
                 update.IDNhanVien = idNhanVien;
                 reposHoaDon.Update(update);
@@ -1515,11 +1529,18 @@ namespace AppAPI.Services
             return timkiem;
         }
 
-       
-    
+        public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
+        {
+            throw new NotImplementedException();
+        }
 
-		
-
-      
+        public Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang)
+        {
+            throw new NotImplementedException();
+        }
     }
-}
+
+
+       
+    }
+

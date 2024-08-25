@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import "./ModalXacnhan.scss"
+import './ModalXacnhan.scss';
 import { useSelector } from 'react-redux';
 
-function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
+function ModalHoanThanhCong({ show, onClose, billId }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const user = useSelector(state => state.user.User); 
+  const user = useSelector(state => state.user.User); // Get user info from Redux
+
   useEffect(() => {
     if (show && billId) {
       fetchBillInfo();
@@ -18,6 +19,8 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
 
   const fetchBillInfo = async () => {
     setLoading(true);
+    setError(null); // Reset error state
+
     try {
       // Fetch bill info
       const billResponse = await fetch(`https://localhost:7095/api/HoaDon/GetById/${billId}`);
@@ -28,7 +31,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
       setBillInfo(billData);
 
       // Fetch product details
-      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}`);
+      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}?idnhanvien=${user.id}`);
       if (!productResponse.ok) {
         throw new Error('Network response was not ok');
       }
@@ -41,9 +44,9 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
     }
   };
 
-  const handleConfirm = async () => {
+  const handleComplete = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=6&idnhanvien=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/HoanTCHD?idhd=${billId}&idnv=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -56,11 +59,11 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
 
       const data = await response.json();
       console.log('Success:', data);
-      if (onConfirm) onConfirm(billId);
+      // Close the modal and trigger any callback if necessary
+      onClose();
     } catch (error) {
       console.error('Error:', error);
-    } finally {
-      onClose();
+      setError('Có lỗi khi hoàn thành đơn hàng: ' + error.message);
     }
   };
 
@@ -94,7 +97,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Thông Tin Đơn Hàng</Modal.Title>
+        <Modal.Title>Hoàn Thành Đơn Hàng</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {billInfo && (
@@ -103,36 +106,32 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
             <p><strong>Người nhận:</strong> {billInfo.tenNguoiNhan}</p>
             <p><strong>Địa chỉ:</strong> {billInfo.diaChi}</p>
             <p><strong>Số điện thoại:</strong> {billInfo.sdt}</p>
-            <p><strong>ngày giao hàng:</strong> {billInfo.ngayTao}</p>
+            <p><strong>Email:</strong> {billInfo.email}</p>
 
             <h4>Chi tiết sản phẩm</h4>
             {productDetails.length > 0 ? (
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Ảnh </th>
+                    <th>Ảnh</th>
                     <th>Tên sản phẩm</th>
-                    <th>Tên người nhận</th>
                     <th>Đơn giá</th>
                     <th>Số lượng</th>
                   </tr>
                 </thead>
                 <tbody>
                   {productDetails.map((product) => (
-                   
-                     <tr key={product.id}>
+                    <tr key={product.id}>
                       <td>
                         <img
-                          src={product.anh.duongDan} // Thay `product.anh` bằng đường dẫn đến ảnh
-                          
-                          style={{ width: '150px', height: '150px' }} // Điều chỉnh kích thước nếu cần
+                          src={product.anh.duongDan} // Replace with correct image URL
+                          alt={product.sanPham.ten}
+                          style={{ width: '150px', height: '150px' }} // Adjust size as needed
                         />
                       </td>
                       <td>{product.sanPham.ten}</td>
-                      <p>{product.hoaDon.tenNguoiNhan}</p>
                       <td>{product.chiTietHoaDon.donGia}</td>
                       <td>{product.chiTietHoaDon.soLuong}</td>
-                      
                     </tr>
                   ))}
                 </tbody>
@@ -141,7 +140,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
               <p>Chưa có sản phẩm nào.</p>
             )}
 
-            <p>Bạn có chắc chắn muốn xác nhận đơn hàng này?</p>
+            <p>Bạn có chắc chắn muốn hoàn thành đơn hàng này?</p>
           </div>
         )}
       </Modal.Body>
@@ -149,12 +148,12 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId }) {
         <Button variant="secondary" onClick={onClose}>
           Đóng
         </Button>
-        <Button variant="primary" onClick={handleConfirm}>
-          Xác Nhận giao hàng Thành công
+        <Button variant="primary" onClick={handleComplete}>
+          hoàn thành công
         </Button>
       </Modal.Footer>
     </Modal>
   );
 }
 
-export default ModalDangGiaoHang;
+export default ModalHoanThanhCong;

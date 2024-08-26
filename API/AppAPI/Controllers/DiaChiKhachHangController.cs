@@ -31,7 +31,7 @@ namespace AppAPI.Controllers
             try
             {
                 // Gọi phương thức từ dịch vụ để cập nhật địa chỉ
-                await _dckhServices.UpdateDiaChi(id, request);
+                await _dckhServices.UpdateDiaChi( request.KhachHangID, request);
                 return Ok("Cập nhật địa chỉ thành công.");
             }
             catch (KeyNotFoundException ex)

@@ -3,6 +3,7 @@ using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.BanOnline;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -290,6 +291,11 @@ namespace AppAPI.Controllers
         public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto)
         {
             return _iHoaDonService.CreateHoaDonOffline(dto);
+        }
+        [HttpPost("CreateHoaDonOnline")]
+        public bool CreateHoaDonOnline(CreateHoaDonOnlineViewModel chdvm)
+        {
+            return _iHoaDonService.CreateHoaDonOnline(chdvm);
         }
         [HttpPut("UpdateHoaDonOffline/{hoaDonId}")]
         public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto)

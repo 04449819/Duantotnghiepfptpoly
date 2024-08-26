@@ -1448,21 +1448,29 @@ namespace AppAPI.Services
             return donHangsDaMua;
         }
 
+        //public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
+        //{
+        //    return context.HoaDons
+        //           .Include(h => h.ChiTietHoaDons)
+        //               .ThenInclude(ct => ct.ChiTietSanPham) // Bao gồm thông tin ChiTietSanPham
+        //                   .ThenInclude(ctsp => ctsp.SanPham) // Bao gồm thông tin SanPham
+        //               .ThenInclude(ct => ct.ChiTietSanPhams) // Bao gồm thông tin ChiTietSanPham cho ChiTietHoaDon
+        //                   .ThenInclude(ctsp => ctsp.Anhs) // Bao gồm thông tin Anh từ ChiTietSanPham
+        //           .Where(h => h.KhachHangID == idKhachHang)
+        //           .ToList();
+        //}
+        #endregion
+
         public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
         {
             return context.HoaDons
                    .Include(h => h.ChiTietHoaDons)
-                       .ThenInclude(ct => ct.ChiTietSanPham) // Bao gồm thông tin ChiTietSanPham
-                           .ThenInclude(ctsp => ctsp.SanPham) // Bao gồm thông tin SanPham
-                       .ThenInclude(ct => ct.ChiTietSanPhams) // Bao gồm thông tin ChiTietSanPham cho ChiTietHoaDon
-                           .ThenInclude(ctsp => ctsp.Anhs) // Bao gồm thông tin Anh từ ChiTietSanPham
                    .Where(h => h.KhachHangID == idKhachHang)
                    .ToList();
         }
-        #endregion
     }
 
 
-       
-    }
+
+}
 

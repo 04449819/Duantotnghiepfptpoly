@@ -11,14 +11,13 @@ namespace AppAPI.Controllers
 	public class DiaChiKhachHangConTroller : ControllerBase
 	{
 		private readonly AssignmentDBContext _dbContext;
-		public DiaChiKhachHangConTroller()
-		{
+        public DiaChiKhachHangConTroller()
+        {
 			_dbContext = new AssignmentDBContext();
-		}
+        }
 
 		[HttpGet("getalldiachikh")]
-		public async Task<IActionResult> GetAllDiaChiKhachHang(Guid id)
-		{
+		public async Task<IActionResult> GetAllDiaChiKhachHang(Guid id) {
 			try
 			{
 				var dckh = await _dbContext.diaChiKhachHangs.Where(x => x.KhachHangID == id).OrderByDescending(p => p.TrangThai).ToListAsync();
@@ -90,7 +89,7 @@ namespace AppAPI.Controllers
 		}
 
 		[HttpPost("themdiachikhachhangmoi")]
-		public async Task<IActionResult> ADDDiaChiKhachHang(string tenkh, string sdt, string diachi, Guid idkh)
+		public async Task<IActionResult> ADDDiaChiKhachHang(string tenkh,string sdt,string diachi,Guid idkh)
 		{
 			try
 			{
@@ -99,8 +98,8 @@ namespace AppAPI.Controllers
 					return BadRequest("Dữ liệu đầu vào không hợp lệ");
 				}
 				var check = await _dbContext.KhachHangs.FindAsync(idkh);
-				if (check == null)
-				{
+				if(check == null)
+		        {
 					return BadRequest("Không tìm thấy thông tin khách hàng");
 				}
 				// Cập nhật tất cả địa chỉ của khách hàng thành trạng thái 0

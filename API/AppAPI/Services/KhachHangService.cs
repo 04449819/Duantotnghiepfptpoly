@@ -27,6 +27,7 @@ namespace AppAPI.Services
                 Email = nv.Email,
                 Password = nv.Password,
                 SDT = nv.SDT,
+                
 
             };
             await _dbContext.KhachHangs.AddAsync(kh);
@@ -113,6 +114,7 @@ namespace AppAPI.Services
 
         public KhachHang GetById(Guid id)
         {
+
             return _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == id);
 
         }
@@ -125,36 +127,50 @@ namespace AppAPI.Services
 
         public bool Update(KhachHang khachHang)
 		{
-			throw new NotImplementedException();
-		}
+            var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
+            if (kh != null)
+            {
+                kh.Ten = khachHang.Ten;
+                kh.SDT = khachHang.SDT;
+                kh.Email = khachHang.Email;
+                kh.GioiTinh = khachHang.GioiTinh;
+                kh.NgaySinh = khachHang.NgaySinh;
+                kh.TrangThai = khachHang.TrangThai;
+                _dbContext.KhachHangs.Update(kh);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
+        }
 
-		//public bool Update(KhachHang khachHang)
-		//{
-		//    var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
-		//    if (kh != null)
-		//    {
-		//        kh.Ten = khachHang.Ten;
-		//        kh.SDT = khachHang.SDT;
-		//        kh.Email = khachHang.Email;
-		//        kh.Password = khachHang.Password;
-		//        kh.GioiTinh = khachHang.GioiTinh;
-		//        kh.DiaChi = khachHang.DiaChi;
-		//        kh.NgaySinh = khachHang.NgaySinh;
-		//        kh.DiemTich = khachHang.DiemTich;
-		//        kh.TrangThai = khachHang.TrangThai;
-		//        _dbContext.KhachHangs.Update(kh);
-		//        _dbContext.SaveChanges();
-		//        return true;
-		//    }
-		//    return false;
-		//}
+        //public bool Update(KhachHang khachHang)
+        //{
+        //    var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
+        //    if (kh != null)
+        //    {
+        //        kh.Ten = khachHang.Ten;
+        //        kh.SDT = khachHang.SDT;
+        //        kh.Email = khachHang.Email;
+        //        kh.Password = khachHang.Password;
+        //        kh.GioiTinh = khachHang.GioiTinh;
+        //        kh.DiaChi = khachHang.DiaChi;
+        //        kh.NgaySinh = khachHang.NgaySinh;
+        //        kh.DiemTich = khachHang.DiemTich;
+        //        kh.TrangThai = khachHang.TrangThai;
+        //        _dbContext.KhachHangs.Update(kh);
+        //        _dbContext.SaveChanges();
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-		#region getbyKhachhangEmailorSĐTkiên
-		public KhachHang GetBySDT(string sdt)
+        #region getbyKhachhangEmailorSĐTkiên
+        public KhachHang GetBySDT(string sdt)
 		{
 			return _dbContext.KhachHangs.FirstOrDefault(c => c.SDT == sdt || c.Email == sdt);
 		}
         #endregion
+
         #region Tung
         public int TongHopDiem(Guid idKhachHang)
         {
@@ -193,6 +209,11 @@ namespace AppAPI.Services
             return diemTich;
         }
 
+       
+
         #endregion
+
+   
+
     }
 }

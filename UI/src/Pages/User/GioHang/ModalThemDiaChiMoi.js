@@ -122,6 +122,7 @@ function ModalThemDiaChiMoi(props) {
       a = false;
     }
     if (a === true) {
+      
       // console.log(data);
       const dc = `${selectedProvince.label},${selectedDistrict.label},${data.diachi}`;
       // console.log(dc);

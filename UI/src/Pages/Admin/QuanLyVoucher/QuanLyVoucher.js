@@ -23,14 +23,24 @@ const QuanLyVoucher = () => {
   const tableRef = useRef(null);
   const ROWS_PER_PAGE = 2;
   const [total, setTotal] = useState();
-
+  const [errors, setErrors] = useState({
+    ten: '',
+    hinhThucGiamGia: '',
+    soTienCan: '',
+    giaTri: '',
+    ngayApDung: '',
+    ngayKetThuc: '',
+    soLuong: '',
+    moTa: '',
+    trangThai: '',
+  });
   useEffect(() => {
     fetchVouchers(page,false);
   }, []);
 
   const fetchVouchers = async (page, refresh = false) => {
     try {
-      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page}&pageSize=${ROWS_PER_PAGE}`);
+      const res = await axios.get(` `);
       const data = res.data;
   
       // Nếu refresh là true, thay thế dữ liệu hiện tại. Nếu không, thêm vào cuối.
@@ -69,11 +79,96 @@ const QuanLyVoucher = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   }
+  const validateInput = (id, value) => {
+    let error = "";
+    switch (id) {
+      case "ten":
+        if (!value.trim()) {
+          error = "Tên không được để trống";
+        }
+        break;
+      case "hinhThucGiamGia":
+        if (value === "") {
+          error = "Hình thức giảm giá không được để trống";
+        }
+        break;
+      case "soTienCan":
+        if (isNaN(value) || value <= 0) {
+          error = "Số tiền cần phải là số lớn hơn 0";
+        }
+        break;
+      case "giaTri":
+        if (isNaN(value) || value <= 0) {
+          error = "Giá trị phải là số lớn hơn 0";
+        }
+        break;
+      case "ngayApDung":
+        if (!value) {
+          error = "Ngày áp dụng không được để trống";
+        }
+        break;
+      case "ngayKetThuc":
+        if (!value) {
+          error = "Ngày kết thúc không được để trống";
+        } else if (newVoucher.ngayApDung && new Date(value) < new Date(newVoucher.ngayApDung)) {
+          error = "Ngày kết thúc phải sau ngày áp dụng";
+        }
+        break;
+      case "soLuong":
+        if (isNaN(value) || value <= 0) {
+          error = "Số lượng phải là số lớn hơn 0";
+        }
+        break;
+      case "moTa":
+        if (!value.trim()) {
+          error = "Mô tả không được để trống";
+        }
+        break;
+      case "trangThai":
+        if (value === "") {
+          error = "Trạng thái không được để trống";
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
   const handleInputChange = (e) => {
-    setNewVoucher({ ...newVoucher, [e.target.name]: e.target.value });
+    //setNewVoucher({ ...newVoucher, [e.target.name]: e.target.value });
+    const { id, value } = e.target;
+    setNewVoucher((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+
+    const error = validateInput(id, value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: error,
+    }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {
+      ten: validateInput("ten", newVoucher.ten),
+      hinhThucGiamGia: validateInput("hinhThucGiamGia", newVoucher.hinhThucGiamGia),
+      soTienCan: validateInput("soTienCan", newVoucher.soTienCan),
+      giaTri: validateInput("giaTri", newVoucher.giaTri),
+      ngayApDung: validateInput("ngayApDung", newVoucher.ngayApDung),
+      ngayKetThuc: validateInput("ngayKetThuc", newVoucher.ngayKetThuc),
+      soLuong: validateInput("soLuong", newVoucher.soLuong),
+      moTa: validateInput("moTa", newVoucher.moTa),
+      trangThai: validateInput("trangThai", newVoucher.trangThai),
+    };
+
+    setErrors(newErrors);
+
+    // Kiểm tra nếu có lỗi
+    const hasError = Object.values(newErrors).some(error => error !== "");
+    if (hasError) {
+      return; 
+    }
     try {
       if (isEditing) {
         try {
@@ -148,135 +243,148 @@ const QuanLyVoucher = () => {
           <Modal.Title id="contained-modal-title-vcenter">Thông Tin Voucher</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
-  <div className="row">
-    <div className="col-md-6">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-        <label htmlFor="ten" className="form-label">Tên</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Tên voucher"
-          type="text"
-          id="ten"
-          name="ten"
-          value={newVoucher.ten}
-          onChange={handleInputChange}
-        />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="ten" className="form-label">Tên</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Tên voucher"
+              type="text"
+              id="ten"
+              name="ten"
+              value={newVoucher.ten}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ten}
+            />
+            {errors.ten && <div className="text-danger">{errors.ten}</div>}
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="hinhThucGiamGia" className="form-label">Hình thức giảm giá</label>
-          <select
-            className="form-select"
-            id="hinhThucGiamGia"
-            name="hinhThucGiamGia"
-            value={newVoucher.hinhThucGiamGia}
-            onChange={handleInputChange}
-          >
-            <option value={0}>Giảm tiền</option>
-            <option value={1}>Giảm theo %</option>
-          </select>
-        </div>
+          <div className="mb-3">
+            <label htmlFor="hinhThucGiamGia" className="form-label">Hình thức giảm giá</label>
+            <select
+              className="form-select"
+              id="hinhThucGiamGia"
+              name="hinhThucGiamGia"
+              value={newVoucher.hinhThucGiamGia}
+              onChange={handleInputChange}
+              isInvalid={!!errors.hinhThucGiamGia}
+            >
+              <option value={0}>Giảm tiền</option>
+              <option value={1}>Giảm theo %</option>
+            </select>
+            {errors.hinhThucGiamGia && <div className="text-danger">{errors.hinhThucGiamGia}</div>}
+          </div>
 
-        <div className="mb-3">
-        <label htmlFor="soTienCan" className="form-label">Số tiền cần</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Số tiền cần"
-          type="number"
-          id="soTienCan"
-          name="soTienCan"
-          value={newVoucher.soTienCan}
-          onChange={handleInputChange}
-        />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="soTienCan" className="form-label">Số tiền cần</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Số tiền cần"
+              type="number"
+              id="soTienCan"
+              name="soTienCan"
+              value={newVoucher.soTienCan}
+              onChange={handleInputChange}
+              isInvalid={!!errors.soTienCan}
+            />
+            {errors.soTienCan && <div className="text-danger">{errors.soTienCan}</div>}
+          </div>
 
-        <div className="mb-3">
-        <label htmlFor="giaTri" className="form-label">Giá trị</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Giá trị"
-          type="number"
-          id="giaTri"
-          name="giaTri"
-          value={newVoucher.giaTri}
-          onChange={handleInputChange}
-        />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="giaTri" className="form-label">Giá trị</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Giá trị"
+              type="number"
+              id="giaTri"
+              name="giaTri"
+              value={newVoucher.giaTri}
+              onChange={handleInputChange}
+              isInvalid={!!errors.giaTri}
+            />
+            {errors.giaTri && <div className="text-danger">{errors.giaTri}</div>}
+          </div>
 
-        <div>
-        <label htmlFor="ngayApDung" className="form-label">Ngày áp dụng</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Ngày áp dụng"
-          type="date"
-          id="ngayApDung"
-          name="ngayApDung"
-          value={newVoucher.ngayApDung}
-          onChange={handleInputChange}
-        />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="ngayApDung" className="form-label">Ngày áp dụng</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Ngày áp dụng"
+              type="date"
+              id="ngayApDung"
+              name="ngayApDung"
+              value={newVoucher.ngayApDung}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ngayApDung}
+            />
+            {errors.ngayApDung && <div className="text-danger">{errors.ngayApDung}</div>}
+          </div>
 
-        <div>
-        <label htmlFor="ngayKetThuc" className="form-label">Ngày kết thúc</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Ngày kết thúc"
-          type="date"
-          id="ngayKetThuc"
-          name="ngayKetThuc"
-          value={newVoucher.ngayKetThuc}
-          onChange={handleInputChange}
-        />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="ngayKetThuc" className="form-label">Ngày kết thúc</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Ngày kết thúc"
+              type="date"
+              id="ngayKetThuc"
+              name="ngayKetThuc"
+              value={newVoucher.ngayKetThuc}
+              onChange={handleInputChange}
+              isInvalid={!!errors.ngayKetThuc}
+            />
+            {errors.ngayKetThuc && <div className="text-danger">{errors.ngayKetThuc}</div>}
+          </div>
 
-        <div>
-        <label htmlFor="soLuong" className="form-label">Số lượng</label>
-        <input
-          className="form-control mb-4"
-          placeholder="Số lượng"
-          type="number"
-          id="soLuong"
-          name="soLuong"
-          value={newVoucher.soLuong}
-          onChange={handleInputChange}
-        />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="soLuong" className="form-label">Số lượng</label>
+            <input
+              className="form-control mb-4"
+              placeholder="Số lượng"
+              type="number"
+              id="soLuong"
+              name="soLuong"
+              value={newVoucher.soLuong}
+              onChange={handleInputChange}
+              isInvalid={!!errors.soLuong}
+            />
+            {errors.soLuong && <div className="text-danger">{errors.soLuong}</div>}
+          </div>
 
-        <div>
-        <label htmlFor="moTa" className="form-label">Mô tả</label>
-        <textarea
-          className="form-control mb-4"
-          placeholder="Mô tả"
-          id="moTa"
-          name="moTa"
-          value={newVoucher.moTa}
-          onChange={handleInputChange}
-        ></textarea>
-        </div>
+          <div className="mb-3">
+            <label htmlFor="moTa" className="form-label">Mô tả</label>
+            <textarea
+              className="form-control mb-4"
+              placeholder="Mô tả"
+              id="moTa"
+              name="moTa"
+              value={newVoucher.moTa}
+              onChange={handleInputChange}
+              isInvalid={!!errors.moTa}
+            ></textarea>
+            {errors.moTa && <div className="text-danger">{errors.moTa}</div>}
+          </div>
 
-        <div className="mb-4">
-          <label htmlFor="trangThai" className="form-label">Trạng thái</label>
-          <select
-            className="form-select"
-            id="trangThai"
-            name="trangThai"
-            value={newVoucher.trangThai}
-            onChange={handleInputChange}
-          >
-            <option value={0}>Hết</option>
-            <option value={1}>Còn</option>
-          </select>
-        </div>
+          <div className="mb-4">
+            <label htmlFor="trangThai" className="form-label">Trạng thái</label>
+            <select
+              className="form-select"
+              id="trangThai"
+              name="trangThai"
+              value={newVoucher.trangThai}
+              onChange={handleInputChange}
+              isInvalid={!!errors.trangThai}
+            >
+              <option value={0}>Hết</option>
+              <option value={1}>Còn</option>
+            </select>
+            {errors.trangThai && <div className="text-danger">{errors.trangThai}</div>}
+          </div>
 
-        <button type="submit" className="btn btn-primary">
-          {isEditing ? 'Cập nhật' : 'Tạo'}
-        </button>
-      </form>
-    </div>
-  </div>
-        </Modal.Body>
+          <button type="submit" className="btn btn-primary">
+            {isEditing ? "Cập nhật" : "Tạo"}
+          </button>
+        </form>
+      </Modal.Body>
       </Modal>
   
 

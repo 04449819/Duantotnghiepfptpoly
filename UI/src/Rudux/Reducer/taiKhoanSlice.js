@@ -90,6 +90,10 @@ export const taiKhoanSlice = createSlice({
         (p) => p.id !== action.payload.id
       );
     },
+    setnamekhachhang: (state, action) => {
+      console.log(action.payload);
+      state.User = { ...state.User, ten: action.payload };
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
@@ -105,7 +109,7 @@ export const taiKhoanSlice = createSlice({
           ...p,
           check: false,
         }));
-
+        console.log(dssp);
         state.giohangonl = dssp;
         //   if (state.giohangonl.length > 0) {
         //     const dssptam = state.giohangonl.map((p) => {
@@ -146,6 +150,7 @@ export const {
   Updatespchitietspgiohang,
   checkspchitietspgiohang,
   SetDiachiChinhNhanHang,
+  setnamekhachhang,
 } = taiKhoanSlice.actions;
 
 export const deleteAndFetch = (id, credentials) => async (dispatch) => {

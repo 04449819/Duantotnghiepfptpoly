@@ -98,7 +98,8 @@ namespace AppAPI.Services
             try
             {
                 var check = await _dbContext.NhanViens.FirstOrDefaultAsync(x => x.Email.Trim().ToUpper() == email.Trim().ToUpper() || x.SDT.Trim().ToUpper() == sdt.Trim().ToUpper());
-                if (check != null)
+                var check1 = await _dbContext.KhachHangs.FirstOrDefaultAsync(x => x.Email.Trim().ToUpper() == email.Trim().ToUpper() || x.SDT.Trim().ToUpper() == sdt.Trim().ToUpper());
+                if (check != null || check1 != null)
                 {
                     return null;
                 }

@@ -1,6 +1,7 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.BanOnline;
 using AppData.ViewModels.SanPham;
 
 namespace AppAPI.IServices
@@ -10,6 +11,8 @@ namespace AppAPI.IServices
         public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon);
         public List<HoaDon> GetAllHoaDon();
         public HoaDon GetHoaDonById(Guid idhd);
+        List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang);
+        Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang);
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon);
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai,Guid? idNhanVien);
         public int CheckVoucher(string ten, int tongtien);
@@ -22,12 +25,10 @@ namespace AppAPI.IServices
         public bool HoanHangThanhCong(Guid idhd, Guid idnv);
         public bool HuyHD(Guid idhd, Guid idnv);
         Task<bool> CopyHD(Guid idhd, Guid idnv);
-        public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto);
-        public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto);
-        public bool ThanhToanDonHang(Guid idhd);
+       
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
-        public bool UpdateGhiChuHD(Guid idhd,Guid idnv, string ghichu);
+        public bool UpdateGhiChuHD(Guid idhd,Guid idnv,int trangThai, string ghichu);
         public bool CheckHDHasLSGD( Guid idHoaDon);
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon);
         public List<HoaDon> GetAllHDCho();
@@ -35,10 +36,16 @@ namespace AppAPI.IServices
         public List<HoaDonQL> GetAllHDQly();
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd);
         public bool CheckCusUseVoucher (Guid idkh, Guid idvoucher);
-            //Phương thức thanh toán
+        //Phương thức thanh toán
         //public List<PhuongThucThanhToan> GetAllPTTT();
         //public bool CreatePTTT(PhuongThucThanhToan pttt);
         //public bool UpdatePTTT(PhuongThucThanhToan pttt);   
-        //public bool DeletePTTT(Guid id);   
+        //public bool DeletePTTT(Guid id);
+        //
+        public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO dto);
+        public bool CreateHoaDonOnline(CreateHoaDonOnlineViewModel chdvm);
+        public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto);
+        public bool ThanhToanDonHang(Guid idhd, int soDiemTru, bool isGiaoHang);
+        
     }
 }

@@ -70,12 +70,12 @@ const QuanLyNhanVienPage = () => {
         name: res.data.ten,
         email: res.data.email,
         sdt: res.data.sdt,
-        password: res.data.password,
+        password: res.data.passWord,
         diaChi: res.data.diaChi,
         vaitro: res.data.vaitro == null ? "" : res.data.vaitro,
         trangThai: res.data.trangThai == null ? "" : res.data.trangThai,
       });
-
+    
       console.log("data form", formData);
       handleShowEdit();
     }
@@ -83,15 +83,22 @@ const QuanLyNhanVienPage = () => {
 
   const handleClickSearch = async (event) =>{
     event.preventDefault();
-    dispath(SetLoading(true));
+   
     if (inputValue == "") {
       handleReload();
     } else {
+      dispath(SetLoading(true));
       setTimeout(async () => {
         try {
          let res = await axios.get(`https://localhost:7095/api/NhanVien/TimKiemNhanVien?name=${inputValue}`);
                 console.error('success', res.data);
+                if(res.data.length < 1){
+                 toast.error("Không tìm thấy nhân viên ")
+                 dispath(SetLoading(false));
+                  return;              
+                }
                 setdata(res.data);
+                dispath(SetLoading(false));
         } catch (error) {
           dispath(SetLoading(false));
           console.error("Error fetching promotions:", error);

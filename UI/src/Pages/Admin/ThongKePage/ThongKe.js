@@ -285,7 +285,7 @@ const ThongKe = () => {
     const fetchTopProducts = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7095/api/ThongKeSanPham/top10sanphamtrongthang?month=${selectedMonth}&year=${selectedYear}`
+          `https://localhost:7095/api/ThongKeSanPham/top10sanphamtrongna222m?year=2024`
         );
         setTopProducts(response.data);
         console.log(response.data);
@@ -297,28 +297,12 @@ const ThongKe = () => {
     fetchTopProducts();
   }, [selectedMonth, selectedYear]);
 
-
   return (
     <>
       <Container fluid>
         <Row>
-        <Col lg="3" sm="6">
-            <Card className="card-stats">
-              <Card.Body>
-                <Row>
-                  <Col xs="7">
-                    <div>
-                      <h2>Tổng Hóa đơn hàng đã bán </h2>
-                     
-                      
-                    
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col lg="3" sm="6">
+        
+          <Col lg="4" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -345,7 +329,7 @@ const ThongKe = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col lg="3" sm="6">
+          <Col lg="4" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -370,7 +354,7 @@ const ThongKe = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col lg="3" sm="6">
+          <Col lg="4" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -475,7 +459,7 @@ const ThongKe = () => {
             <Card.Header className="border-0">
               <Row className="align-items-center">
                 <Col>
-                  {/* <h3 className="mb-0">Top 10 Sản phẩm trong tháng {selectedMonth}/{selectedYear}</h3> */}
+                  <h4 className="mb-0">Top sản phẩm bán chạy</h4>
                 </Col>
               </Row>
             </Card.Header>
@@ -484,19 +468,19 @@ const ThongKe = () => {
                 <table className="table-custom table align-items-center table-flush">
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">MÃ sản phẩm</th>
-                      <th scope="col">Tên sản phẩm</th>
-                      <th scope="col">Mô tả</th>
+                    <th scope="col">Tên sản phẩm</th>
+                      <th scope="col">số lượn đã bán</th>
+                      <th scope="col">Doanh thu sản phẩm</th>
                       <th scope="col">Trạng Thái</th>
                     </tr>
                   </thead>
                   <tbody>
                     {topProducts && topProducts.map((product, index) => (
                       <tr key={index}>
-                        <td>{product.ma}</td>
-                        <td>{product.ten}</td>
-                        <td>{product.moTa}</td>
-                        <td>{product.trangThai}</td>
+                        <td>{product.tenSP}</td>
+                        <td>{product.soLuong}</td>
+                        <td>{product.doanhThu} VND</td>
+                        <td>{product.gia}</td>
                       </tr>
                     ))}
                   </tbody>

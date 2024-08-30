@@ -1,0 +1,61 @@
+.order-info {
+  margin-left: 20px; /* Dịch toàn bộ thông tin sang phải */
+}
+
+.order-info-row {
+  display: flex;
+  gap: 20px; /* Khoảng cách giữa các cột */
+}
+
+.order-info-column {
+  flex: 1; /* Chiếm không gian bằng nhau */
+  min-width: 0; /* Để tránh nội dung quá rộng */
+}
+
+.order-info-column p {
+  margin: 0 0 10px; /* Khoảng cách giữa các đoạn văn */
+}
+.stepper {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.stepper__step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.stepper__step-icon {
+  margin-right: 10px;
+}
+
+.stepper__step-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: #007bff; // Hoặc màu phù hợp với giao diện của bạn
+}
+
+.stepper__step-text {
+  font-weight: bold;
+}
+
+.stepper__step-date {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.stepper__line {
+  position: relative;
+  height: 2px;
+  background-color: #e9ecef;
+  margin-top: 20px;
+}
+
+.stepper__line-foreground {
+  position: absolute;
+  height: 100%;
+  background-color: #007bff; // Hoặc màu phù hợp với giao diện của bạn
+}
+

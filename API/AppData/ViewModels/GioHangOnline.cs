@@ -12,7 +12,7 @@ namespace AppData.ViewModels
 		public Guid id{get;set;}
 		public int soluong { get;set;}
 		public int soluongmua { get;set;}
-
+		public int giatrikhuyenmai {  get;set;}
 		public int giaban { get;set;}
 		public Guid idKichCo {get;set;}
 		public Guid idMauSac { get; set; }
@@ -22,5 +22,5 @@ namespace AppData.ViewModels
 		public string tenms { get; set; }
 		public string tensp { get; set; }
 		public string anh { get; set; }
-}
+	}
 }

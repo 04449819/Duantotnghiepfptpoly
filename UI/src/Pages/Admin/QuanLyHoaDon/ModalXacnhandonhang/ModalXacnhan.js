@@ -46,7 +46,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=3&idnhanvien=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=1&idnhanvien=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -60,6 +60,29 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
       const data = await response.json();
       console.log('Success:', data);
       if (onConfirm) onConfirm(billId);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      onClose();
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/HuyHD?idhd=${billId}&idnv=${user.id}`, {
+        method: 'PUT', // Assuming PUT method, update if needed
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Cancel Success:', data);
+      if (onConfirm) onConfirm(billId); // Notify parent component
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -146,10 +169,13 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
-          Close
+          Đóng
+        </Button>
+        <Button variant="danger" onClick={handleCancel}>
+          Hủy hóa đơn
         </Button>
         <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+          Chuẩn bị hàng
         </Button>
       </Modal.Footer>
     </Modal>

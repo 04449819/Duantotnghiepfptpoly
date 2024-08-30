@@ -3,6 +3,7 @@ using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.BanOnline;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,50 @@ namespace AppAPI.Controllers
 		{
 			return _iHoaDonService.GetHoaDonById(idhd);
 		}
-		[HttpGet("TimKiem")]
+        [HttpGet("khachhana/{idKhachHang}")]
+        public IActionResult GetHoaDonByKhachHangId(Guid idKhachHang)
+        {
+            if (idKhachHang == Guid.Empty)
+            {
+                return BadRequest("ID khách hàng không hợp lệ.");
+            }
+
+            try
+            {
+                var hoaDons = _iHoaDonService.GetHoaDonByKhachHangId(idKhachHang);
+                if (hoaDons == null || !hoaDons.Any())
+                {
+                    return NotFound("Không tìm thấy hóa đơn cho khách hàng này.");
+                }
+
+                return Ok(hoaDons);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                return StatusCode(500, $"Lỗi máy chủ: {ex.Message}");
+            }
+        }
+        [HttpGet("khachhang/{idKhachHang}")]
+        public async Task<IActionResult> GetDonHangsDaMua(Guid idKhachHang)
+        {
+            if (idKhachHang == Guid.Empty)
+            {
+                return BadRequest("ID khách hàng không hợp lệ.");
+            }
+
+            try
+            {
+                var donHangs = await _iHoaDonService.GetDonHangsDaMuaAsync(idKhachHang);
+                return Ok(donHangs);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                return StatusCode(500, $"Lỗi máy chủ: {ex.Message}");
+            }
+        }
+        [HttpGet("TimKiem")]
 		public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
 		{
 			return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
@@ -156,9 +200,9 @@ namespace AppAPI.Controllers
         }
 
         [HttpPut("UpdateGhichu")]
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
         {
-            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv,trangThai, ghichu);
         }
 
         [HttpDelete("deleteHoaDon/{id}")]
@@ -248,6 +292,11 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.CreateHoaDonOffline(dto);
         }
+        [HttpPost("CreateHoaDonOnline")]
+        public bool CreateHoaDonOnline(CreateHoaDonOnlineViewModel chdvm)
+        {
+            return _iHoaDonService.CreateHoaDonOnline(chdvm);
+        }
         [HttpPut("UpdateHoaDonOffline/{hoaDonId}")]
         public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto)
         {
@@ -255,7 +304,7 @@ namespace AppAPI.Controllers
         }
 
         [HttpPost("ThanhToanVNPay/{idHoaDon}")]
-        public IActionResult CreatePayment(Guid idHoaDon)
+        public IActionResult CreatePayment(Guid idHoaDon,[FromQuery] int soDiemSuDung, [FromQuery] bool isGiaoHang)
         {
             try
             {
@@ -267,12 +316,23 @@ namespace AppAPI.Controllers
                 // Sử dụng tiền mặt để thanh toán 
                 if (hoaDon.phuongThucTTID == Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c")){
                     // Thành công sẽ cập nhật trạng thái hóa đơn
-                   _iHoaDonService.ThanhToanDonHang(hoaDon.ID);     
-                    return Ok();
+                    if (_iHoaDonService.ThanhToanDonHang(hoaDon.ID, soDiemSuDung, isGiaoHang))
+                    {
+                        return Ok("Thanh toan thanh cong!");
+                    }
+                    else return BadRequest();
+                    
                 }else  // Thanh toán chuyển khoản 
                 {
-                    var paymentUrl = _iVNPayService.CreatePaymentUrl(idHoaDon);
-                    return Ok(new { paymentUrl });
+                    var paymentUrl = _iVNPayService.CreatePaymentUrl(idHoaDon, soDiemSuDung, isGiaoHang);
+                    if(paymentUrl != null)
+                    {
+                        return Ok(new { paymentUrl });
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
                
                
@@ -288,20 +348,30 @@ namespace AppAPI.Controllers
         public IActionResult PaymentCallback()
         {
             var vnpayData = Request.Query;
+            var orderId = vnpayData["vnp_OrderInfo"];
+            
+
 
             var isValidSignature = _iVNPayService.ValidateCallback(vnpayData);
 
             if (isValidSignature)
             {
                 var vnp_ResponseCode = vnpayData["vnp_ResponseCode"];
-                var vnp_TransactionNo = vnpayData["vnp_TransactionNo"];
-                var vnp_TxnRef = vnpayData["vnp_TxnRef"];
 
+                var hoaDon = _iHoaDonService.GetHoaDonById(Guid.Parse(orderId));
+                if(hoaDon == null)
+                {
+                    return BadRequest("Hoa don khong ton tai");
+                }
                 if (vnp_ResponseCode == "00")
                 {
+                    int soDiemTru = Convert.ToInt32(vnpayData["vnp_SoDiemDung"]);
+                    bool isGiaoHang = Convert.ToBoolean(vnpayData["vnp_IsGiaoHang"]);
                     // Thanh toán thành công, cập nhật database hoặc thực hiện các xử lý khác
+                    _iHoaDonService.ThanhToanDonHang(hoaDon.ID, soDiemTru, isGiaoHang);
 
-                    return Ok(new { message = "Thanh toán thành công" });
+                    //return Ok(new { message = "Thanh toán thành công" });
+                    return Redirect("http://localhost:3000/admin");
                 }
                 else
                 {
@@ -309,7 +379,10 @@ namespace AppAPI.Controllers
 
                     return BadRequest(new { message = "Thanh toán thất bại" });
                 }
+
+
             }
+
             else
             {   
                 return BadRequest(new { message = "Invalid signature" });

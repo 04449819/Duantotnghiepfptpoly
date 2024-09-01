@@ -296,14 +296,14 @@ namespace AppAPI.Controllers
                     hd.GhiChu,
                     hd.TrangThaiGiaoHang,
                     SanPhamDetails = hd.ChiTietHoaDons.Select(cthd => new
-                    {
+                    {	IDcthd=hd.ChiTietHoaDons,
                         SanPhamId = cthd.ChiTietSanPham.IDSanPham,
                         TenSanPham = cthd.ChiTietSanPham.SanPham.Ten,
                         AnhSanPham = _dbcontext.Anhs
                             .Where(a => a.IDChitietsanpham == cthd.ChiTietSanPham.ID)
                             .Select(a => a.DuongDan)
                             .FirstOrDefault(),
-                        MauSac = cthd.ChiTietSanPham.MauSac.Ten,
+                        MauSac = cthd.ChiTietSanPham.MauSac.Ten,	
                         KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                         DonGia = cthd.DonGia,
                         SoLuong = cthd.SoLuong,

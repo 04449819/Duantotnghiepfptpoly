@@ -10,7 +10,6 @@ namespace AppData.Models
     public class DanhGia
     {
         public Guid ID { get; set; }
-        [MaxLength(250, ErrorMessage = "Tối đa 250 ký tự")]
         public string? BinhLuan { get; set; }
         [Range(1, 5, ErrorMessage = "Số sao từ 1 đến 5")]
         public int? Sao { get; set; }

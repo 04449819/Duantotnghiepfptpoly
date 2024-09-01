@@ -2,6 +2,7 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +100,11 @@ namespace AppAPI.Services
 
         public List<ChiTietHoaDon> GetAllCTHoaDon()
         {
-            return _context.ChiTietHoaDons.ToList();
+            var chiTietHoaDons = _context.ChiTietHoaDons
+        .Include(cthd => cthd.DanhGia) // Nạp thông tin DanhGia
+        .ToList();
+
+            return chiTietHoaDons;
         }
 
         //public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
@@ -163,9 +168,8 @@ namespace AppAPI.Services
         public async Task<List<ChiTietHoaDon>> GetChiTietSPBHById(Guid idsp)
         {
             var chiTietHoaDons = await  _context.ChiTietHoaDons
-                                     .Where(cthd => cthd.IDHoaDon == idsp)
-
-                                     /*  .Include(cthd => cthd.HoaDon)*/ // Nạp đối tượng HoaDon liên quan
+                                     .Where(cthd => cthd.IDCTSP == idsp)
+                                       .Include(cthd => cthd.DanhGia) // Nạp đối tượng HoaDon liên quan
                                      .ToListAsync(); // Sử dụng ToListAsync() để thực hiện lấy dữ liệu bất đồng bộ
 
             return chiTietHoaDons;
@@ -175,6 +179,33 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<ThongTinDGModel>> GetDanhGiaVaKhachHangBySanPhamIdAsync(Guid sanPhamId)
+        {
+            var danhSachDanhGia = await (from sp in _context.SanPhams
+                                         join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
+                                         join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
+                                         join dg in _context.DanhGias on cthd.ID equals dg.ID
+                                         join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
+                                         join kh in _context.KhachHangs on hd.KhachHangID equals kh.IDKhachHang
+                                         where sp.ID == sanPhamId && dg.TrangThai == 1 // Chỉ lấy đánh giá có trạng thái hợp lệ
+                                         select new ThongTinDGModel
+                                         {
+                                             DanhGiaId = dg.ID,
+                                             BinhLuan = dg.BinhLuan,
+                                             Sao = (int)dg.Sao,
+                                             NgayDanhGia = dg.NgayDanhGia ?? default(DateTime), // Cung cấp giá trị mặc định nếu null
+                                             PhanHoi = dg.phanHoi,
+                                             TrangThaiDanhGia = dg.TrangThai,
+                                             KhachHangId = kh.IDKhachHang,
+                                             KhachHangTen = kh.Ten
+                                         }).ToListAsync();
+
+            return danhSachDanhGia;
+        }
+
+
+
 
         //public List<ChiTietHoaDon> GetChiTietHoaDonById(Guid idhb)
         //{

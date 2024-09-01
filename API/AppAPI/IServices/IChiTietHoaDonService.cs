@@ -13,6 +13,7 @@ namespace AppAPI.IServices
         public Task<bool> UpdateSL(Guid id,int sl);
         public Task<bool> DeleteCTHoaDon(Guid id);
         public Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd);
+        Task<List<ThongTinDGModel>> GetDanhGiaVaKhachHangBySanPhamIdAsync(Guid sanPhamId);
 
     }
 }

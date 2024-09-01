@@ -1,6 +1,6 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
-using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,9 +40,9 @@ namespace AppAPI.Controllers
             return Ok(result);
         }
         [HttpPost("save")]
-        public async Task<IActionResult> SaveDanhGia(DanhGia dg)
+        public async Task<IActionResult> SaveDanhGia(Danhgiamodel dg)
         {
-            var result = await _danhGiaService.SaveDanhGia(dg);
+            var result = await _danhGiaService.SaveDanhgia(dg);
             return Ok(result);
         }
         [HttpPost("anDanhGia")]

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './QuanLyDoiDiem.scss';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./QuanLyDoiDiem.scss";
 
 const initialFormState = {
   id: null,
   tiLeTichDiem: 0,
   tiLeTieuDiem: 0,
-  ngayBatDau: '',
-  ngayKetThuc: '',
-  trangThai: 0
+  ngayBatDau: "",
+  ngayKetThuc: "",
+  trangThai: 0,
 };
 
 const QuanLyDoiDiem = () => {
@@ -18,7 +18,7 @@ const QuanLyDoiDiem = () => {
   const [formData, setFormData] = useState(initialFormState);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState({});
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState("all");
   const getQuyDoiDiems = async () => {
     try {
       const response = await axios.get("https://localhost:7095/api/QuyDoiDiem");
@@ -34,20 +34,24 @@ const QuanLyDoiDiem = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: name === 'trangThai' ? parseInt(value, 10) : value
+      [name]: name === "trangThai" ? parseInt(value, 10) : value,
     }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (formData.tiLeTichDiem <= 0) newErrors.tiLeTichDiem = 'Tỉ lệ tích điểm phải lớn hơn 0';
-    if (formData.tiLeTieuDiem <= 0) newErrors.tiLeTieuDiem = 'Tỉ lệ tiêu điểm phải lớn hơn 0';
-    if (!formData.ngayBatDau) newErrors.ngayBatDau = 'Ngày bắt đầu không được để trống';
-    if (!formData.ngayKetThuc) newErrors.ngayKetThuc = 'Ngày kết thúc không được để trống';
+    if (formData.tiLeTichDiem <= 0)
+      newErrors.tiLeTichDiem = "Tỉ lệ tích điểm phải lớn hơn 0";
+    if (formData.tiLeTieuDiem <= 0)
+      newErrors.tiLeTieuDiem = "Tỉ lệ tiêu điểm phải lớn hơn 0";
+    if (!formData.ngayBatDau)
+      newErrors.ngayBatDau = "Ngày bắt đầu không được để trống";
+    if (!formData.ngayKetThuc)
+      newErrors.ngayKetThuc = "Ngày kết thúc không được để trống";
     if (new Date(formData.ngayKetThuc) <= new Date(formData.ngayBatDau)) {
-      newErrors.ngayKetThuc = 'Ngày kết thúc phải sau ngày bắt đầu';
+      newErrors.ngayKetThuc = "Ngày kết thúc phải sau ngày bắt đầu";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -57,38 +61,46 @@ const QuanLyDoiDiem = () => {
     setStatusFilter(e.target.value);
   };
 
-  const filteredQuyDoiDiems = quyDoiDiems.filter(item => {
-    if (statusFilter === 'all') return true;
+  const filteredQuyDoiDiems = quyDoiDiems.filter((item) => {
+    if (statusFilter === "all") return true;
     return item.trangThai === parseInt(statusFilter, 10);
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     try {
       let updatedQuyDoiDiems = [...quyDoiDiems];
-      
+
       if (formData.trangThai === 1) {
         // Set all other records to inactive
-        updatedQuyDoiDiems = updatedQuyDoiDiems.map(item => ({
+        updatedQuyDoiDiems = updatedQuyDoiDiems.map((item) => ({
           ...item,
-          trangThai: 0
+          trangThai: 0,
         }));
       }
 
       if (formData.id) {
         // Updating existing record
-        const index = updatedQuyDoiDiems.findIndex(item => item.id === formData.id);
+        const index = updatedQuyDoiDiems.findIndex(
+          (item) => item.id === formData.id
+        );
         if (index !== -1) {
           updatedQuyDoiDiems[index] = { ...formData };
         }
-        await axios.put(`https://localhost:7095/api/QuyDoiDiem/${formData.id}`, formData);
+        await axios.put(
+          `https://localhost:7095/api/QuyDoiDiem/${formData.id}`,
+          formData
+        );
         toast.success("Cập nhật đổi điểm thành công");
       } else {
         // Creating new record
         const newRecord = { ...formData, id: Date.now() }; // Temporary ID
         updatedQuyDoiDiems.push(newRecord);
-        const response = await axios.post('https://localhost:7095/api/QuyDoiDiem', formData);
+        const response = await axios.post(
+          "https://localhost:7095/api/QuyDoiDiem",
+          formData
+        );
         newRecord.id = response.data.id; // Update with actual ID from server
         toast.success("Thêm đổi điểm thành công");
       }
@@ -97,7 +109,10 @@ const QuanLyDoiDiem = () => {
       if (formData.trangThai === 1) {
         for (const item of updatedQuyDoiDiems) {
           if (item.id !== formData.id) {
-            await axios.put(`https://localhost:7095/api/QuyDoiDiem/${item.id}`, { ...item, trangThai: 0 });
+            await axios.put(
+              `https://localhost:7095/api/QuyDoiDiem/${item.id}`,
+              { ...item, trangThai: 0 }
+            );
           }
         }
       }
@@ -106,28 +121,34 @@ const QuanLyDoiDiem = () => {
       setShowModal(false);
       getQuyDoiDiems(); // Refresh data from server
     } catch (error) {
-      toast.error(formData.id ? "Cập nhật đổi điểm thất bại" : "Thêm đổi điểm thất bại");
-      console.error('Error:', error);
+      toast.error(
+        formData.id ? "Cập nhật đổi điểm thất bại" : "Thêm đổi điểm thất bại"
+      );
+      console.error("Error:", error);
     }
   };
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa?')) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
       try {
         await axios.delete(`https://localhost:7095/api/QuyDoiDiem/${id}`);
         toast.success("Xóa đổi điểm thành công");
         getQuyDoiDiems();
       } catch (error) {
-        toast.error('Lỗi khi xóa quy đổi điểm');
+        toast.error("Lỗi khi xóa quy đổi điểm");
       }
     }
   };
 
   const openModal = (item = null) => {
-    setFormData(item ? {
-      ...item,
-      ngayBatDau: new Date(item.ngayBatDau).toISOString().split('T')[0],
-      ngayKetThuc: new Date(item.ngayKetThuc).toISOString().split('T')[0]
-    } : initialFormState);
+    setFormData(
+      item
+        ? {
+            ...item,
+            ngayBatDau: new Date(item.ngayBatDau).toISOString().split("T")[0],
+            ngayKetThuc: new Date(item.ngayKetThuc).toISOString().split("T")[0],
+          }
+        : initialFormState
+    );
     setErrors({});
     setShowModal(true);
   };
@@ -173,15 +194,25 @@ const QuanLyDoiDiem = () => {
                 <td>{new Date(item.ngayBatDau).toLocaleDateString()}</td>
                 <td>{new Date(item.ngayKetThuc).toLocaleDateString()}</td>
                 <td>
-                  <span className={`badge ${item.trangThai === 1 ? 'bg-success' : 'bg-danger'}`}>
-                    {item.trangThai === 1 ? 'Đang áp dụng' : 'Không hoạt động'}
+                  <span
+                    className={`badge ${
+                      item.trangThai === 1 ? "bg-success" : "bg-danger"
+                    }`}
+                  >
+                    {item.trangThai === 1 ? "Đang áp dụng" : "Không hoạt động"}
                   </span>
                 </td>
                 <td>
-                  <button className="btn btn-primary btn-sm me-2" onClick={() => openModal(item)}>
+                  <button
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => openModal(item)}
+                  >
                     Sửa
                   </button>
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.id)}>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(item.id)}
+                  >
                     Xóa
                   </button>
                 </td>
@@ -192,20 +223,35 @@ const QuanLyDoiDiem = () => {
       </div>
 
       {/* Modal */}
-      <div className={`modal ${showModal ? 'show' : ''}`} style={{ display: showModal ? 'block' : 'none' }} tabIndex="-1">
+      <div
+        className={`modal ${showModal ? "show" : ""}`}
+        style={{ display: showModal ? "block" : "none" }}
+        tabIndex="-1"
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">{formData.id ? 'Sửa quy đổi điểm' : 'Tạo mới quy đổi điểm'}</h5>
-              <button type="button" className="btn-close" onClick={() => setShowModal(false)} aria-label="Close"></button>
+              <h5 className="modal-title">
+                {formData.id ? "Sửa quy đổi điểm" : "Tạo mới quy đổi điểm"}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowModal(false)}
+                aria-label="Close"
+              ></button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="modal-body">
                 <div className="mb-5">
-                  <label htmlFor="tiLeTichDiem" className="form-label">Tỉ lệ tích điểm</label>
+                  <label htmlFor="tiLeTichDiem" className="form-label">
+                    Tỉ lệ tích điểm
+                  </label>
                   <input
                     type="number"
-                    className={`form-control ${errors.tiLeTichDiem ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      errors.tiLeTichDiem ? "is-invalid" : ""
+                    }`}
                     id="tiLeTichDiem"
                     name="tiLeTichDiem"
                     value={formData.tiLeTichDiem}
@@ -213,13 +259,21 @@ const QuanLyDoiDiem = () => {
                     step="0.01"
                     required
                   />
-                  {errors.tiLeTichDiem && <div className="invalid-feedback ">{errors.tiLeTichDiem}</div>}
+                  {errors.tiLeTichDiem && (
+                    <div className="invalid-feedback ">
+                      {errors.tiLeTichDiem}
+                    </div>
+                  )}
                 </div>
                 <div className="mb-5">
-                  <label htmlFor="tiLeTieuDiem" className="form-label">Tỉ lệ tiêu điểm</label>
+                  <label htmlFor="tiLeTieuDiem" className="form-label">
+                    Tỉ lệ tiêu điểm
+                  </label>
                   <input
                     type="number"
-                    className={`form-control ${errors.tiLeTieuDiem ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      errors.tiLeTieuDiem ? "is-invalid" : ""
+                    }`}
                     id="tiLeTieuDiem"
                     name="tiLeTieuDiem"
                     value={formData.tiLeTieuDiem}
@@ -227,36 +281,54 @@ const QuanLyDoiDiem = () => {
                     step="0.01"
                     required
                   />
-                  {errors.tiLeTieuDiem && <div className="invalid-feedback">{errors.tiLeTieuDiem}</div>}
+                  {errors.tiLeTieuDiem && (
+                    <div className="invalid-feedback">
+                      {errors.tiLeTieuDiem}
+                    </div>
+                  )}
                 </div>
                 <div className="mb-5">
-                  <label htmlFor="ngayBatDau" className="form-label">Ngày bắt đầu</label>
+                  <label htmlFor="ngayBatDau" className="form-label">
+                    Ngày bắt đầu
+                  </label>
                   <input
                     type="date"
-                    className={`form-control ${errors.ngayBatDau ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      errors.ngayBatDau ? "is-invalid" : ""
+                    }`}
                     id="ngayBatDau"
                     name="ngayBatDau"
                     value={formData.ngayBatDau}
                     onChange={handleInputChange}
                     required
                   />
-                  {errors.ngayBatDau && <div className="invalid-feedback">{errors.ngayBatDau}</div>}
+                  {errors.ngayBatDau && (
+                    <div className="invalid-feedback">{errors.ngayBatDau}</div>
+                  )}
                 </div>
                 <div className="mb-5">
-                  <label htmlFor="ngayKetThuc" className="form-label">Ngày kết thúc</label>
+                  <label htmlFor="ngayKetThuc" className="form-label">
+                    Ngày kết thúc
+                  </label>
                   <input
                     type="date"
-                    className={`form-control ${errors.ngayKetThuc ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      errors.ngayKetThuc ? "is-invalid" : ""
+                    }`}
                     id="ngayKetThuc"
                     name="ngayKetThuc"
                     value={formData.ngayKetThuc}
                     onChange={handleInputChange}
                     required
                   />
-                  {errors.ngayKetThuc && <div className="invalid-feedback">{errors.ngayKetThuc}</div>}
+                  {errors.ngayKetThuc && (
+                    <div className="invalid-feedback">{errors.ngayKetThuc}</div>
+                  )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="trangThai" className="form-label">Trạng thái</label>
+                  <label htmlFor="trangThai" className="form-label">
+                    Trạng thái
+                  </label>
                   <select
                     className="form-select"
                     id="trangThai"
@@ -270,8 +342,16 @@ const QuanLyDoiDiem = () => {
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Đóng</button>
-                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Đóng
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Lưu thay đổi
+                </button>
               </div>
             </form>
           </div>
@@ -283,4 +363,3 @@ const QuanLyDoiDiem = () => {
 };
 
 export default QuanLyDoiDiem;
-

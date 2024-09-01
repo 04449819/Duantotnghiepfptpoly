@@ -9,8 +9,8 @@ import { useSelector } from "react-redux";
 function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState("Hà nội");
-  const [selectedDistrict, setSelectedDistrict] = useState("hai bà trưng");
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [data, setData] = useState({
     tenKhachHang: "",
     sdt: "",
@@ -24,14 +24,21 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
   const user = useSelector((p) => p.user.User);
 
   useEffect(() => {
+    console.log(address);
     if (address) {
       setData({
         tenKhachHang: address.tenKhachHang,
         sdt: address.sdt,
         diaChi: address.diaChi,
       });
-      setSelectedProvince({ value: address.provinceId, label: address.province });
-      setSelectedDistrict({ value: address.districtId, label: address.district });
+      setSelectedProvince({
+        value: address.provinceId,
+        label: address.province,
+      });
+      setSelectedDistrict({
+        value: address.districtId,
+        label: address.district,
+      });
     }
     getProvinces();
   }, [address]);
@@ -44,6 +51,11 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
         label: p.name,
       }));
       setProvinces(data);
+      const thanhpho = data.find(
+        (p) => p.label === address.diaChi.split(",")[0]
+      );
+      setSelectedProvince(thanhpho);
+      getDistricts(thanhpho.value);
     } catch (error) {
       toast.error("Failed to load provinces.");
     }
@@ -51,18 +63,25 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
 
   const getDistricts = async (provinceId) => {
     try {
-      const res = await axios.get(`https://esgoo.net/api-tinhthanh/2/${provinceId}.htm`);
+      const res = await axios.get(
+        `https://esgoo.net/api-tinhthanh/2/${provinceId}.htm`
+      );
       const data = res.data.data.map((p) => ({
         value: p.id,
         label: p.name,
       }));
       setDistricts(data);
+      const quanhuyen = data.find(
+        (p) => p.label === address.diaChi.split(",")[1]
+      );
+      setSelectedDistrict(quanhuyen);
     } catch (error) {
       toast.error("Failed to load districts.");
     }
   };
 
   const handleProvinceChange = (selectedOption) => {
+    console.log(selectedOption);
     if (massageprovince === false && selectedOption !== "") {
       setmassageprovince(true);
     }
@@ -80,7 +99,11 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "tenKhachHang" && massagename === false && value.trim() !== "") {
+    if (
+      name === "tenKhachHang" &&
+      massagename === false &&
+      value.trim() !== ""
+    ) {
       setmassagename(true);
     }
     if (name === "sdt" && massagesdt === false && validatePhone(value)) {
@@ -136,7 +159,9 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
   };
 
   const validatePhone = (sdt) => {
-    return String(sdt).toLowerCase().match(/^(0)([0-9]){9,9}$/);
+    return String(sdt)
+      .toLowerCase()
+      .match(/^(0)([0-9]){9,9}$/);
   };
 
   return (
@@ -179,12 +204,11 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
           <div className="mt-4">
             <label>Tỉnh/ Thành phố</label>
             <Select
-              // value={selectedProvince}
-              value={"fgtyua"}
+              value={selectedProvince}
               onChange={handleProvinceChange}
               options={provinces}
               placeholder="Chọn Tỉnh/ Thành phố"
-            />  
+            />
           </div>
           <hr className="mt-4" />
           <label hidden={massageprovince} className="text-danger">
@@ -209,7 +233,7 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
             <input
               type="text"
               name="diaChi"
-              value={data.diaChi}
+              value={data.diaChi.split(",").slice(2).join(",")}
               onChange={handleInputChange}
               placeholder="Địa chỉ"
               required

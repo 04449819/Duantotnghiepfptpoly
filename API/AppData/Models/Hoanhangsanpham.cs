@@ -15,6 +15,7 @@ namespace AppData.Models
 		public DateTime Ngayhoanhang { get; set; }
 		public string Mota { get; set; }
 		public int TrangThaiHoanHang { get; set; }
+		// xác giao hàng. đang vận chuyển.  hoàn hàng thnahf công t
 		public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
 
 	}

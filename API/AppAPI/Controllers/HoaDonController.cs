@@ -4,6 +4,7 @@ using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.BanOnline;
+using AppData.ViewModels.Momo;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,15 @@ namespace AppAPI.Controllers
 	{
 		private readonly IHoaDonService _iHoaDonService;
         private readonly IVNPayService _iVNPayService;
+        private readonly IMomoPaymentService _iMomoPaymentService;
 
 
         public AssignmentDBContext _dbcontext = new AssignmentDBContext();
-		public HoaDonController(IVNPayService vnPayService)
+		public HoaDonController(IVNPayService vnPayService, IHoaDonService hoaDonService, IMomoPaymentService momoPaymentService)
 		{
-			_iHoaDonService = new HoaDonService();
-			_iVNPayService = vnPayService;
+			_iHoaDonService = hoaDonService;
+			_iVNPayService = vnPayService;  
+            _iMomoPaymentService = momoPaymentService;
         }
 
 		// GET: api/<HoaDOnController>
@@ -296,6 +299,61 @@ namespace AppAPI.Controllers
         public bool CreateHoaDonOnline(CreateHoaDonOnlineViewModel chdvm)
         {
             return _iHoaDonService.CreateHoaDonOnline(chdvm);
+        }
+
+        [HttpPost("create-order")]
+        public async Task<IActionResult> CreateOrderAndInitiatePayment([FromBody] CreateHoaDonOnlineViewModel chdvm)
+        {
+            try
+            {
+                var (success, orderId, amount) = await _iHoaDonService.CreateOrderAsync(chdvm);
+                if (!success)
+                {
+                    return BadRequest("Failed to create order");
+                }
+
+                var paymentRequest = new MomoPaymentRequest
+                {
+                    OrderId = orderId,
+                    Amount = amount,
+                    OrderInfo = $"Payment for order {orderId}"
+                };
+
+                var paymentResponse = await _iMomoPaymentService.CreatePayment(paymentRequest);
+                return Ok(new { PayUrl = paymentResponse.PayUrl, OrderId = orderId });
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while creating order and initiating payment");
+                return StatusCode(500, "An internal error occurred while processing your request");
+            }
+        }
+        [HttpGet("redirect")]
+        public async Task<IActionResult> HandleRedirect([FromQuery] MomoCallbackRequest request)
+        {
+           // _logger.LogInformation($"Received redirect from Momo: {System.Text.Json.JsonSerializer.Serialize(request)}");
+
+            if (_iMomoPaymentService.ValidateCallback(request))
+            {
+                bool isSuccessful = request.ResultCode == 0;
+                await _iHoaDonService.UpdateOrderPaymentStatusAsync(request.OrderId, isSuccessful);
+
+                if (isSuccessful)
+                {
+                    //_logger.LogInformation($"Transaction successful for orderId: {request.OrderId}");
+                    return Redirect("http://localhost:3000/admin");
+                }
+                else
+                {
+                   // _logger.LogWarning($"Transaction failed for orderId: {request.OrderId}, Message: {request.Message}");
+                    return Redirect("https://www.youtube.com/watch?v=jfKfPfyJRdk");
+                }
+            }
+            else
+            {
+                //_logger.LogWarning("Invalid signature in Momo callback");
+                return BadRequest("Invalid signature");
+            }
         }
         [HttpPut("UpdateHoaDonOffline/{hoaDonId}")]
         public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto)

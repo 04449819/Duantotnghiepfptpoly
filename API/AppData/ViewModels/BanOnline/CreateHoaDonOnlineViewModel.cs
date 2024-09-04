@@ -15,7 +15,7 @@ namespace AppData.ViewModels.BanOnline
         public string? DiaChi { get; set; }
     
         public int TienShip { get; set; }
-       // public Guid IdPhuongThucThanhToan { get; set; }
+        public Guid IdPhuongThucThanhToan { get; set; }
         public string? GhiChu { get; set; }
         // public Guid? IdNhanVien { get; set; }
         public Guid? IdKhachHang { get; set; }

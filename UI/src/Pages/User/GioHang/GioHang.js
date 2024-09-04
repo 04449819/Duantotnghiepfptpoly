@@ -41,8 +41,9 @@ const GioHang = () => {
     GhiChu: '',
     TrangThaiGiaoHang: 1,
     TienShip: 30000, 
-    //IdPhuongThucThanhToan: '',
+    IdPhuongThucThanhToan: 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c',
     // IdNhanVien: '',
+
     SoDiemSuDung: 0,
     TongTienHoaDon: 0
   });
@@ -71,22 +72,6 @@ const GioHang = () => {
   },[dsspgiohangs, soDiemSuDung])
  useEffect(() => {
     console.log("User", user);
-    // if (user) {
-    //   const diaChiKH = user.diaChi && Array.isArray(user.diaChi)
-    //   ? user.diaChi.find(dc => dc.trangThai === 1)
-    //   : null;
-    //   //console.log(" ",diaChiKH);
-      
-    //   setHoaDonOnline(prevState => ({
-    //     ...prevState,
-    //     TenKhachHang: user.ten || '',
-    //     SDT: user.sdt || '',
-    //     Email: user.email || '',
-    //     DiaChi: diaChiKH ? diaChiKH.diaChi : ''
-    //   }));
-    // }
-    
-    
  }, [user,isDiemTichLuy]);
 
 
@@ -217,16 +202,6 @@ const GioHang = () => {
   // }
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-  
-    // setHoaDonOnline((prevHoaDonOnline) =>
-    //   id === 'DiaChi'
-    //     ? {
-    //       ...prevHoaDonOnline,
-    //       [id]: value,
-    //       DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
-    //     }
-    //     : prevHoaDonOnline // Return unmodified state for non-DiaChi changes
-    // );
      // Nếu đang thay đổi địa chỉ chi tiết
      if (id === 'DiaChi') {
       setHoaDonOnline((prevHoaDonOnline) => ({
@@ -322,10 +297,10 @@ const GioHang = () => {
     try {
       // Kiểm tra xem có sản phẩm nào được chọn không
       const selectedProducts = dsspgiohangs.filter(sp => sp.check);
-      if (selectedProducts.length === 0) {
-        toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
-        return;
-      }
+      // if (selectedProducts.length === 0) {
+      //   toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+      //   return;
+      // }
   
       // Tính tổng tiền và cập nhật thông tin hóa đơn
       const tongTienHoaDon = selectedProducts.reduce((sum, sp) => 
@@ -353,24 +328,28 @@ const GioHang = () => {
       //   toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
       //   return;
       // }
-  
+      if (!hoaDonOnlineSubmit.IdPhuongThucThanhToan) {
+        toast.error("Vui lòng chọn phương thức thanh toán");
+        return;
+      }
+    
       // Gửi yêu cầu tạo hóa đơn
       console.log("hoaDon: ", hoaDonOnlineSubmit);
-      // const res = await axios.post(
-      //   "https://localhost:7095/api/HoaDon/CreateHoaDonOnline",
-      //   hoaDonOnlineSubmit
-      // );
+      const res = await axios.post(
+        "https://localhost:7095/api/HoaDon/create-order",
+        hoaDonOnlineSubmit
+      );
   
-      // if (res.data) {
-      //   toast.success("Đặt hàng thành công");
-      //   // Xóa các sản phẩm đã đặt khỏi giỏ hàng
-      //   selectedProducts.forEach(sp => dispath(Deletechitietspgiohang(sp)));
-      //   setload(!load);
-      // } else {
-      //   console.log(res.data);
+      if (res.data) {
+        toast.success("Đặt hàng thành công");
+        // Xóa các sản phẩm đã đặt khỏi giỏ hàng
+        selectedProducts.forEach(sp => dispath(Deletechitietspgiohang(sp)));
+        setload(!load);
+      } else {
+        console.log(res.data);
         
-      //   toast.error(res.data.message || "Đặt hàng thất bại");
-      // }
+        toast.error(res.data.message || "Đặt hàng thất bại");
+      }
       
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
@@ -379,7 +358,18 @@ const GioHang = () => {
     
     
   };
+  const handlePaymentMethodChange = (event) => {
+    setHoaDonOnline((prevState) => ({
+     
+      
+      ...prevState,
+      IdPhuongThucThanhToan: event.target.value,
+      
+      
+    }));
   
+    
+  };
   return (
     <div className="GioHang pb-4">
       <div className="cart-container">
@@ -621,7 +611,14 @@ const GioHang = () => {
           <h5>PHƯƠNG THỨC THANH TOÁN</h5>
           <div className="payment-options">
           <label>
-          <input type="radio" name="payment" value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c" defaultChecked /> 
+          <input 
+          id="payment-method"
+          type="radio" 
+          name="payment-method"
+          value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+          onChange={(e) => handlePaymentMethodChange(e)}
+          defaultChecked 
+           /> 
           Thanh toán khi nhận hàng (COD)
         </label>
         <p>
@@ -632,7 +629,13 @@ const GioHang = () => {
           Để ship nhanh trong ngày, vui lòng gọi (028) 36 222 000 để được hướng dẫn
         </p>
         <label>
-          <input type="radio" name="payment" value="fab870b4-7a7d-403a-a855-b7431a3c9252" /> 
+          <input 
+           id="payment-method"
+           type="radio" 
+           name="payment-method"
+          value="fab870b4-7a7d-403a-a855-b7431a3c9252" 
+          onChange={(e) => handlePaymentMethodChange(e)}
+          /> 
           Thanh toán qua TÀI KHOẢN NGÂN HÀNG
         </label>
 

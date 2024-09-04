@@ -27,13 +27,14 @@ namespace AppAPI.Services
         private readonly IAllRepository<SanPham> reposSanPham;
         private readonly IAllRepository<DanhGia> reposDanhGia;
         private readonly IAllRepository<NhanVien> reposNhanVien;
-
+        
 
         AssignmentDBContext context = new AssignmentDBContext();
-
+        private readonly ILogger<HoaDonService> _logger;
         private readonly IGioHangServices _iGioHangServices;
+        private readonly IMomoPaymentService _momoPaymentService;
 
-        public HoaDonService()
+        public HoaDonService(ILogger<HoaDonService> logger, IMomoPaymentService momoPaymentService)
         {
             reposHoaDon = new AllRepository<HoaDon>(context, context.HoaDons);
             reposChiTietHoaDon = new AllRepository<ChiTietHoaDon>(context, context.ChiTietHoaDons);
@@ -46,6 +47,8 @@ namespace AppAPI.Services
             //reposPTTT = new AllRepository<PhuongThucThanhToan>(context, context.PhuongThucThanhToans);
             reposDanhGia = new AllRepository<DanhGia>(context, context.DanhGias);
             //reposChiTietPTTT = new AllRepository<ChiTietPTTT>(context, context.ChiTietPTTTs);
+            _logger = logger;
+            _momoPaymentService = momoPaymentService;
             context = new AssignmentDBContext();
             _iGioHangServices = new GioHangServices();
         }
@@ -82,21 +85,7 @@ namespace AppAPI.Services
         {
             try
             {
-                //int giaTriVoucher = 0;
-                //if (chdvm.IdVoucher.HasValue)
-                //{
-                //    Voucher voucher = reposVoucher.GetById(chdvm.IdVoucher.Value);
-                //    if (voucher != null && voucher.SoLuong > 0 && chdvm.TongTienHoaDon >= voucher.SoTienCan &&
-                //        voucher.NgayApDung <= DateTime.Now && voucher.NgayKetThuc >= DateTime.Now)
-                //    {
-                //        giaTriVoucher = voucher.HinhThucGiamGia == 1 ?
-                //                        chdvm.TongTienHoaDon * voucher.GiaTri / 100 :
-                //                        voucher.GiaTri;
-
-                //        voucher.SoLuong -= 1;
-                //        reposVoucher.Update(voucher);
-                //    }
-                //}
+                
 
                 HoaDon hoaDon = new HoaDon
                 {
@@ -104,7 +93,7 @@ namespace AppAPI.Services
                     ChiTietHoaDons = new List<ChiTietHoaDon>(),
                     KhachHangID = chdvm.IdKhachHang,
                     IDVoucher = chdvm.IdVoucher,
-                    phuongThucTTID = Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),//chdvm.IdPhuongThucThanhToan,
+                    phuongThucTTID = chdvm.IdPhuongThucThanhToan,//Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
                     TenNguoiNhan = chdvm.TenKhachHang,
                     Email = chdvm.Email,
                     DiaChi = chdvm.DiaChi,
@@ -113,7 +102,7 @@ namespace AppAPI.Services
                     GhiChu = chdvm.GhiChu,
                     TienShip = chdvm.TienShip,
                     LoaiHD = 0,
-                    TrangThaiGiaoHang = 2,
+                    TrangThaiGiaoHang = 1,
                     NgayTao = DateTime.Now,
                     // Cần kiểm tra xem là COD hay CK
                     NgayThanhToan = DateTime.Now,
@@ -256,7 +245,7 @@ namespace AppAPI.Services
                     hoaDon.KhachHangID = khachHang != null ? khachHang.IDKhachHang : (Guid?)null;
                     hoaDon.GhiChu = hoaDonDTO.GhiChu;
                     hoaDon.TrangThaiGiaoHang = hoaDonDTO.TrangThaiGiaoHang;
-                    hoaDon.phuongThucTTID = hoaDonDTO.IdPhuongThucThanhToan;
+                    //hoaDon.phuongThucTTID = hoaDonDTO.IdPhuongThucThanhToan;
                     hoaDon.TongTien = hoaDonDTO.TongTienHoaDon;
 
 
@@ -415,6 +404,149 @@ namespace AppAPI.Services
             }
         }
 
+        public async Task<(bool Success, string OrderId, int? Amount)> CreateOrderAsync(CreateHoaDonOnlineViewModel chdvm)
+        {
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                var hoaDon = new HoaDon
+                {
+                    ID = Guid.NewGuid(),
+                    ChiTietHoaDons = new List<ChiTietHoaDon>(),
+                    KhachHangID = chdvm.IdKhachHang,
+                    IDVoucher = chdvm.IdVoucher,
+                    phuongThucTTID = Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
+                    TenNguoiNhan = chdvm.TenKhachHang,
+                    Email = chdvm.Email,
+                    DiaChi = chdvm.DiaChi,
+                    SDT = chdvm.SDT,
+                    MaHD = "HD" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
+                    GhiChu = chdvm.GhiChu,
+                    TienShip = chdvm.TienShip,
+                    LoaiHD = 0,
+                    TrangThaiGiaoHang = 2,
+                    NgayTao = DateTime.Now,
+                    NgayThanhToan = null, // Set this when payment is confirmed
+                    NgayNhanHang = DateTime.Now.AddDays(3),
+                    TongTien = chdvm.TongTienHoaDon
+                };
+
+                // Add ChiTietHoaDon
+                foreach (var sp in chdvm.SanPhams)
+                {
+                    int giaBan = context.ChiTietSanPhams.Find(sp.IDCTSP).GiaBan;
+                    var chiTiet = new ChiTietHoaDon
+                    {
+                        ID = Guid.NewGuid(),
+                        IDHoaDon = hoaDon.ID,
+                        IDCTSP = sp.IDCTSP,
+                        SoLuong = sp.SoLuongMua,
+                        DonGia = sp.SoLuongMua * giaBan,
+                        TrangThai = 1
+                    };
+                    hoaDon.ChiTietHoaDons.Add(chiTiet);
+
+                    var danhGia = new DanhGia
+                    {
+                        ID = chiTiet.ID,
+                        TrangThai = 0
+                    };
+                    context.DanhGias.Add(danhGia);
+                }
+
+                context.HoaDons.Add(hoaDon);
+
+                // Handle customer points
+                if (hoaDon.KhachHangID.HasValue)
+                {
+                    var khachHang = await context.KhachHangs.FindAsync(hoaDon.KhachHangID.Value);
+                    if (khachHang != null && hoaDon.TongTien > 0)
+                    {
+                        var quydoi = await context.QuyDoiDiems.FirstOrDefaultAsync(q => q.TrangThai == 1);
+                        if (chdvm.SoDiemSuDung > 0)
+                        {
+                            var lichSuTichDiemMoi = new LichSuTichDiem
+                            {
+                                ID = Guid.NewGuid(),
+                                Diem = chdvm.SoDiemSuDung ?? 0,
+                                TrangThai = 0,
+                                IDKhachHang = khachHang.IDKhachHang,
+                                IDQuyDoiDiem = quydoi.ID,
+                                IDHoaDon = hoaDon.ID
+                            };
+                            khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
+                            context.LichSuTichDiems.Add(lichSuTichDiemMoi);
+                        }
+
+                        var lichSuTichDiemMoi1 = new LichSuTichDiem
+                        {
+                            ID = Guid.NewGuid(),
+                            Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
+                            TrangThai = 1,
+                            IDKhachHang = khachHang.IDKhachHang,
+                            IDQuyDoiDiem = quydoi.ID,
+                            IDHoaDon = hoaDon.ID
+                        };
+                        khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
+                        context.LichSuTichDiems.Add(lichSuTichDiemMoi1);
+                    }
+                }
+
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return (true, hoaDon.MaHD, hoaDon.TongTien);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error creating order");
+                return (false, null, 0);
+            }
+        }
+
+        public async Task<bool> UpdateOrderPaymentStatusAsync(string orderId, bool isSuccessful)
+        {
+            try
+            {
+                var hoaDon = await context.HoaDons.FirstOrDefaultAsync(h => h.MaHD == orderId);
+                if (hoaDon == null)
+                {
+                    _logger.LogWarning($"Order not found: {orderId}");
+                    return false;
+                }
+
+                if (isSuccessful)
+                {
+                    // Thanh toán CK
+                    if(hoaDon.phuongThucTTID == Guid.Parse("fab870b4-7a7d-403a-a855-b7431a3c9252"))
+                    {
+                        hoaDon.NgayThanhToan = DateTime.Now;
+                    }
+                    else
+                    {
+                        // Thanh toán COD
+                        hoaDon.NgayThanhToan = DateTime.Now.AddDays(3);
+                    }
+                   
+                   
+                    //hoaDon.GhiChu = "";
+
+                }
+                else
+                {
+                    hoaDon.GhiChu = "Thanh toán thất bại"; 
+                }
+
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating order payment status for order: {orderId}");
+                return false;
+            }
+        }
         #endregion
         public bool CheckHDHasLSGD(Guid idHoaDon)
         {

@@ -44,6 +44,8 @@ const GioHang = () => {
     IdPhuongThucThanhToan: 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c',
     // IdNhanVien: '',
 
+    IdKhachHang :'',
+
     SoDiemSuDung: 0,
     TongTienHoaDon: 0
   });
@@ -305,7 +307,7 @@ const GioHang = () => {
       // Tính tổng tiền và cập nhật thông tin hóa đơn
       const tongTienHoaDon = selectedProducts.reduce((sum, sp) => 
         sum + sp.giaban * sp.soluongmua, 0);
-  
+  console.log(user.id);
       const hoaDonOnlineSubmit = {
         ...hoaDonOnline,
         TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
@@ -320,7 +322,9 @@ const GioHang = () => {
           SoLuongMua: sp.soluongmua,
           GiaBan: sp.giaban,
           //giaTriKhuyenMai: sp.giatrikhuyenmai ?? 0,
-        }))
+        })),
+        IdKhachHang: user.id,
+
       };
   
       // Kiểm tra thông tin bắt buộc
@@ -336,9 +340,7 @@ const GioHang = () => {
       // Gửi yêu cầu tạo hóa đơn
       console.log("hoaDon: ", hoaDonOnlineSubmit);
       const res = await axios.post(
-        "https://localhost:7095/api/HoaDon/create-order",
-        hoaDonOnlineSubmit
-      );
+        "https://localhost:7095/api/HoaDon/create-order",  hoaDonOnlineSubmit);
   
       if (res.data) {
         toast.success("Đặt hàng thành công");

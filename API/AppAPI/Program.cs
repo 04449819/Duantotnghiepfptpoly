@@ -57,6 +57,8 @@ builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IThongKeService, ThongKeService>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
+builder.Services.AddScoped<IhoanhangsanphamServices,hoanhangsanphamServices>();
+
 
 builder.Services.AddScoped<IDCKHServices, DCKHServices>();
 

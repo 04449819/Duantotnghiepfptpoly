@@ -92,6 +92,7 @@ namespace AppAPI.Services
                     ID = Guid.NewGuid(),
                     ChiTietHoaDons = new List<ChiTietHoaDon>(),
                     KhachHangID = chdvm.IdKhachHang,
+                    //KhachHangID = null,
                     IDVoucher = chdvm.IdVoucher,
                     phuongThucTTID = chdvm.IdPhuongThucThanhToan,//Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
                     TenNguoiNhan = chdvm.TenKhachHang,
@@ -104,6 +105,7 @@ namespace AppAPI.Services
                     LoaiHD = 0,
                     TrangThaiGiaoHang = 1,
                     NgayTao = DateTime.Now,
+
                     // Cần kiểm tra xem là COD hay CK
                     NgayThanhToan = DateTime.Now,
                     NgayNhanHang = DateTime.Now.AddDays(3),
@@ -132,47 +134,50 @@ namespace AppAPI.Services
 
                     hoaDon.ChiTietHoaDons.Add(chiTiet);
                 }
-                reposHoaDon.Add(hoaDon);
-                if (hoaDon.KhachHangID.HasValue)
-                {
-                    var khachHang = reposKhachHang.GetById(hoaDon.KhachHangID.Value);
-                    if (khachHang != null && hoaDon.TongTien > 0)
-                    {
-                        var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1 );
-                        if (chdvm.SoDiemSuDung > 0)
-                        {
-                            LichSuTichDiem lichSuTichDiemMoi = new LichSuTichDiem
-                            {
-                                ID = Guid.NewGuid(),
-                                Diem = chdvm.SoDiemSuDung.HasValue ? chdvm.SoDiemSuDung.Value : 0,
-                                TrangThai = 0,
-                                IDKhachHang = khachHang.IDKhachHang,
-                                IDQuyDoiDiem = quydoi.ID,
-                                IDHoaDon = hoaDon.ID
-                            };
+                context.HoaDons.Add(hoaDon);
+                context.SaveChanges();
 
-                            khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
-                            context.KhachHangs.Update(khachHang);
-                            reposLichSuTichDiem.Add(lichSuTichDiemMoi);
-                        }
+                //    if (hoaDon.KhachHangID.HasValue)
+                //    {
+                //        var khachHang = reposKhachHang.GetById(hoaDon.KhachHangID.Value);
+                //        if (khachHang != null && hoaDon.TongTien > 0)
+                //        {
+                //            var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1 );
+                //            if (chdvm.SoDiemSuDung > 0)
+                //            {
+                //                LichSuTichDiem lichSuTichDiemMoi = new LichSuTichDiem
+                //                {
+                //                    ID = Guid.NewGuid(),
+                //                    Diem = chdvm.SoDiemSuDung.HasValue ? chdvm.SoDiemSuDung.Value : 0,
+                //                    TrangThai = 0,
+                //                    IDKhachHang = khachHang.IDKhachHang,
+                //                    IDQuyDoiDiem = quydoi.ID,
+                //                    IDHoaDon = hoaDon.ID
+                //                };
 
-                        LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
-                        {
-                            ID = Guid.NewGuid(),
-                            Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
-                            TrangThai = 1,
-                            IDKhachHang = khachHang.IDKhachHang,
-                            IDQuyDoiDiem = quydoi.ID,
-                            IDHoaDon = hoaDon.ID
-                        };
+                //                khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
+                //                context.KhachHangs.Update(khachHang);
+                //                reposLichSuTichDiem.Add(lichSuTichDiemMoi);
+                //            }
 
-                        khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
-                        context.KhachHangs.Update(khachHang);
-                        reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
-                    }
+                //            LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
+                //            {
+                //                ID = Guid.NewGuid(),
+                //                Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
+                //                TrangThai = 1,
+                //                IDKhachHang = khachHang.IDKhachHang,
+                //                IDQuyDoiDiem = quydoi.ID,
+                //                IDHoaDon = hoaDon.ID
+                //            };
 
-                    context.SaveChanges();
-                }
+                //            khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
+                //            context.KhachHangs.Update(khachHang);
+                //            reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
+                //        }
+
+                //        context.SaveChanges();
+                //    }
+               
                 return true;
             }
             catch (Exception)
@@ -859,7 +864,7 @@ namespace AppAPI.Services
 
         public List<HoaDon> GetAllHDCho()
         {
-            return context.HoaDons.Where(c => c.TrangThaiGiaoHang == 1 || c.TrangThaiGiaoHang == 0).OrderByDescending(c => c.TrangThaiGiaoHang).ToList();
+            return context.HoaDons.Where(c => c.TrangThaiGiaoHang == 1 || c.TrangThaiGiaoHang == 2).OrderByDescending(c => c.TrangThaiGiaoHang).ToList();
         }
         //Nhinh
         public List<HoaDonQL> GetAllHDQly()
@@ -1661,18 +1666,71 @@ namespace AppAPI.Services
             return timkiem;
         }
 
-        public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
-        {
-            throw new NotImplementedException();
-        }
+       
+    
 
-        public Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+		
 
        
+          
+        
+
+       
+
+        public async Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang)
+        {
+            var donHangsDaMua = await context.HoaDons
+              .Where(hd => hd.KhachHangID == idKhachHang && hd.NgayThanhToan.HasValue)
+              .Select(hd => new HoaDonViewModel
+              {
+                  ChiTietHoaDons = hd.ChiTietHoaDons.Select(ct => new ChiTietHoaDonViewModel
+                  {
+                      IDChiTietSanPham = ct.ID,
+                      SoLuong = ct.SoLuong,
+                      DonGia = ct.DonGia,
+
+                  }).ToList(),
+                  id =hd.ID,
+                  Ten = hd.TenNguoiNhan,
+                  SDT = hd.SDT,
+                  Email = hd.Email,
+                  DiaChi = hd.DiaChi,
+                  TienShip = hd.TienShip,
+                  TongTien = hd.TongTien ?? 0,
+                  IDNhanVien = hd.IDNhanVien,
+                  IDNguoiDung = hd.KhachHangID,
+                  NgayThanhToan = hd.NgayThanhToan,
+                  GhiChu = hd.GhiChu
+              })
+              .ToListAsync();
+
+            return donHangsDaMua;
+        }
+
+        //public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
+        //{
+        //    return context.HoaDons
+        //           .Include(h => h.ChiTietHoaDons)
+        //               .ThenInclude(ct => ct.ChiTietSanPham) // Bao gồm thông tin ChiTietSanPham
+        //                   .ThenInclude(ctsp => ctsp.SanPham) // Bao gồm thông tin SanPham
+        //               .ThenInclude(ct => ct.ChiTietSanPhams) // Bao gồm thông tin ChiTietSanPham cho ChiTietHoaDon
+        //                   .ThenInclude(ctsp => ctsp.Anhs) // Bao gồm thông tin Anh từ ChiTietSanPham
+        //           .Where(h => h.KhachHangID == idKhachHang)
+        //           .ToList();
+        //}
+
+        public List<HoaDon> GetHoaDonByKhachHangId(Guid idKhachHang)
+        {
+            return context.HoaDons
+                   //.Include(h => h.ChiTietHoaDons)
+                   .Where(h => h.KhachHangID == idKhachHang)
+                   .ToList();
+        }
+     
+      
     }
+
+
+
+}
 

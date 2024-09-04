@@ -1,0 +1,23 @@
+// FeedbackModal.scss
+
+.feedback-star-rating {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .feedback-star {
+    color: #ddd; // Màu ngôi sao chưa chọn
+    transition: color 0.2s;
+  }
+  
+  .feedback-star.selected {
+    color: #f39c12; // Màu ngôi sao đã chọn
+  }
+  
+  .feedback-star:hover,
+  .feedback-star:hover ~ .feedback-star {
+    color: #f39c12; // Màu ngôi sao khi hover
+  }
+  

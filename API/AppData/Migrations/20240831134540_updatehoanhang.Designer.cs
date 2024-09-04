@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240831134540_updatehoanhang")]
+    partial class updatehoanhang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +189,8 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BinhLuan")
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime?>("NgayDanhGia")
                         .HasColumnType("datetime");
@@ -334,6 +337,9 @@ namespace AppData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Idchitiethoadon")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Mota")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -351,7 +357,7 @@ namespace AppData.Migrations
 
                     b.HasIndex("ChiTietHoaDonID");
 
-                    b.ToTable("hoanhangsanphams");
+                    b.ToTable("Hoanhangsanpham");
                 });
 
             modelBuilder.Entity("AppData.Models.KhachHang", b =>

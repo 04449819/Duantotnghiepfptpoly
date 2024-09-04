@@ -30,12 +30,12 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
       setBillInfo(billData);
 
       // Fetch product details
-      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}?idnhanvien=${user.id}`);
+      const productResponse = await fetch(`https://localhost:7095/api/SanPham/getAllSPBanHa222ng?hoaDonId=${billId}`);
       if (!productResponse.ok) {
         throw new Error('Network response was not ok');
       }
       const productData = await productResponse.json();
-      setProductDetails(productData);
+      setProductDetails(productData.sanPhamDetails); // Adjust according to data structure
     } catch (error) {
       setError('Có lỗi khi lấy thông tin: ' + error.message);
     } finally {
@@ -61,6 +61,7 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
       if (onConfirm) onConfirm(billId);
     } catch (error) {
       console.error('Error:', error);
+      setError('Có lỗi khi xác nhận đơn hàng: ' + error.message);
     } finally {
       onClose();
     }
@@ -84,6 +85,7 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
       if (onConfirm) onConfirm(billId); // Notify parent component
     } catch (error) {
       console.error('Error:', error);
+      setError('Có lỗi khi hủy đơn hàng: ' + error.message);
     } finally {
       onClose();
     }
@@ -143,17 +145,17 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
                 </thead>
                 <tbody>
                   {productDetails.map((product) => (
-                    <tr key={product.id}>
+                    <tr key={product.sanPhamId}>
                       <td>
                         <img
-                          src={product.anh.duongDan} // Replace with correct image URL
-                          alt={product.sanPham.ten}
+                          src={product.anhSanPham} // Ensure this is the correct URL for the image
+                          alt={product.tenSanPham}
                           style={{ width: '150px', height: '150px' }} // Adjust size as needed
                         />
                       </td>
-                      <td>{product.sanPham.ten}</td>
-                      <td>{product.chiTietHoaDon.donGia}</td>
-                      <td>{product.chiTietHoaDon.soLuong}</td>
+                      <td>{product.tenSanPham}</td>
+                      <td>{product.donGia}</td>
+                      <td>{product.soLuong}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,7 +176,7 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
           Hủy hóa đơn
         </Button>
         <Button variant="primary" onClick={handleConfirm}>
-         xác nhận giao hàng
+          Xác nhận giao hàng
         </Button>
       </Modal.Footer>
     </Modal>

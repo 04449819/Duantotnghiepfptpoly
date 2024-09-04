@@ -34,6 +34,7 @@ namespace AppData.Models
         public DbSet<DiaChiKhachHang> diaChiKhachHangs { get;set; }
         public DbSet<CoAo> CoAos { get; set; }
 		public DbSet<PhuongThucThanhToan> phuongThucThanhToans { get; set; }
+        public DbSet<Hoanhangsanpham> hoanhangsanphams { get; set; }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -41,7 +42,7 @@ namespace AppData.Models
 			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
 
 
-        }
+		}
 
 
 		

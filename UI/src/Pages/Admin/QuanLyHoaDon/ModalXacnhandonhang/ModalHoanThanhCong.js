@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import './ModalXacnhan.scss';
 import { useSelector } from 'react-redux';
 
 function ModalHoanThanhCong({ show, onClose, billId }) {
@@ -31,12 +30,14 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
       setBillInfo(billData);
 
       // Fetch product details
-      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}?idnhanvien=${user.id}`);
+      // Fetch product details
+      const productResponse = await fetch(`https://localhost:7095/api/SanPham/getAllSPBanHa222ng?hoaDonId=${billId}`);
       if (!productResponse.ok) {
         throw new Error('Network response was not ok');
       }
       const productData = await productResponse.json();
-      setProductDetails(productData);
+      setProductDetails(productData.sanPhamDetails); // Ensure to use the correct field if structure differs
+
     } catch (error) {
       setError('Có lỗi khi lấy thông tin: ' + error.message);
     } finally {

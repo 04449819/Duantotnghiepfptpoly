@@ -319,7 +319,7 @@ const ReactSideBar = () => {
                       className="User"
                       style={{ fontSize: "18px", display: "flex" }}
                     >
-                      {user.ten.length < 6
+                      {user.ten && user.ten.length < 6
                         ? user.ten
                         : `${user.ten.substring(0, 6)}`}
 

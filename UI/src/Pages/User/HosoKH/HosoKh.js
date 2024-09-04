@@ -71,7 +71,7 @@ const HosoKh = () => {
           fetchCustomerData(),
           fetchAddresses(),
           fetchOrders(),
-        ]);
+]);
       } catch (fetchError) {
         console.error('Lỗi khi tải dữ liệu:', fetchError.response || fetchError.message);
         setError('Lỗi khi tải dữ liệu.');
@@ -81,7 +81,7 @@ const HosoKh = () => {
     };
 
     fetchData();
-  }, [userId]);
+  }, [userId, load]); // Thêm `load` vào dependency array để làm mới dữ liệu khi `load` thay đổi
 
   const handleEditClick = (addr) => {
     setSelectedAddress(addr);
@@ -99,7 +99,7 @@ const HosoKh = () => {
         `https://localhost:7095/api/DiaChiKhachHang/xoadckh?id=${item.id}`
       );
       toast.success(`${res.data}`);
-      setload(!load);
+      setload(!load); // Toggle load to trigger data refresh
     } catch (error) {
       toast.error(`Gặp lỗi: ${error.response.data}`);
     }
@@ -174,7 +174,7 @@ const HosoKh = () => {
       case 9:
         return <FaExclamationCircle color="red" title="Chờ xác nhận hoàn hàng" />;
       default:
-        return <FaExclamationCircle color="gray" title="Không xác định" />;
+return <FaExclamationCircle color="gray" title="Không xác định" />;
     }
   };
 
@@ -252,7 +252,7 @@ const HosoKh = () => {
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText className="info-label">Số Điện Thoại</MDBCardText>
+<MDBCardText className="info-label">Số Điện Thoại</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="info-value">{customer?.sdt || 'N/A'}</MDBCardText>
@@ -325,7 +325,7 @@ const HosoKh = () => {
             <MDBCard className="mb-4">
               <MDBCardBody>
                 <MDBRow>
-                  <MDBCol sm="3">
+<MDBCol sm="3">
                     <MDBCardText>Đơn Hàng</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
@@ -405,7 +405,7 @@ const HosoKh = () => {
             load={load}
           />
         )}
-        {changePasswordModalOpen && (
+{changePasswordModalOpen && (
           <ChangePasswordModal
             show={changePasswordModalOpen}
             handleClose={handleCloseChangePasswordModal}

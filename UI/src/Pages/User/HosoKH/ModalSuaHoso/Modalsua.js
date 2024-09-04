@@ -1,33 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setnamekhachhang } from "../../../../Rudux/Reducer/taiKhoanSlice";
 
 const Modalsua = ({ isOpen, onClose, customer, onSave }) => {
   const [formData, setFormData] = useState({
-    ten: '',
-    email: '',
-    sdt: '',
-    gioiTinh: '',
-    ngaySinh: ''
+    ten: "",
+    email: "",
+    sdt: "",
+    gioiTinh: "",
+    ngaySinh: "",
   });
-
+  const dispath = useDispatch();
   const [errors, setErrors] = useState({
-    ten: '',
-    email: '',
-    sdt: '',
-    gioiTinh: '',
-    ngaySinh: ''
+    ten: "",
+    email: "",
+    sdt: "",
+    gioiTinh: "",
+    ngaySinh: "",
   });
 
   useEffect(() => {
     if (customer) {
-      console.log('Customer data:', customer);
+      console.log("Customer data:", customer);
       setFormData({
-        ten: customer.ten || '',
-        email: customer.email || '',
-        sdt: customer.sdt || '',
-        gioiTinh: customer.gioiTinh !== undefined ? customer.gioiTinh.toString() : '',
-        ngaySinh: customer.ngaySinh ? new Date(customer.ngaySinh).toISOString().split('T')[0] : ''
+        ten: customer.ten || "",
+        email: customer.email || "",
+        sdt: customer.sdt || "",
+        gioiTinh:
+          customer.gioiTinh !== undefined ? customer.gioiTinh.toString() : "",
+        ngaySinh: customer.ngaySinh
+          ? new Date(customer.ngaySinh).toISOString().split("T")[0]
+          : "",
       });
     }
   }, [customer]);
@@ -36,20 +41,22 @@ const Modalsua = ({ isOpen, onClose, customer, onSave }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.ten) newErrors.ten = 'Vui lòng nhập tên.';
-    if (!formData.email) newErrors.email = 'Vui lòng nhập email.';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email không hợp lệ.';
-    if (!formData.sdt) newErrors.sdt = 'Vui lòng nhập số điện thoại.';
-    else if (!/^0\d{9}$/.test(formData.sdt)) newErrors.sdt = 'Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự.';
-    if (!formData.gioiTinh) newErrors.gioiTinh = 'Vui lòng chọn giới tính.';
-    if (!formData.ngaySinh) newErrors.ngaySinh = 'Vui lòng chọn ngày sinh.';
+    if (!formData.ten) newErrors.ten = "Vui lòng nhập tên.";
+    if (!formData.email) newErrors.email = "Vui lòng nhập email.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email không hợp lệ.";
+    if (!formData.sdt) newErrors.sdt = "Vui lòng nhập số điện thoại.";
+    else if (!/^0\d{9}$/.test(formData.sdt))
+      newErrors.sdt = "Số điện thoại phải bắt đầu bằng 0 và có 10 ký tự.";
+    if (!formData.gioiTinh) newErrors.gioiTinh = "Vui lòng chọn giới tính.";
+    if (!formData.ngaySinh) newErrors.ngaySinh = "Vui lòng chọn ngày sinh.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -63,12 +70,21 @@ const Modalsua = ({ isOpen, onClose, customer, onSave }) => {
         `https://localhost:7095/api/KhachHang/updatekhachhangabc?id=${customer.idKhachHang}`,
         formData
       );
-      console.log('Response:', response.data);
+      console.log("Response:", response.data);
       onSave();
+      dispath(setnamekhachhang(formData.ten));
       onClose();
     } catch (error) {
-      console.error('Lỗi cập nhật thông tin khách hàng:', error.response || error.message);
-      setErrors({ ...errors, global: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật thông tin.' });
+      console.error(
+        "Lỗi cập nhật thông tin khách hàng:",
+        error.response || error.message
+      );
+      setErrors({
+        ...errors,
+        global:
+          error.response?.data?.message ||
+          "Có lỗi xảy ra khi cập nhật thông tin.",
+      });
     }
   };
 
@@ -149,7 +165,9 @@ const Modalsua = ({ isOpen, onClose, customer, onSave }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          {errors.global && <div className="text-danger mt-2">{errors.global}</div>}
+          {errors.global && (
+            <div className="text-danger mt-2">{errors.global}</div>
+          )}
         </Form>
       </Modal.Body>
       <Modal.Footer>

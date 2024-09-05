@@ -14,7 +14,7 @@ namespace AppData.ViewModels.BanOffline
         public string? DiaChi { get; set; }
         public bool? isGiaoHang { get; set; }
         public int TienShip { get; set; }
-        public Guid IdPhuongThucThanhToan { get; set; }
+        //public Guid IdPhuongThucThanhToan { get; set; }
         public string? GhiChu { get; set; }
         public Guid? IdKhachHang { get; set; }
         public Guid? IdVoucher { get; set; }

@@ -11,6 +11,10 @@ import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
 import Swal from "sweetalert2";
 import { AiFillSignal } from "react-icons/ai";
 import { FaAddressBook } from "react-icons/fa";
+import { FaBell } from 'react-icons/fa';
+import axios from "axios";
+
+
 const ReactSideBar = () => {
   const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
@@ -19,11 +23,23 @@ const ReactSideBar = () => {
   const navigate = useNavigate();
   const dispath = useDispatch();
   const user = useSelector((state) => state.user.User);
+  const [hoaDons, setHoaDons] = useState([]);
+  const [showList, setShowList] = useState(true);
 
   useEffect(() => {
     // Assuming email is used for display purposes, not for profile navigation
     console.log(user);
   }, [user]);
+  useEffect(() => {
+    // Fetch dữ liệu hóa đơn từ backend hoặc từ một nguồn dữ liệu khác
+    const fetchData = async () => {
+      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAllHDCho');
+      console.log(response.data);
+      
+      setHoaDons(response.data);
+    };
+    fetchData();
+  }, []);
   const handleViewProfile = () => {
     navigate(`/admin/profile/${user.id}`);
   };
@@ -227,7 +243,9 @@ const ReactSideBar = () => {
                         marginTop: "22px",
                       }}
                     />
+                    
                   </div>
+                  
                   <div
                     className="col-1"
                     style={{
@@ -238,11 +256,70 @@ const ReactSideBar = () => {
                       left: "1400px",
                     }}
                   >
-                    <span
+                    
+                    <div
+                      className="col-1"
+                      style={{
+                        paddingTop: "15px",
+                        position: "fixed",
+                        zIndex: 4,
+                        left: "1400px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "15px"
+                      }}
+                    >
+                      <div className="dropdown position-relative"
+                      onMouseEnter={() => setShowList(true)}
+                      onMouseLeave={() => setShowList(false)}
+                      >
+                        <FaBell 
+                          
+                          style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                        />
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
+                          {hoaDons.length}
+                          <span className="visually-hidden">unread messages</span>
+                        </span>
+                        {showList && (
+                          <ul className="dropdown-menu show" style={{ position: "absolute", top: "100%", left: -150, minWidth: "200px" }}>
+                         
+                            {hoaDons.map(hd => (
+                              <li key={hd.id}><a className="dropdown-item" href="/admin/quanlyhoadon">{hd.maHD}</a></li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      <span
+                        className="User"
+                        style={{ fontSize: "18px", display: "flex", alignItems: "center" }}
+                      >
+                        {user.ten.length < 6 ? user.ten : `${user.ten.substring(0, 6)}`}
+
+                        <NavDropdown
+                          id="nav-dropdown-dark-example"
+                          title={<IoSettings />}
+                          menuVariant="dark"
+                          style={{ marginLeft: "10px" }}
+                        >
+                          <NavDropdown.Item onClick={handleViewProfile}>
+                            Xem hồ sơ
+                          </NavDropdown.Item>
+
+                          <NavDropdown.Item onClick={HandleOnclickLogout}>
+                            Đăng xuất
+                          </NavDropdown.Item>
+                        </NavDropdown>
+                      </span>
+                    </div>
+
+
+                    {/* <span
                       className="User"
                       style={{ fontSize: "18px", display: "flex" }}
                     >
-                      {user.ten.length < 6
+                      {user.ten && user.ten.length < 6
                         ? user.ten
                         : `${user.ten.substring(0, 6)}`}
 
@@ -260,11 +337,13 @@ const ReactSideBar = () => {
                           Đăng xuất
                         </NavDropdown.Item>
                       </NavDropdown>
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>
             </div>
+
+            
             <div
               style={{
                 padding: "16px 24px",

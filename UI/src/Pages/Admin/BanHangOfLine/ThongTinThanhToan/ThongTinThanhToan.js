@@ -18,7 +18,7 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
     TrangThaiGiaoHang: 1,
     isGiaoHang: false,
     TienShip: 0, 
-    IdPhuongThucThanhToan: '',
+    //IdPhuongThucThanhToan: '',
     SoDiemSuDung: 0,
     TongTienHoaDon: 0
   });
@@ -33,7 +33,7 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [voucher, setVoucher] = useState([]);
   const [pttts, setPttts] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
-  const [selectedPttt, setSelectedPttt] = useState(null);
+  //const [selectedPttt, setSelectedPttt] = useState(null);
   const [TongGia, setTongGia] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showModalPttt, setShowModalPttt] = useState(false);
@@ -46,56 +46,7 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [tienGiamVoucher, setTienGiamVoucher] = useState(0);
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const componentRef = useRef();
-  
-  
-  // const getVoucher = async () => {
-  //   try {
-  //     const res = await axios.get(`https://localhost:7095/api/Voucher/fillvoucher/${TongGia}`);
-  //     setVoucher(res.data.voucher);
-      
-  //     // set tong gia cùng vs 
-  //     let TongGiaSP = hoaDon.SanPhams.reduce((acc, item) => {
-  //       // Cung cấp giá trị mặc định nếu giá trị không tồn tại hoặc không hợp lệ
-  //       const giaBan = Number(item.GiaBan) || 0;
-  //       const soLuongMua = Number(item.SoLuongMua) || 0;
-  //       const giaTriKhuyenMai = Number(item.giaTriKhuyenMai) || 0;
-  //       // Tính toán giá trị đã điều chỉnh sau khuyến mãi
-  //       const adjustedPrice = (giaBan - giaTriKhuyenMai) * soLuongMua;
-  //       // Tích lũy vào tổng 
-  //       return acc + adjustedPrice;
-  //     }, 0);
-  
-  //     let tienGiamVoucher = 0;
-  //     if(voucher && TongGiaSP >= voucher.soTienCan){
-  //       if(voucher.hinhThucGiamGia === 0) {
-  //         tienGiamVoucher = voucher.giaTri;
-  //       } else {
-  //         tienGiamVoucher = TongGiaSP * (voucher.giaTri / 100);
-  //       }
-  //       TongGiaSP -= tienGiamVoucher;
-  //     }
-  //     setTienGiamVoucher(tienGiamVoucher);
-  //     if(isGiaoHang){
-  //       if(hoaDon.TienShip){
-  //         TongGiaSP += Number(hoaDon.TienShip);
-  //       }
-  //     }
-  
-  //     let tienGiamDiem = 0;
-  //     let soDiemDung = 0;
-  //     if (isDiemTichLuy) {
-  //       tienGiamDiem = Math.min(diemTichLuy * 100, TongGiaSP);
-  //       soDiemDung = Math.ceil(tienGiamDiem / 100);
-  //       TongGiaSP = Math.max(0, TongGiaSP - tienGiamDiem);
-  //     }
-      
-  //     setTienGiamDiem(tienGiamDiem);
-  //     setSoDiemSuDung(soDiemDung);
-  //     setTongGia(TongGiaSP);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const [reloadHoaDon, setReloadHoaDon] = useState(false);
  
 const calculateTotalPrice = (products) => {
   return products.reduce((acc, item) => {
@@ -129,10 +80,8 @@ const getVoucherAndCalculateTotal = async () => {
     let totalPrice = calculateTotalPrice(hoaDon.SanPhams);
     
     // Thêm tiền ship nếu có
-    if (isGiaoHang && hoaDon.TienShip) {
-      totalPrice += Number(hoaDon.TienShip) ;
-      
-      
+    if (hoaDon.TienShip) {
+      totalPrice += Number(hoaDon.TienShip) ;  
     }
 
     // Lấy voucher dựa trên tổng giá ban đầu
@@ -174,18 +123,7 @@ useEffect(() => {
       console.log(error);
     }
   }
-  const getPTTTByIdHoaDon = async () => {
-    try {
-      const res = await axios.get(`https://localhost:7095/api/PhuongThucThanhToan/getPTTTByIdHoaDon/${idHoaDon}`);
-      if (res.data) {
-        setSelectedPttt(res.data.pttt);
-      }
-      console.log("Đây này: ",res.data);
-      
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
   const getDiemTichLuy = async () => {
     try {
       const res = await axios.get(`https://localhost:7095/api/KhachHang/GetDiemKH?input=${phone}`);
@@ -196,12 +134,8 @@ useEffect(() => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getPTTTByIdHoaDon();
-  }, [idHoaDon]);
-  // useEffect(() => {
-  //   getVoucher();
-  // },[idHoaDon, isDiemTichLuy, hoaDon.SanPhams ]);
+
+
   useEffect(() => {
     fetchPttts();
   },[]);
@@ -221,6 +155,7 @@ useEffect(() => {
         SanPhams: sanPhamsUpdate,
     }));
     
+    console.log("DATA: ",data);
     
   
 }, [ data, name, phone, email, address]);
@@ -228,10 +163,7 @@ useEffect(() => {
   getDiemTichLuy();
   
 }, [isDiemTichLuy, diemTichLuy, phone]);
-  // useEffect(() => {
-  //   updateTongTien();
-
-  // }, [ hoaDon.SanPhams, isDiemTichLuy, diemTichLuy, data, isGiaoHang,hoaDon.TienShip ]);
+ 
 
   useEffect(() => {
     setHoaDon(prevState => ({
@@ -239,48 +171,7 @@ useEffect(() => {
       SoDiemSuDung: soDiemSuDung
     }));
   }, [soDiemSuDung]);
-  // Tính toán tổng giá tiền, kèm theo xử lý voucher
-  // const updateTongTien = () => {
-  //   let TongGiaSP = hoaDon.SanPhams.reduce((acc, item) => {
-  //     // Cung cấp giá trị mặc định nếu giá trị không tồn tại hoặc không hợp lệ
-  //     const giaBan = Number(item.GiaBan) || 0;
-  //     const soLuongMua = Number(item.SoLuongMua) || 0;
-  //     const giaTriKhuyenMai = Number(item.giaTriKhuyenMai) || 0;
-  //     // Tính toán giá trị đã điều chỉnh sau khuyến mãi
-  //     const adjustedPrice = (giaBan - giaTriKhuyenMai) * soLuongMua;
-  //     // Tích lũy vào tổng 
-  //     return acc + adjustedPrice;
-  //   }, 0);
-
-  //   let tienGiamVoucher = 0;
-  //   if(voucher && TongGiaSP >= voucher.soTienCan){
-  //     if(voucher.hinhThucGiamGia === 0) {
-  //       tienGiamVoucher = voucher.giaTri;
-  //     } else {
-  //       tienGiamVoucher = TongGiaSP * (voucher.giaTri / 100);
-  //     }
-  //     TongGiaSP -= tienGiamVoucher;
-  //   }
-  //   setTienGiamVoucher(tienGiamVoucher);
-  //   if(isGiaoHang){
-  //     if(hoaDon.TienShip){
-  //       TongGiaSP += Number(hoaDon.TienShip);
-  //     }
-  //   }
-
-  //   let tienGiamDiem = 0;
-  //   let soDiemDung = 0;
-  //   if (isDiemTichLuy) {
-  //     tienGiamDiem = Math.min(diemTichLuy * 100, TongGiaSP);
-  //     soDiemDung = Math.ceil(tienGiamDiem / 100);
-  //     TongGiaSP = Math.max(0, TongGiaSP - tienGiamDiem);
-  //   }
-    
-  //   setTienGiamDiem(tienGiamDiem);
-  //   setSoDiemSuDung(soDiemDung);
-  //   setTongGia(TongGiaSP);
-   
-  // };
+  
   const handleClickGiaoHang = () => {
     setIsGiaoHang(!isGiaoHang);
   };
@@ -343,15 +234,13 @@ useEffect(() => {
     }
     return error;
   };
-  const handleSelectVoucher = (voucher) => {
-    setSelectedVoucher(voucher); 
-    setShowModal(false); 
-  }
-  const handleSelectPttt = (pttt) => {
-    setSelectedPttt(pttt); 
-    setShowModalPttt(false); 
-  }
+
   // Hàm xử lý thanh toán
+  // useEffect(() => {
+  //   updateHoaDon();
+  //   console.log("Tinh tinh");
+    
+  // },[hoaDon.SanPhams])
   const updateHoaDon = async () => {
   // Kiểm tra tất cả các trường để đảm bảo không có lỗi
   if(isGiaoHang){
@@ -382,38 +271,20 @@ useEffect(() => {
     const hoaDonToSubmit = {
       ...hoaDon,
       IdVoucher: voucher ? voucher.id : null,
-      IdPhuongThucThanhToan: selectedPttt.id,
+      //IdPhuongThucThanhToan: selectedPttt.id,
       SoDiemSuDung: soDiemSuDung,
       isGiaoHang: isGiaoHang,
       TienShip: hoaDon.TienShip !== null ? hoaDon.TienShip : 0,
       TongTienHoaDon: TongGia 
     };
     await axios.put(`https://localhost:7095/api/HoaDon/UpdateHoaDonOffline/${idHoaDon}`, hoaDonToSubmit);
+    setReloadHoaDon(!reloadHoaDon);
     toast.success('Cập nhật thành công');
     
   } catch (error) {
     console.error('Đã xảy ra lỗi khi thanh toán: ', error);
     toast.error('Cập nhật thất bại!');
   }
-  // try {
-  //   getVoucher();
-  //    const hoaDonToSubmit = {
-  //     ...hoaDon,
-  //     IdVoucher: voucher ? voucher.id : null,
-  //     IdPhuongThucThanhToan: selectedPttt.id,
-  //     SoDiemSuDung: soDiemSuDung,
-  //     isGiaoHang: isGiaoHang,
-  //     TienShip: hoaDon.TienShip !== null ? hoaDon.TienShip : 0,
-  //     TongTienHoaDon: TongGia 
-  //   };
-  //   await axios.put(`https://localhost:7095/api/HoaDon/UpdateHoaDonOffline/${idHoaDon}`, hoaDonToSubmit);
-  //   toast.success('Cập nhật thành công');
-    
-  // } catch (error) {
-  //   console.error('Đã xảy ra lỗi khi cập nhật hóa đơn: ', error);
-  //   toast.error('Cập nhật thất bại!');
-  // }
-
 
   };
   const handlePayment = async () => {
@@ -448,53 +319,8 @@ useEffect(() => {
       </Row>
 
       
-    <p>Voucher đang chọn: {voucher ? voucher.ten : ''}</p>
+    <p>Voucher: {voucher ? voucher.ten : 'Không có voucher được sử dụng'}</p>
       
-      
-
-      <Row className="mb-3">
-        <Col>
-          <Form.Group as={Row}>
-            <Col sm={9}>
-              <Form.Control
-                type="text"
-                readOnly
-                value={selectedPttt ? selectedPttt.ten : ''}
-                placeholder="Chọn PTTT"
-              />
-            </Col>
-            <Col sm={3}>
-              <Button variant="primary"
-               onClick={handleShowModalPttt}  
-              style={{ fontSize: '10px', padding: '5px 25px 5px 25px' }}>Chọn</Button>
-            </Col>
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Modal show={showModalPttt} onHide={handleCloseModalPttt} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Chọn PTTT</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ListGroup>
-            {pttts.map((pttt) => (
-              <ListGroup.Item key={pttt.id} action onClick={() => handleSelectPttt(pttt)}>
-                {pttt.ten} 
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-      </Modal>
-
-        
-
-      <Row className="mb-3">
-        <Col>
-          <p>Khách thanh toán: </p>
-        </Col>
-      </Row>
-
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
           <span className="me-3">Giao hàng</span>
@@ -599,7 +425,7 @@ useEffect(() => {
       </Row>
       <Row className="mb-3">
         <Col className="d-flex align-items-center">
-          <span className="me-3">Trạng thái hóa đơn: </span>
+          <span className="me-3">Trạng thái: </span>
           <select id="TrangThaiGiaoHang"  value={hoaDon.TrangThaiGiaoHang} onChange={handleInputChange}>
             <option value="1">Đơn nháp</option>
             <option value="2">Chờ xác nhận</option>
@@ -628,26 +454,25 @@ useEffect(() => {
 
       <Row>
         <Col>
-          <Button variant="success" onClick={updateHoaDon}>Cập nhật hóa đơn</Button>
-        </Col>
-        <Col>
-          <Button variant="success" onClick={handlePayment}>Thanh toán hóa đơn</Button>
-        </Col>
+          <Button variant="success" onClick={handlePrint}>Xem hóa đơn</Button>
+        
+          <div style={{
+            position: 'absolute',
+            top: '-1000px',
+            left: '-1000px'
+          }}>
+            <HoaDon props={idHoaDon} ref={componentRef}  key={reloadHoaDon} />
+          </div>
+      
+        
+          </Col>
+          <Col>
+            <Button variant="success" onClick={handlePayment}>Thanh toán</Button>
+          </Col>
       </Row>
+
       <Row>
-        <Col>
-        <Button variant="success" onClick={handlePrint}>Xem hóa đơn</Button>
-      
-        <div style={{
-          position: 'absolute',
-          top: '-1000px',
-          left: '-1000px'
-        }}>
-          <HoaDon props={idHoaDon} ref={componentRef}  />
-        </div>
-     
-      
-        </Col>
+       
         
       </Row>
 

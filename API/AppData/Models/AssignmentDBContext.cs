@@ -34,12 +34,15 @@ namespace AppData.Models
         public DbSet<DiaChiKhachHang> diaChiKhachHangs { get;set; }
         public DbSet<CoAo> CoAos { get; set; }
 		public DbSet<PhuongThucThanhToan> phuongThucThanhToans { get; set; }
+        public DbSet<Hoanhangsanpham> hoanhangsanphams { get; set; }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-			optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-B0M2PNO\VIETHOANG;Initial Catalog=duantotnghiepfptt;Integrated Security=True");
 
-        }
+			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
+
+
+		}
 
 
 		

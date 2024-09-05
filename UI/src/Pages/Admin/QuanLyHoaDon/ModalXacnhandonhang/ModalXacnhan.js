@@ -31,12 +31,12 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
       setBillInfo(billData);
 
       // Fetch product details
-      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}?idnhanvien=${user.id}`);
+      const productResponse = await fetch(`https://localhost:7095/api/SanPham/getAllSPBanHa222ng?hoaDonId=${billId}`);
       if (!productResponse.ok) {
         throw new Error('Network response was not ok');
       }
       const productData = await productResponse.json();
-      setProductDetails(productData);
+      setProductDetails(productData.sanPhamDetails); // Ensure to use the correct field if structure differs
     } catch (error) {
       setError('Có lỗi khi lấy thông tin: ' + error.message);
     } finally {
@@ -46,7 +46,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=3&idnhanvien=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=10&idnhanvien=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   const handleCancel = async () => {
     try {
       const response = await fetch(`https://localhost:7095/api/HoaDon/HuyHD?idhd=${billId}&idnv=${user.id}`, {
-        method: 'PUT', // Assuming PUT method, update if needed
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -110,7 +110,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
         <Modal.Body>{error}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
-            Close
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>
@@ -144,17 +144,17 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
                 </thead>
                 <tbody>
                   {productDetails.map((product) => (
-                    <tr key={product.id}>
+                    <tr key={product.sanPhamId}>
                       <td>
                         <img
-                          src={product.anh.duongDan} // Replace with correct image URL
-                          alt={product.sanPham.ten}
+                          src={product.anhSanPham} // Adjust URL if needed
+                          alt={product.tenSanPham}
                           style={{ width: '150px', height: '150px' }} // Adjust size as needed
                         />
                       </td>
-                      <td>{product.sanPham.ten}</td>
-                      <td>{product.chiTietHoaDon.donGia}</td>
-                      <td>{product.chiTietHoaDon.soLuong}</td>
+                      <td>{product.tenSanPham}</td>
+                      <td>{product.donGia}</td>
+                      <td>{product.soLuong}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -169,13 +169,13 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
-          Close
+          Đóng
         </Button>
         <Button variant="danger" onClick={handleCancel}>
           Hủy hóa đơn
         </Button>
         <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+          Chuẩn bị hàng
         </Button>
       </Modal.Footer>
     </Modal>

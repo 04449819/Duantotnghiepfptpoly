@@ -40,7 +40,7 @@ const QuanLyVoucher = () => {
 
   const fetchVouchers = async (page, refresh = false) => {
     try {
-      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page}&pageSize=${ROWS_PER_PAGE}`);
+      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=1&pageSize=10`);
       const data = res.data;
   
       // Nếu refresh là true, thay thế dữ liệu hiện tại. Nếu không, thêm vào cuối.
@@ -74,6 +74,18 @@ const QuanLyVoucher = () => {
     }
   };
   const handleShowModal = () => {
+    setIsEditing(false); // Modal ở chế độ tạo
+    setNewVoucher({
+      ten: '',
+      hinhThucGiamGia: 0, 
+      soTienCan: 0,
+      giaTri: 0,
+      ngayApDung: '',
+      ngayKetThuc: '',
+      soLuong: 0,
+      moTa: '',
+      trangThai: 0,
+    });
     setShowModal(true); 
   }
   const handleCloseModal = () => {
@@ -98,8 +110,12 @@ const QuanLyVoucher = () => {
         }
         break;
       case "giaTri":
+        console.log(newVoucher);
+        
         if (isNaN(value) || value <= 0) {
           error = "Giá trị phải là số lớn hơn 0";
+        }else if (newVoucher.hinhThucGiamGia === '1' && value > 100) {
+          error = "Giá trị phải nhỏ hơn hoặc bằng 100 khi chọn phần trăm";
         }
         break;
       case "ngayApDung":
@@ -167,7 +183,7 @@ const QuanLyVoucher = () => {
     // Kiểm tra nếu có lỗi
     const hasError = Object.values(newErrors).some(error => error !== "");
     if (hasError) {
-      return; // Ngăn submit nếu có lỗi
+      return; 
     }
     try {
       if (isEditing) {
@@ -216,8 +232,9 @@ const QuanLyVoucher = () => {
   };
 
   const handleEdit = (voucher) => {
-    setNewVoucher(voucher);
-    setIsEditing(true);
+    setNewVoucher(voucher); 
+    setIsEditing(true); 
+    setShowModal(true); 
   };
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -240,7 +257,9 @@ const QuanLyVoucher = () => {
       </Button>
       <Modal show={showModal} onHide={handleCloseModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Thông Tin Voucher</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+  {isEditing ? "Cập nhật Voucher" : "Tạo Voucher"}
+</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <form onSubmit={handleSubmit}>
@@ -404,7 +423,7 @@ const QuanLyVoucher = () => {
     </div>
     <h2 style={{textAlign: 'center'}}>Danh sách voucher</h2>
     <hr></hr>
-    <div className="table-container" ref={tableRef} style={{ height: '200px', overflowY: 'scroll' }}
+    <div className="table-container" ref={tableRef} style={{ height: '400px', overflowY: 'scroll' }}
     onScroll={handleScroll} >
     
         <table className="table">
@@ -436,7 +455,7 @@ const QuanLyVoucher = () => {
                 <td>{voucher.moTa}</td>
                 <td>{voucher.trangThai === 0 ? 'Hết' : 'Còn'}</td>
                 <td>
-                  <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); handleShowModal();} }>
+                  <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); } }>
                     Sửa
                   </button>
 

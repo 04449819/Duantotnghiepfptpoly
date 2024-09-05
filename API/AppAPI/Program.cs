@@ -19,6 +19,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
         });
 });
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,6 +41,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddDbContext<AssignmentDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
 //builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
+builder.Services.AddScoped<IMomoPaymentService, MomoPaymentService>();
 builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
 builder.Services.AddScoped<IThongKeSanPhamService, ThongKeSanPhamService>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();
@@ -55,6 +57,8 @@ builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IThongKeService, ThongKeService>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
+builder.Services.AddScoped<IhoanhangsanphamServices,hoanhangsanphamServices>();
+
 
 builder.Services.AddScoped<IDCKHServices, DCKHServices>();
 

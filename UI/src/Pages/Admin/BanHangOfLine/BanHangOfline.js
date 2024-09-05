@@ -74,11 +74,15 @@ const BanHangOfline = () => {
   useEffect(() => {
     getHoaDonChos();
   }, [data]);
+  useEffect(() => {
+    console.log("data:", hoaDonChos);
+    
+  }, [hoaDonChos]);
 
-  const                                                                                                                                                                                                 getHoaDonChos = async () => {
+const getHoaDonChos = async () => {
     try {
       const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
-      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1);
+      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1 && hoaDon.loaiHD === 1);
   
       // Sort the filtered data by ngayTao in descending order (newest first)
       const sortedData = filteredData.sort((a, b) => {
@@ -94,49 +98,13 @@ const BanHangOfline = () => {
       console.error('Error fetching data:', error);
     }
   };
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     const totalSoSP = data.reduce((acc, item) => acc + item.soLuongmua, 0);
-  //     const TongGiaSP = data.reduce((acc, item) => {
-  //       return acc + item.soLuongmua * item.giaBan;
-  //     }, 0);
-  //     setSoSP(totalSoSP);
-  //     setTongGia(TongGiaSP);
-  //   } else {
-  //     setSoSP(0);
-  //   }
-  // }, [data]);
-  //   try {
-  //     const res = await axios.get(
-  //       `https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDChiTietSanPham?id=${inputsearch}`
-  //     );
-  //     const existingItem = datasp.find(
-  //       (item) => item.idCTSP === res.data.idCTSP
-  //     );
-  //     if (existingItem) {
-  //       const sanpham = datasp.map((item) => {
-  //         if (item.idCTSP === res.data.idCTSP)
-  //           return {
-  //             ...item,
-  //             soLuongmua: item.soLuongmua + res.data.soLuongmua,
-  //           };
-  //         return item;
-  //       });
-  //       setData(sanpham);
-  //     } else {
-  //       setData([...datasp, res.data]);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Thông tin sản phẩm không chính xác");
-  //   }
-  // };
   const createHoaDonOffline = async () => {
     try {
       const hoaDonCho = {
         ...hoaDon,
         IdNhanVien: nv.id,
       };
-      const res = await axios.post('https://localhost:7095/api/HoaDon/CreateHoaDonOffline', hoaDonCho);
+      await axios.post('https://localhost:7095/api/HoaDon/CreateHoaDonOffline', hoaDonCho);
       getHoaDonChos();
       toast.success('Tạo mới hóa đơn chờ');
 
@@ -187,23 +155,26 @@ const BanHangOfline = () => {
           <tr>
             <th>#</th>
             <th>Mã Hóa Đơn</th>
-            <th>Ngày Tạo</th>
+            <th>Khách hàng</th>
+            {/* <th>Ngày Tạo</th> */}
+            
             <th>Loại Hóa Đơn</th>
            
           </tr>
         </thead>
         <tbody>
           {hoaDonChos.map((hoaDon, index) => (
-            <tr key={hoaDon.id}
+            <tr key={index}
              onClick={() => handleSelectedHoaDonCho(hoaDon)}  
-             className={[ // Combine conditional classes using an array
+             className={[ 
               hoaDon.chiTietHoaDons && hoaDon.chiTietHoaDons.length > 0 ? 'table-danger' : '',
               hoaDon.id === hoaDonChoSelected?.id ? 'selected-row' : '',
             ].join(' ')}
              >
               <td>{index + 1}</td>
               <td>{hoaDon.maHD}</td>
-              <td>{hoaDon.ngayTao}</td>
+              <td>{hoaDon.tenNguoiNhan}</td>
+              {/* <td>{hoaDon.ngayTao}</td> */}
               <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} </td>
               <td><Button className="btn-danger" onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</Button></td>
               

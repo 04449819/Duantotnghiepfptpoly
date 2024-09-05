@@ -9,6 +9,8 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cancelNote, setCancelNote] = useState(''); // State to store cancellation note
+  const [showCancelNote, setShowCancelNote] = useState(false); // State to control the visibility of the cancel note field
   const user = useSelector(state => state.user.User); // Get user info from Redux
 
   useEffect(() => {
@@ -67,9 +69,47 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
     }
   };
 
+  const handleCancelConfirm = async () => {
+    if (!cancelNote.trim()) {
+      alert('Vui lòng nhập lý do hủy hoàn.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Cancel Success:', data);
+      if (onConfirm) onConfirm(billId); // Optionally trigger onConfirm with a different context if needed
+    } catch (error) {
+      console.error('Cancel Error:', error);
+    } finally {
+      onClose();
+    }
+  };
+
+  const handleCancelButtonClick = () => {
+    setShowCancelNote(true);
+  };
+
+  const handleClose = () => {
+    setShowCancelNote(false);
+    setCancelNote('');
+    onClose();
+  };
+
   if (loading) {
     return (
-      <Modal show={show} onHide={onClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Loading...</Modal.Title>
         </Modal.Header>
@@ -80,13 +120,13 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
 
   if (error) {
     return (
-      <Modal show={show} onHide={onClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Error</Modal.Title>
         </Modal.Header>
         <Modal.Body>{error}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>
@@ -95,7 +135,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
   }
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Xác nhận Đơn Hàng</Modal.Title>
       </Modal.Header>
@@ -140,14 +180,37 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
               <p>Chưa có sản phẩm nào.</p>
             )}
 
+            {showCancelNote && (
+              <>
+                <h4>Lý do hủy hoàn</h4>
+                <textarea
+                  value={cancelNote}
+                  onChange={(e) => setCancelNote(e.target.value)}
+                  rows="3"
+                  className="form-control"
+                  placeholder="Nhập lý do hủy hoàn"
+                />
+              </>
+            )}
+
             <p>Bạn có chắc chắn muốn xác nhận đơn hàng này?</p>
           </div>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        {!showCancelNote && (
+          <Button variant="danger" onClick={handleCancelButtonClick}>
+            Hủy hoàn
+          </Button>
+        )}
+        <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
+        {showCancelNote && (
+          <Button variant="danger" onClick={handleCancelConfirm}>
+            Xác nhận hủy hoàn
+          </Button>
+        )}
         <Button variant="primary" onClick={handleConfirm}>
           Confirm
         </Button>

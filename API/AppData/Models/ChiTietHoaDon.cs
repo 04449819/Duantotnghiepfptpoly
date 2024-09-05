@@ -11,5 +11,7 @@
         public virtual HoaDon? HoaDon { get; set; }
         public virtual ChiTietSanPham? ChiTietSanPham { get; set; }
         public virtual DanhGia? DanhGia { get; set; }
+
+        public virtual  List<Hoanhangsanpham>? Hoanhangsanpham { get; set; }
     }
 }

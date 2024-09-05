@@ -112,60 +112,107 @@ namespace AppAPI.Services
             return query;
         }
 
-        public async Task<DanhGia> SaveDanhGia(DanhGia danhGia)
+        public async Task<bool> SaveDanhgia(Danhgiamodel danhgia)
         {
-            //try
-            //{
-            //    var dg = await _context.DanhGias.FindAsync(danhGia.ID);
-            //    if (dg != null && dg.TrangThai == 0) // Đánh giá tồn tại và chưa từng chỉnh sửa
-            //    {
-            //        dg.Sao = danhGia.Sao;
-            //        dg.BinhLuan = danhGia.BinhLuan;
-            //        dg.TrangThai = 1;
-            //        _context.DanhGias.Update(dg);
-            //        await _context.SaveChangesAsync();
-            //        return dg;
-            //    }
-            //    else
-            //    {
-            //        DanhGia rv = new DanhGia()
-            //        {
-            //            ID = new Guid(),
-            //            Sao = danhGia.Sao,
-            //            BinhLuan = danhGia.BinhLuan,
-            //            TrangThai = 0,
-            //            IDKhachHang = danhGia.IDKhachHang,
-            //            IDBienThe = danhGia.IDBienThe,
-            //        };
-            //        await _context.DanhGias.AddAsync(rv);
-            //        await _context.SaveChangesAsync();
-            //        return rv;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new Exception(ex.Message);
-            //}
-            throw new NotImplementedException();
+            if (danhgia == null)
+            {
+                throw new ArgumentNullException(nameof(danhgia));
+            }
+
+            // Chuyển đổi ViewModel thành Entity Model
+            var danhGia = new DanhGia
+            {
+                ID= danhgia.IDcthd,
+                BinhLuan = danhgia.BinhLuan,
+                Sao = danhgia.Sao,
+                NgayDanhGia = danhgia.NgayDanhGia,
+                phanHoi = danhgia.PhanHoi,
+                TrangThai = danhgia.TrangThai,
+            };
+
+            try
+            {
+                // Lưu vào cơ sở dữ liệu
+                _context.DanhGias.Add(danhGia);
+                await _context.SaveChangesAsync();
+                return true; // Trả về true nếu lưu thành công
+            }
+            catch (Exception)
+            {
+                // Xử lý ngoại lệ nếu cần (ghi log, thông báo lỗi, v.v.)
+                return false; // Trả về false nếu có lỗi
+            }
         }
 
-        public bool UpdateDanhGia(Guid idCTHD, int soSao, string? binhLuan)
+        //public async Task<Danhgiamodel> SaveDanhGia(Danhgiamodel danhGia)
+        //{
+        //    try
+        //    {
+
+        //            //// Nếu không tìm thấy đánh giá, tạo một đánh giá mới
+        //            //var newDanhGia = new Danhgiamodel
+        //            //{
+        //            //    ID = danhGia.ChiTietHoaDonID, // Tạo GUID mới cho đánh giá
+        //            //    Sao = danhGia.Sao,
+        //            //    BinhLuan = danhGia.BinhLuan,
+        //            //    PhanHoi = danhGia.PhanHoi,
+        //            //    TrangThai = 0, // Đánh giá mới sẽ có trạng thái là chưa được cập nhật
+        //            //    NgayDanhGia = DateTime.UtcNow,
+        //            //};
+
+        //            //await _context.DanhGias.AddAsync(newDanhGia);
+        //            //await _context.SaveChangesAsync();
+
+        //            //return newDanhGia;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Có lỗi xảy ra khi lưu đánh giá: " + ex.Message, ex);
+        //    }
+        //}
+
+
+
+
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
         {
             try
             {
-                DanhGia danhGia = reposDanhGia.GetAll().FirstOrDefault(p=>p.ID == idCTHD);
+                // Kiểm tra reposDanhGia có được khởi tạo không
+                if (reposDanhGia == null)
+                {
+                    throw new InvalidOperationException("Repository is not initialized.");
+                }
+
+                // Lấy danh sách đánh giá và tìm đối tượng danhGia
+                DanhGia danhGia = reposDanhGia.GetAll().FirstOrDefault(p => p.ID == idCTHD);
+
+                // Kiểm tra danhGia có phải là null không
+                if (danhGia == null)    
+                {
+                    // Không tìm thấy đánh giá với idCTHD tương ứng
+                    return false;
+                }
+
+                // Cập nhật thông tin của danhGia
                 danhGia.BinhLuan = binhLuan;
                 danhGia.Sao = soSao;
                 danhGia.NgayDanhGia = DateTime.Now;
                 danhGia.TrangThai = 1;
+
+                // Cập nhật vào cơ sở dữ liệu
                 reposDanhGia.Update(danhGia);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                // Ghi log lỗi hoặc xử lý lỗi
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
             }
         }
+
+
     }
 }

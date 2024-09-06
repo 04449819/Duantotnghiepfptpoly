@@ -164,7 +164,7 @@ namespace AppAPI.Services
         //    return false;
         //}
 
-        #region getbyKhachhangEmailorSĐTkiên
+        #region getbyKhachhangEmailorSĐTkiên    
         public KhachHang GetBySDT(string sdt)
 		{
 			return _dbContext.KhachHangs.FirstOrDefault(c => c.SDT == sdt || c.Email == sdt);
@@ -172,6 +172,13 @@ namespace AppAPI.Services
         #endregion
 
         #region Tung
+        public KhachHang? GetByEmailOrSDT(string email, string sdt)
+        {
+            return _dbContext.KhachHangs.FirstOrDefault(c =>
+                (sdt != null && c.SDT == sdt) ||
+                (email != null && c.Email == email)
+            );
+        }
         public int TongHopDiem(Guid idKhachHang)
         {
             // Lấy lịch sử tích điểm của khách hàng có ID tương ứng

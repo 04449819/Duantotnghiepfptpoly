@@ -33,6 +33,7 @@ namespace AppAPI.Services
         private readonly ILogger<HoaDonService> _logger;
         private readonly IGioHangServices _iGioHangServices;
         private readonly IMomoPaymentService _momoPaymentService;
+        private readonly IKhachHangService _ikhachHangService;
 
         public HoaDonService(ILogger<HoaDonService> logger, IMomoPaymentService momoPaymentService)
         {
@@ -51,6 +52,7 @@ namespace AppAPI.Services
             _momoPaymentService = momoPaymentService;
             context = new AssignmentDBContext();
             _iGioHangServices = new GioHangServices();
+            _ikhachHangService = new KhachHangService();
         }
 
         #region Tung
@@ -85,16 +87,22 @@ namespace AppAPI.Services
         {
             try
             {
-                
+                KhachHang? khachHang = null;
+                // Kiểm tra dữ liệu đầu vào SDT và Email
+                if (chdvm.SDT != null || chdvm.Email != null)
+                {
+                    // Tìm khách hàng dựa trên SDT hoặc Email
+                    khachHang = _ikhachHangService.GetByEmailOrSDT(chdvm.SDT, chdvm.Email);
+                }
 
                 HoaDon hoaDon = new HoaDon
                 {
                     ID = Guid.NewGuid(),
                     ChiTietHoaDons = new List<ChiTietHoaDon>(),
-                    KhachHangID = chdvm.IdKhachHang,
+                    KhachHangID = khachHang != null ? khachHang.IDKhachHang : null,
                     //KhachHangID = null,
                     IDVoucher = chdvm.IdVoucher,
-                    phuongThucTTID = chdvm.IdPhuongThucThanhToan,//Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
+                    phuongThucTTID = chdvm.IdPhuongThucThanhToan,
                     TenNguoiNhan = chdvm.TenKhachHang,
                     Email = chdvm.Email,
                     DiaChi = chdvm.DiaChi,
@@ -105,9 +113,7 @@ namespace AppAPI.Services
                     LoaiHD = 0,
                     TrangThaiGiaoHang = 1,
                     NgayTao = DateTime.Now,
-
-                    // Cần kiểm tra xem là COD hay CK
-                    NgayThanhToan = DateTime.Now,
+                    NgayThanhToan = DateTime.Now.AddDays(3),
                     NgayNhanHang = DateTime.Now.AddDays(3),
                     TongTien = chdvm.TongTienHoaDon // - giaTriVoucher - chdvm.TienShip
                 };
@@ -137,47 +143,47 @@ namespace AppAPI.Services
                 context.HoaDons.Add(hoaDon);
                 context.SaveChanges();
 
-                //    if (hoaDon.KhachHangID.HasValue)
-                //    {
-                //        var khachHang = reposKhachHang.GetById(hoaDon.KhachHangID.Value);
-                //        if (khachHang != null && hoaDon.TongTien > 0)
-                //        {
-                //            var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1 );
-                //            if (chdvm.SoDiemSuDung > 0)
-                //            {
-                //                LichSuTichDiem lichSuTichDiemMoi = new LichSuTichDiem
-                //                {
-                //                    ID = Guid.NewGuid(),
-                //                    Diem = chdvm.SoDiemSuDung.HasValue ? chdvm.SoDiemSuDung.Value : 0,
-                //                    TrangThai = 0,
-                //                    IDKhachHang = khachHang.IDKhachHang,
-                //                    IDQuyDoiDiem = quydoi.ID,
-                //                    IDHoaDon = hoaDon.ID
-                //                };
+                if (hoaDon.KhachHangID.HasValue)
+                {
+                    //var khachHang = reposKhachHang.GetById(hoaDon.KhachHangID.Value);
+                    if (khachHang != null && hoaDon.TongTien > 0)
+                    {
+                        var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1);
+                        if (chdvm.SoDiemSuDung > 0)
+                        {
+                            LichSuTichDiem lichSuTichDiemMoi = new LichSuTichDiem
+                            {
+                                ID = Guid.NewGuid(),
+                                Diem = chdvm.SoDiemSuDung.HasValue ? chdvm.SoDiemSuDung.Value : 0,
+                                TrangThai = 0,
+                                IDKhachHang = khachHang.IDKhachHang,
+                                IDQuyDoiDiem = quydoi.ID,
+                                IDHoaDon = hoaDon.ID
+                            };
 
-                //                khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
-                //                context.KhachHangs.Update(khachHang);
-                //                reposLichSuTichDiem.Add(lichSuTichDiemMoi);
-                //            }
+                            khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
+                            context.KhachHangs.Update(khachHang);
+                            reposLichSuTichDiem.Add(lichSuTichDiemMoi);
+                        }
 
-                //            LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
-                //            {
-                //                ID = Guid.NewGuid(),
-                //                Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
-                //                TrangThai = 1,
-                //                IDKhachHang = khachHang.IDKhachHang,
-                //                IDQuyDoiDiem = quydoi.ID,
-                //                IDHoaDon = hoaDon.ID
-                //            };
+                        LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
+                        {
+                            ID = Guid.NewGuid(),
+                            Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
+                            TrangThai = 1,
+                            IDKhachHang = khachHang.IDKhachHang,
+                            IDQuyDoiDiem = quydoi.ID,
+                            IDHoaDon = hoaDon.ID
+                        };
 
-                //            khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
-                //            context.KhachHangs.Update(khachHang);
-                //            reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
-                //        }
+                        khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
+                        context.KhachHangs.Update(khachHang);
+                        reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
+                    }
 
-                //        context.SaveChanges();
-                //    }
-               
+                    context.SaveChanges();
+                }
+
                 return true;
             }
             catch (Exception)
@@ -420,7 +426,7 @@ namespace AppAPI.Services
                     ChiTietHoaDons = new List<ChiTietHoaDon>(),
                     KhachHangID = chdvm.IdKhachHang,
                     IDVoucher = chdvm.IdVoucher,
-                    phuongThucTTID = Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
+                    phuongThucTTID = chdvm.IdPhuongThucThanhToan, //Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
                     TenNguoiNhan = chdvm.TenKhachHang,
                     Email = chdvm.Email,
                     DiaChi = chdvm.DiaChi,
@@ -429,7 +435,7 @@ namespace AppAPI.Services
                     GhiChu = chdvm.GhiChu,
                     TienShip = chdvm.TienShip,
                     LoaiHD = 0,
-                    TrangThaiGiaoHang = 2,
+                    TrangThaiGiaoHang = 1,
                     NgayTao = DateTime.Now,
                     NgayThanhToan = null, // Set this when payment is confirmed
                     NgayNhanHang = DateTime.Now.AddDays(3),

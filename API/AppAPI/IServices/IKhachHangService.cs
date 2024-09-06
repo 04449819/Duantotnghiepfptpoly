@@ -23,6 +23,7 @@ namespace AppAPI.IServices
 
         public List<KhachHang> GetKMByName(string Ten);
 
+        public KhachHang? GetByEmailOrSDT(string email, string sdt);
 
     }
 }

@@ -25,6 +25,14 @@ namespace AppAPI.Services
             {
                 throw new InvalidOperationException("Số lượng hoàn hàng không hợp lệ hoặc lớn hơn số lượng còn lại.");
             }
+            var hoaDon = await _context.HoaDons.FindAsync(chiTietHoaDon.IDHoaDon);
+            if (hoaDon == null)
+            {
+                throw new InvalidOperationException("Hóa đơn không tìm thấy.");
+            }
+
+
+            var diaChiKhachHang = hoaDon.DiaChi; // Địa chỉ khách hàng trong HoaDon
 
             // Tạo đối tượng hoàn hàng
             var hoanhangsanpham = new Hoanhangsanpham
@@ -32,8 +40,8 @@ namespace AppAPI.Services
                 ID = Guid.NewGuid(),
                 ChiTietHoaDon = chiTietHoaDon, // Đảm bảo rằng ChiTietHoaDon đã được cấu hình đúng
                 SoLuong = viewModel.SoLuong,
-                Diachikhachhang = viewModel.DiaChiKhachHang,
-                Ngayhoanhang = viewModel.NgayHoanHang,
+                Diachikhachhang = diaChiKhachHang,
+                Ngayhoanhang = DateTime.UtcNow, 
                 Mota = viewModel.MoTa,
                 TrangThaiHoanHang = 1 // Trạng thái "đã hoàn"
             };

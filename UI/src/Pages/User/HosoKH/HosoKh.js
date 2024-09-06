@@ -104,6 +104,20 @@ const HosoKh = () => {
       toast.error(`Gặp lỗi: ${error.response.data}`);
     }
   };
+  const HandleOnchangeCheckbox = async (item) => {
+    try {
+      const res = await axios.put(
+        `https://localhost:7095/api/DiaChiKhachHang/updatedckh?id=${item.id}`
+      );
+      if (res.data !== "") {
+        toast.success(`${res.data}`);
+        setload(!load);
+      }
+    } catch (error) {
+      toast.error(`Gặp lỗi: ${error.response.data}`);
+    }
+    // dispath(SetDiachiChinhNhanHang(item));
+  };
 
   const handleSave = async () => {
     try {
@@ -288,9 +302,23 @@ return <FaExclamationCircle color="gray" title="Không xác định" />;
                     <MDBListGroup>
                       {addresses.length > 0 ? addresses.map((addr) => (
                         <MDBListGroupItem key={addr.id}>
+                          
                           <div className="d-flex justify-content-between align-items-center">
+                          <div style={{ width: "10%" }}>
+                        <input
+                          className="mt-4"
+                          style={{ width: "15px", height: "15px" }}
+                          type="checkbox"
+                          onChange={() => HandleOnchangeCheckbox(addr)}
+                          checked={addr.trangThai === 1 ? true : false}
+                        />
+                      </div>
                             <span>{addr.diaChi || 'N/A'}</span>
+
                             <div>
+                            <div style={{ width: "10%" }}>
+                        
+                      </div>
                               <MDBBtn
                                 className="me-2 btn"
                                 size="sm"

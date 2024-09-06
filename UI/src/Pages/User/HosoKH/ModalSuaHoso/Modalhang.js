@@ -4,13 +4,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './kk.scss';
 import FeedbackModal from './FeedbackModal';
-
+import ReturnModal from './ReturnModal';
 const ModalHang = ({ isOpen, onClose, orderId }) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null); // Sản phẩm được chọn để đánh giá
   const [feedbackStatus, setFeedbackStatus] = useState('');
+  const [showReturnModal, setShowReturnModal] = useState(false); // Trạng thái hiển thị ReturnModal
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +47,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   };
 
   const handleCompleteReturn = () => {
-    navigate(`/hoan-hang/${orderId}`);
+    setShowReturnModal(true); // Hiển thị ReturnModal
   };
 
   const handleFeedbackClick = (product) => {
@@ -182,9 +183,12 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         </Modal.Body>
         <Modal.Footer>
           {orderDetails && orderDetails.trangThaiGiaoHang === 6 && (
-            <Button variant="primary" onClick={handleCompleteReturn}>
-              Hoàn Hàng
-            </Button>
+            <>
+              <Button variant="primary" onClick={handleCompleteReturn}>
+                Hoàn Hàng
+              </Button>
+              
+            </>
           )}
           <Button variant="secondary" onClick={onClose}>
             Đóng
@@ -202,6 +206,25 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         />
       )}
 
+{showReturnModal && (
+  <ReturnModal
+    show={showReturnModal}
+    onHide={() => setShowReturnModal(false)}
+    orderId={orderId}
+    productDetails={orderDetails ? orderDetails.sanPhamDetails : []} // Sử dụng sanPhamDetails để truyền dữ liệu
+    onSubmit={(success) => {
+      if (success) {
+        setFeedbackStatus('Hoàn hàng thành công!');
+      } else {
+        setFeedbackStatus('Hoàn hàng không thành công.');
+      }
+      setShowReturnModal(false); // Đóng modal hoàn hàng
+    }}
+  />
+)}
+
+
+      {/* Feedback Status Modal */}
       {feedbackStatus && (
         <Modal show={Boolean(feedbackStatus)} onHide={() => setFeedbackStatus('')} size="sm">
           <Modal.Body>

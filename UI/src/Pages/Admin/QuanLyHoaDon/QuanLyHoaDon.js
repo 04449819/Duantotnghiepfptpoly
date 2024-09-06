@@ -154,14 +154,10 @@ const QuanLyHoaDon = () => {
       <div className="notification-container">
         {unconfirmedOrderCount > 0 && (
           <div className="notification-dot">
-            <span>{unconfirmedOrderCount}</span>
+            
           </div>
         )}
-        {unconfirmedOrderCount > 0 && (
-          <div className="notification-text">
-            Có đơn chưa xác nhận
-          </div>
-        )}
+        
       </div>
 
       <div className="search-bar">

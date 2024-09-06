@@ -73,18 +73,20 @@ if (trimmedPassword === '') {
 } else {
   setMessagePassword(''); // Clear the validation message if the password is valid
 }
-     //  Validate Số emai
-     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-     if (formData.email.trim() === '') {
-         setMessageEmail("Địa chỉ email không được để trống.");
-         return;
-     } else if (!emailRegex.test(formData.email)) {
-         setMessageEmail("Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.");
-         return;
-     } else {
-         setMessageEmail(""); // Clear the validation message if the email is valid and not empty
-     }
+const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
+
+const trimmedEmail = formData.email.trim();
+console.log("email :"+trimmedEmail); 
+if (trimmedEmail === '') {
+    setMessageEmail("Địa chỉ email không được để trống.");
+    return;
+} else if (!emailRegex.test(trimmedEmail)) {
+    setMessageEmail("Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.");
+    return;
+} else {
+    setMessageEmail("");  // Email hợp lệ
+}
+
      // Validate Số Điện thoại
      ///  /^[0-9]{10}$/
      // Validate Số Điện thoại

@@ -35,7 +35,14 @@ namespace AppAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi
+                // _logger.LogError(ex, "An error occurred while creating the return record.");
+                return StatusCode(500, "Có lỗi xảy ra trong khi tạo hoàn hàng.");
+            }
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

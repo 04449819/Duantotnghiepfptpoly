@@ -25,8 +25,6 @@ namespace AppAPI.Services
             {
                 throw new InvalidOperationException("Số lượng hoàn hàng không hợp lệ hoặc lớn hơn số lượng còn lại.");
             }
-
-            // Tìm HoaDon dựa trên ID trong ChiTietHoaDon
             var hoaDon = await _context.HoaDons.FindAsync(chiTietHoaDon.IDHoaDon);
             if (hoaDon == null)
             {
@@ -35,6 +33,9 @@ namespace AppAPI.Services
 
 
             var diaChiKhachHang = hoaDon.DiaChi; // Địa chỉ khách hàng trong HoaDon
+
+            // Tìm HoaDon dựa trên ID trong ChiTietHoaDon
+          
 
             // Tạo đối tượng hoàn hàng
             var hoanhangsanpham = new Hoanhangsanpham

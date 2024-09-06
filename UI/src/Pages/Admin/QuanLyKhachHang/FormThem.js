@@ -64,33 +64,25 @@ if (formData.ten !== trimmedName) {
 } else {
   setMessageName(""); // Clear the validation message if the name is valid
 }
-
-  ///validate ngày sinh
-  if (!formData.ngaySinh) {
-    setMessageNgaySinh("Vui lòng chọn ngày sinh. Ngày sinh không được để trống.");
-} else {
-    setMessageNgaySinh(""); // Clear the validation message if a date is selected
-}
-
-    // Validate password
-const passwordMinLength = 8;
-const trimmedPassword = formData.password ? formData.password.trim() : '';
-
-if (trimmedPassword === '') {
-  setMessagePassword("Mật khẩu không được để trống.");
-  return;
-} else if (trimmedPassword.length <= passwordMinLength) {
-  setMessagePassword(`Mật khẩu phải chứa nhiều hơn ${passwordMinLength} ký tự.`);
-  return;
-} else if (formData.password !== trimmedPassword) {
-  setMessagePassword("Mật khẩu không được chứa khoảng trắng ở đầu hoặc cuối.");
-  return;
-} else {
-  setMessagePassword(""); // Clear the validation message if the password is valid
-}
+ // Validate password
+ const passwordMinLength = 8;
+ const trimmedPassword = formData.password ? formData.password.trim() : '';
+ 
+ if (trimmedPassword === '') {
+   setMessagePassword("Mật khẩu không được để trống.");
+   return;
+ } else if (trimmedPassword.length <= passwordMinLength) {
+   setMessagePassword(`Mật khẩu phải chứa nhiều hơn ${passwordMinLength} ký tự.`);
+   return;
+ } else if (formData.password !== trimmedPassword) {
+   setMessagePassword("Mật khẩu không được chứa khoảng trắng ở đầu hoặc cuối.");
+   return;
+ } else {
+   setMessagePassword(""); // Clear the validation message if the password is valid
+ }
 
     //  Validate Số email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
 
     if (formData.email.trim() === '') {
         setMessageEmail("Địa chỉ email không được để trống.");
@@ -99,7 +91,7 @@ if (trimmedPassword === '') {
         setMessageEmail("Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng.");
         return;
     } else {
-        setMessageEmail(""); // Clear the validation message if the email is valid and not empty
+        setMessageEmail(""); // Clear the validation message if the email is valid and no error found
     }
     // Giới Tính 
     if (!formData.gioiTinh) {
@@ -108,6 +100,14 @@ if (trimmedPassword === '') {
   } else {
     setMessageSex(""); // Clear the validation message if a gender is selected
   } 
+
+  ///validate ngày sinh
+  if (!formData.ngaySinh) {
+    setMessageNgaySinh("Vui lòng chọn ngày sinh. Ngày sinh không được để trống.");
+    return;
+} else {
+    setMessageNgaySinh(""); // Clear the validation message if a date is selected
+}
   // Validate địa chỉ
 const trimmedAddress = formData.diaChi.trim();
 if (formData.diaChi !== trimmedAddress) {
@@ -239,7 +239,6 @@ if (isNaN(diemTich)) {
         name="gioiTinh"
         value={formData.gioiTinh}
         onChange={handleChange}
-       //required
          >
         <option value="">Chọn Giới Tính</option>
         <option value="0">Nam</option>
@@ -260,7 +259,7 @@ if (isNaN(diemTich)) {
           onChange={handleChange}
         />
       </div>
-      <p>{messageNgaySinh}</p> 
+      <p style={{color : "red"}}>{messageNgaySinh}</p> 
       <div className="form-group">
         <label className="label" htmlFor="diaChi">
           Địa chỉ:

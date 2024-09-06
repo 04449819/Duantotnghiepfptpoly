@@ -87,7 +87,6 @@ const EditQuanLyNV = ({ handleSuccess, handleClose, initialFormData }) => {
     // Validate Số Điện thoại
     ///  /^[0-9]{10}$/
     const phoneRegex = /^0\d{9}$/;
-
     if (!formData.sdt) {
         setMessagePhone("Số điện thoại không được để trống.");
         return;

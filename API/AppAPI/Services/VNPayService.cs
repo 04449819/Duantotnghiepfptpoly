@@ -12,9 +12,9 @@ namespace AppAPI.Services
         private readonly string _paymentUrl;
         
 
-        public VNPayService(IConfiguration configuration)
+        public VNPayService(IConfiguration configuration, IHoaDonService hoaDonService)
         {
-            _hoaDonService = new HoaDonService();
+            _hoaDonService = hoaDonService;
             _configuration = configuration;
             _tmnCode = _configuration["VNPay:TmnCode"];
             _hashSecret = _configuration["VNPay:HashSecret"];

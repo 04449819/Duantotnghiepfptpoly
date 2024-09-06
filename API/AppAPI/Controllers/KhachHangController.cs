@@ -23,10 +23,11 @@ namespace AppAPI.Controllers
         private readonly IKhachHangService _khachHangService;
         private readonly IHoaDonService _hoadonServices;
         private readonly AssignmentDBContext _dbcontext;
-        public KhachHangController()
+
+        public KhachHangController(IHoaDonService hoaDonService)
         {
             _khachHangService = new KhachHangService();
-            _hoadonServices = new HoaDonService();
+            _hoadonServices = hoaDonService;
             _dbcontext = new AssignmentDBContext();
             
         }

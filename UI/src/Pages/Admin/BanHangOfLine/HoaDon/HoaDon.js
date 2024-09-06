@@ -64,7 +64,7 @@ const HoaDon = forwardRef((props, ref) => {
           <p>Địa chỉ: {hoaDonSelected.diaChi}</p>
         </div>
         <div className="mt-4 border-top border-bottom py-2">
-          <p className="font-bold">Nội dung đơn hàng (Tổng số lượng sản phẩm 2)</p>
+          <p className="font-bold">Nội dung đơn hàng (Tổng số lượng sản phẩm {chiTietHoaDonSelected.length} )</p>
           <table className="table table-bordered mt-2">
             <thead>
               <tr className="bg-gray-200">

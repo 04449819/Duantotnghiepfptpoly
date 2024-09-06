@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./QuanLyDoiDiem.scss";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import './QuanLyDoiDiem.scss';
 
 const initialFormState = {
   id: null,
@@ -18,7 +17,8 @@ const QuanLyDoiDiem = () => {
   const [formData, setFormData] = useState(initialFormState);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState({});
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState('all');
+
   const getQuyDoiDiems = async () => {
     try {
       const response = await axios.get("https://localhost:7095/api/QuyDoiDiem");
@@ -57,14 +57,6 @@ const QuanLyDoiDiem = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
-  };
-
-  const filteredQuyDoiDiems = quyDoiDiems.filter((item) => {
-    if (statusFilter === "all") return true;
-    return item.trangThai === parseInt(statusFilter, 10);
-  });
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -73,35 +65,34 @@ const QuanLyDoiDiem = () => {
       let updatedQuyDoiDiems = [...quyDoiDiems];
 
       if (formData.trangThai === 1) {
-        // Set all other records to inactive
-        updatedQuyDoiDiems = updatedQuyDoiDiems.map((item) => ({
+        updatedQuyDoiDiems = updatedQuyDoiDiems.map(item => ({
           ...item,
           trangThai: 0,
         }));
       }
 
+      const dataToSend = {
+        tiLeTichDiem: formData.tiLeTichDiem,
+        tiLeTieuDiem: formData.tiLeTieuDiem,
+        ngayBatDau: formData.ngayBatDau,
+        ngayKetThuc: formData.ngayKetThuc,
+        trangThai: formData.trangThai
+      };
+
       if (formData.id) {
         // Updating existing record
-        const index = updatedQuyDoiDiems.findIndex(
-          (item) => item.id === formData.id
-        );
+        dataToSend.id = formData.id; // Include id for existing records
+        const index = updatedQuyDoiDiems.findIndex(item => item.id === formData.id);
         if (index !== -1) {
           updatedQuyDoiDiems[index] = { ...formData };
         }
-        await axios.put(
-          `https://localhost:7095/api/QuyDoiDiem/${formData.id}`,
-          formData
-        );
+        await axios.put(`https://localhost:7095/api/QuyDoiDiem/${formData.id}`, dataToSend);
         toast.success("Cập nhật đổi điểm thành công");
       } else {
         // Creating new record
-        const newRecord = { ...formData, id: Date.now() }; // Temporary ID
+        const response = await axios.post('https://localhost:7095/api/QuyDoiDiem', dataToSend);
+        const newRecord = { ...dataToSend, id: response.data.id };
         updatedQuyDoiDiems.push(newRecord);
-        const response = await axios.post(
-          "https://localhost:7095/api/QuyDoiDiem",
-          formData
-        );
-        newRecord.id = response.data.id; // Update with actual ID from server
         toast.success("Thêm đổi điểm thành công");
       }
 
@@ -121,12 +112,11 @@ const QuanLyDoiDiem = () => {
       setShowModal(false);
       getQuyDoiDiems(); // Refresh data from server
     } catch (error) {
-      toast.error(
-        formData.id ? "Cập nhật đổi điểm thất bại" : "Thêm đổi điểm thất bại"
-      );
-      console.error("Error:", error);
+      toast.error(formData.id ? "Cập nhật đổi điểm thất bại" : "Thêm đổi điểm thất bại");
+      console.error('Error:', error.response ? error.response.data : error);
     }
   };
+
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
       try {
@@ -152,6 +142,15 @@ const QuanLyDoiDiem = () => {
     setErrors({});
     setShowModal(true);
   };
+
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
+  };
+
+  const filteredQuyDoiDiems = quyDoiDiems.filter(item => {
+    if (statusFilter === 'all') return true;
+    return item.trangThai === parseInt(statusFilter, 10);
+  });
 
   return (
     <div className="container mt-4">

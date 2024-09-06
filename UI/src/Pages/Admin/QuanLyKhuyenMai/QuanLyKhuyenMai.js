@@ -63,6 +63,14 @@ const QuanLyKhuyenMai = () => {
 
   const handleShow = () => {
     setIsEditing(false);
+    setNewPromotion({
+      ten: "",
+      giaTri: 0,
+      ngayApDung: "",
+      ngayKetThuc: "",
+      moTa: "",
+      trangThai: 0,
+    });
     setShowModal(true);
   };
 
@@ -77,8 +85,10 @@ const QuanLyKhuyenMai = () => {
   };
 
   const handleEdit = (km) => {
-    setIsEditing(!true);
     setNewPromotion(km);
+    setIsEditing(true);
+    setShowModal(true);
+   
   };
  
 
@@ -91,8 +101,14 @@ const QuanLyKhuyenMai = () => {
         }
         break;
       case "giaTri":
+        console.log(newPromotion);
+        
         if (isNaN(value) || value <= 0) {
           error = "Giá trị phải là số lớn hơn 0";
+        }else if (newPromotion.trangThai === '1'  && value > 100) {
+          error = "Giá trị phải nhỏ hơn hoặc bằng 100 khi chọn phần trăm";
+        }else if (newPromotion.trangThai === '3'  && value > 100) {
+          error = "Giá trị phải nhỏ hơn hoặc bằng 100 khi chọn phần trăm";
         }
         break;
       case "ngayApDung":
@@ -226,9 +242,9 @@ const QuanLyKhuyenMai = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Thông Tin khuyến mại
-          </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+  {isEditing ? "Cập nhật khuyến mãi" : "Tạo khuyến mãi"}
+</Modal.Title>
         </Modal.Header>
 
         {/* <Modal.Body>
@@ -471,7 +487,7 @@ const QuanLyKhuyenMai = () => {
                     className="btn btn-primary me-2"
                     onClick={() => {
                       handleEdit(promotion);
-                      handleShow();
+                      
                     }}
                   >
                     <IoHammerSharp />

@@ -46,6 +46,8 @@ namespace AppAPI.IServices
         public bool CreateHoaDonOnline(CreateHoaDonOnlineViewModel chdvm);
         public bool UpdateHoaDonOffline(Guid hoaDonId, UpdateHoaDonDto dto);
         public bool ThanhToanDonHang(Guid idhd, int soDiemTru, bool isGiaoHang);
-        
+        Task<(bool Success, string OrderId, int? Amount)> CreateOrderAsync(CreateHoaDonOnlineViewModel chdvm);
+        Task<bool> UpdateOrderPaymentStatusAsync(string orderId, bool isSuccessful);
+
     }
 }

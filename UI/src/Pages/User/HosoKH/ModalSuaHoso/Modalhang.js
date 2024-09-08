@@ -164,7 +164,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
                         <p><strong>{item.tenSanPham}</strong></p>
                         <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuong || 'Không có số lượng'}</p>
                         <p className="price">
-                          {item.tongTien !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
+                          {item.donGia !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                         </p>
                         {orderDetails.trangThaiGiaoHang === 6 && (
                           <Button onClick={() => handleFeedbackClick(item)}>Đánh Giá</Button>
@@ -206,22 +206,23 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         />
       )}
 
-{showReturnModal && (
-  <ReturnModal
-    show={showReturnModal}
-    onHide={() => setShowReturnModal(false)}
-    orderId={orderId}
-    productDetails={orderDetails ? orderDetails.sanPhamDetails : []} // Sử dụng sanPhamDetails để truyền dữ liệu
-    onSubmit={(success) => {
-      if (success) {
-        setFeedbackStatus('Hoàn hàng thành công!');
-      } else {
-        setFeedbackStatus('Hoàn hàng không thành công.');
-      }
-      setShowReturnModal(false); // Đóng modal hoàn hàng
-    }}
-  />
-)}
+ {/* Return Modal */}
+ {showReturnModal && (
+        <ReturnModal
+          show={showReturnModal}
+          onHide={() => setShowReturnModal(false)}
+          orderId={orderId}
+          productDetails={orderDetails ? orderDetails.sanPhamDetails : []}
+          onSubmit={(success) => {
+            if (success) {
+              setFeedbackStatus('Hoàn hàng thành công!');
+            } else {
+              setFeedbackStatus('Hoàn hàng không thành công.');
+            }
+            setShowReturnModal(false);
+          }}
+        />
+      )}
 
 
       {/* Feedback Status Modal */}

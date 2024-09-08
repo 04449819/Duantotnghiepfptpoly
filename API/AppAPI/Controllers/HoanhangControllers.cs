@@ -53,8 +53,42 @@ namespace AppAPI.Controllers
             }
             return Ok(hoanhangsanpham);
         }
+        [HttpGet("getall")]
+        public async Task<ActionResult<IEnumerable<Hoanhangsanpham>>> GetAllAsync()
+        {
+            try
+            {
+                var result = await _hoanhangsanphamServices.GetAllAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log exception here if needed
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPut("{id}/status")]
+        public async Task<ActionResult<Hoanhangsanpham>> UpdateStatusAsync(Guid id, [FromQuery] int newStatus)
+        {
+            try
+            {
+                var updatedEntity = await _hoanhangsanphamServices.UpdateStatusAsync(id, newStatus);
+                if (updatedEntity == null)
+                {
+                    return NotFound($"Entity with ID {id} not found");
+                }
+                return Ok(updatedEntity);
+            }
+            catch (Exception ex)
+            {
+                // Log exception here if needed
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-
+        // 2  xác nhận hoàn 
+        // 3  xác nhận hoàn thành công
+        // 4 hủy hoàn hang
 
     }
 }

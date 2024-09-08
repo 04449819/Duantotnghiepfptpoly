@@ -74,10 +74,10 @@ const BanHangOfline = () => {
   useEffect(() => {
     getHoaDonChos();
   }, [data]);
-  useEffect(() => {
-    console.log("data:", hoaDonChos);
+  // useEffect(() => {
+  //   console.log("data:", hoaDonChos);
     
-  }, [hoaDonChos]);
+  // }, [hoaDonChos]);
 
 const getHoaDonChos = async () => {
     try {

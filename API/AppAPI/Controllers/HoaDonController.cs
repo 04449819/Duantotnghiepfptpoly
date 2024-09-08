@@ -324,14 +324,14 @@ namespace AppAPI.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "An error occurred while creating order and initiating payment");
+                
                 return StatusCode(500, "An internal error occurred while processing your request");
             }
         }
         [HttpGet("redirect")]
         public async Task<IActionResult> HandleRedirect([FromQuery] MomoCallbackRequest request)
         {
-           // _logger.LogInformation($"Received redirect from Momo: {System.Text.Json.JsonSerializer.Serialize(request)}");
+          
 
             if (_iMomoPaymentService.ValidateCallback(request))
             {
@@ -340,12 +340,12 @@ namespace AppAPI.Controllers
 
                 if (isSuccessful)
                 {
-                    //_logger.LogInformation($"Transaction successful for orderId: {request.OrderId}");
-                    return Redirect("http://localhost:3000/admin");
+                    
+                    return Redirect("http://localhost:3000/thanhtoanthanhcong");
                 }
                 else
                 {
-                   // _logger.LogWarning($"Transaction failed for orderId: {request.OrderId}, Message: {request.Message}");
+                   
                     return Redirect("https://www.youtube.com/watch?v=jfKfPfyJRdk");
                 }
             }

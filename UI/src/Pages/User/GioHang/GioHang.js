@@ -57,6 +57,8 @@ const GioHang = () => {
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const [tienGiam, setTienGiam] = useState(0);
 
+
+
   useEffect(() => {
     console.log("DSSPGIOHANG: ",dsspgiohangs);
     
@@ -75,12 +77,15 @@ const GioHang = () => {
  useEffect(() => {
     console.log("User", user);
  }, [user,isDiemTichLuy]);
+ useEffect(() => {
+  console.log("District", selectedDistrict);
+  console.log("Province", selectedProvince);
+  console.log( "Result:",combineAddress('VN',selectedProvince,selectedDistrict));
+  
+  
+}, [districts,provinces]);
 
-
-  // useEffect(() => {
-  //   console.log("hoaDonOnline",hoaDonOnline);
-  // },[hoaDonOnline]);
-
+ 
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
@@ -102,7 +107,7 @@ const GioHang = () => {
   useEffect(() => {
     
   },[]);
-  
+
   const applyVoucher = (totalPrice, voucher) => {
     if (!voucher || totalPrice < voucher.soTienCan) return { tienGiamVoucher: 0, newTotal: totalPrice };
     const tienGiamVoucher = voucher.hinhThucGiamGia === 0
@@ -155,6 +160,8 @@ const GioHang = () => {
   };
   useEffect(() => {
     getVoucherAndCalculateTotal();
+
+    
   }, [hoaDonOnline.SanPhams, hoaDonOnline.TienShip, isDiemTichLuy, user.diemTich]);
   const combineAddress = (diaChi, province, district) => {
     return `${diaChi}, ${district?.label || ''}, ${province?.label || ''}`.trim().replace(/^,|,$/g, '');
@@ -190,18 +197,6 @@ const GioHang = () => {
     } catch (error) {}
   };
 
-  // const handleInputChange = (e) => {
-  //   const { id, value } = e.target;
-    
-  //   setHoaDonOnline((prevHoaDonOnline) => {
-  //     const newDiaChi = id === 'DiaChi' ? value : prevHoaDonOnline.DiaChi;
-  //     return{
-  //       ...prevHoaDonOnline,
-  //     [id]: value,
-  //     DiaChi: combineAddress(newDiaChi, selectedProvince, selectedDistrict)
-  //     }
-  //   });
-  // }
   const handleInputChange = (e) => {
     const { id, value } = e.target;
      // Nếu đang thay đổi địa chỉ chi tiết
@@ -299,10 +294,10 @@ const GioHang = () => {
     try {
       // Kiểm tra xem có sản phẩm nào được chọn không
       const selectedProducts = dsspgiohangs.filter(sp => sp.check);
-      // if (selectedProducts.length === 0) {
-      //   toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
-      //   return;
-      // }
+        if (selectedProducts.length === 0) {
+          toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+          return;
+        }
   
       // Tính tổng tiền và cập nhật thông tin hóa đơn
       const tongTienHoaDon = selectedProducts.reduce((sum, sp) => 
@@ -327,11 +322,11 @@ const GioHang = () => {
 
       };
   
-      // Kiểm tra thông tin bắt buộc
-      // if (!hoaDonOnlineSubmit.TenKhachHang || !hoaDonOnlineSubmit.SDT || !hoaDonOnlineSubmit.DiaChi) {
-      //   toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
-      //   return;
-      // }
+      //Kiểm tra thông tin bắt buộc
+      if (!hoaDonOnlineSubmit.TenKhachHang || !hoaDonOnlineSubmit.SDT || !hoaDonOnlineSubmit.DiaChi) {
+        toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
+        return;
+      }
       if (!hoaDonOnlineSubmit.IdPhuongThucThanhToan) {
         toast.error("Vui lòng chọn phương thức thanh toán");
         return;
@@ -339,20 +334,26 @@ const GioHang = () => {
     
       // Gửi yêu cầu tạo hóa đơn
       console.log("hoaDon: ", hoaDonOnlineSubmit);
+     
       const res = await axios.post(
-        "https://localhost:7095/api/HoaDon/create-order",  hoaDonOnlineSubmit);
-  
+        hoaDonOnline.IdPhuongThucThanhToan === 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c'
+          ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
+          : "https://localhost:7095/api/HoaDon/create-order",
+        hoaDonOnlineSubmit
+      );
+       
+      if(res.data.payUrl){
+        window.open(res.data.payUrl, '_blank');
+      }
       if (res.data) {
         toast.success("Đặt hàng thành công");
         // Xóa các sản phẩm đã đặt khỏi giỏ hàng
         selectedProducts.forEach(sp => dispath(Deletechitietspgiohang(sp)));
         setload(!load);
+       
       } else {
-        console.log(res.data);
-        
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
-      
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
       toast.error(`Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`);
@@ -362,16 +363,12 @@ const GioHang = () => {
   };
   const handlePaymentMethodChange = (event) => {
     setHoaDonOnline((prevState) => ({
-     
-      
       ...prevState,
       IdPhuongThucThanhToan: event.target.value,
-      
-      
+   
     }));
-  
-    
   };
+
   return (
     <div className="GioHang pb-4">
       <div className="cart-container">

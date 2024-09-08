@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
 import "./ThongTinThanhToan.scss";
 import axios from 'axios';
@@ -33,12 +33,10 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [voucher, setVoucher] = useState([]);
   const [pttts, setPttts] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
-  //const [selectedPttt, setSelectedPttt] = useState(null);
   const [TongGia, setTongGia] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showModalPttt, setShowModalPttt] = useState(false);
   const data = useSelector((state) => state.sanPhamGioHang.SanPhamGioHang);
-  const nv = useSelector((nv) => nv.user.User);
   const [diemTichLuy, setDiemTichLuy] = useState(0);
   const [soDiemSuDung, setSoDiemSuDung] = useState(0);
   const [isGiaoHang, setIsGiaoHang] = useState(false);
@@ -47,6 +45,7 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const componentRef = useRef();
   const [reloadHoaDon, setReloadHoaDon] = useState(false);
+  const previousSoLuongMua = useRef([]);
  
 const calculateTotalPrice = (products) => {
   return products.reduce((acc, item) => {
@@ -113,16 +112,16 @@ useEffect(() => {
 }, [hoaDon.SanPhams, isGiaoHang, hoaDon.TienShip, isDiemTichLuy, diemTichLuy]);
 
   
-  const fetchPttts = async () => {
-    try {
-      const res = await axios.get(`https://localhost:7095/api/HoaDon/pptt`);
-      if (res.data) {
-        setPttts(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // const fetchPttts = async () => {
+  //   try {
+  //     const res = await axios.get(`https://localhost:7095/api/HoaDon/pptt`);
+  //     if (res.data) {
+  //       setPttts(res.data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   const getDiemTichLuy = async () => {
     try {
@@ -136,9 +135,9 @@ useEffect(() => {
   };
 
 
-  useEffect(() => {
-    fetchPttts();
-  },[]);
+  // useEffect(() => {
+  //   fetchPttts();
+  // },[]);
   useEffect(() => {
     const sanPhamsUpdate = data.map(sp => ({
         IDCTSP: sp.idCTSP,
@@ -154,23 +153,18 @@ useEffect(() => {
         DiaChi: address,
         SanPhams: sanPhamsUpdate,
     }));
-    
-    console.log("DATA: ",data);
-    
-  
 }, [ data, name, phone, email, address]);
 useEffect(() => {
   getDiemTichLuy();
-  
 }, [isDiemTichLuy, diemTichLuy, phone]);
  
 
-  useEffect(() => {
-    setHoaDon(prevState => ({
-      ...prevState,
-      SoDiemSuDung: soDiemSuDung
-    }));
-  }, [soDiemSuDung]);
+  // useEffect(() => {
+  //   setHoaDon(prevState => ({
+  //     ...prevState,
+  //     SoDiemSuDung: soDiemSuDung
+  //   }));
+  // }, [soDiemSuDung]);
   
   const handleClickGiaoHang = () => {
     setIsGiaoHang(!isGiaoHang);
@@ -234,14 +228,27 @@ useEffect(() => {
     }
     return error;
   };
+//   useEffect(() => {
+//     setIsGiaoHang(false);
+//     setDiemTichLuy(false);
+//     setHoaDon(prevState => ({
+//         ...prevState,
+//         TenKhachHang: '',
+//         Email: '',
+//         SDT: '',
+//         DiaChi: '',
+//         TienShip: 0
+//     }))
+// },[idHoaDon])
 
-  // Hàm xử lý thanh toán
-  // useEffect(() => {
-  //   updateHoaDon();
-  //   console.log("Tinh tinh");
-    
-  // },[hoaDon.SanPhams])
-  const updateHoaDon = async () => {
+const soLuongMuaArray = useMemo(() => {
+  return data.map((sp) => sp.soLuongmua);
+}, [data]);
+
+useEffect(() => {
+  updateHoaDon();  
+}, [soLuongMuaArray]);  
+ const updateHoaDon = async () => {
   // Kiểm tra tất cả các trường để đảm bảo không có lỗi
   if(isGiaoHang){
     const newErrors = {
@@ -270,20 +277,31 @@ useEffect(() => {
     getVoucherAndCalculateTotal();
     const hoaDonToSubmit = {
       ...hoaDon,
+      TenKhachHang: isGiaoHang ? hoaDon.TenKhachHang : name ,
+      SDT: isGiaoHang ? hoaDon.SDT : phone,
+      Email: isGiaoHang ? hoaDon.Email : email,
+      DiaChi: isGiaoHang ? hoaDon.DiaChi : address,
       IdVoucher: voucher ? voucher.id : null,
-      //IdPhuongThucThanhToan: selectedPttt.id,
       SoDiemSuDung: soDiemSuDung,
       isGiaoHang: isGiaoHang,
       TienShip: hoaDon.TienShip !== null ? hoaDon.TienShip : 0,
+      SanPhams: data.map(sp => ({
+        IDCTSP: sp.idCTSP,
+        SoLuongMua: sp.soLuongmua,
+        GiaBan: sp.giaBan,
+        giaTriKhuyenMai: sp.giaTriKhuyenMai ?? 0,  
+    })),
       TongTienHoaDon: TongGia 
     };
     await axios.put(`https://localhost:7095/api/HoaDon/UpdateHoaDonOffline/${idHoaDon}`, hoaDonToSubmit);
     setReloadHoaDon(!reloadHoaDon);
-    toast.success('Cập nhật thành công');
+    console.log('Cập nhật hoa đơn thành công:', hoaDonToSubmit);
+    
+    //toast.success('Cập nhật thành công');
     
   } catch (error) {
     console.error('Đã xảy ra lỗi khi thanh toán: ', error);
-    toast.error('Cập nhật thất bại!');
+    //toast.error('Cập nhật thất bại!');
   }
 
   };

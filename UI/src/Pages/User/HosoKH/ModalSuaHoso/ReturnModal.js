@@ -4,9 +4,9 @@ import axios from 'axios';
 import "./ReturnModal.scss"
 
 const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
-  // Trạng thái để lưu thông tin của sản phẩm được chọn, số lượng và mô tả hoàn trả
   const [selectedProducts, setSelectedProducts] = useState({});
-  const [error, setError] = useState(''); // Để hiển thị lỗi
+  const [error, setError] = useState('');
+  const [completedProducts, setCompletedProducts] = useState({}); // Trạng thái sản phẩm đã hoàn hàng
 
   const handleProductChange = (e) => {
     const { value, checked } = e.target;
@@ -23,8 +23,7 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
     const { value } = e.target;
     const quantity = Number(value);
     const availableQuantity = productDetails.find(product => product.id === productId)?.soLuong || 1;
-    
-    // Kiểm tra số lượng hoàn hàng không vượt quá số lượng hiện có
+
     if (quantity > availableQuantity) {
       setError('Số lượng hoàn hàng không được vượt quá số lượng hiện có.');
     } else {
@@ -67,8 +66,7 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
     console.log('Dữ liệu gửi đến API:', requestData);
 
     try {
-      // Gửi yêu cầu hoàn hàng cho từng sản phẩm được chọn
-      await Promise.all(
+      const responses = await Promise.all(
         requestData.map(data => 
           axios.post('https://localhost:7095/api/HoanhangControllers', data, {
             headers: {
@@ -77,11 +75,24 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
           })
         )
       );
-      onSubmit(true); // Giả sử thành công
-      setError(''); // Xóa thông báo lỗi nếu thành công
+
+      // Cập nhật sản phẩm đã hoàn
+      setCompletedProducts(requestData.reduce((acc, data) => {
+        acc[data.idChiTietHoaDon] = true;
+        return acc;
+      }, {}));
+      
+      onSubmit(true);
+      setError('');
     } catch (error) {
-      console.error('Gửi yêu cầu hoàn hàng không thành công:', error);
-      setError('Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.');
+      // Kiểm tra lỗi từ API
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.message || 'Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.';
+        setError(errorMessage);
+      } else {
+        setError('Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.');
+      }
+      
       onSubmit(false);
     }
   };
@@ -112,6 +123,9 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
                         <div className="product-info">
                           <div>{product.tenSanPham}</div>
                           <div>Số lượng hiện có: {product.soLuong}</div>
+                          {completedProducts[product.id] && (
+                            <div className="text-success">Sản phẩm đã được hoàn hàng.</div>
+                          )}
                         </div>
                         {selectedProducts[product.id] && selectedProducts[product.id].selected && (
                           <div className="product-details">

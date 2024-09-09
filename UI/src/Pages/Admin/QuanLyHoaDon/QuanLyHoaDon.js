@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Modal, Button } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Modal, Button } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
-import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
-import ModalXacNhanHoan from "./ModalXacnhandonhang/ModalXacNhanHoan";
-import ModalXacNhaHang from "./ModalXacnhandonhang/ModalXacNhaHang";
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import react-toastify CSS
+import ModalXacNhan from './ModalXacnhandonhang/ModalXacnhan';
+import ModalDangGiaoHang from './ModalXacnhandonhang/ModalDangGiaoHang';
+import ModalXacNhanHoan from './ModalXacnhandonhang/ModalXacNhanHoan';
+import ModalXacNhaHang from './ModalXacnhandonhang/ModalXacNhaHang';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const QuanLyHoaDon = () => {
   const [hoaDons, setHoaDons] = useState([]);
@@ -26,10 +26,11 @@ const QuanLyHoaDon = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [unconfirmedOrderCount, setUnconfirmedOrderCount] = useState(0);
+  const [loading1 , setLoading1] = useState (true);
 
   useEffect(() => {
     fetchHoaDons();
-  }, [filterStatus]);
+  }, [filterStatus,loading1]);
 
   useEffect(() => {
     if (unconfirmedOrderCount > 0) {
@@ -39,14 +40,14 @@ const QuanLyHoaDon = () => {
 
   const fetchHoaDons = async () => {
     try {
-      const url = filterStatus ? 
-        `https://localhost:7095/api/HoaDon/loctheotrngthaigiaohang?trangthai=${filterStatus}` : 
-        'https://localhost:7095/api/HoaDon/GetAll';
+      const url = filterStatus
+        ? `https://localhost:7095/api/HoaDon/loctheotrngthaigiaohang?trangthai=${filterStatus}`
+        : 'https://localhost:7095/api/HoaDon/GetAll';
       const response = await axios.get(url);
       setHoaDons(response.data);
       setError(null);
 
-      // Calculate unconfirmed orders
+      // Tính toán số lượng đơn hàng chưa xác nhận
       const unconfirmedOrders = response.data.filter(order => order.trangThaiGiaoHang === 2);
       setUnconfirmedOrderCount(unconfirmedOrders.length);
 
@@ -116,9 +117,15 @@ const QuanLyHoaDon = () => {
     setShowConfirmModal(true);
   };
 
-  const handleConfirm = (billId) => {
-    fetchHoaDons();
-    setShowConfirmModal(false);
+  const handleConfirm = async () => {
+    try {
+      await fetchHoaDons();
+      toast.success('Xác nhận đơn hàng thành công');
+    } catch (error) {
+      toast.error('Có lỗi khi xác nhận đơn hàng');
+    } finally {
+      setShowConfirmModal(false);
+    }
   };
 
   const handleShowDangGiaoHangModal = (bill) => {
@@ -143,9 +150,15 @@ const QuanLyHoaDon = () => {
     setShowXacNhaHangModal(true);
   };
 
-  const handleXacNhaHangConfirm = (billId) => {
-    fetchHoaDons(); // Refresh the bill list after confirmation
-    setShowXacNhaHangModal(false);
+  const handleXacNhaHangConfirm = async () => {
+    try {
+      await fetchHoaDons(); // Refresh the bill list after confirmation
+      toast.success('Xác nhận giao hàng thành công');
+    } catch (error) {
+      toast.error('Có lỗi khi xác nhận giao hàng');
+    } finally {
+      setShowXacNhaHangModal(false);
+    }
   };
 
   return (
@@ -154,10 +167,9 @@ const QuanLyHoaDon = () => {
       <div className="notification-container">
         {unconfirmedOrderCount > 0 && (
           <div className="notification-dot">
-            
+            {unconfirmedOrderCount}
           </div>
         )}
-        
       </div>
 
       <div className="search-bar">
@@ -195,7 +207,7 @@ const QuanLyHoaDon = () => {
             <th>Tổng Tiền</th>
             <th>Loại hóa đơn</th>
             <th>Ghi chú</th>
-            <th>Hành động</th> {/* Added action column */}
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -240,7 +252,6 @@ const QuanLyHoaDon = () => {
         </tbody>
       </table>
 
-      {/* Modal xác nhận đơn hàng */}
       <ModalXacNhan 
         show={showConfirmModal} 
         onClose={() => setShowConfirmModal(false)} 
@@ -248,38 +259,29 @@ const QuanLyHoaDon = () => {
         billId={billToConfirm} 
       />
 
-      {/* Modal Đang giao hàng */}
       <ModalDangGiaoHang 
         show={showDangGiaoHangModal} 
         onClose={() => setShowDangGiaoHangModal(false)} 
+        loading1= {loading1}
+        setLoading1 = {setLoading1}
         billId={selectedBillId} 
         customerName={customerName}
         customerPhone={customerPhone}
       />
       
-      {/* Modal Xác nhận hoàn hàng */}
       <ModalXacNhanHoan 
         show={showHoanHangModal} 
         onClose={() => setShowHoanHangModal(false)} 
         billId={selectedBillId} 
       />
       
-      {/* Modal Xác nhận hoàn hàng thành công */}
-      {/* <ModalHoanThanhCong 
-        show={showHoanHangThanhCongModal} 
-        onClose={() => setShowHoanHangThanhCongModal(false)} 
-        billId={selectedBillId} 
-      /> */}
-
-      {/* Modal Xác nhận giao hàng */}
       <ModalXacNhaHang
         show={showXacNhaHangModal}
         onClose={() => setShowXacNhaHangModal(false)}
-        onConfirm={() => handleXacNhaHangConfirm(selectedBillForXacNhaHang)}
+        onConfirm={handleXacNhaHangConfirm}
         billId={selectedBillForXacNhaHang}
       />
 
-      {/* Toast Container */}
       <ToastContainer />
     </div>
   );

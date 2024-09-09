@@ -31,12 +31,20 @@ namespace AppAPI.Services
             {
                 throw new InvalidOperationException("Hóa đơn không tìm thấy.");
             }
+            var daHoanHang = await _context.hoanhangsanphams
+                     .Where(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1)
+                       .SumAsync(hh => hh.SoLuong);
+
+            if (daHoanHang >= chiTietHoaDon.SoLuong)
+            {
+                throw new InvalidOperationException("Sản phẩm đã được hoàn đủ số lượng.");
+            }
 
 
             var diaChiKhachHang = hoaDon.DiaChi; // Địa chỉ khách hàng trong HoaDon
 
             // Tìm HoaDon dựa trên ID trong ChiTietHoaDon
-          
+
 
             // Tạo đối tượng hoàn hàng
             var hoanhangsanpham = new Hoanhangsanpham
@@ -44,7 +52,7 @@ namespace AppAPI.Services
                 ID = Guid.NewGuid(),
                 ChiTietHoaDon = chiTietHoaDon,
                 Diachikhachhang = diaChiKhachHang,
-                SoLuong=viewModel.SoLuong,
+                SoLuong = viewModel.SoLuong,
                 Ngayhoanhang = DateTime.UtcNow,
                 Mota = viewModel.MoTa,
                 TrangThaiHoanHang = 1
@@ -53,7 +61,7 @@ namespace AppAPI.Services
 
             await _context.hoanhangsanphams.AddAsync(hoanhangsanpham);
 
-           
+
             // Lưu các thay đổi
             await _context.SaveChangesAsync();
 

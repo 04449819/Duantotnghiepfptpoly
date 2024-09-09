@@ -56,6 +56,7 @@ const GioHang = () => {
   const [tienGiamVoucher, setTienGiamVoucher] = useState(0);
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const [tienGiam, setTienGiam] = useState(0);
+  const [detailAddress, setDetailAddress] = useState(hoaDonOnline.DiaChi.split(',')[0] || '');
 
 
 
@@ -80,10 +81,11 @@ const GioHang = () => {
  useEffect(() => {
   console.log("District", selectedDistrict);
   console.log("Province", selectedProvince);
-  console.log( "Result:",combineAddress('VN',selectedProvince,selectedDistrict));
+  console.log( "Result:",combineAddress(hoaDonOnline.DiaChi,selectedProvince,selectedDistrict));
   
+  console.log(hoaDonOnline.DiaChi);
   
-}, [districts,provinces]);
+}, [hoaDonOnline.DiaChi,selectedDistrict,selectedDistrict]);
 
  
   useEffect(() => {
@@ -163,8 +165,23 @@ const GioHang = () => {
 
     
   }, [hoaDonOnline.SanPhams, hoaDonOnline.TienShip, isDiemTichLuy, user.diemTich]);
-  const combineAddress = (diaChi, province, district) => {
-    return `${diaChi}, ${district?.label || ''}, ${province?.label || ''}`.trim().replace(/^,|,$/g, '');
+  const resetForm = () => {
+    setHoaDonOnline({
+      TenKhachHang: '',
+      Email: '',
+      SDT: '',
+      DiaChi: '',
+      GhiChu: '',
+    });
+    setSelectedDistrict(null);
+    setSelectedProvince(null);
+
+  }
+  const combineAddress = (detailAddress, province, district) => {
+    // Loại bỏ các giá trị null, undefined hoặc chuỗi rỗng và ghép chúng lại bằng dấu phẩy
+    return [detailAddress, district?.label, province?.label]
+      .filter(Boolean) // Chỉ giữ các giá trị có thật
+      .join(', ');     // Ghép các giá trị với dấu phẩy
   };
   
   const getDiaChiKhachHang = async () => {
@@ -201,6 +218,7 @@ const GioHang = () => {
     const { id, value } = e.target;
      // Nếu đang thay đổi địa chỉ chi tiết
      if (id === 'DiaChi') {
+      setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
       setHoaDonOnline((prevHoaDonOnline) => ({
           ...prevHoaDonOnline,
           DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
@@ -217,7 +235,7 @@ const GioHang = () => {
     setSelectedProvince(selectedOption);
     setHoaDonOnline((prevHoaDonOnline) => ({
       ...prevHoaDonOnline,
-      DiaChi: combineAddress(prevHoaDonOnline.DiaChi, selectedOption, selectedDistrict)
+      DiaChi: combineAddress(detailAddress, selectedOption, selectedDistrict) // Không giữ lại địa chỉ cũ
     }));
     getLoaiSanPhamBanHang2(selectedOption.value);
     setSelectedDistrict(null); // Reset district khi thay đổi tỉnh/thành phố
@@ -227,7 +245,7 @@ const GioHang = () => {
     setSelectedDistrict(selectedOption);
     setHoaDonOnline((prevHoaDonOnline) => ({
       ...prevHoaDonOnline,
-      DiaChi: combineAddress(prevHoaDonOnline.DiaChi, selectedProvince, selectedOption)
+      DiaChi: combineAddress(detailAddress, selectedProvince, selectedOption) // Không giữ lại địa chỉ cũ
   }));
   };
   const Hanleonclickthemspkhac = () => {
@@ -292,18 +310,18 @@ const GioHang = () => {
 
   const HandleDatHang = async () => {
     try {
-      // Kiểm tra xem có sản phẩm nào được chọn không
+      //Kiểm tra xem có sản phẩm nào được chọn không
       const selectedProducts = dsspgiohangs.filter(sp => sp.check);
         if (selectedProducts.length === 0) {
           toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
           return;
         }
   
-      // Tính tổng tiền và cập nhật thông tin hóa đơn
+      //Tính tổng tiền và cập nhật thông tin hóa đơn
       const tongTienHoaDon = selectedProducts.reduce((sum, sp) => 
         sum + sp.giaban * sp.soluongmua, 0);
-  console.log(user.id);
-      const hoaDonOnlineSubmit = {
+
+      let hoaDonOnlineSubmit = {
         ...hoaDonOnline,
         TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
         SDT: user.sdt || hoaDonOnline.SDT,
@@ -332,7 +350,7 @@ const GioHang = () => {
         return;
       }
     
-      // Gửi yêu cầu tạo hóa đơn
+      //Gửi yêu cầu tạo hóa đơn
       console.log("hoaDon: ", hoaDonOnlineSubmit);
      
       const res = await axios.post(
@@ -354,6 +372,8 @@ const GioHang = () => {
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
+      resetForm();
+    
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
       toast.error(`Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`);

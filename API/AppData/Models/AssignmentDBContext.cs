@@ -39,7 +39,9 @@ namespace AppData.Models
         {
 
 
+
 			optionsBuilder.UseSqlServer(@"Data Source=VIP-21;Initial Catalog=duantotng;Integrated Security=True");
+
 
 
 

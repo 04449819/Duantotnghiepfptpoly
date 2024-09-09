@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppData.Models;
 using AppData.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
 {
@@ -58,6 +59,24 @@ namespace AppAPI.Services
 
             return hoanhangsanpham;
 
+        }
+
+        public async Task<IEnumerable<Hoanhangsanpham>> GetAllAsync()
+        {
+            return await _context.hoanhangsanphams.ToArrayAsync();
+
+        }
+
+        public async Task<Hoanhangsanpham> UpdateStatusAsync(Guid id, int newStatus)
+        {
+            var trangthai = await _context.hoanhangsanphams.FindAsync(id);
+            if (trangthai != null)
+            {
+                trangthai.TrangThaiHoanHang = newStatus;
+                _context.hoanhangsanphams.Update(trangthai);
+                await _context.SaveChangesAsync();
+            }
+            return trangthai;
         }
     }
 }

@@ -45,7 +45,7 @@ const ThongTinThanhToan = ({idHoaDon, name, phone,email, address} ) => {
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
   const componentRef = useRef();
   const [reloadHoaDon, setReloadHoaDon] = useState(false);
-  const previousSoLuongMua = useRef([]);
+
  
 const calculateTotalPrice = (products) => {
   return products.reduce((acc, item) => {
@@ -445,7 +445,7 @@ useEffect(() => {
         <Col className="d-flex align-items-center">
           <span className="me-3">Trạng thái: </span>
           <select id="TrangThaiGiaoHang"  value={hoaDon.TrangThaiGiaoHang} onChange={handleInputChange}>
-            <option value="1">Đơn nháp</option>
+            {/* <option value="1">Đơn nháp</option> */}
             <option value="2">Chờ xác nhận</option>
             <option value="3">Đang giao hàng</option>
             <option value="4">Đang hoàn hàng</option>

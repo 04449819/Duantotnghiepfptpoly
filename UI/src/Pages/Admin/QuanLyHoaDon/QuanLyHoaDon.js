@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal, Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
 import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
 import ModalXacNhanHoan from "./ModalXacnhandonhang/ModalXacNhanHoan";
 import ModalXacNhaHang from "./ModalXacnhandonhang/ModalXacNhaHang";
-// import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
-// import "react-toastify/dist/ReactToastify.css"; // Import react-toastify CSS
-import { toast } from "react-toastify";
+import ModalHoanThanhCong from "./ModalXacnhandonhang/ModalHoanThanhCong";
 
 const QuanLyHoaDon = () => {
   const [hoaDons, setHoaDons] = useState([]);
@@ -18,31 +18,28 @@ const QuanLyHoaDon = () => {
   const [selectedBillDetails, setSelectedBillDetails] = useState(null);
   const [filterStatus, setFilterStatus] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [billToConfirm, setBillToConfirm] = useState(null);
   const [showDangGiaoHangModal, setShowDangGiaoHangModal] = useState(false);
   const [showHoanHangModal, setShowHoanHangModal] = useState(false);
   const [showHoanHangThanhCongModal, setShowHoanHangThanhCongModal] =
     useState(false);
   const [showXacNhaHangModal, setShowXacNhaHangModal] = useState(false);
+  const [showHoanThanhCongModal, setShowHoanThanhCongModal] = useState(false); // State for ModalHoanThanhCong
   const [selectedBillForXacNhaHang, setSelectedBillForXacNhaHang] =
     useState(null);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [unconfirmedOrderCount, setUnconfirmedOrderCount] = useState(0);
+  const [loading1, setLoading1] = useState(true);
 
   useEffect(() => {
     fetchHoaDons();
-  }, [filterStatus]);
+  }, [filterStatus, loading1]);
 
   useEffect(() => {
     if (unconfirmedOrderCount > 0) {
       toast.info(`Có ${unconfirmedOrderCount} đơn hàng chưa xác nhận`);
     }
   }, [unconfirmedOrderCount]);
-
-  // useEffect(() => {
-  //   toast.success(`Có ${unconfirmedOrderCount} đơn hàng chưa xác nhận`);
-  // }, []);
 
   const fetchHoaDons = async () => {
     try {
@@ -53,7 +50,7 @@ const QuanLyHoaDon = () => {
       setHoaDons(response.data);
       setError(null);
 
-      // Calculate unconfirmed orders
+      // Tính toán số lượng đơn hàng chưa xác nhận
       const unconfirmedOrders = response.data.filter(
         (order) => order.trangThaiGiaoHang === 2
       );
@@ -127,13 +124,19 @@ const QuanLyHoaDon = () => {
   };
 
   const handleShowConfirmModal = (billId) => {
-    setBillToConfirm(billId);
+    setSelectedBillId(billId);
     setShowConfirmModal(true);
   };
 
-  const handleConfirm = (billId) => {
-    fetchHoaDons();
-    setShowConfirmModal(false);
+  const handleConfirm = async () => {
+    try {
+      await fetchHoaDons();
+      toast.success("Xác nhận đơn hàng thành công");
+    } catch (error) {
+      toast.error("Có lỗi khi xác nhận đơn hàng");
+    } finally {
+      setShowConfirmModal(false);
+    }
   };
 
   const handleShowDangGiaoHangModal = (bill) => {
@@ -158,16 +161,40 @@ const QuanLyHoaDon = () => {
     setShowXacNhaHangModal(true);
   };
 
-  const handleXacNhaHangConfirm = (billId) => {
-    fetchHoaDons(); // Refresh the bill list after confirmation
-    setShowXacNhaHangModal(false);
+  const handleShowHoanThanhCongModal = (billId) => {
+    setSelectedBillId(billId);
+    setShowHoanThanhCongModal(true); // Correctly set state for ModalHoanThanhCong
+  };
+
+  const handleXacNhaHangConfirm = async () => {
+    try {
+      await fetchHoaDons(); // Refresh the bill list after confirmation
+      toast.success("Xác nhận giao hàng thành công");
+    } catch (error) {
+      toast.error("Có lỗi khi xác nhận giao hàng");
+    } finally {
+      setShowXacNhaHangModal(false);
+    }
+  };
+
+  const handleHoanThanhCongConfirm = async () => {
+    try {
+      await fetchHoaDons(); // Refresh the bill list after confirmation
+      toast.success("Hoàn thành đơn hàng thành công");
+    } catch (error) {
+      toast.error("Có lỗi khi hoàn thành đơn hàng");
+    } finally {
+      setShowHoanThanhCongModal(false);
+    }
   };
 
   return (
     <div className="invoice-management">
       <h2>Quản lý Hóa Đơn</h2>
       <div className="notification-container">
-        {unconfirmedOrderCount > 0 && <div className="notification-dot"></div>}
+        {unconfirmedOrderCount > 0 && (
+          <div className="notification-dot">{unconfirmedOrderCount}</div>
+        )}
       </div>
 
       <div className="search-bar">
@@ -199,9 +226,6 @@ const QuanLyHoaDon = () => {
           <Button variant="secondary" onClick={() => handleFilterClick(3)}>
             Đang giao hàng
           </Button>
-          <Button variant="secondary" onClick={() => handleFilterClick(6)}>
-            Thành công
-          </Button>
           <Button variant="secondary" onClick={() => handleFilterClick(7)}>
             Đơn Hủy
           </Button>
@@ -229,7 +253,7 @@ const QuanLyHoaDon = () => {
             <th>Tổng Tiền</th>
             <th>Loại hóa đơn</th>
             <th>Ghi chú</th>
-            <th>Hành động</th> {/* Added action column */}
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -250,10 +274,7 @@ const QuanLyHoaDon = () => {
                 {hoaDon.trangThaiGiaoHang === 2 && (
                   <Button
                     variant="primary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowConfirmModal(hoaDon.id);
-                    }}
+                    onClick={() => handleShowConfirmModal(hoaDon.id)}
                   >
                     Xác nhận
                   </Button>
@@ -261,10 +282,7 @@ const QuanLyHoaDon = () => {
                 {hoaDon.trangThaiGiaoHang === 3 && (
                   <Button
                     variant="warning"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowDangGiaoHangModal(hoaDon);
-                    }}
+                    onClick={() => handleShowDangGiaoHangModal(hoaDon)}
                   >
                     Đang giao hàng
                   </Button>
@@ -272,10 +290,7 @@ const QuanLyHoaDon = () => {
                 {hoaDon.trangThaiGiaoHang === 9 && (
                   <Button
                     variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowHoanHangModal(hoaDon.id);
-                    }}
+                    onClick={() => handleShowHoanHangModal(hoaDon.id)}
                   >
                     Xác nhận hoàn hàng
                   </Button>
@@ -283,23 +298,25 @@ const QuanLyHoaDon = () => {
                 {hoaDon.trangThaiGiaoHang === 4 && (
                   <Button
                     variant="success"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowHoanHangThanhCongModal(hoaDon.id);
-                    }}
+                    onClick={() => handleShowHoanHangThanhCongModal(hoaDon.id)}
                   >
-                    Hoàn hàng thành công
+                    Đang hoàn h
                   </Button>
                 )}
                 {hoaDon.trangThaiGiaoHang === 10 && (
                   <Button
                     variant="info"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowXacNhaHangModal(hoaDon.id);
-                    }}
+                    onClick={() => handleShowXacNhaHangModal(hoaDon.id)}
                   >
                     Xác nhận giao hàng
+                  </Button>
+                )}
+                {hoaDon.trangThaiGiaoHang === 5 && (
+                  <Button
+                    variant="info"
+                    onClick={() => handleShowHoanThanhCongModal(hoaDon.id)}
+                  >
+                    Hoàn thành
                   </Button>
                 )}
               </td>
@@ -308,47 +325,44 @@ const QuanLyHoaDon = () => {
         </tbody>
       </table>
 
-      {/* Modal xác nhận đơn hàng */}
       <ModalXacNhan
         show={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleConfirm}
-        billId={billToConfirm}
+        billId={selectedBillId}
       />
 
-      {/* Modal Đang giao hàng */}
       <ModalDangGiaoHang
         show={showDangGiaoHangModal}
         onClose={() => setShowDangGiaoHangModal(false)}
+        loading1={loading1}
+        setLoading1={setLoading1}
         billId={selectedBillId}
         customerName={customerName}
         customerPhone={customerPhone}
       />
 
-      {/* Modal Xác nhận hoàn hàng */}
       <ModalXacNhanHoan
         show={showHoanHangModal}
         onClose={() => setShowHoanHangModal(false)}
         billId={selectedBillId}
       />
 
-      {/* Modal Xác nhận hoàn hàng thành công */}
-      {/* <ModalHoanThanhCong 
-        show={showHoanHangThanhCongModal} 
-        onClose={() => setShowHoanHangThanhCongModal(false)} 
-        billId={selectedBillId} 
-      /> */}
-
-      {/* Modal Xác nhận giao hàng */}
       <ModalXacNhaHang
         show={showXacNhaHangModal}
         onClose={() => setShowXacNhaHangModal(false)}
-        onConfirm={() => handleXacNhaHangConfirm(selectedBillForXacNhaHang)}
+        onConfirm={handleXacNhaHangConfirm}
         billId={selectedBillForXacNhaHang}
       />
 
-      {/* Toast Container */}
-      {/* <ToastContainer /> */}
+      <ModalHoanThanhCong
+        show={showHoanHangThanhCongModal}
+        onClose={() => setShowHoanHangThanhCongModal(false)}
+        onConfirm={handleHoanThanhCongConfirm}
+        billId={selectedBillId}
+      />
+
+      <ToastContainer />
     </div>
   );
 };

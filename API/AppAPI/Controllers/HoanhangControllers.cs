@@ -85,6 +85,19 @@ namespace AppAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("returned-products/{invoiceId}")]
+        public async Task<IActionResult> GetReturnedProductsByInvoiceId(Guid invoiceId)
+        {
+            try
+            {
+                var products = await _hoanhangsanphamServices.GetReturnedProductsByInvoiceIdAsync(invoiceId);
+                return Ok(products);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
         // 2  xác nhận hoàn 
         // 3  xác nhận hoàn thành công

@@ -281,9 +281,6 @@ const ReactSideBar = () => {
                           style={{ fontSize: "0.6rem" }}
                         >
                           {hoaDons.length}
-                          <span className="visually-hidden">
-                            unread messages
-                          </span>
                         </span>
                         {showList && (
                           <ul
@@ -295,6 +292,9 @@ const ReactSideBar = () => {
                               minWidth: "200px",
                             }}
                           >
+                            <p style={{ marginLeft: "10px" }}>
+                              Danh sách hóa đơn chờ
+                            </p>
                             {hoaDons.map((hd) => (
                               <li key={hd.id}>
                                 <a

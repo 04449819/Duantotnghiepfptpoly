@@ -89,11 +89,12 @@ namespace AppAPI.Services
             {
                 KhachHang? khachHang = null;
                 // Kiểm tra dữ liệu đầu vào SDT và Email
-                if (chdvm.SDT != null || chdvm.Email != null)
+                if ( chdvm.Email != null || chdvm.SDT != null )
                 {
                     // Tìm khách hàng dựa trên SDT hoặc Email
-                    khachHang = _ikhachHangService.GetByEmailOrSDT(chdvm.SDT, chdvm.Email);
+                    khachHang = _ikhachHangService.GetByEmailOrSDT(chdvm.Email, chdvm.SDT);
                 }
+
 
                 HoaDon hoaDon = new HoaDon
                 {
@@ -115,7 +116,7 @@ namespace AppAPI.Services
                     NgayTao = DateTime.Now,
                     NgayThanhToan = DateTime.Now.AddDays(3),
                     NgayNhanHang = DateTime.Now.AddDays(3),
-                    TongTien = chdvm.TongTienHoaDon // - giaTriVoucher - chdvm.TienShip
+                    TongTien = chdvm.TongTienHoaDon 
                 };
 
                 foreach (var sp in chdvm.SanPhams)
@@ -145,8 +146,8 @@ namespace AppAPI.Services
 
                 if (hoaDon.KhachHangID.HasValue)
                 {
-                    //var khachHang = reposKhachHang.GetById(hoaDon.KhachHangID.Value);
-                    if (khachHang != null && hoaDon.TongTien > 0)
+               
+                    if (khachHang != null )
                     {
                         var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1);
                         if (chdvm.SoDiemSuDung > 0)
@@ -166,19 +167,22 @@ namespace AppAPI.Services
                             reposLichSuTichDiem.Add(lichSuTichDiemMoi);
                         }
 
-                        LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
+                        if(chdvm.TongTienHoaDon > 0)
                         {
-                            ID = Guid.NewGuid(),
-                            Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
-                            TrangThai = 1,
-                            IDKhachHang = khachHang.IDKhachHang,
-                            IDQuyDoiDiem = quydoi.ID,
-                            IDHoaDon = hoaDon.ID
-                        };
+                            LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
+                            {
+                                ID = Guid.NewGuid(),
+                                Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
+                                TrangThai = 1,
+                                IDKhachHang = khachHang.IDKhachHang,
+                                IDQuyDoiDiem = quydoi.ID,
+                                IDHoaDon = hoaDon.ID
+                            };
 
-                        khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
-                        context.KhachHangs.Update(khachHang);
-                        reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
+                            khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
+                            context.KhachHangs.Update(khachHang);
+                            reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
+                        }
                     }
 
                     context.SaveChanges();

@@ -36,6 +36,7 @@ const QuanLyKhuyenMai = () => {
   useEffect(() => {
     fetchPromotions(page, false);
   }, []);
+ 
 
   const handleScroll = async (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
@@ -139,7 +140,6 @@ const QuanLyKhuyenMai = () => {
     return error;
   };
   const handleInputChange = (e) => {
-    //setNewPromotion({ ...newPromotion, [e.target.name]: e.target.value });
     const { id, value } = e.target;
     setNewPromotion((prev) => ({
       ...prev,
@@ -152,9 +152,26 @@ const QuanLyKhuyenMai = () => {
       [id]: error,
     }));
   };
-
+  const getEndOfDay = (dateString) => {
+    const date = new Date(dateString);
+    date.setHours(23, 59, 59, 999);
+    return date;
+  };
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const submissionPromotion = { ...newPromotion };
+
+  // Chuyển đổi ngayKetThuc thành cuối ngày
+  if (submissionPromotion.ngayKetThuc) {
+    const endDate = new Date(submissionPromotion.ngayKetThuc);
+    endDate.setHours(23, 59, 59, 999);
+    submissionPromotion.ngayKetThuc = endDate.toISOString();
+    console.log(submissionPromotion.ngayKetThuc);
+    
+  }
+  console.log(submissionPromotion);
+  
     const newErrors = {
       ten: validateInput("ten", newPromotion.ten),
       giaTri: validateInput("giaTri", newPromotion.giaTri),
@@ -178,7 +195,7 @@ const QuanLyKhuyenMai = () => {
         try {
           await axios.post(
             "https://localhost:7095/api/KhuyenMai",
-            newPromotion
+            submissionPromotion
           );
           toast.success("Thêm khuyến mãi thành công");
         } catch (error) {
@@ -188,7 +205,7 @@ const QuanLyKhuyenMai = () => {
         try {
           await axios.put(
             `https://localhost:7095/api/KhuyenMai/${newPromotion.id}`,
-            newPromotion
+            submissionPromotion
           );
           toast.success("Cập nhật khuyến mãi thành công");
         } catch (error) {
@@ -231,6 +248,7 @@ const QuanLyKhuyenMai = () => {
     <div className="container mt-5">
       <h1 style={{ textAlign: "center" }}>Quản lý khuyến mại</h1>
       <hr></hr>
+   
       <Button variant="primary" onClick={handleShow}>
         Tạo khuyến mại
       </Button>

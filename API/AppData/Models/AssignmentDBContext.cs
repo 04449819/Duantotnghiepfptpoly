@@ -39,7 +39,9 @@ namespace AppData.Models
         {
 
 
-			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-3CIJFN74\SQLEXPRESS;Initial Catalog=duantotnghiepfptpoly;Integrated Security=True");
+
+			optionsBuilder.UseSqlServer(@"Data Source=VIP-19;Initial Catalog=duantotng;Integrated Security=True");
+
 
 
 

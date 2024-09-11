@@ -27,7 +27,7 @@ namespace AppAPI.Services
         private readonly IAllRepository<SanPham> reposSanPham;
         private readonly IAllRepository<DanhGia> reposDanhGia;
         private readonly IAllRepository<NhanVien> reposNhanVien;
-        
+
 
         AssignmentDBContext context = new AssignmentDBContext();
         private readonly ILogger<HoaDonService> _logger;
@@ -118,7 +118,7 @@ namespace AppAPI.Services
                     NgayNhanHang = DateTime.Now.AddDays(3),
                     TongTien = chdvm.TongTienHoaDon 
                 };
-                
+
                 foreach (var sp in chdvm.SanPhams)
                 {
                     int giaBan = repsCTSanPham.GetById(sp.IDCTSP).GiaBan;
@@ -534,7 +534,7 @@ namespace AppAPI.Services
                 if (isSuccessful)
                 {
                     // Thanh toán CK
-                    if(hoaDon.phuongThucTTID == Guid.Parse("fab870b4-7a7d-403a-a855-b7431a3c9252"))
+                    if (hoaDon.phuongThucTTID == Guid.Parse("fab870b4-7a7d-403a-a855-b7431a3c9252"))
                     {
                         hoaDon.NgayThanhToan = DateTime.Now;
                     }
@@ -543,14 +543,14 @@ namespace AppAPI.Services
                         // Thanh toán COD
                         hoaDon.NgayThanhToan = DateTime.Now.AddDays(3);
                     }
-                   
-                   
+
+
                     //hoaDon.GhiChu = "";
 
                 }
                 else
                 {
-                    hoaDon.GhiChu = "Thanh toán thất bại"; 
+                    hoaDon.GhiChu = "Thanh toán thất bại";
                 }
 
                 await context.SaveChangesAsync();
@@ -799,7 +799,7 @@ namespace AppAPI.Services
         //}
 
         //Bán hàng tại quầy
-        
+
         public bool DeleteHoaDon(Guid id)
         {
             try
@@ -1262,13 +1262,13 @@ namespace AppAPI.Services
             //    .Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%"))
             //    .ToList();
             List<HoaDon> timkiem = reposHoaDon.GetAll()
-       .Where(p => RemoveVietnameseSigns(p.TenNguoiNhan.ToLower()).StartsWith(RemoveVietnameseSigns(tenLowerCase)))
-       .ToList();
+                    .Where(p => RemoveVietnameseSigns(p.TenNguoiNhan.ToLower()).StartsWith(RemoveVietnameseSigns(tenLowerCase)))
+                            .ToList();
 
             // Sắp xếp nếu có yêu cầu
             if (loc == 0)
             {
-                // Sắp xếp tăng dần theo NgayTao
+                // Sắp xếp tăng dần theo NgayTao    
                 return timkiem.OrderBy(p => p.NgayTao).ToList();
             }
             else if (loc == 1)
@@ -1298,7 +1298,7 @@ namespace AppAPI.Services
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        public bool UpdateGhiChuHD(Guid idhd, Guid idnv,int trangThai, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, int trangThai, string ghichu)
         {
             try
             {
@@ -1310,7 +1310,7 @@ namespace AppAPI.Services
                 }
                 else
                 {
-                    hd.TrangThaiGiaoHang= trangThai;
+                    hd.TrangThaiGiaoHang = trangThai;
                     hd.GhiChu = ghichu;
                 }
                 reposHoaDon.Update(hd);
@@ -1451,11 +1451,11 @@ namespace AppAPI.Services
                 {
                     foreach (var item in chitiethoadon)
                     {
-                        var CTsanPham =  repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == item.IDCTSP);
+                        var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == item.IDCTSP);
                         if (CTsanPham != null)
                         {
                             CTsanPham.SoLuong -= item.SoLuong;
-                             repsCTSanPham.Update(CTsanPham);
+                            repsCTSanPham.Update(CTsanPham);
                         }
                     }
                 }
@@ -1476,7 +1476,7 @@ namespace AppAPI.Services
                     update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
                     update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
                 }
-                
+
                 update.TrangThaiGiaoHang = trangThai;
                 update.IDNhanVien = idNhanVien;
                 reposHoaDon.Update(update);
@@ -1670,22 +1670,22 @@ namespace AppAPI.Services
         {
             // Get all invoices and filter based on the delivery status
             List<HoaDon> timkiem = reposHoaDon.GetAll()
-                .Where(p => p.TrangThaiGiaoHang == loc )
+                .Where(p => p.TrangThaiGiaoHang == loc)
                 .ToList();
 
             return timkiem;
         }
 
-       
-    
 
-		
 
-       
-          
-        
 
-       
+
+
+
+
+
+
+
 
         public async Task<IEnumerable<HoaDonViewModel>> GetDonHangsDaMuaAsync(Guid idKhachHang)
         {
@@ -1700,7 +1700,7 @@ namespace AppAPI.Services
                       DonGia = ct.DonGia,
 
                   }).ToList(),
-                  id =hd.ID,
+                  id = hd.ID,
                   Ten = hd.TenNguoiNhan,
                   SDT = hd.SDT,
                   Email = hd.Email,
@@ -1736,8 +1736,8 @@ namespace AppAPI.Services
                    .Where(h => h.KhachHangID == idKhachHang)
                    .ToList();
         }
-     
-      
+
+
     }
 
 

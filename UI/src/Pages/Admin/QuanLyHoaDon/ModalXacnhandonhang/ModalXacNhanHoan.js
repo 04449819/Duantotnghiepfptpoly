@@ -4,24 +4,24 @@ import Modal from 'react-bootstrap/Modal';
 import './ModalXacnhan.scss';
 import { useSelector } from 'react-redux';
 
-function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
+function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoading1 }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cancelNote, setCancelNote] = useState(''); // State to store cancellation note
-  const [showCancelNote, setShowCancelNote] = useState(false); // State to control the visibility of the cancel note field
-  const user = useSelector(state => state.user.User); // Get user info from Redux
+  const [cancelNote, setCancelNote] = useState('');
+  const [showCancelNote, setShowCancelNote] = useState(false);
+  const user = useSelector(state => state.user.User);
 
   useEffect(() => {
     if (show && billId) {
       fetchBillInfo();
     }
-  }, [show, billId]);
+  }, [show, billId,setLoading1,loading1]);
 
   const fetchBillInfo = async () => {
     setLoading(true);
-    setError(null); // Reset error state
+    setError(null);
 
     try {
       // Fetch bill info
@@ -32,8 +32,8 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
       const billData = await billResponse.json();
       setBillInfo(billData);
 
-      // Fetch product details
-      const productResponse = await fetch(`https://localhost:7095/api/ChiTietHoaDon/getByIdCTHD/${billId}?idnhanvien=${user.id}`);
+      // Fetch product details from the correct API
+      const productResponse = await fetch(`https://localhost:7095/api/SanPham/getAllSPhaon?hoaDonId=${billId}`);
       if (!productResponse.ok) {
         throw new Error('Network response was not ok');
       }
@@ -49,7 +49,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
   const handleConfirm = async () => {
     try {
       const response = await fetch(`https://localhost:7095/api/HoaDon/HoanHD?idhd=${billId}&idnv=${user.id}`, {
-        method: 'PUT', // Updated method to PUT
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -89,7 +89,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
 
       const data = await response.json();
       console.log('Cancel Success:', data);
-      if (onConfirm) onConfirm(billId); // Optionally trigger onConfirm with a different context if needed
+      if (onConfirm) onConfirm(billId);
     } catch (error) {
       console.error('Cancel Error:', error);
     } finally {
@@ -155,8 +155,10 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
                   <tr>
                     <th>Ảnh</th>
                     <th>Tên sản phẩm</th>
+                    <th>Màu sắc</th>
+                    <th>Kích cỡ</th>
                     <th>Đơn giá</th>
-                    <th>Số lượng</th>
+                    <th>Số lượng hoàn</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -164,14 +166,16 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId }) {
                     <tr key={product.id}>
                       <td>
                         <img
-                          src={product.anh.duongDan} // Replace with correct image URL
-                          alt={product.sanPham.ten}
-                          style={{ width: '150px', height: '150px' }} // Adjust size as needed
+                          src={product.anhSanPham}
+                          alt={product.tenSanPham}
+                          style={{ width: '150px', height: '150px' }}
                         />
                       </td>
-                      <td>{product.sanPham.ten}</td>
-                      <td>{product.chiTietHoaDon.donGia}</td>
-                      <td>{product.chiTietHoaDon.soLuong}</td>
+                      <td>{product.tenSanPham}</td>
+                      <td>{product.mauSac}</td>
+                      <td>{product.kichCo}</td>
+                      <td>{product.donGia}</td>
+                      <td>{product.soLuongHoan}</td>
                     </tr>
                   ))}
                 </tbody>

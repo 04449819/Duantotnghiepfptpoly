@@ -51,9 +51,15 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   };
 
   const handleFeedbackClick = (product) => {
-    const feedbackId = product.iDcthd[0].id; // Lấy ID của chi tiết đơn hàng
-    setSelectedProduct(feedbackId); // Đặt ID đã lấy làm sản phẩm được chọn
+    console.log(product.id);
+    if (product.id) {
+      setSelectedProduct(product.id); // Đặt ID của sản phẩm để đánh giá
+    } else {
+      console.error('ID sản phẩm bị thiếu hoặc rỗng.');
+    }
   };
+  
+  
 
   const handleFeedbackModalClose = () => {
     setSelectedProduct(null); // Đóng modal đánh giá
@@ -196,15 +202,15 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         </Modal.Footer>
       </Modal>
 
-      {/* Feedback Modal */}
       {selectedProduct && (
-        <FeedbackModal
-          show={Boolean(selectedProduct)}
-          onHide={handleFeedbackModalClose}
-          productId={selectedProduct}
-          onSubmit={(success) => handleFeedbackSubmit(success)}
-        />
-      )}
+  <FeedbackModal
+    show={Boolean(selectedProduct)}
+    onHide={handleFeedbackModalClose}
+    productId={selectedProduct}
+    onSubmit={(success) => handleFeedbackSubmit(success)}
+  />
+)}
+
 
  {/* Return Modal */}
  {showReturnModal && (
@@ -225,17 +231,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
       )}
 
 
-      {/* Feedback Status Modal */}
-      {feedbackStatus && (
-        <Modal show={Boolean(feedbackStatus)} onHide={() => setFeedbackStatus('')} size="sm">
-          <Modal.Body>
-            {feedbackStatus}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setFeedbackStatus('')}>Đóng</Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+     
     </>
   );
 };

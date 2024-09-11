@@ -13,8 +13,11 @@ const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
       setStatus('Vui lòng chọn số sao đánh giá.');
       return;
     }
+    if (!productId) {
+      setStatus('ID sản phẩm không hợp lệ.');
+      return;
+    }
     try {
-      // Gửi yêu cầu PUT với các tham số trong URL
       const response = await axios.put(
         `https://localhost:7095/api/DanhGia`,
         null,
@@ -31,24 +34,25 @@ const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
       );
       if (response.status === 200) {
         const responseBody = response.data;
-        if (responseBody === true) { // Xử lý phản hồi đúng cách
+        if (responseBody === true) {
           setStatus('Đánh giá đã được gửi thành công!');
-          onSubmit(true); // Thông báo cho parent rằng phản hồi đã được gửi thành công
-          setFeedback(''); // Xóa nội dung đánh giá sau khi gửi
-          setRating(0); // Reset đánh giá sao
+          onSubmit(true);
+          setFeedback('');
+          setRating(0);
         } else {
           setStatus('Gửi đánh giá không thành công.');
-          onSubmit(false); // Thông báo cho parent rằng phản hồi không thành công
+          onSubmit(false);
         }
       } else {
         setStatus('Gửi đánh giá không thành công.');
-        onSubmit(false); // Thông báo cho parent rằng phản hồi không thành công
+        onSubmit(false);
       }
     } catch (err) {
       setStatus('Gửi đánh giá không thành công.');
-      onSubmit(false); // Thông báo cho parent rằng phản hồi không thành công
+      onSubmit(false);
     }
   };
+  
 
   return (
     <Modal show={show} onHide={onHide}>

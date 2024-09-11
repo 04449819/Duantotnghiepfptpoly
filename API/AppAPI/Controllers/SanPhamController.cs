@@ -254,11 +254,50 @@ namespace AppAPI.Controllers
             var listCTSP = await _sanPhamServices.GetChiTietCTSPBanHang(idsp);
             return Ok(listCTSP);
         }
-		#endregion
+        #endregion
+        [HttpGet("getAllSPhaon")]
+        public async Task<IActionResult> GetSanPhamDetailsAsync(Guid hoaDonId)
+        {
+            // Lấy thông tin từ bảng ChiTietHoaDons dựa trên HoaDonID
+            var sanPhamDetails = await _dbcontext.ChiTietHoaDons
+                .Where(cthd => cthd.HoaDon.ID == hoaDonId) // Lọc theo HoaDonID
+                .Select(cthd => new
+                {
+                    ID = cthd.ID,
+                    SanPhamId = cthd.ChiTietSanPham.IDSanPham,
+                    TenSanPham = cthd.ChiTietSanPham.SanPham.Ten,
+                    AnhSanPham = _dbcontext.Anhs
+                        .Where(a => a.IDChitietsanpham == cthd.ChiTietSanPham.ID)
+                        .Select(a => a.DuongDan)
+                        .FirstOrDefault(),
+                    MauSac = cthd.ChiTietSanPham.MauSac.Ten,
+                    KichCo = cthd.ChiTietSanPham.KichCo.Ten,
+                    DonGia = cthd.DonGia,
+                    SoLuongHoan = _dbcontext.hoanhangsanphams
+                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+                        .Sum(hhsp => hhsp.SoLuong),
+                    // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
+                    DiaChiKhachHang = _dbcontext.hoanhangsanphams
+                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+                        .Select(hhsp => hhsp.Diachikhachhang)
+                        .FirstOrDefault()
+                })
+                .Where(pd => pd.SoLuongHoan > 0) // Lọc để chỉ lấy những sản phẩm có số lượng hoàn hàng lớn hơn 0
+                .ToListAsync(); // Sử dụng ToListAsync để lấy danh sách các chi tiết sản phẩm
+
+            if (sanPhamDetails == null || !sanPhamDetails.Any())
+            {
+                return NotFound("Không tìm thấy chi tiết sản phẩm cho hóa đơn này.");
+            }
+
+            return Ok(sanPhamDetails);
+        }
 
 
-		#region LoaiSanPhamBanHangOflineKien
-		[HttpGet("getAllThongTinSPBanHang")]
+
+
+        #region LoaiSanPhamBanHangOflineKien
+        [HttpGet("getAllThongTinSPBanHang")]
 		public async Task<IActionResult> GetAllThongTinSanPham()
 		{
 			var loaiSPs = await _dbcontext.LoaiSPs.Where(p=> p.TrangThai != 0).ToListAsync();
@@ -297,7 +336,7 @@ namespace AppAPI.Controllers
                     hd.TrangThaiGiaoHang,
                     SanPhamDetails = hd.ChiTietHoaDons.Select(cthd => new
                     {
-                        cthd.ID,  // Thay đổi từ IDcthd = hd.ChiTietHoaDons
+                        cthd.ID,
                         SanPhamId = cthd.ChiTietSanPham.IDSanPham,
                         TenSanPham = cthd.ChiTietSanPham.SanPham.Ten,
                         AnhSanPham = _dbcontext.Anhs
@@ -308,6 +347,19 @@ namespace AppAPI.Controllers
                         KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                         DonGia = cthd.DonGia,
                         SoLuong = cthd.SoLuong,
+                        // Thêm thông tin về hoàn hàng nếu có
+                        Hoanhangsanpham = _dbcontext.hoanhangsanphams
+                            .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+                            .Select(hhsp => new
+                            {
+                                hhsp.ID,
+                                hhsp.SoLuong,
+                                hhsp.Diachikhachhang,
+                                hhsp.Ngayhoanhang,
+                                hhsp.Mota,
+                                TrangThaiHoanHang = hhsp.TrangThaiHoanHang
+                            })
+                            .FirstOrDefault()
                     })
                 })
                 .FirstOrDefaultAsync();
@@ -319,6 +371,8 @@ namespace AppAPI.Controllers
 
             return Ok(hoaDon);
         }
+
+
 
         #region SanPhamBanHangOflineKien
         [HttpGet("getAllSPBanHang")]

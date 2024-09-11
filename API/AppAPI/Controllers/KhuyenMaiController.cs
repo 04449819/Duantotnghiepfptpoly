@@ -379,47 +379,57 @@ namespace AppAPI.Controllers
         [HttpPost("addkhuyenmaitoCTSP")]
         public async Task<IActionResult> AddKhuyenMaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP, string idkhuyenmai)
         {
-            if (IDCTSP == null || !IDCTSP.Any())
+            
+            var khuyenMai = await _dbcontext.KhuyenMais.FirstOrDefaultAsync(km => km.ID == Guid.Parse(idkhuyenmai));
+            var now = DateTime.Now;
+            if (khuyenMai != null && khuyenMai.NgayApDung <= now && khuyenMai.NgayKetThuc >= now)
             {
-                return BadRequest("Danh sách IDCTSP rỗng hoặc null");
-            }
-
-            foreach (var item in IDCTSP)
-            {
-                var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
-                if (dt != null)
+                if (IDCTSP == null || !IDCTSP.Any())
                 {
-                    var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
-                        .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
+                    return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+                }
 
-                    if (existingRecord == null)
+                foreach (var item in IDCTSP)
+                {
+                    var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
+                    if (dt != null)
                     {
-                        if (item.trangthai == true)
+                        var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
+                            .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
+
+                        if (existingRecord == null)
                         {
-                            KhuyenMaiCTSanPham kmctsp = new KhuyenMaiCTSanPham
+                            if (item.trangthai == true)
                             {
-                                IdChiTietSanPham = dt.ID,
-                                IdKhuyenMai = Guid.Parse(idkhuyenmai)
-                            };
-                            _dbcontext.KhuyenMaiCTSanPhams.Add(kmctsp);
+                                KhuyenMaiCTSanPham kmctsp = new KhuyenMaiCTSanPham
+                                {
+                                    IdChiTietSanPham = dt.ID,
+                                    IdKhuyenMai = Guid.Parse(idkhuyenmai)
+                                };
+                                _dbcontext.KhuyenMaiCTSanPhams.Add(kmctsp);
+                            }
+                        }
+                        else
+                        {
+                            if (item.trangthai == false)
+                            {
+                                _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
+                            }
                         }
                     }
                     else
                     {
-                        if (item.trangthai == false)
-                        {
-                            _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
-                        }
+                        return NotFound($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
                     }
                 }
-                else
-                {
-                    return NotFound($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
-                }
-            }
 
-            // Lưu các thay đổi vào database
-            await _dbcontext.SaveChangesAsync();
+                // Lưu các thay đổi vào database
+                await _dbcontext.SaveChangesAsync();
+            }
+           else
+           {
+             return BadRequest();
+           }  
 
             return Ok("Cập nhật thành công.");
 

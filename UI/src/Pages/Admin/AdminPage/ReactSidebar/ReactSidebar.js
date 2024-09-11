@@ -279,11 +279,11 @@ const ReactSideBar = () => {
                         />
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
                           {hoaDons.length}
-                          <span className="visually-hidden">unread messages</span>
+
                         </span>
                         {showList && (
                           <ul className="dropdown-menu show" style={{ position: "absolute", top: "100%", left: -150, minWidth: "200px" }}>
-                         
+                            <p style={{marginLeft: "10px"}}>Danh sách hóa đơn chờ</p>
                             {hoaDons.map(hd => (
                               <li key={hd.id}><a className="dropdown-item" href="/admin/quanlyhoadon">{hd.maHD}</a></li>
                             ))}

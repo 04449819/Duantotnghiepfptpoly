@@ -9,7 +9,6 @@ namespace AppData.ViewModels
     public class hoanhangviewmodel
     {
         public int SoLuong { get; set; }
-        
         public string MoTa { get; set; }
         public Guid IdChiTietHoaDon { get; set; }
     }

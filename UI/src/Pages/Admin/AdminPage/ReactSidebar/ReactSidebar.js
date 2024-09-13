@@ -15,7 +15,6 @@ import { FaBell } from "react-icons/fa";
 import axios from "axios";
 
 const ReactSideBar = () => {
-  const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);

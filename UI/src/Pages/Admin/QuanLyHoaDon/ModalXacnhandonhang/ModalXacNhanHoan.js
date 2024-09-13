@@ -17,7 +17,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
     if (show && billId) {
       fetchBillInfo();
     }
-  }, [show, billId,setLoading1,loading1]);
+  }, [show, billId]);
 
   const fetchBillInfo = async () => {
     setLoading(true);
@@ -58,7 +58,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+      setLoading1 (!loading1)
       const data = await response.json();
       console.log('Success:', data);
       if (onConfirm) onConfirm(billId);
@@ -76,7 +76,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
     }
 
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=7&ghichu=${encodeURIComponent(cancelNote)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

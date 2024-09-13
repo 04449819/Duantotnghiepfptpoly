@@ -82,7 +82,7 @@ const QuanLyHoaDon = () => {
         await fetchHoaDons();
       } else {
         const response = await axios.get(
-          `https://localhost:7095/api/HoaDon/TimKiem?ten=${tenkhachhang}&loc=1`
+          `https://localhost:7095/api/HoaDon/TimKiem?ten=${tenkhachhang}&loc=0`
         );
         setHoaDons(response.data);
       }
@@ -226,6 +226,9 @@ const QuanLyHoaDon = () => {
           <Button variant="secondary" onClick={() => handleFilterClick(3)}>
             Đang giao hàng
           </Button>
+          <Button variant="secondary" onClick={() => handleFilterClick(6)}>
+            thành công
+          </Button>
           <Button variant="secondary" onClick={() => handleFilterClick(7)}>
             Đơn Hủy
           </Button>
@@ -346,6 +349,8 @@ const QuanLyHoaDon = () => {
         show={showHoanHangModal}
         onClose={() => setShowHoanHangModal(false)}
         billId={selectedBillId}
+        loading1={loading1}
+        setLoading1={setLoading1}
       />
 
       <ModalXacNhaHang

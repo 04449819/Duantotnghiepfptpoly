@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import "./ReturnModal.scss"
+import { toast } from 'react-toastify';
 
 const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
   const [selectedProducts, setSelectedProducts] = useState({});
@@ -50,6 +51,7 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
   };
 
   const handleSubmit = async () => {
+    // Chuẩn bị dữ liệu yêu cầu
     const requestData = Object.keys(selectedProducts)
       .filter(productId => selectedProducts[productId].selected)
       .map(productId => ({
@@ -57,17 +59,20 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
         moTa: selectedProducts[productId].description || '',
         idChiTietHoaDon: productId,
       }));
-
+  
+    // Kiểm tra nếu có sản phẩm nào được chọn không
     if (requestData.length === 0) {
       setError('Vui lòng chọn ít nhất một sản phẩm để hoàn hàng.');
+      toast.error('Vui lòng chọn ít nhất một sản phẩm để hoàn hàng.'); // Thông báo lỗi
       return;
     }
-
+  
     console.log('Dữ liệu gửi đến API:', requestData);
-
+  
     try {
-      const responses = await Promise.all(
-        requestData.map(data => 
+      // Gửi tất cả các yêu cầu song song
+      await Promise.all(
+        requestData.map(data =>
           axios.post('https://localhost:7095/api/HoanhangControllers', data, {
             headers: {
               'Content-Type': 'application/json-patch+json',
@@ -75,27 +80,32 @@ const ReturnModal = ({ show, onHide, orderId, productDetails, onSubmit }) => {
           })
         )
       );
-
-      // Cập nhật sản phẩm đã hoàn
+  
+      // Cập nhật các sản phẩm đã hoàn thành
       setCompletedProducts(requestData.reduce((acc, data) => {
         acc[data.idChiTietHoaDon] = true;
         return acc;
       }, {}));
-      
-      onSubmit(true);
+  
+      // Hiển thị thông báo thành công và đặt lại lỗi
+      toast.success('Yêu cầu hoàn hàng đã được gửi thành công.'); // Thông báo thành công
       setError('');
+      onSubmit(true);
     } catch (error) {
-      // Kiểm tra lỗi từ API
+      // Kiểm tra phản hồi lỗi từ API
+      let errorMessage = 'Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.';
       if (error.response && error.response.data) {
-        const errorMessage = error.response.data.message || 'Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.';
-        setError(errorMessage);
-      } else {
-        setError('Gửi yêu cầu hoàn hàng không thành công. Vui lòng kiểm tra lại.');
+        errorMessage = error.response.data.message || errorMessage;
       }
-      
+  
+      // Hiển thị thông báo lỗi
+      toast.error(errorMessage); // Thông báo lỗi
+      setError(errorMessage);
       onSubmit(false);
     }
   };
+  
+  
 
   return (
     <Modal show={show} onHide={onHide} size="lg">

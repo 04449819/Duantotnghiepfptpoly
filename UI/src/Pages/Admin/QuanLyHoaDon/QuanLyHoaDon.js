@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
 import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
 import ModalXacNhanHoan from "./ModalXacnhandonhang/ModalXacNhanHoan";
 import ModalXacNhaHang from "./ModalXacnhandonhang/ModalXacNhaHang";
 import ModalHoanThanhCong from "./ModalXacnhandonhang/ModalHoanThanhCong";
+import { toast } from "react-toastify";
 
 const QuanLyHoaDon = () => {
   const [hoaDons, setHoaDons] = useState([]);
@@ -362,7 +363,7 @@ const QuanLyHoaDon = () => {
         billId={selectedBillId}
       />
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

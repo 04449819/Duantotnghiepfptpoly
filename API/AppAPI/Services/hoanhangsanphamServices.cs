@@ -33,8 +33,8 @@ namespace AppAPI.Services
             {
                 throw new InvalidOperationException("Hóa đơn không tìm thấy.");
             }
-            var daHoanHang = await _context.hoanhangsanphams
-                     .Where(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1)
+            var daHoanHang = await _context.Hoanhangsanphams
+					 .Where(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1)
                        .SumAsync(hh => hh.SoLuong);
 
             if (daHoanHang >= chiTietHoaDon.SoLuong)
@@ -61,7 +61,7 @@ namespace AppAPI.Services
             };
 
 
-            await _context.hoanhangsanphams.AddAsync(hoanhangsanpham);
+            await _context.Hoanhangsanphams.AddAsync(hoanhangsanpham);
 
 
             // Lưu các thay đổi
@@ -73,7 +73,7 @@ namespace AppAPI.Services
 
         public async Task<IEnumerable<Hoanhangsanpham>> GetAllAsync()
         {
-            return await _context.hoanhangsanphams.ToArrayAsync();
+            return await _context.Hoanhangsanphams.ToArrayAsync();
 
         }
 
@@ -117,11 +117,11 @@ namespace AppAPI.Services
 
         public async Task<Hoanhangsanpham> UpdateStatusAsync(Guid id, int newStatus)
         {
-            var trangthai = await _context.hoanhangsanphams.FindAsync(id);
+            var trangthai = await _context.Hoanhangsanphams.FindAsync(id);
             if (trangthai != null)
             {
                 trangthai.TrangThaiHoanHang = newStatus;
-                _context.hoanhangsanphams.Update(trangthai);
+                _context.Hoanhangsanphams.Update(trangthai);
                 await _context.SaveChangesAsync();
             }
             return trangthai;
@@ -131,7 +131,7 @@ namespace AppAPI.Services
         {
             var returnedProducts = await _context.ChiTietHoaDons
                 .Where(cthd => cthd.ID == invoiceId) // Lọc theo IDChiTietHoaDon
-                .SelectMany(cthd => _context.hoanhangsanphams.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc hoàn hàng theo ChiTietHoaDon
+                .SelectMany(cthd => _context.Hoanhangsanphams.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc hoàn hàng theo ChiTietHoaDon
                     .Select(hhsp => new ChiTietSanPham
                     {
                         ID = cthd.ChiTietSanPham.ID,

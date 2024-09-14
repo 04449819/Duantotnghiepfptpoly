@@ -29,6 +29,11 @@ namespace AppData.ViewModels.BanOffline
         public Guid IDCTSP { get; set; }
         public int SoLuongMua { get; set; }
         public int? DonGia { get; set; }
+        public string? Anh {  get; set; }
+        public string? TenSanPham { get; set; }
+        public string? TenMauSac { get; set; }
+        public string? TenKichCo {  get; set; }
+
     }
 
 }

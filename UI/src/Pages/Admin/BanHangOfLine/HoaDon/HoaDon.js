@@ -8,26 +8,19 @@ import { Table } from 'react-bootstrap';
 
 
 // Component chính sử dụng forwardRef
-const HoaDon = forwardRef((props, ref) => {
+const HoaDon = forwardRef(({ idHoaDon, hoaDon, tongTien, tienGiamVoucher, tienGiamDiem }, ref) => {
   const [hoaDonSelected, setHoaDonSelected] = useState([]);
   const [chiTietHoaDonSelected, setChiTietHoaDonChoSelected] = useState([]);
   
   useEffect(() => {
-    
-    if(props.props){
       getHoaDonById();
-    }
-  }, [props]); // Run useEffect when props change
+  }, [idHoaDon]); // Run useEffect when props change
   const getHoaDonById = async () => {
     try {
-      
-      const resCTHD = await axios.get(`https://localhost:7095/api/SanPham/GetChiTietSanPhamByIdHD?hoaDonId=${props.props}`);
+      const resCTHD = await axios.get(`https://localhost:7095/api/SanPham/GetChiTietSanPhamByIdHD?hoaDonId=${idHoaDon}`);
       setChiTietHoaDonChoSelected(resCTHD.data);
-     
-      const resHD = await axios.get(`https://localhost:7095/api/HoaDon/GetById/${props.props}`);
+      const resHD = await axios.get(`https://localhost:7095/api/HoaDon/GetById/${idHoaDon}`);
       setHoaDonSelected(resHD.data); 
-      console.log(resHD.data);
-      
     } catch (error) {
       console.error('Đã xảy ra lỗi: ', error);
     }
@@ -98,9 +91,9 @@ const HoaDon = forwardRef((props, ref) => {
         </div>
         <div className="mt-4">
           <p>Tổng Tiền hàng: {hoaDonSelected.tongTien}</p>
-          <p>Giảm giá: </p>
+          <p>Giảm giá: {tienGiamVoucher + tienGiamDiem}</p>
           <p>Phí ship: {hoaDonSelected.tienShip}</p>
-          <p className="font-bold">Tổng hóa đơn: {hoaDonSelected.tongTien + hoaDonSelected.tienShip} </p>
+          <p className="font-bold">Tổng hóa đơn: {(hoaDonSelected.tongTien + hoaDonSelected.tienShip)} </p>
         </div>
       </div>
     </div>

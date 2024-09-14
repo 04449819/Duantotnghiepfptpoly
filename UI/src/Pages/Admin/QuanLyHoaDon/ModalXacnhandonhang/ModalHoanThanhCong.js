@@ -79,7 +79,7 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
     }
 
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=7&ghichu=${encodeURIComponent(cancelNote)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

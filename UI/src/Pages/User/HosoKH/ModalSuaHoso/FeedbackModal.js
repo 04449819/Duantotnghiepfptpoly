@@ -1,25 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import './FeedbackModal.scss'; // Import file SCSS
+import { toast } from 'react-toastify';
 
 const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
   const [feedback, setFeedback] = useState('');
   const [rating, setRating] = useState(0); // Trạng thái để lưu đánh giá sao
   const [status, setStatus] = useState('');
 
+
+  useEffect(() => {
+    
+    toast.success('Đánh giá đã được gửi thành công!');
+    
+  },[]);
   const handleSubmit = async () => {
+    // Validate input
     if (rating === 0) {
-      setStatus('Vui lòng chọn số sao đánh giá.');
+      toast.error('Vui lòng chọn số sao đánh giá.');
       return;
     }
     if (!productId) {
-      setStatus('ID sản phẩm không hợp lệ.');
+      toast.error('ID sản phẩm không hợp lệ.');
       return;
     }
+  
     try {
+      // Send the request to the API
       const response = await axios.put(
-        `https://localhost:7095/api/DanhGia`,
+        'https://localhost:7095/api/DanhGia',
         null,
         {
           params: {
@@ -32,23 +42,28 @@ const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
           }
         }
       );
+  
       if (response.status === 200) {
         const responseBody = response.data;
         if (responseBody === true) {
-          setStatus('Đánh giá đã được gửi thành công!');
+          // Success case
+          toast.success('Đánh giá đã được gửi thành công!');
           onSubmit(true);
           setFeedback('');
           setRating(0);
         } else {
-          setStatus('Gửi đánh giá không thành công.');
+          toast.error('Gửi đánh giá không thành công.');
           onSubmit(false);
         }
       } else {
-        setStatus('Gửi đánh giá không thành công.');
+        // HTTP status code is not 200
+        toast.error('Gửi đánh giá không thành công.');
         onSubmit(false);
       }
-    } catch (err) {
-      setStatus('Gửi đánh giá không thành công.');
+    } catch (error) {
+      // Handle errors during the request
+      console.error('Error submitting rating:', error);
+      toast.error('Gửi đánh giá không thành công. Vui lòng thử lại.');
       onSubmit(false);
     }
   };

@@ -27,28 +27,29 @@ const GioHang = () => {
   const dispath = useDispatch();
   const [dsspgiohangs, setdsspgiohangs] = useState([]);
   const [provinces, setprovinces] = useState([]);
-  const [districts, setdistricts] = useState([]); 
+  const [districts, setdistricts] = useState([]);
   const [dckh, setdckh] = useState([]);
   const [tongTien, setTongTien] = useState(0);
   const [tongTienBanDau, setTongTienBanDau] = useState(0);
   const [load, setload] = useState(false);
+  const [datakm, setdatakm] = useState([]);
   const [hoaDonOnline, setHoaDonOnline] = useState({
-    TenKhachHang: '',
-    SDT: '',
-    Email: '',
-    DiaChi: '',
+    TenKhachHang: "",
+    SDT: "",
+    Email: "",
+    DiaChi: "",
     SanPhams: [],
-    IdVoucher: '',
-    GhiChu: '',
+    IdVoucher: "",
+    GhiChu: "",
     TrangThaiGiaoHang: 1,
-    TienShip: 30000, 
-    IdPhuongThucThanhToan: 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c',
+    TienShip: 30000,
+    IdPhuongThucThanhToan: "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c",
     // IdNhanVien: '',
 
-    IdKhachHang :'',
+    IdKhachHang: "",
 
     SoDiemSuDung: 0,
-    TongTienHoaDon: 0
+    TongTienHoaDon: 0,
   });
   const [voucher, setVoucher] = useState();
   const [soDiemSuDung, setSoDiemSuDung] = useState(0);
@@ -56,70 +57,75 @@ const GioHang = () => {
   const [tienGiamVoucher, setTienGiamVoucher] = useState(0);
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
 
-  const [detailAddress, setDetailAddress] = useState(hoaDonOnline.DiaChi.split(',')[0] || '');
+  const [detailAddress, setDetailAddress] = useState(
+    hoaDonOnline.DiaChi.split(",")[0] || ""
+  );
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({}); // Trạng thái lưu lỗi từng trường
 
   useEffect(() => {
-    console.log("DSSPGIOHANG: ",dsspgiohangs);
-    
-    const chiTietSanPhamGioHangs = dsspgiohangs.map(spgh => ({
+    console.log("DSSPGIOHANG: ", dsspgiohangs);
+    const chiTietSanPhamGioHangs = dsspgiohangs.map((spgh) => ({
       IDCTSP: spgh.id,
       SoLuongMua: spgh.soluongmua,
       GiaBan: spgh.giaban,
-      //giaTriKhuyenMai: spgh.giatrikhuyenmai ?? 0,  
-  }));
-  setHoaDonOnline(prevState => ({
-    ...prevState,
-    SanPhams: chiTietSanPhamGioHangs,
-    SoDiemSuDung: soDiemSuDung
-}));
-  },[dsspgiohangs, soDiemSuDung])
- useEffect(() => {
+      //giaTriKhuyenMai: spgh.giatrikhuyenmai ?? 0,
+    }));
+    setHoaDonOnline((prevState) => ({
+      ...prevState,
+      SanPhams: chiTietSanPhamGioHangs,
+      SoDiemSuDung: soDiemSuDung,
+    }));
+  }, [dsspgiohangs, soDiemSuDung]);
+  useEffect(() => {
     console.log("User", user);
- }, [user,isDiemTichLuy]);
-//  useEffect(() => {
-//   console.log("District", selectedDistrict);
-//   console.log("Province", selectedProvince);
-//   console.log( "Result:",combineAddress(hoaDonOnline.DiaChi,selectedProvince,selectedDistrict));
-  
-//   console.log(hoaDonOnline.DiaChi);
-  
-// }, [hoaDonOnline.DiaChi,selectedDistrict,selectedDistrict]);
+  }, [user, isDiemTichLuy]);
+  //  useEffect(() => {
+  //   console.log("District", selectedDistrict);
+  //   console.log("Province", selectedProvince);
+  //   console.log( "Result:",combineAddress(hoaDonOnline.DiaChi,selectedProvince,selectedDistrict));
 
+  //   console.log(hoaDonOnline.DiaChi);
+
+  // }, [hoaDonOnline.DiaChi,selectedDistrict,selectedDistrict]);
 
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
       return a.check ? -1 : 1;
     });
+    GetallKhuyenMai();
     setdsspgiohangs(sortedProducts);
     getLoaiSanPhamBanHang1();
-    const total = dsspgiohang
-      .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
-      .reduce((sum, product) => sum + product.giaban * product.soluongmua, 0);
-    setTongTien(total);
-    setTongTienBanDau(total);
+    // const total = dsspgiohang
+    //   .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
+    //   .reduce(
+    //     (sum, product) => sum + product.giatrithuc * product.soluongmua,
+    //     0
+    //   );
+    // setTongTien(total);
+    // setTongTienBanDau(total);
     // getLoaiSanPhamBanHang2();
     if (user.id !== undefined) {
       getDiaChiKhachHang();
     }
   }, [dsspgiohang, load]);
 
-  useEffect(() => {
-    
-  },[]);
+  useEffect(() => {}, []);
 
   const applyVoucher = (totalPrice, voucher) => {
-    if (!voucher || totalPrice < voucher.soTienCan) return { tienGiamVoucher: 0, newTotal: totalPrice };
-    const tienGiamVoucher = voucher.hinhThucGiamGia === 0
-      ? voucher.giaTri
-      : totalPrice * (voucher.giaTri / 100);
+    if (!voucher || totalPrice < voucher.soTienCan)
+      return { tienGiamVoucher: 0, newTotal: totalPrice };
+    const tienGiamVoucher =
+      voucher.hinhThucGiamGia === 0
+        ? voucher.giaTri
+        : totalPrice * (voucher.giaTri / 100);
     return { tienGiamVoucher, newTotal: totalPrice - tienGiamVoucher };
   };
-  
+
   const applyLoyaltyPoints = (totalPrice, isDiemTichLuy, diemTichLuy) => {
-    if (!isDiemTichLuy) return { tienGiamDiem: 0, soDiemDung: 0, newTotal: totalPrice };
+    if (!isDiemTichLuy)
+      return { tienGiamDiem: 0, soDiemDung: 0, newTotal: totalPrice };
     const tienGiamDiem = Math.min(diemTichLuy * 100, totalPrice);
     const soDiemDung = Math.ceil(tienGiamDiem / 100);
     const newTotal = Math.max(0, totalPrice - tienGiamDiem);
@@ -131,19 +137,28 @@ const GioHang = () => {
       if (hoaDonOnline.TienShip) {
         totalPrice += Number(hoaDonOnline.TienShip);
       }
-      
+
       // Áp dụng voucher
-      const voucherRes = await axios.get(`https://localhost:7095/api/Voucher/fillvoucher/${totalPrice}`);
+      const voucherRes = await axios.get(
+        `https://localhost:7095/api/Voucher/fillvoucher/${totalPrice}`
+      );
       const voucher = voucherRes.data.voucher;
       setVoucher(voucher);
-      const { tienGiamVoucher, newTotal: totalAfterVoucher } = applyVoucher(totalPrice, voucher);
+      const { tienGiamVoucher, newTotal: totalAfterVoucher } = applyVoucher(
+        totalPrice,
+        voucher
+      );
       setTienGiamVoucher(tienGiamVoucher);
-  
+
       const diemTichLuy = user?.diemTich || 0;
       // Áp dụng điểm tích lũy nếu được chọn
-    
+
       if (isDiemTichLuy) {
-        const { tienGiamDiem, soDiemDung, newTotal: finalTotal } = applyLoyaltyPoints(totalAfterVoucher, true, diemTichLuy);
+        const {
+          tienGiamDiem,
+          soDiemDung,
+          newTotal: finalTotal,
+        } = applyLoyaltyPoints(totalAfterVoucher, true, diemTichLuy);
         setTienGiamDiem(tienGiamDiem);
         setSoDiemSuDung(soDiemDung);
         setTongTien(finalTotal);
@@ -152,37 +167,35 @@ const GioHang = () => {
         setSoDiemSuDung(0);
         setTongTien(totalAfterVoucher);
       }
-      
-  
+
       return totalAfterVoucher;
     } catch (error) {
       console.error("Error in getVoucherAndCalculateTotal:", error);
       return null;
     }
   };
- 
+
   useEffect(() => {
     getVoucherAndCalculateTotal();
   }, [hoaDonOnline.SanPhams, hoaDonOnline.TienShip, isDiemTichLuy]);
   const resetForm = () => {
     setHoaDonOnline({
-      TenKhachHang: '',
-      Email: '',
-      SDT: '',
-      DiaChi: '',
-      GhiChu: '',
+      TenKhachHang: "",
+      Email: "",
+      SDT: "",
+      DiaChi: "",
+      GhiChu: "",
     });
     setSelectedDistrict(null);
     setSelectedProvince(null);
-
-  }
+  };
   const combineAddress = (detailAddress, province, district) => {
     // Loại bỏ các giá trị null, undefined hoặc chuỗi rỗng và ghép chúng lại bằng dấu phẩy
     return [detailAddress, district?.label, province?.label]
       .filter(Boolean) // Chỉ giữ các giá trị có thật
-      .join(', ');     // Ghép các giá trị với dấu phẩy
+      .join(", "); // Ghép các giá trị với dấu phẩy
   };
-  
+
   const getDiaChiKhachHang = async () => {
     try {
       var res = await axios.get(
@@ -212,29 +225,29 @@ const GioHang = () => {
       setdistricts(datatam);
     } catch (error) {}
   };
-  
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-     // Nếu đang thay đổi địa chỉ chi tiết
-     if (id === 'DiaChi') {
+    // Nếu đang thay đổi địa chỉ chi tiết
+    if (id === "DiaChi") {
       setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
       setHoaDonOnline((prevHoaDonOnline) => ({
-          ...prevHoaDonOnline,
-          DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
+        ...prevHoaDonOnline,
+        DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
       }));
-  } else {
+    } else {
       // Cập nhật thông tin khác trong hoaDonOnline nếu cần
       setHoaDonOnline((prevHoaDonOnline) => ({
-          ...prevHoaDonOnline,
-          [id]: value
+        ...prevHoaDonOnline,
+        [id]: value,
       }));
-  }
+    }
   };
   const handleProvinceChange = (selectedOption) => {
     setSelectedProvince(selectedOption);
     setHoaDonOnline((prevHoaDonOnline) => ({
       ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedOption, selectedDistrict) // Không giữ lại địa chỉ cũ
+      DiaChi: combineAddress(detailAddress, selectedOption, selectedDistrict), // Không giữ lại địa chỉ cũ
     }));
     getLoaiSanPhamBanHang2(selectedOption.value);
     setSelectedDistrict(null); // Reset district khi thay đổi tỉnh/thành phố
@@ -244,8 +257,8 @@ const GioHang = () => {
     setSelectedDistrict(selectedOption);
     setHoaDonOnline((prevHoaDonOnline) => ({
       ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedProvince, selectedOption) // Không giữ lại địa chỉ cũ
-  }));
+      DiaChi: combineAddress(detailAddress, selectedProvince, selectedOption), // Không giữ lại địa chỉ cũ
+    }));
   };
   const Hanleonclickthemspkhac = () => {
     navigate("/cuahang");
@@ -304,32 +317,32 @@ const GioHang = () => {
   };
 
   const handleClickDiemTichLuy = () => {
-      setIsDiemTichLuy(!isDiemTichLuy);
+    setIsDiemTichLuy(!isDiemTichLuy);
   };
-  
 
   const validateOrderInfo = (hoaDon) => {
     let newErrors = {};
     if (!hoaDon.TenKhachHang) {
-      newErrors.TenKhachHang = 'Họ và tên là bắt buộc.';
+      newErrors.TenKhachHang = "Họ và tên là bắt buộc.";
     }
     if (!hoaDon.Email) {
-      newErrors.Email = 'Email là bắt buộc.';
-  } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(hoaDon.Email)) {
-      newErrors.Email = 'Định dạng email không hợp lệ.';
-  }
+      newErrors.Email = "Email là bắt buộc.";
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(hoaDon.Email)) {
+      newErrors.Email = "Định dạng email không hợp lệ.";
+    }
     if (!hoaDon.SDT) {
-      newErrors.SDT = 'Số điện thoại là bắt buộc.';
-  } else if (!/^0\d{9,10}$/.test(hoaDon.SDT)) {
-      newErrors.SDT = 'Số điện thoại không hợp lệ.';
-  } else if (!/^(09|03|07|08|05)+([0-9]{8})\b/.test(hoaDon.SDT)) {
-      newErrors.SDT = 'Số điện thoại không đúng định dạng của các nhà mạng Việt Nam.';
-  }
+      newErrors.SDT = "Số điện thoại là bắt buộc.";
+    } else if (!/^0\d{9,10}$/.test(hoaDon.SDT)) {
+      newErrors.SDT = "Số điện thoại không hợp lệ.";
+    } else if (!/^(09|03|07|08|05)+([0-9]{8})\b/.test(hoaDon.SDT)) {
+      newErrors.SDT =
+        "Số điện thoại không đúng định dạng của các nhà mạng Việt Nam.";
+    }
     if (!hoaDon.DiaChi) {
-      newErrors.DiaChi = 'Địa chỉ là bắt buộc.';
+      newErrors.DiaChi = "Địa chỉ là bắt buộc.";
     }
     if (!hoaDon.IdPhuongThucThanhToan) {
-      newErrors.IdPhuongThucThanhToan = 'Vui lòng chọn phương thức thanh toán.';
+      newErrors.IdPhuongThucThanhToan = "Vui lòng chọn phương thức thanh toán.";
     }
 
     setErrors(newErrors);
@@ -337,7 +350,7 @@ const GioHang = () => {
   };
   const HandleDatHang = async () => {
     try {
-      const selectedProducts = dsspgiohangs.filter(sp => sp.check);
+      const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
       if (selectedProducts.length === 0) {
         toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
         return;
@@ -350,11 +363,12 @@ const GioHang = () => {
         TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
         SDT: user.sdt || hoaDonOnline.SDT,
         Email: user.email || hoaDonOnline.Email,
-        DiaChi: dckh.find(dc => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
+        DiaChi:
+          dckh.find((dc) => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
         IdVoucher: voucher?.id || null,
         SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
         TongTienHoaDon: tongTien,
-        SanPhams: selectedProducts.map(sp => ({
+        SanPhams: selectedProducts.map((sp) => ({
           IDCTSP: sp.id,
           SoLuongMua: sp.soluongmua,
           GiaBan: sp.giaban,
@@ -362,38 +376,93 @@ const GioHang = () => {
         IdKhachHang: user.id,
       };
 
-
-      const apiUrl = hoaDonOnlineSubmit.IdPhuongThucThanhToan === 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c'
-        ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
-        : "https://localhost:7095/api/HoaDon/create-order";
+      const apiUrl =
+        hoaDonOnlineSubmit.IdPhuongThucThanhToan ===
+        "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+          ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
+          : "https://localhost:7095/api/HoaDon/create-order";
 
       const res = await axios.post(apiUrl, hoaDonOnlineSubmit);
 
       if (res.data?.payUrl) {
-        window.open(res.data.payUrl, '_blank');
+        window.open(res.data.payUrl, "_blank");
       }
 
       if (res.data) {
         toast.success("Đặt hàng thành công");
-        selectedProducts.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
+        selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
         setload(!load);
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
 
       resetForm();
-
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
-      toast.error(`Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`);
+      toast.error(
+        `Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`
+      );
     }
   };
   const handlePaymentMethodChange = (event) => {
     setHoaDonOnline((prevState) => ({
       ...prevState,
       IdPhuongThucThanhToan: event.target.value,
-   
     }));
+  };
+
+  const GetallKhuyenMai = async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/KhuyenMai/getallkhuyenmai`
+      );
+      console.log("hahah", res.data);
+      console.log("hahahaaa", dsspgiohang);
+      const dsspgh = dsspgiohang.map((p) => {
+        const km = res.data.find((d) => d.idChiTietSanPham === p.id);
+        if (km) {
+          let tongtien;
+          switch (km.trangThai) {
+            case 0:
+              tongtien = p.giaban - km.giaTri;
+              break;
+            case 1:
+              tongtien = (p.giaban * km.giaTri) / 100;
+              break;
+            case 2:
+              tongtien = km.giaTri;
+              break;
+            case 3:
+              tongtien = p.giaban - (p.giaban * km.giaTri) / 100;
+              break;
+            // Thêm các trường hợp khác nếu cần
+            default:
+              tongtien = "default_value"; // Giá trị mặc định nếu không khớp với case nào
+              break;
+          }
+
+          return {
+            ...p,
+            giatrithuc: tongtien, // Thêm giá trị khuyến mãi
+          };
+        } else {
+          return { ...p, giatrithuc: p.giaban };
+        }
+      });
+      console.log("danh sach moi", dsspgh);
+      setdsspgiohangs(dsspgh);
+
+      const total = dsspgh
+        .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
+        .reduce(
+          (sum, product) => sum + product.giatrithuc * product.soluongmua,
+          0
+        );
+      console.log("toong tien ", total);
+
+      setTongTien(total);
+      setTongTienBanDau(total);
+    } catch (error) {}
   };
 
   return (
@@ -449,7 +518,9 @@ const GioHang = () => {
                           value={sp.soluongmua}
                         />
                       </td>
-                      <td>{(sp.giaban * sp.soluongmua).toLocaleString()} VND</td>
+                      <td>
+                        {(sp.giatrithuc * sp.soluongmua).toLocaleString()} VND
+                      </td>
                       <td>
                         <BiX
                           onClick={() => HandleOnclickDeletesp(sp)}
@@ -481,33 +552,35 @@ const GioHang = () => {
             </p>
             <div className="mb-3">
               {user && user.diemTich > 0 && (
-                        <div className="d-flex align-items-center">
-                          <span className="me-3">Điểm hiện tại: { user.diemTich } </span>
-                            <input 
-                              type="checkbox"
-                              id="diem-tich-luy-switch"
-                              checked={isDiemTichLuy}
-                              onChange={handleClickDiemTichLuy}
-                            />
-                        </div>
-                      )
-              }
-
+                <div className="d-flex align-items-center">
+                  <span className="me-3">Điểm hiện tại: {user.diemTich} </span>
+                  <input
+                    type="checkbox"
+                    id="diem-tich-luy-switch"
+                    checked={isDiemTichLuy}
+                    onChange={handleClickDiemTichLuy}
+                  />
+                </div>
+              )}
             </div>
-           
-          <p>
-            Voucher sử dụng: {voucher ? `${voucher.ten} - ${voucher.giaTri}` : 'Không có voucher'}
-          </p>
 
-           
-            <p>Giảm giá: -{(tienGiamVoucher + tienGiamDiem).toLocaleString()} VND</p>
+            <p>
+              Voucher sử dụng:{" "}
+              {voucher
+                ? `${voucher.ten} - ${voucher.giaTri}`
+                : "Không có voucher"}
+            </p>
+
+            <p>
+              Giảm giá: -{(tienGiamVoucher + tienGiamDiem).toLocaleString()} VND
+            </p>
             <p>Phí vận chuyển: 30,000 VND</p>
             {/* <div className="discount-code">
               <input type="text" placeholder="Nhập mã khuyến mãi nếu có" />
               <button>SỬ DỤNG</button>
             </div> */}
             <hr className="my-3" />
-            <h5>Tổng cộng: {(tongTien).toLocaleString() } VND</h5>
+            <h5>Tổng cộng: {tongTien.toLocaleString()} VND</h5>
             <hr className="my-3" />
           </div>
         </div>
@@ -558,7 +631,7 @@ const GioHang = () => {
                   onClick={() => setShows(true)}
                   className="w-25 mx-auto d-flex"
                   style={{ cursor: "pointer" }}
-                > 
+                >
                   <div>+</div>
                   <div>Thêm mới địa chỉ</div>
                 </div>
@@ -576,39 +649,57 @@ const GioHang = () => {
               <input
                 id="TenKhachHang"
                 type="text"
-                value={ hoaDonOnline.TenKhachHang || ''}
+                value={hoaDonOnline.TenKhachHang || ""}
                 onChange={handleInputChange}
                 placeholder="Họ và tên"
                 required
               />
-               {errors.TenKhachHang && <span className="error" style={{ color: 'red' }} >{errors.TenKhachHang}</span>} 
+              {errors.TenKhachHang && (
+                <span className="error" style={{ color: "red" }}>
+                  {errors.TenKhachHang}
+                </span>
+              )}
               <label>Email</label>
               <input
                 id="Email"
                 type="email"
-                value={ hoaDonOnline.Email || ''}
+                value={hoaDonOnline.Email || ""}
                 onChange={handleInputChange}
                 placeholder="Email"
               />
-              {errors.Email && <span className="error" style={{ color: 'red' }}>{errors.Email}</span>}
+              {errors.Email && (
+                <span className="error" style={{ color: "red" }}>
+                  {errors.Email}
+                </span>
+              )}
               <label>Điện thoại (*)</label>
               <input
                 id="SDT"
                 type="text"
-                value={ hoaDonOnline.SDT || ''}
+                value={hoaDonOnline.SDT || ""}
                 onChange={handleInputChange}
                 placeholder="Điện thoại"
                 required
               />
-               {errors.SDT && <span className="error" style={{ color: 'red' }}>{errors.SDT}</span>}
+              {errors.SDT && (
+                <span className="error" style={{ color: "red" }}>
+                  {errors.SDT}
+                </span>
+              )}
               <label>Địa chỉ (*)</label>
               <input
-                id="DiaChi" 
-                type="text" 
-                value={ hoaDonOnline.DiaChi.split(',')[0] || ''} 
-                onChange={handleInputChange} 
-                placeholder="Địa chỉ" required />
-                {errors.DiaChi && <span className="error" style={{ color: 'red' }}>{errors.DiaChi}</span>} 
+                id="DiaChi"
+                type="text"
+                value={hoaDonOnline.DiaChi.split(",")[0] || ""}
+                onChange={handleInputChange}
+                placeholder="Địa chỉ"
+                required
+              />
+              {errors.DiaChi && (
+                <span className="error" style={{ color: "red" }}>
+                  {errors.DiaChi}
+                </span>
+              )}
 
               <label>Tỉnh/ Thành phố</label>
               <Select
@@ -626,7 +717,12 @@ const GioHang = () => {
                 isDisabled={!selectedProvince}
               />
               <label>Ghi chú cho hóa đơn</label>
-              <textarea id="GhiChu" value={ hoaDonOnline.GhiChu || ''} onChange={handleInputChange} placeholder="Ghi chú cho hóa đơn"></textarea>
+              <textarea
+                id="GhiChu"
+                value={hoaDonOnline.GhiChu || ""}
+                onChange={handleInputChange}
+                placeholder="Ghi chú cho hóa đơn"
+              ></textarea>
               {/* <div className="checkbox-group">
               <label>
                 <input type="checkbox" /> Giao hàng tại địa chỉ khác
@@ -641,34 +737,36 @@ const GioHang = () => {
         <div className="payment-method">
           <h5>PHƯƠNG THỨC THANH TOÁN</h5>
           <div className="payment-options">
-          <label>
-          <input 
-          id="payment-method"
-          type="radio" 
-          name="payment-method"
-          value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
-          onChange={(e) => handlePaymentMethodChange(e)}
-          defaultChecked 
-           /> 
-          Thanh toán khi nhận hàng (COD)
-        </label>
-        <p>
-          Cảm ơn quý khách đã mua sắm tại SHOP MAN
-          <br />
-          **Lưu ý: Mã giảm giá không áp dụng cho các sản phẩm đang khuyến mãi
-          <br />
-          Để ship nhanh trong ngày, vui lòng gọi (028) 36 222 000 để được hướng dẫn
-        </p>
-        <label>
-          <input 
-           id="payment-method"
-           type="radio" 
-           name="payment-method"
-          value="fab870b4-7a7d-403a-a855-b7431a3c9252" 
-          onChange={(e) => handlePaymentMethodChange(e)}
-          /> 
-          Thanh toán qua TÀI KHOẢN NGÂN HÀNG
-        </label>
+            <label>
+              <input
+                id="payment-method"
+                type="radio"
+                name="payment-method"
+                value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+                onChange={(e) => handlePaymentMethodChange(e)}
+                defaultChecked
+              />
+              Thanh toán khi nhận hàng (COD)
+            </label>
+            <p>
+              Cảm ơn quý khách đã mua sắm tại SHOP MAN
+              <br />
+              **Lưu ý: Mã giảm giá không áp dụng cho các sản phẩm đang khuyến
+              mãi
+              <br />
+              Để ship nhanh trong ngày, vui lòng gọi (028) 36 222 000 để được
+              hướng dẫn
+            </p>
+            <label>
+              <input
+                id="payment-method"
+                type="radio"
+                name="payment-method"
+                value="fab870b4-7a7d-403a-a855-b7431a3c9252"
+                onChange={(e) => handlePaymentMethodChange(e)}
+              />
+              Thanh toán qua TÀI KHOẢN NGÂN HÀNG
+            </label>
 
             <p>
               Khi chuyển khoản, quý khách vui lòng nhập nội dung chuyển khoản:
@@ -692,7 +790,11 @@ const GioHang = () => {
             </p>
             <p>Cảm ơn quý khách đã mua sắm tại Oldsailor.com.vn</p>
           </div>
-          {errors.IdPhuongThucThanhToan && <span className="error" style={{ color: 'red' }}>{errors.IdPhuongThucThanhToan}</span>} 
+          {errors.IdPhuongThucThanhToan && (
+            <span className="error" style={{ color: "red" }}>
+              {errors.IdPhuongThucThanhToan}
+            </span>
+          )}
           <button
             className="complete-order-button"
             style={{ borderRadius: "5px" }}

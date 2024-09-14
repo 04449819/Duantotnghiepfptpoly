@@ -273,12 +273,60 @@ namespace AppAPI.Controllers
                     MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                     KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                     DonGia = cthd.DonGia,
+//<<<<<<< HEAD
+//                    SoLuongHoan = _dbcontext.Hoanhangsanphams
+//						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+//                        .Sum(hhsp => hhsp.SoLuong),
+//                    // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
+//                    DiaChiKhachHang = _dbcontext.Hoanhangsanphams
+//						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+//=======
                     SoLuongHoan = _dbcontext.Hoanhangsanphams
-						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1 ) // Lọc theo trạng thái hoàn hàng
                         .Sum(hhsp => hhsp.SoLuong),
                     // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
                     DiaChiKhachHang = _dbcontext.Hoanhangsanphams
-						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1) // Lọc theo trạng thái hoàn hàng
+                        .Select(hhsp => hhsp.Diachikhachhang)
+                        .FirstOrDefault()
+                })
+                .Where(pd => pd.SoLuongHoan > 0) // Lọc để chỉ lấy những sản phẩm có số lượng hoàn hàng lớn hơn 0
+                .ToListAsync(); // Sử dụng ToListAsync để lấy danh sách các chi tiết sản phẩm
+
+            if (sanPhamDetails == null || !sanPhamDetails.Any())
+            {
+                return NotFound("Không tìm thấy chi tiết sản phẩm cho hóa đơn này.");
+            }
+
+            return Ok(sanPhamDetails);
+        }
+
+
+        [HttpGet("getAllchitiethoan")]
+        public async Task<IActionResult> GetSanPhamDetailsAsyncs(Guid hoaDonId)
+        {
+            // Lấy thông tin từ bảng ChiTietHoaDons dựa trên HoaDonID
+            var sanPhamDetails = await _dbcontext.ChiTietHoaDons
+                .Where(cthd => cthd.HoaDon.ID == hoaDonId) // Lọc theo HoaDonID
+                .Select(cthd => new
+                {
+                    ID = cthd.ID,
+                    SanPhamId = cthd.ChiTietSanPham.IDSanPham,
+                    TenSanPham = cthd.ChiTietSanPham.SanPham.Ten,
+                    AnhSanPham = _dbcontext.Anhs
+                        .Where(a => a.IDChitietsanpham == cthd.ChiTietSanPham.ID)
+                        .Select(a => a.DuongDan)
+                        .FirstOrDefault(),
+                    MauSac = cthd.ChiTietSanPham.MauSac.Ten,
+                    KichCo = cthd.ChiTietSanPham.KichCo.Ten,
+                    DonGia = cthd.DonGia,
+                    SoLuongHoan = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
+                        .Sum(hhsp => hhsp.SoLuong),
+                    // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
+                    DiaChiKhachHang = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
+//>>>>>>> f4bee67bb1ab2db2440d814a46166acfc7aebbfa
                         .Select(hhsp => hhsp.Diachikhachhang)
                         .FirstOrDefault()
                 })

@@ -46,7 +46,7 @@ namespace AppAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var hoanhangsanpham = await _context.hoanhangsanphams.FindAsync(id);
+            var hoanhangsanpham = await _context.Hoanhangsanphams.FindAsync(id);
             if (hoanhangsanpham == null)
             {
                 return NotFound();
@@ -83,6 +83,19 @@ namespace AppAPI.Controllers
             {
                 // Log exception here if needed
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("returned-products/{invoiceId}")]
+        public async Task<IActionResult> GetReturnedProductsByInvoiceId(Guid invoiceId)
+        {
+            try
+            {
+                var products = await _hoanhangsanphamServices.GetReturnedProductsByInvoiceIdAsync(invoiceId);
+                return Ok(products);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
 

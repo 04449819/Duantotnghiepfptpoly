@@ -82,8 +82,14 @@ const BanHangOfline = () => {
 const getHoaDonChos = async () => {
     try {
       const response = await axios.get('https://localhost:7095/api/HoaDon/GetAll');
-      const filteredData = response.data.filter(hoaDon => hoaDon.trangThaiGiaoHang === 1 && hoaDon.loaiHD === 1);
-  
+      //const filteredData = response.data.filter(hoaDon =>  hoaDon.loaiHD === 1);
+      const now = new Date(); 
+      const filteredData = response.data.filter(hoaDon => {
+        return hoaDon.loaiHD === 1 && 
+               new Date(hoaDon.ngayTao).getFullYear() === now.getFullYear() &&
+               new Date(hoaDon.ngayTao).getMonth() === now.getMonth() &&
+               new Date(hoaDon.ngayTao).getDate() === now.getDate();
+      });
       // Sort the filtered data by ngayTao in descending order (newest first)
       const sortedData = filteredData.sort((a, b) => {
         // Convert ngayTao to Date objects
@@ -139,6 +145,25 @@ const getHoaDonChos = async () => {
     documentTitle: "HoaDon",
   });
  
+  function tachPhanThoiGian(ngayGioString) {
+    if (typeof ngayGioString !== 'string') {
+      return 'Vui lòng nhập vào một chuỗi ngày giờ';
+    }
+  
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const ngayGio = new Date(ngayGioString);
+  
+    // Lấy từng phần của thời gian
+    const gio = ngayGio.getHours();
+    const phut = ngayGio.getMinutes();
+    const giay = ngayGio.getSeconds();
+    const miligiay = ngayGio.getMilliseconds();
+  
+    // Tạo chuỗi thời gian mới theo định dạng mong muốn
+    const thoiGian = `${gio}:${phut}:${giay}.${miligiay}`;
+  
+    return thoiGian;
+  }
   return (
     <div className="banhangofline">
       <div className="row">
@@ -156,9 +181,9 @@ const getHoaDonChos = async () => {
             <th>#</th>
             <th>Mã Hóa Đơn</th>
             <th>Khách hàng</th>
-            {/* <th>Ngày Tạo</th> */}
+            <th>Thời gian tạo</th>
             
-            <th>Loại Hóa Đơn</th>
+            {/* <th>Ghi chú</th> */}
            
           </tr>
         </thead>
@@ -174,8 +199,8 @@ const getHoaDonChos = async () => {
               <td>{index + 1}</td>
               <td>{hoaDon.maHD}</td>
               <td>{hoaDon.tenNguoiNhan}</td>
-              {/* <td>{hoaDon.ngayTao}</td> */}
-              <td>{hoaDon.loaiHD ? 'Offline' : 'Online'} </td>
+              <td>{tachPhanThoiGian(hoaDon.ngayTao)}</td>
+              {/* <td>{hoaDon.GhiChu} </td> */}
               <td><Button className="btn-danger" onClick={() => handleDeleteHoaDon(hoaDon.id)}> x</Button></td>
               
             </tr>

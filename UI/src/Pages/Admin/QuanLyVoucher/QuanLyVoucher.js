@@ -37,7 +37,20 @@ const QuanLyVoucher = () => {
   useEffect(() => {
     fetchVouchers(page,false);
   }, []);
+  function handleNgayKetThucChange(event) {
+    const selectedDate = new Date(event.target.value);
+    // Đặt thời gian về cuối ngày
+    selectedDate.setHours(23, 59, 59);
 
+    // Chuyển đổi lại thành chuỗi có định dạng phù hợp
+    const formattedDate = selectedDate.toISOString().split('T')[0];
+
+    // Cập nhật giá trị input
+    setNewVoucher({
+        ...newVoucher,
+        ngayKetThuc: formattedDate
+    });
+}
   const fetchVouchers = async (page, refresh = false) => {
     try {
       const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=1&pageSize=10`);
@@ -164,8 +177,15 @@ const QuanLyVoucher = () => {
       [id]: error,
     }));
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const submissionVoucher = { ...newVoucher };
+    if (submissionVoucher.ngayKetThuc) {
+      const endDate = new Date(submissionVoucher.ngayKetThuc);
+      endDate.setHours(29, 59, 59, 999);
+      submissionVoucher.ngayKetThuc = endDate.toISOString();
+    }
     const newErrors = {
       ten: validateInput("ten", newVoucher.ten),
       hinhThucGiamGia: validateInput("hinhThucGiamGia", newVoucher.hinhThucGiamGia),
@@ -188,14 +208,14 @@ const QuanLyVoucher = () => {
     try {
       if (isEditing) {
         try {
-          await axios.put(`https://localhost:7095/api/Voucher/${newVoucher.id}`, newVoucher);
+          await axios.put(`https://localhost:7095/api/Voucher/${newVoucher.id}`, submissionVoucher);
           toast.success("Cập nhật voucher thành công");
         } catch (error) {
           toast.error("Cập nhật voucher thất bại");
         }
       } else {
         try {
-          await axios.post('https://localhost:7095/api/Voucher', newVoucher);
+          await axios.post('https://localhost:7095/api/Voucher', submissionVoucher);
           toast.success("Thêm voucher thành công");
         } catch (error) {
           toast.error("Thêm voucher thất bại");
@@ -348,7 +368,7 @@ const QuanLyVoucher = () => {
               id="ngayKetThuc"
               name="ngayKetThuc"
               value={newVoucher.ngayKetThuc}
-              onChange={handleInputChange}
+              onChange={handleNgayKetThucChange}
               isInvalid={!!errors.ngayKetThuc}
             />
             {errors.ngayKetThuc && <div className="text-danger">{errors.ngayKetThuc}</div>}

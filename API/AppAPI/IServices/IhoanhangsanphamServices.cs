@@ -7,7 +7,7 @@ namespace AppAPI.IServices
     {
         Task<Hoanhangsanpham> CreateAsync(hoanhangviewmodel viewModel);
         Task<Hoanhangsanpham> UpdateStatusAsync(Guid id, int newStatus);
-
         Task<IEnumerable<Hoanhangsanpham>> GetAllAsync();
+        Task<List<ChiTietSanPham>> GetReturnedProductsByInvoiceIdAsync(Guid invoiceId);
     }
 }

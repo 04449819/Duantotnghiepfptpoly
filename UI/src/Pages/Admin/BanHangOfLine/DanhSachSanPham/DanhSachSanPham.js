@@ -95,7 +95,9 @@ const DanhSachSanPham = () => {
               return (
                 <tr key={item.idCTSP}>
                   <td>{index + 1}</td>
-                  <td>{item.tenSanPham+"-"+item.tenMau+"-"+item.kichCo}</td>
+                  <td>
+                    {item.tenSanPham + "-" + item.tenMau + "-" + item.kichCo}
+                  </td>
                   <td>
                     <input
                       style={{ width: "80px" }}
@@ -106,8 +108,18 @@ const DanhSachSanPham = () => {
                   </td>
                   {/* <td>{item.tenMau}</td>
                   <td>{item.kichCo}</td> */}
-                  <td>{item.giaBan}</td>
-                  <td>{item.giaBan * item.soLuongmua}</td>
+                  <td>
+                    {item.giaBan.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </td>
+                  <td>
+                    {(item.giaBan * item.soLuongmua).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </td>
                   <td>{item.giaTriKhuyenMai}</td>
                   <td>
                     <img src={item.duongDanAnh} />

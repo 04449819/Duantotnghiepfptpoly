@@ -13,5 +13,8 @@ namespace AppAPI.IServices
         Task<List<DanhGiaViewModel>> GetDanhGiaByIdBthe(Guid idbt);
         Task<bool> AnDanhGia(Guid id);
         public bool UpdateDanhGia(Guid idCTHD,int soSao,string binhLuan);
+        Task<List<DanhGia>> GetAllUnrespondedReview();
+        public List<DanhGia> GetAll();
+        Task<bool> ReplyPhanHoi(Guid idDanhGia, string phanHoi);
     }
 }

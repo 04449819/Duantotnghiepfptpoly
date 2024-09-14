@@ -16,6 +16,7 @@ const ChiTietSanPhamKH = () => {
   const navigate = useNavigate();
   const [data, setdata] = useState([]);
   const [kt, setkt] = useState({});
+  const [danhgia, setdanhgia] = useState([]);
   const settings = {
     dots: true,
     infinite: true,
@@ -63,7 +64,8 @@ const ChiTietSanPhamKH = () => {
   };
   const chitietsanpham = useSelector((p) => p.setchitietsp.chitietsp);
   useEffect(() => {
-    console.log(chitietsanpham);
+    console.log("chi tiet san pham:", chitietsanpham);
+    Getalldanhgiasanpham(chitietsanpham.id);
     const groupedBySize = chitietsanpham.ctsp.reduce((acc, product) => {
       const size = product.idKichCo;
 
@@ -90,7 +92,7 @@ const ChiTietSanPhamKH = () => {
         chitietsanpham.ctsp[0] && setgiaban(chitietsanpham.ctsp[0].giaban);
       }
     }
-  }, [chonsize]);
+  }, [chonsize, chitietsanpham]);
   const dispath = useDispatch();
   const HandleOnclickDatMuaNgay = async () => {
     if (chonsize === "") return toast.error("Bạn chưa chọn size cho sản phẩm");
@@ -155,6 +157,16 @@ const ChiTietSanPhamKH = () => {
       );
       // console.log(res.data.sp);
       setdata(res.data.sp);
+    } catch (error) {}
+  };
+
+  const Getalldanhgiasanpham = async (idsp) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/DanhGia?Idsp=${idsp}`
+      );
+      console.log(res.data);
+      setdanhgia(res.data);
     } catch (error) {}
   };
 
@@ -405,6 +417,82 @@ const ChiTietSanPhamKH = () => {
           </div>
         </div>
       </div>
+      <div className="ChiTietSanPhamKH1 mt-3">
+        <div className="w-25">
+          <hr />
+        </div>
+        <h2>Đánh giá sản phẩm từ khách hàng</h2>
+      </div>
+      <div className="ChiTietSanPhamKH mt-3">
+        {danhgia.length > 0 ? (
+          danhgia.map((p, index) => (
+            <div key={index}>
+              <div className="d-flex mb-0">
+                <h5 className="mb-0 ms-2">{p.tenkh}</h5>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    marginTop: "7px",
+                    marginLeft: "10px",
+                    opacity: "0.7",
+                  }}
+                >
+                  {p.ngaydanhgia}
+                </p>
+              </div>
+              <div className="d-flex ms-3 mb-0">
+                <p
+                  hidden={p.sao >= 1 ? false : true}
+                  className="mb-1"
+                  style={{ color: "orange", fontSize: "18px" }}
+                >
+                  ★
+                </p>
+                <p
+                  hidden={p.sao >= 2 ? false : true}
+                  className="mb-1"
+                  style={{ color: "orange", fontSize: "18px" }}
+                >
+                  ★
+                </p>
+                <p
+                  hidden={p.sao >= 3 ? false : true}
+                  className="mb-1"
+                  style={{ color: "orange", fontSize: "18px" }}
+                >
+                  ★
+                </p>
+                <p
+                  hidden={p.sao >= 4 ? false : true}
+                  className="mb-1"
+                  style={{ color: "orange", fontSize: "18px" }}
+                >
+                  ★
+                </p>
+                <p
+                  hidden={p.sao === 5 ? false : true}
+                  className="mb-1"
+                  style={{ color: "orange", fontSize: "18px" }}
+                >
+                  ★
+                </p>
+              </div>
+              <div>
+                <p className="ms-3 mb-0">Đánh giá từ khách hàng: {p.danhgia}</p>
+              </div>
+              {p.phanhoi && (
+                <div>
+                  <p className="ms-3">ShopMan: {p.phanhoi}</p>
+                </div>
+              )}
+              <hr />
+            </div>
+          ))
+        ) : (
+          <div>chưa có đánh giá</div>
+        )}
+      </div>
+
       <div className="ChiTietSanPhamKH1 mt-3">
         <div className="w-25">
           <hr />

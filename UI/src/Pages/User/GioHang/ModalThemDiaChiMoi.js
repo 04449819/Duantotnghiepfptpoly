@@ -122,7 +122,6 @@ function ModalThemDiaChiMoi(props) {
       a = false;
     }
     if (a === true) {
-      
       // console.log(data);
       const dc = `${selectedProvince.label},${selectedDistrict.label},${data.diachi}`;
       // console.log(dc);
@@ -131,6 +130,16 @@ function ModalThemDiaChiMoi(props) {
           `https://localhost:7095/api/DiaChiKhachHang/themdiachikhachhangmoi?tenkh=${data.ten}&sdt=${data.sdt}&diachi=${dc}&idkh=${user.id}`
         );
         toast.success(`${res.data}`);
+        setdata({ ten: "", sdt: "", diachi: "" });
+        setSelectedDistrict(null);
+        setmassagename(true);
+        setmassagesdt(true);
+        setmassageprovince(true);
+        setmassageDistrict(true);
+        setmassagedcct(true);
+        setSelectedProvince(null);
+        props.setShow(false);
+        props.setload(!props.load);
       } catch (error) {
         toast.error(`Gặp lỗi: ${error.response.data}`);
       }

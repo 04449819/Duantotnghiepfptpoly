@@ -5,13 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import './kk.scss';
 import FeedbackModal from './FeedbackModal';
 import ReturnModal from './ReturnModal';
+import CompletedOrderModal from './CompletedOrderModal'; // Import the new modal component
+import { toast } from 'react-toastify';
+
 const ModalHang = ({ isOpen, onClose, orderId }) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null); // Sản phẩm được chọn để đánh giá
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [feedbackStatus, setFeedbackStatus] = useState('');
-  const [showReturnModal, setShowReturnModal] = useState(false); // Trạng thái hiển thị ReturnModal
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showCompletedOrderModal, setShowCompletedOrderModal] = useState(false); // New state for completed order modal
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,16 +51,19 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   };
 
   const handleCompleteReturn = () => {
-    setShowReturnModal(true); // Hiển thị ReturnModal
+    setShowReturnModal(true);
   };
 
   const handleFeedbackClick = (product) => {
-    const feedbackId = product.iDcthd[0].id; // Lấy ID của chi tiết đơn hàng
-    setSelectedProduct(feedbackId); // Đặt ID đã lấy làm sản phẩm được chọn
+    if (product.id) {
+      setSelectedProduct(product.id);
+    } else {
+      console.error('ID sản phẩm bị thiếu hoặc rỗng.');
+    }
   };
 
   const handleFeedbackModalClose = () => {
-    setSelectedProduct(null); // Đóng modal đánh giá
+    setSelectedProduct(null);
   };
 
   const handleFeedbackSubmit = (success) => {
@@ -65,7 +72,11 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
     } else {
       setFeedbackStatus('Gửi đánh giá không thành công.');
     }
-    handleFeedbackModalClose(); // Đóng modal sau khi gửi phản hồi
+    handleFeedbackModalClose();
+  };
+
+  const handleViewCompletedOrder = () => {
+    setShowCompletedOrderModal(true); // Show the completed order modal
   };
 
   if (loading) return <div>Đang tải...</div>;
@@ -82,7 +93,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
             <div className="modal-content">
               {/* Stepper */}
               <div className="stepper">
-                {/* Các bước của đơn hàng */}
+                {/* Steps */}
                 {orderDetails.trangThaiGiaoHang >= 2 && (
                   <div className="stepper__step stepper__step--finish">
                     <div className="stepper__step-icon">
@@ -127,7 +138,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
                 </div>
               </div>
 
-              {/* Nội dung chi tiết đơn hàng */}
+              {/* Order Details */}
               <div className="order-info">
                 <h5>Thông Tin Đơn Hàng</h5>
                 <div className="order-info-row">
@@ -182,21 +193,34 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          {orderDetails && orderDetails.trangThaiGiaoHang === 6 && (
-            <>
-              <Button variant="primary" onClick={handleCompleteReturn}>
-                Hoàn Hàng
-              </Button>
-              
-            </>
+  {orderDetails && (
+    <>
+      {(orderDetails.trangThaiGiaoHang === 5 || 
+        orderDetails.trangThaiGiaoHang === 6 || 
+        orderDetails.trangThaiGiaoHang === 4 ||
+        orderDetails.trangThaiGiaoHang === 9) && (
+        <>
+          {orderDetails.trangThaiGiaoHang === 5 || orderDetails.trangThaiGiaoHang === 6 ? (
+            <Button variant="primary" onClick={handleCompleteReturn}>
+              Hoàn Hàng
+            </Button>
+          ) : null}
+          {orderDetails.trangThaiGiaoHang >= 9 && (
+            <Button variant="info" onClick={handleViewCompletedOrder}>
+              Xem Đơn Hoàn
+            </Button>
           )}
-          <Button variant="secondary" onClick={onClose}>
-            Đóng
-          </Button>
-        </Modal.Footer>
+        </>
+      )}
+    </>
+  )}
+  <Button variant="secondary" onClick={onClose}>
+    Đóng
+  </Button>
+</Modal.Footer>
+
       </Modal>
 
-      {/* Feedback Modal */}
       {selectedProduct && (
         <FeedbackModal
           show={Boolean(selectedProduct)}
@@ -206,8 +230,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         />
       )}
 
- {/* Return Modal */}
- {showReturnModal && (
+      {showReturnModal && (
         <ReturnModal
           show={showReturnModal}
           onHide={() => setShowReturnModal(false)}
@@ -224,17 +247,12 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         />
       )}
 
-
-      {/* Feedback Status Modal */}
-      {feedbackStatus && (
-        <Modal show={Boolean(feedbackStatus)} onHide={() => setFeedbackStatus('')} size="sm">
-          <Modal.Body>
-            {feedbackStatus}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setFeedbackStatus('')}>Đóng</Button>
-          </Modal.Footer>
-        </Modal>
+      {showCompletedOrderModal && (
+        <CompletedOrderModal
+          show={showCompletedOrderModal}
+          onHide={() => setShowCompletedOrderModal(false)}
+          orderId={orderId}
+        />
       )}
     </>
   );

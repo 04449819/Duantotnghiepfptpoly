@@ -40,6 +40,7 @@ import GioHang from "./Pages/User/GioHang/GioHang";
 import ThanhToanThanhCong from "./Pages/User/ThanhToanThanhCong/ThanhToanThanhCong";
 import XemhoXo from "./Pages/Admin/XemhoXo/XemhoXo";
 import HosoKh from "./Pages/User/HosoKH/HosoKh";
+import QuanLyDanhGia from "./Pages/Admin/QLDanhGia/QLDanhGia";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -71,6 +72,7 @@ root.render(
             <Route path="/admin/coao" element={<CoAo />} />
             <Route path="/admin/quanlyloaisanpham" element={<QuanLyLoaiSanPham />} />
             <Route path="/admin/quanlykhachhang" element={<QuanLyKhachHang />} />
+            <Route path="/admin/quanlydanhgia" element={<QuanLyDanhGia />} />
             <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
             <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
             <Route path="/admin/dashboard" element={<DashBoard />} />

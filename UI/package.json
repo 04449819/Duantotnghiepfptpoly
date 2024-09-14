@@ -15,6 +15,7 @@
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.263.1",
     "mdb-react-ui-kit": "^8.0.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.3.1",

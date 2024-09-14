@@ -21,15 +21,14 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
   const [massageprovince, setmassageprovince] = useState(true);
   const [massageDistrict, setmassageDistrict] = useState(true);
   const [massagedcct, setmassagedcct] = useState(true);
-  const user = useSelector((p) => p.user.User);
+  const user = useSelector((state) => state.user.User);
 
   useEffect(() => {
-    console.log(address);
     if (address) {
       setData({
         tenKhachHang: address.tenKhachHang,
         sdt: address.sdt,
-        diaChi: address.diaChi,
+        diaChi: address.diaChi.split(",").slice(2).join(",").trim(), // Phần địa chỉ chi tiết
       });
       setSelectedProvince({
         value: address.provinceId,
@@ -51,11 +50,13 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
         label: p.name,
       }));
       setProvinces(data);
-      const thanhpho = data.find(
-        (p) => p.label === address.diaChi.split(",")[0]
-      );
-      setSelectedProvince(thanhpho);
-      getDistricts(thanhpho.value);
+      if (address) {
+        const thanhpho = data.find(
+          (p) => p.label === address.diaChi.split(",")[0].trim()
+        );
+        setSelectedProvince(thanhpho);
+        if (thanhpho) getDistricts(thanhpho.value);
+      }
     } catch (error) {
       toast.error("Failed to load provinces.");
     }
@@ -71,48 +72,44 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
         label: p.name,
       }));
       setDistricts(data);
-      const quanhuyen = data.find(
-        (p) => p.label === address.diaChi.split(",")[1]
-      );
-      setSelectedDistrict(quanhuyen);
+      if (address) {
+        const quanhuyen = data.find(
+          (p) => p.label === address.diaChi.split(",")[1].trim()
+        );
+        setSelectedDistrict(quanhuyen);
+      }
     } catch (error) {
       toast.error("Failed to load districts.");
     }
   };
 
   const handleProvinceChange = (selectedOption) => {
-    console.log(selectedOption);
-    if (massageprovince === false && selectedOption !== "") {
-      setmassageprovince(true);
-    }
+    if (!selectedOption) return;
     setSelectedProvince(selectedOption);
     getDistricts(selectedOption.value);
     setSelectedDistrict(null);
+    setmassageprovince(true); // Reset error state when user selects a province
   };
 
   const handleDistrictChange = (selectedOption) => {
-    if (massageDistrict === false && selectedOption !== "") {
-      setmassageDistrict(true);
-    }
     setSelectedDistrict(selectedOption);
+    setmassageDistrict(true); // Reset error state when user selects a district
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (
-      name === "tenKhachHang" &&
-      massagename === false &&
-      value.trim() !== ""
-    ) {
+    setData((prev) => ({ ...prev, [name]: value }));
+
+    // Validate inputs
+    if (name === "tenKhachHang" && value.trim() !== "") {
       setmassagename(true);
     }
-    if (name === "sdt" && massagesdt === false && validatePhone(value)) {
+    if (name === "sdt" && validatePhone(value)) {
       setmassagesdt(true);
     }
-    if (name === "diaChi" && massagedcct === false && value.trim() !== "") {
+    if (name === "diaChi" && value.trim() !== "") {
       setmassagedcct(true);
     }
-    setData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
@@ -140,7 +137,7 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
     if (isValid) {
       const fullAddress = `${selectedProvince.label}, ${selectedDistrict.label}, ${data.diaChi}`;
       try {
-        const response = await axios.put(
+        await axios.put(
           `https://localhost:7095/api/DiaChiKhachHang/${address.id}`, // Assuming the endpoint needs the address ID
           {
             tenKhachHang: data.tenKhachHang,
@@ -149,11 +146,11 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
             idkh: user.id,
           }
         );
-        toast.success("Address updated successfully.");
+        toast.success("Địa chỉ đã được cập nhật thành công.");
         onSave(); // Call onSave to refresh the address list
         onClose(); // Close the modal
       } catch (error) {
-        toast.error(`Error: ${error.response.data}`);
+        toast.error(`Lỗi: ${error.response?.data || error.message}`);
       }
     }
   };
@@ -161,7 +158,7 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
   const validatePhone = (sdt) => {
     return String(sdt)
       .toLowerCase()
-      .match(/^(0)([0-9]){9,9}$/);
+      .match(/^(0)([0-9]){9}$/); // Adjust regex if necessary
   };
 
   return (
@@ -233,15 +230,15 @@ function ModalSuaDiaChi({ isOpen, onClose, address, onSave }) {
             <input
               type="text"
               name="diaChi"
-              value={data.diaChi.split(",").slice(2).join(",")}
+              value={data.diaChi}
               onChange={handleInputChange}
-              placeholder="Địa chỉ"
+              placeholder="Địa chỉ chi tiết"
               required
               className="w-75 ms-3"
             />
           </div>
           <label hidden={massagedcct} className="text-danger">
-            Địa chỉ chi tiết!
+            Địa chỉ chi tiết không được để trống!
           </label>
         </div>
       </Modal.Body>

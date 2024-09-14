@@ -11,20 +11,22 @@ import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
 import Swal from "sweetalert2";
 import { AiFillSignal } from "react-icons/ai";
 import { FaAddressBook } from "react-icons/fa";
-import { FaBell } from 'react-icons/fa';
+import { FaBell } from "react-icons/fa";
+import { VscFeedback } from "react-icons/vsc";
+import { FaStar } from 'react-icons/fa';
 import axios from "axios";
 
-
 const ReactSideBar = () => {
-  const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
-  const [toggled, setToggled] = useState(false);
+  // const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
   const navigate = useNavigate();
   const dispath = useDispatch();
   const user = useSelector((state) => state.user.User);
   const [hoaDons, setHoaDons] = useState([]);
   const [showList, setShowList] = useState(true);
+  const [danhGias, setDanhGias] = useState([]);
+  const [showListDanhGia, setShowListDanhGia] = useState(true);
 
   useEffect(() => {
     // Assuming email is used for display purposes, not for profile navigation
@@ -33,12 +35,26 @@ const ReactSideBar = () => {
   useEffect(() => {
     // Fetch dữ liệu hóa đơn từ backend hoặc từ một nguồn dữ liệu khác
     const fetchData = async () => {
-      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAllHDCho');
-      console.log(response.data);
-      
+      const response = await axios.get(
+        "https://localhost:7095/api/HoaDon/GetAllHDCho"
+      );
+
+
       setHoaDons(response.data);
     };
     fetchData();
+  }, []);
+  useEffect(() => {
+    // Fetch dữ liệu hóa đơn từ backend hoặc từ một nguồn dữ liệu khác
+    const fetchDataDanhGia = async () => {
+      const response = await axios.get(
+        "https://localhost:7095/api/DanhGia/GetAllUnrespondedReview"
+      );
+
+
+      setDanhGias(response.data);
+    };
+    fetchDataDanhGia();
   }, []);
   const handleViewProfile = () => {
     navigate(`/admin/profile/${user.id}`);
@@ -78,8 +94,8 @@ const ReactSideBar = () => {
         >
           <Sidebar
             collapsed={collapsed}
-            toggled={toggled}
-            onBackdropClick={() => setToggled(false)}
+            // toggled={toggled}
+            // onBackdropClick={() => setToggled(false)}
             onBreakPoint={setBroken}
             breakPoint="md"
             style={{ position: "fixed", zIndex: 2 }}
@@ -121,6 +137,13 @@ const ReactSideBar = () => {
                     hidden={user.chucNang !== "Admin" ? true : false}
                   >
                     Quản lý nhân viên
+                  </MenuItem>
+                  <hr />
+                  <MenuItem
+                    component={<Link to="/admin/quanlydanhgia" />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                  >
+                    Quản lý đánh giá 
                   </MenuItem>
                   <hr />
                   <SubMenu
@@ -243,9 +266,8 @@ const ReactSideBar = () => {
                         marginTop: "22px",
                       }}
                     />
-                    
                   </div>
-                  
+
                   <div
                     className="col-1"
                     style={{
@@ -256,7 +278,6 @@ const ReactSideBar = () => {
                       left: "1400px",
                     }}
                   >
-                    
                     <div
                       className="col-1"
                       style={{
@@ -266,36 +287,99 @@ const ReactSideBar = () => {
                         left: "1400px",
                         display: "flex",
                         alignItems: "center",
-                        gap: "15px"
+                        gap: "15px",
                       }}
                     >
-                      <div className="dropdown position-relative"
-                      onMouseEnter={() => setShowList(true)}
-                      onMouseLeave={() => setShowList(false)}
-                      >
-                        <FaBell 
-                          
-                          style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                        />
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
-                          {hoaDons.length}
-                          <span className="visually-hidden">unread messages</span>
-                        </span>
-                        {showList && (
-                          <ul className="dropdown-menu show" style={{ position: "absolute", top: "100%", left: -150, minWidth: "200px" }}>
-                         
-                            {hoaDons.map(hd => (
-                              <li key={hd.id}><a className="dropdown-item" href="/admin/quanlyhoadon">{hd.maHD}</a></li>
+        <div
+        className="notification-item"
+        onMouseEnter={() => setShowListDanhGia(true)}
+        onMouseLeave={() => setTimeout(() => setShowListDanhGia(false), 1000)} // Thêm độ trễ khi rời khỏi
+        style={{ position: "relative", padding: "10px" }}
+      >
+        <VscFeedback style={{ fontSize: "1.2rem", cursor: "pointer" , marginLeft: "-60px"}} />
+        <span
+          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style={{ fontSize: "0.6rem" , marginLeft: "-60px"}}
+        >
+          {danhGias.length}
+        </span>
+        {showListDanhGia && (
+          <ul
+            className="dropdown-menu show"
+            style={{
+              position: "absolute",
+              top: "100%",
+              right: 0,
+              minWidth: "200px",
+              zIndex: 1000,
+              left: "auto",
+            }}
+          >
+            <p style={{ margin: "10px" }}>Danh sách đánh giá</p>
+            {danhGias.map((dg) => (
+                <li key={dg.id}>
+                    <a className="dropdown-item" href="/admin/quanlydanhgia">
+                        {dg.binhLuan}
+                        <div className="star-rating">
+                            {[...Array(dg.sao)].map((_, index) => (
+                                <FaStar key={index} color="gold" size={10} />
                             ))}
-                          </ul>
-                        )}
-                      </div>
+                        </div>
+                    </a>
+                </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div
+        className="notification-item"
+        onMouseEnter={() => setShowList(true)}
+        onMouseLeave={() => setTimeout(() => setShowList(false), 1000)} // Thêm độ trễ khi rời khỏi
+        style={{ position: "relative", padding: "10px" }}
+      >
+        <FaBell style={{ fontSize: "1.2rem", cursor: "pointer", marginLeft: "-55px"}} />
+        <span
+          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style={{ fontSize: "0.6rem" ,marginLeft: "-55px"}}
+        >
+          {hoaDons.length}
+        </span>
+        {showList && (
+          <ul
+            className="dropdown-menu show"
+            style={{
+              position: "absolute",
+              top: "100%",
+              right: 0,
+              minWidth: "200px",
+              zIndex: 1000,
+              left: "auto",
+            }}
+          >
+            <p style={{ margin: "10px" }}>Danh sách hóa đơn chờ</p>
+            {hoaDons.map((hd) => (
+              <li key={hd.id}>
+                <a className="dropdown-item" href="/admin/quanlyhoadon">
+                  {hd.maHD}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
                       <span
                         className="User"
-                        style={{ fontSize: "18px", display: "flex", alignItems: "center" }}
+                        style={{
+                          fontSize: "18px",
+                          display: "flex",
+                          alignItems: "center",
+                          marginLeft: "-50px",
+                        }}
                       >
-                        {user.ten.length < 6 ? user.ten : `${user.ten.substring(0, 6)}`}
+                        {user.ten.length < 6
+                          ? user.ten
+                          : `${user.ten.substring(0, 6)}`}
 
                         <NavDropdown
                           id="nav-dropdown-dark-example"
@@ -313,7 +397,6 @@ const ReactSideBar = () => {
                         </NavDropdown>
                       </span>
                     </div>
-
 
                     {/* <span
                       className="User"
@@ -343,7 +426,6 @@ const ReactSideBar = () => {
               </div>
             </div>
 
-            
             <div
               style={{
                 padding: "16px 24px",
@@ -355,7 +437,7 @@ const ReactSideBar = () => {
                 {broken && (
                   <button
                     className="sb-button"
-                    onClick={() => setToggled(!toggled)}
+                    // onClick={() => setToggled(!toggled)}
                   >
                     Toggle
                   </button>

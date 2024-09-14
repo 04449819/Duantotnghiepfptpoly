@@ -32,6 +32,44 @@ namespace AppAPI.Services
             }
         }
 
+        public async Task<List<DanhGia>> GetAllUnrespondedReview()
+        {
+            return await _context.DanhGias
+                .Where(x => x.phanHoi == null && (x.BinhLuan != null || x.Sao != null))
+                .Include(x => x.ChiTietHoaDon)
+                .ToListAsync();
+        }
+        public  List<DanhGia> GetAll()
+        {
+            return  _context.DanhGias
+                .Include(x => x.ChiTietHoaDon)
+                .ToList();
+        }
+        public async Task<bool> ReplyPhanHoi(Guid idCTHD, string phanHoi)
+        {
+            try
+            {
+                DanhGia danhGia = _context.DanhGias.FirstOrDefault(p => p.ID == idCTHD);
+                if (danhGia == null)
+                {
+                    // Không tìm thấy đánh giá với idCTHD tương ứng
+                    return false;
+                }
+                danhGia.phanHoi = phanHoi;
+                reposDanhGia.Update(danhGia);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+
+                // Ghi log lỗi hoặc xử lý lỗi
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+
+        }
+
         public async Task<List<DanhGiaViewModel>> GetDanhGiaByIdBthe(Guid idbt)
         {
             //var result = await (from dg in _context.DanhGias

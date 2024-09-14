@@ -56,5 +56,24 @@ namespace AppAPI.Controllers
         {
             return _danhGiaService.UpdateDanhGia(idCTHD,soSao,binhLuan);
         }
+        [HttpGet("GetAllUnrespondedReview")]
+        public async Task<IActionResult> GetAllUnrespondedReview()
+        {
+            var danhGia = await _danhGiaService.GetAllUnrespondedReview();
+            if (danhGia != null) return Ok(danhGia);
+            return Ok();
+        }
+        [HttpGet("GetAll")]
+        public  IActionResult GetAll()
+        {
+            var danhGia =  _danhGiaService.GetAll();
+            return Ok(danhGia);
+        }
+        [HttpPut("GuiPhanHoi/{idDanhGia}")]
+        public IActionResult ReplyPhanHoi(Guid idDanhGia, string phanHoi)
+        {
+            var danhGia = _danhGiaService.ReplyPhanHoi(idDanhGia, phanHoi);
+            return Ok(danhGia);
+        }
     }
 }

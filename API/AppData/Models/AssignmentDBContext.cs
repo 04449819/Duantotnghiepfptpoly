@@ -38,8 +38,8 @@ namespace AppData.Models
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-
 			optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-6CVPDDRJ\SQLEXPRESS;Initial Catalog=duantotnghiepfpt;Integrated Security=True");
+
 
 
 

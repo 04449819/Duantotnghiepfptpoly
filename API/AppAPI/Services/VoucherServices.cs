@@ -123,6 +123,19 @@ namespace AppAPI.Services
                 .FirstOrDefault()?.Voucher;
             return bestVoucher;
         }
-        #endregion 
+
+        public List<Voucher> GetAllAvaiableVoucher()
+        {
+            DateTime now = DateTime.Now;
+            return context.Vouchers
+                .Where(voucher =>
+                    voucher.TrangThai == 1 &&
+                    voucher.NgayApDung <= now &&
+                    voucher.NgayKetThuc >= now &&
+                    voucher.SoLuong > 0
+                )
+                .ToList();
+        }
+        #endregion
     }
 }

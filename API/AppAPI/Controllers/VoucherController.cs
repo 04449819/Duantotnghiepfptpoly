@@ -101,6 +101,13 @@ namespace AppAPI.Controllers
             var voucher = _services.FillVoucher(tongTien);
             return Ok(new { voucher });
         }
+        [HttpGet("GetAllAvaiableVoucher")]
+        public async Task<IActionResult> GetAllAvaiableVoucher()
+        {
+            var vouchers = _services.GetAllAvaiableVoucher();
+            return Ok(new { vouchers });
+        }
+
         #endregion
 
     }

@@ -16,7 +16,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ModalThemDiaChiMoi from "./ModalThemDiaChiMoi";
 import { TiDelete } from "react-icons/ti";
+import ConfirmationModal from "./ModalXacNhanGioHang/ModalXacNhanGioHang";
+import { Modal, Button } from "react-bootstrap";
+
 // import { IoSettings } from "react-icons/io5";
+// Điều chỉnh đường dẫn nếu cần
+
 const GioHang = () => {
   const [shows, setShows] = useState(false);
   const navigate = useNavigate();
@@ -61,7 +66,19 @@ const GioHang = () => {
     hoaDonOnline.DiaChi.split(",")[0] || ""
   );
   const dispatch = useDispatch();
-  const [errors, setErrors] = useState({}); // Trạng thái lưu lỗi từng trường
+  //const [errors, setErrors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [massagename, setmassagename] = useState(true);
+  const [massagesdt, setmassagesdt] = useState(true);
+  const [massageemail, setmassageemail] = useState(true);
+  const [massageprovince, setmassageprovince] = useState(true);
+  const [massageDistrict, setmassageDistrict] = useState(true);
+  const [massagedcct, setmassagedcct] = useState(true);
+  const [massagepttt, setmassagepttt] = useState(true);
+  const [availableVouchers, setAvailableVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [shippingCost, setShippingCost] = useState(30000); // Default to 30000
 
   useEffect(() => {
     console.log("DSSPGIOHANG: ", dsspgiohangs);
@@ -69,6 +86,10 @@ const GioHang = () => {
       IDCTSP: spgh.id,
       SoLuongMua: spgh.soluongmua,
       GiaBan: spgh.giaban,
+      Anh: spgh.anh,
+      TenSanPham: spgh.tensp,
+      TenMauSac: spgh.tenms,
+      TenKichKo: spgh.tenkc,
       //giaTriKhuyenMai: spgh.giatrikhuyenmai ?? 0,
     }));
     setHoaDonOnline((prevState) => ({
@@ -77,18 +98,118 @@ const GioHang = () => {
       SoDiemSuDung: soDiemSuDung,
     }));
   }, [dsspgiohangs, soDiemSuDung]);
+
   useEffect(() => {
-    console.log("User", user);
-  }, [user, isDiemTichLuy]);
-  //  useEffect(() => {
-  //   console.log("District", selectedDistrict);
-  //   console.log("Province", selectedProvince);
-  //   console.log( "Result:",combineAddress(hoaDonOnline.DiaChi,selectedProvince,selectedDistrict));
+    fetchAvailableVouchers();
+  }, []);
 
-  //   console.log(hoaDonOnline.DiaChi);
+  const fetchAvailableVouchers = async () => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7095/api/Voucher/GetAllAvaiableVoucher`
+      );
+      console.log(response);
 
-  // }, [hoaDonOnline.DiaChi,selectedDistrict,selectedDistrict]);
+      const voucherOptions = response.data.vouchers.map((voucher) => ({
+        value: voucher.id,
+        label: `${voucher.ten} - Với đơn ${voucher.soTienCan.toLocaleString()}`,
+        isDisabled: voucher.soTienCan > tongTien,
+        ...voucher,
+      }));
+      setAvailableVouchers(voucherOptions);
+    } catch (error) {
+      console.error("Error fetching vouchers:", error);
+      toast.error("Không thể tải danh sách voucher");
+    }
+  };
 
+  useEffect(() => {
+    const updatedVouchers = availableVouchers.map((voucher) => ({
+      ...voucher,
+      isDisabled: voucher.soTienCan > tongTien,
+    }));
+    setAvailableVouchers(updatedVouchers);
+  }, [tongTien]);
+  const handleVoucherChange = (selectedOption) => {
+    setSelectedVoucher(selectedOption);
+    calculateTotalPrice();
+  };
+  const handleClickDiemTichLuy = () => {
+    setIsDiemTichLuy(!isDiemTichLuy);
+    calculateTotalPrice();
+  };
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [isDiemTichLuy, selectedVoucher, shippingCost]);
+  const calculateTotalPrice = (currentShippingCost = shippingCost) => {
+    let total = tongTienBanDau;
+    total += currentShippingCost;
+
+    // Rest of the calculation logic remains the same
+    if (selectedVoucher) {
+      const tienGiamVoucher =
+        selectedVoucher.hinhThucGiamGia === 0
+          ? selectedVoucher.giaTri
+          : total * (selectedVoucher.giaTri / 100);
+      total -= tienGiamVoucher;
+      setTienGiamVoucher(tienGiamVoucher);
+    } else {
+      setTienGiamVoucher(0);
+    }
+
+    if (isDiemTichLuy && user.diemTich) {
+      const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
+      const tienGiamDiem = maxDiemSuDung * 100;
+      total -= tienGiamDiem;
+      setTienGiamDiem(tienGiamDiem);
+      setSoDiemSuDung(maxDiemSuDung);
+    } else {
+      setTienGiamDiem(0);
+      setSoDiemSuDung(0);
+    }
+
+    setTongTien(total);
+  };
+  // const validateInput = (id, value) => {
+  //   let error = "";
+  //   switch (id) {
+  //     case "TenKhachHang":
+  //       if (!value.trim()) {
+  //         error = "Tên khách hàng không được để trống";
+  //       }
+  //       break;
+  //     case "SDT":
+  //       if (value === "") {
+  //         error = "Số điện thoại không được để trống";
+  //       }
+  //       break;
+  //     case "Email":
+  //       if (value === "") {
+  //         error = "Email phải điền đầy đủ";
+  //       }
+  //       break;
+  //     case "DiaChi":
+  //       if (value === "") {
+  //         error = "Địa chỉ phải điền đầy đủ";
+  //       }
+  //       break;
+  //     case "selectedProvince":
+  //       const Province = "pleaseSelect"; // Ví dụ giá trị mặc định
+  //       if (value === null || value === undefined) {
+  //         error = "Vui lòng chọn quận/huyện";
+  //       }
+  //       break;
+  //     case "selectedDistrict":
+  //       const defaultDistrict = "pleaseSelect"; // Ví dụ giá trị mặc định
+  //       if (value === null || value === undefined) {
+  //         error = "Vui lòng chọn quận/huyện";
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return error;
+  // };
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
@@ -114,80 +235,47 @@ const GioHang = () => {
   useEffect(() => {}, []);
 
   const applyVoucher = (totalPrice, voucher) => {
-    if (!voucher || totalPrice < voucher.soTienCan)
-      return { tienGiamVoucher: 0, newTotal: totalPrice };
-    const tienGiamVoucher =
+    if (!voucher || totalPrice < voucher.soTienCan) {
+      setTienGiamVoucher(0);
+      setTongTien(totalPrice);
+      return;
+    }
+    const tienGiam =
       voucher.hinhThucGiamGia === 0
         ? voucher.giaTri
         : totalPrice * (voucher.giaTri / 100);
-    return { tienGiamVoucher, newTotal: totalPrice - tienGiamVoucher };
+    setTienGiamVoucher(tienGiam);
+    setTongTien(totalPrice - tienGiam);
   };
 
-  const applyLoyaltyPoints = (totalPrice, isDiemTichLuy, diemTichLuy) => {
-    if (!isDiemTichLuy)
-      return { tienGiamDiem: 0, soDiemDung: 0, newTotal: totalPrice };
-    const tienGiamDiem = Math.min(diemTichLuy * 100, totalPrice);
-    const soDiemDung = Math.ceil(tienGiamDiem / 100);
-    const newTotal = Math.max(0, totalPrice - tienGiamDiem);
-    return { tienGiamDiem, soDiemDung, newTotal };
-  };
-  const getVoucherAndCalculateTotal = async () => {
-    try {
-      let totalPrice = tongTienBanDau;
-      if (hoaDonOnline.TienShip) {
-        totalPrice += Number(hoaDonOnline.TienShip);
-      }
-
-      // Áp dụng voucher
-      const voucherRes = await axios.get(
-        `https://localhost:7095/api/Voucher/fillvoucher/${totalPrice}`
-      );
-      const voucher = voucherRes.data.voucher;
-      setVoucher(voucher);
-      const { tienGiamVoucher, newTotal: totalAfterVoucher } = applyVoucher(
-        totalPrice,
-        voucher
-      );
-      setTienGiamVoucher(tienGiamVoucher);
-
-      const diemTichLuy = user?.diemTich || 0;
-      // Áp dụng điểm tích lũy nếu được chọn
-
-      if (isDiemTichLuy) {
-        const {
-          tienGiamDiem,
-          soDiemDung,
-          newTotal: finalTotal,
-        } = applyLoyaltyPoints(totalAfterVoucher, true, diemTichLuy);
-        setTienGiamDiem(tienGiamDiem);
-        setSoDiemSuDung(soDiemDung);
-        setTongTien(finalTotal);
-      } else {
-        setTienGiamDiem(0);
-        setSoDiemSuDung(0);
-        setTongTien(totalAfterVoucher);
-      }
-
-      return totalAfterVoucher;
-    } catch (error) {
-      console.error("Error in getVoucherAndCalculateTotal:", error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    getVoucherAndCalculateTotal();
-  }, [hoaDonOnline.SanPhams, hoaDonOnline.TienShip, isDiemTichLuy]);
   const resetForm = () => {
     setHoaDonOnline({
       TenKhachHang: "",
-      Email: "",
       SDT: "",
+      Email: "",
       DiaChi: "",
+      SanPhams: [],
+      IdVoucher: "",
       GhiChu: "",
+      TrangThaiGiaoHang: 2,
+      TienShip: 30000,
+      IdPhuongThucThanhToan: "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c",
+      IdKhachHang: "",
+      SoDiemSuDung: 0,
+      TongTienHoaDon: 0,
     });
-    setSelectedDistrict(null);
+    setModalData(null);
     setSelectedProvince(null);
+    setSelectedDistrict(null);
+    setDetailAddress("");
+    setVoucher(null);
+    setSoDiemSuDung(0);
+    setIsDiemTichLuy(false);
+    setTienGiamVoucher(0);
+    setTienGiamDiem(0);
+    setTongTien(0);
+    setTongTienBanDau(0);
+    setSelectedVoucher(null);
   };
   const combineAddress = (detailAddress, province, district) => {
     // Loại bỏ các giá trị null, undefined hoặc chuỗi rỗng và ghép chúng lại bằng dấu phẩy
@@ -226,39 +314,43 @@ const GioHang = () => {
     } catch (error) {}
   };
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    // Nếu đang thay đổi địa chỉ chi tiết
-    if (id === "DiaChi") {
-      setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
-      setHoaDonOnline((prevHoaDonOnline) => ({
-        ...prevHoaDonOnline,
-        DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
-      }));
-    } else {
-      // Cập nhật thông tin khác trong hoaDonOnline nếu cần
-      setHoaDonOnline((prevHoaDonOnline) => ({
-        ...prevHoaDonOnline,
-        [id]: value,
-      }));
-    }
-  };
+  // const handleInputChange = (e) => {
+  //   const { id, value } = e.target;
+  //   // Nếu đang thay đổi địa chỉ chi tiết
+  //   if (id === "DiaChi") {
+  //     setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
+  //     setHoaDonOnline((prevHoaDonOnline) => ({
+  //       ...prevHoaDonOnline,
+  //       DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
+  //     }));
+  //   } else {
+  //     setHoaDonOnline((prevHoaDonOnline) => ({
+  //       ...prevHoaDonOnline,
+  //       [id]: value,
+  //     }));
+  //     // const error = validateInput(id, value);
+  //   }
+  // };
+
   const handleProvinceChange = (selectedOption) => {
+    console.log(selectedOption);
+    if (massageprovince === false) {
+      if (selectedOption !== "") {
+        setmassageprovince(true);
+      }
+    }
     setSelectedProvince(selectedOption);
-    setHoaDonOnline((prevHoaDonOnline) => ({
-      ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedOption, selectedDistrict), // Không giữ lại địa chỉ cũ
-    }));
     getLoaiSanPhamBanHang2(selectedOption.value);
     setSelectedDistrict(null); // Reset district khi thay đổi tỉnh/thành phố
   };
 
   const handleDistrictChange = (selectedOption) => {
+    if (massageDistrict === false) {
+      if (selectedOption !== "") {
+        setmassageDistrict(true);
+      }
+    }
     setSelectedDistrict(selectedOption);
-    setHoaDonOnline((prevHoaDonOnline) => ({
-      ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedProvince, selectedOption), // Không giữ lại địa chỉ cũ
-    }));
   };
   const Hanleonclickthemspkhac = () => {
     navigate("/cuahang");
@@ -316,48 +408,43 @@ const GioHang = () => {
     }
   };
 
-  const handleClickDiemTichLuy = () => {
-    setIsDiemTichLuy(!isDiemTichLuy);
-  };
-
-  const validateOrderInfo = (hoaDon) => {
-    let newErrors = {};
-    if (!hoaDon.TenKhachHang) {
-      newErrors.TenKhachHang = "Họ và tên là bắt buộc.";
-    }
-    if (!hoaDon.Email) {
-      newErrors.Email = "Email là bắt buộc.";
-    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(hoaDon.Email)) {
-      newErrors.Email = "Định dạng email không hợp lệ.";
-    }
-    if (!hoaDon.SDT) {
-      newErrors.SDT = "Số điện thoại là bắt buộc.";
-    } else if (!/^0\d{9,10}$/.test(hoaDon.SDT)) {
-      newErrors.SDT = "Số điện thoại không hợp lệ.";
-    } else if (!/^(09|03|07|08|05)+([0-9]{8})\b/.test(hoaDon.SDT)) {
-      newErrors.SDT =
-        "Số điện thoại không đúng định dạng của các nhà mạng Việt Nam.";
-    }
-    if (!hoaDon.DiaChi) {
-      newErrors.DiaChi = "Địa chỉ là bắt buộc.";
-    }
-    if (!hoaDon.IdPhuongThucThanhToan) {
-      newErrors.IdPhuongThucThanhToan = "Vui lòng chọn phương thức thanh toán.";
+  const openConfirmationModal = () => {
+    const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
+    if (selectedProducts.length === 0) {
+      toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+      return;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-  const HandleDatHang = async () => {
-    try {
-      const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
-      if (selectedProducts.length === 0) {
-        toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
-        return;
-      }
-
-      //const tongTien = selectedProducts.reduce((sum, sp) => sum + sp.giaban * sp.soluongmua, 0);
-
+    let a = true;
+    if (hoaDonOnline.TenKhachHang.trim() === "") {
+      setmassagename(false);
+      a = false;
+    }
+    if (!validatesdt(hoaDonOnline.SDT)) {
+      setmassagesdt(false);
+      a = false;
+    }
+    if (selectedProvince === null) {
+      setmassageprovince(false);
+      a = false;
+    }
+    if (selectedDistrict === null) {
+      setmassageDistrict(false);
+      a = false;
+    }
+    if (hoaDonOnline.DiaChi.trim() === "") {
+      setmassagedcct(false);
+      a = false;
+    }
+    if (!validateEmail(hoaDonOnline.Email)) {
+      setmassageemail(false);
+      a = false;
+    }
+    // if (hoaDonOnline.TenKhachHang === '' || hoaDonOnline.SDT === '' || hoaDonOnline.Email === '' || hoaDonOnline.DiaChi === '') {
+    //   toast.error("Vui lòng chọn đẩy đủ thông tin");
+    //   return;
+    // }
+    if (a === true) {
       const hoaDonOnlineSubmit = {
         ...hoaDonOnline,
         TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
@@ -365,24 +452,61 @@ const GioHang = () => {
         Email: user.email || hoaDonOnline.Email,
         DiaChi:
           dckh.find((dc) => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
-        IdVoucher: voucher?.id || null,
+        IdVoucher: selectedVoucher ? selectedVoucher.value : null, //voucher?.id || null,
         SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
+        TienShip: shippingCost || 0,
         TongTienHoaDon: tongTien,
         SanPhams: selectedProducts.map((sp) => ({
           IDCTSP: sp.id,
           SoLuongMua: sp.soluongmua,
           GiaBan: sp.giaban,
+          Anh: sp.anh,
+          TenSanPham: sp.tensp,
+          TenKichCo: sp.tenkc,
+          TenMauSac: sp.tenms,
         })),
         IdKhachHang: user.id,
       };
-
+      // const newErrors = {
+      //   TenKhachHang: validateInput(
+      //     "TenKhachHang",
+      //     hoaDonOnlineSubmit.TenKhachHang
+      //   ),
+      //   SDT: validateInput("SDT", hoaDonOnlineSubmit.SDT),
+      //   Email: validateInput("Email", hoaDonOnlineSubmit.Email),
+      //   DiaChi: validateInput("DiaChi", hoaDonOnlineSubmit.DiaChi),
+      //   IdPhuongThucThanhToan: validateInput(
+      //     "IdPhuongThucThanhToan",
+      //     hoaDonOnlineSubmit.IdPhuongThucThanhToan
+      //   ),
+      //   // selectedDistrict: validateInput('selectedDistrict', hoaDonOnlineSubmit.selectedDistrict),
+      //   // selectedProvince: validateInput('selectedProvince', hoaDonOnlineSubmit.selectedProvince),
+      // };
+      // const hasError = Object.values(newErrors).some((error) => error !== "");
+      // if (hasError) {
+      //   return;
+      // }
+      const additionalInfo = {
+        tongTienBanDau: tongTienBanDau,
+        tienGiamVoucher: tienGiamVoucher,
+        tienGiamDiem: tienGiamDiem,
+        soDiemSuDung: soDiemSuDung,
+      };
+      setModalData({ ...hoaDonOnlineSubmit, ...additionalInfo });
+      setIsModalOpen(true);
+      console.log("isModalOpen:", isModalOpen);
+    }
+  };
+  const HandleDatHang = async () => {
+    try {
+      const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
       const apiUrl =
-        hoaDonOnlineSubmit.IdPhuongThucThanhToan ===
+        modalData.IdPhuongThucThanhToan ===
         "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
           ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
           : "https://localhost:7095/api/HoaDon/create-order";
 
-      const res = await axios.post(apiUrl, hoaDonOnlineSubmit);
+      const res = await axios.post(apiUrl, modalData);
 
       if (res.data?.payUrl) {
         window.open(res.data.payUrl, "_blank");
@@ -390,13 +514,18 @@ const GioHang = () => {
 
       if (res.data) {
         toast.success("Đặt hàng thành công");
+
+        //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
         selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
+
         setload(!load);
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
 
       resetForm();
+
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
       toast.error(
@@ -404,6 +533,7 @@ const GioHang = () => {
       );
     }
   };
+
   const handlePaymentMethodChange = (event) => {
     setHoaDonOnline((prevState) => ({
       ...prevState,
@@ -464,7 +594,43 @@ const GioHang = () => {
       setTongTienBanDau(total);
     } catch (error) {}
   };
+  const validatesdt = (sdt) => {
+    return String(sdt)
+      .toLowerCase()
+      .match(/^(0)([0-9]){9,9}$/);
+  };
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "TenKhachHang" && massagename === false) {
+      if (value.trim() !== "") {
+        setmassagename(true);
+      }
+    }
+    if (name === "Email" && massageemail === false) {
+      if (validateEmail(value)) {
+        setmassageemail(true);
+      }
+    }
+    if (name === "SDT" && massagesdt === false) {
+      if (validatesdt(value)) {
+        setmassagesdt(true);
+      }
+    }
+    if (name === "DiaChi" && massagedcct === false) {
+      if (value.trim() !== "") {
+        setmassagedcct(true);
+      }
+    }
+    setHoaDonOnline({ ...hoaDonOnline, [name]: value });
+  };
   return (
     <div className="GioHang pb-4">
       <div className="cart-container">
@@ -563,18 +729,26 @@ const GioHang = () => {
                 </div>
               )}
             </div>
+            <div className="voucher-selection">
+              <label>Chọn Voucher:</label>
+              <Select
+                value={selectedVoucher}
+                onChange={handleVoucherChange}
+                options={availableVouchers}
+                placeholder="Chọn voucher"
+                isClearable
+                isOptionDisabled={(option) => option.isDisabled}
+              />
+            </div>
 
-            <p>
-              Voucher sử dụng:{" "}
-              {voucher
-                ? `${voucher.ten} - ${voucher.giaTri}`
-                : "Không có voucher"}
-            </p>
+            {/* <p>
+            Voucher sử dụng: {voucher ? `${voucher.ten} - ${voucher.giaTri}` : 'Không có voucher'}
+          </p> */}
 
             <p>
               Giảm giá: -{(tienGiamVoucher + tienGiamDiem).toLocaleString()} VND
             </p>
-            <p>Phí vận chuyển: 30,000 VND</p>
+            <p>Phí vận chuyển: {shippingCost.toLocaleString()} VND</p>
             {/* <div className="discount-code">
               <input type="text" placeholder="Nhập mã khuyến mãi nếu có" />
               <button>SỬ DỤNG</button>
@@ -647,59 +821,51 @@ const GioHang = () => {
               </div>
               <label>Họ và tên (*)</label>
               <input
-                id="TenKhachHang"
+                name="TenKhachHang"
                 type="text"
                 value={hoaDonOnline.TenKhachHang || ""}
                 onChange={handleInputChange}
                 placeholder="Họ và tên"
-                required
               />
-              {errors.TenKhachHang && (
-                <span className="error" style={{ color: "red" }}>
-                  {errors.TenKhachHang}
-                </span>
-              )}
+              <label hidden={massagename} className=" text-danger">
+                Tên không được để trống !
+              </label>
+
               <label>Email</label>
               <input
-                id="Email"
+                name="Email"
                 type="email"
                 value={hoaDonOnline.Email || ""}
                 onChange={handleInputChange}
                 placeholder="Email"
               />
-              {errors.Email && (
-                <span className="error" style={{ color: "red" }}>
-                  {errors.Email}
-                </span>
-              )}
+
+              <label hidden={massageemail} className=" text-danger">
+                Email không đúng định dạng!
+              </label>
               <label>Điện thoại (*)</label>
               <input
-                id="SDT"
+                name="SDT"
                 type="text"
                 value={hoaDonOnline.SDT || ""}
                 onChange={handleInputChange}
                 placeholder="Điện thoại"
-                required
               />
-              {errors.SDT && (
-                <span className="error" style={{ color: "red" }}>
-                  {errors.SDT}
-                </span>
-              )}
+
+              <label hidden={massagesdt} className=" text-danger">
+                Số điện thoại không đúng định dạng!
+              </label>
               <label>Địa chỉ (*)</label>
               <input
-                id="DiaChi"
+                name="DiaChi"
                 type="text"
                 value={hoaDonOnline.DiaChi.split(",")[0] || ""}
                 onChange={handleInputChange}
                 placeholder="Địa chỉ"
-                required
               />
-              {errors.DiaChi && (
-                <span className="error" style={{ color: "red" }}>
-                  {errors.DiaChi}
-                </span>
-              )}
+              <label hidden={massagedcct} className=" text-danger">
+                Địa chỉ chi tiêt !
+              </label>
 
               <label>Tỉnh/ Thành phố</label>
               <Select
@@ -708,6 +874,9 @@ const GioHang = () => {
                 options={provinces}
                 placeholder="Chọn Tỉnh/ Thành phố"
               />
+              <label hidden={massageprovince} className=" text-danger">
+                Chọn thành phố !
+              </label>
               <label>Quận Huyện</label>
               <Select
                 value={selectedDistrict}
@@ -716,9 +885,12 @@ const GioHang = () => {
                 placeholder="Chọn Quận Huyện"
                 isDisabled={!selectedProvince}
               />
+              <label hidden={massageDistrict} className=" text-danger">
+                Chọn quận huyện !
+              </label>
               <label>Ghi chú cho hóa đơn</label>
               <textarea
-                id="GhiChu"
+                name="GhiChu"
                 value={hoaDonOnline.GhiChu || ""}
                 onChange={handleInputChange}
                 placeholder="Ghi chú cho hóa đơn"
@@ -790,20 +962,29 @@ const GioHang = () => {
             </p>
             <p>Cảm ơn quý khách đã mua sắm tại Oldsailor.com.vn</p>
           </div>
-          {errors.IdPhuongThucThanhToan && (
-            <span className="error" style={{ color: "red" }}>
-              {errors.IdPhuongThucThanhToan}
-            </span>
-          )}
+
+          <label hidden={massageDistrict} className=" text-danger">
+            Phương thức thanh toán !
+          </label>
           <button
             className="complete-order-button"
             style={{ borderRadius: "5px" }}
-            onClick={HandleDatHang}
+            onClick={openConfirmationModal}
           >
             ĐẶT HÀNG
           </button>
+
+          {isModalOpen && (
+            <ConfirmationModal
+              show={isModalOpen}
+              onHide={() => setIsModalOpen(false)}
+              data={modalData}
+              onConfirm={HandleDatHang}
+            />
+          )}
         </div>
       </div>
+
       {/* <ModalDangNhap show={shows} setShow={setShows} /> */}
       <ModalThemDiaChiMoi
         show={shows}

@@ -129,6 +129,7 @@ namespace AppAPI.Services
                         IDCTSP = sp.IDCTSP,
                         SoLuong = sp.SoLuongMua,
                         DonGia = sp.SoLuongMua * giaBan,
+
                         TrangThai = 1
                     };
 

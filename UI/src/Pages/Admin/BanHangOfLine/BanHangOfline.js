@@ -144,10 +144,8 @@ const getHoaDonChos = async () => {
     content: () => componentRef.current,
     documentTitle: "HoaDon",
   });
-  // const ngayTao = new Date(hoaDon.ngayTao);
-  // const thoiGianTao = `${ngayTao.getHours()}:${ngayTao.getMinutes()}:${ngayTao.getSeconds()}.${ngayTao.getMilliseconds()}`;
+ 
   function tachPhanThoiGian(ngayGioString) {
-    // Kiểm tra xem tham số đầu vào có phải là chuỗi hay không
     if (typeof ngayGioString !== 'string') {
       return 'Vui lòng nhập vào một chuỗi ngày giờ';
     }

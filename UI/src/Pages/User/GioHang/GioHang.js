@@ -17,11 +17,10 @@ import { toast } from "react-toastify";
 import ModalThemDiaChiMoi from "./ModalThemDiaChiMoi";
 import { TiDelete } from "react-icons/ti";
 import ConfirmationModal from "./ModalXacNhanGioHang/ModalXacNhanGioHang";
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from "react-bootstrap";
 
 // import { IoSettings } from "react-icons/io5";
- // Điều chỉnh đường dẫn nếu cần
-
+// Điều chỉnh đường dẫn nếu cần
 
 const GioHang = () => {
   const [shows, setShows] = useState(false);
@@ -33,28 +32,29 @@ const GioHang = () => {
   const dispath = useDispatch();
   const [dsspgiohangs, setdsspgiohangs] = useState([]);
   const [provinces, setprovinces] = useState([]);
-  const [districts, setdistricts] = useState([]); 
+  const [districts, setdistricts] = useState([]);
   const [dckh, setdckh] = useState([]);
   const [tongTien, setTongTien] = useState(0);
   const [tongTienBanDau, setTongTienBanDau] = useState(0);
   const [load, setload] = useState(false);
+  const [datakm, setdatakm] = useState([]);
   const [hoaDonOnline, setHoaDonOnline] = useState({
-    TenKhachHang: '',
-    SDT: '',
-    Email: '',
-    DiaChi: '',
+    TenKhachHang: "",
+    SDT: "",
+    Email: "",
+    DiaChi: "",
     SanPhams: [],
-    IdVoucher: '',
-    GhiChu: '',
-    TrangThaiGiaoHang: 2,
-    TienShip: 30000, 
-    IdPhuongThucThanhToan: 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c',
+    IdVoucher: "",
+    GhiChu: "",
+    TrangThaiGiaoHang: 1,
+    TienShip: 30000,
+    IdPhuongThucThanhToan: "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c",
     // IdNhanVien: '',
 
-    IdKhachHang :'',
+    IdKhachHang: "",
 
     SoDiemSuDung: 0,
-    TongTienHoaDon: 0
+    TongTienHoaDon: 0,
   });
   const [voucher, setVoucher] = useState();
   const [soDiemSuDung, setSoDiemSuDung] = useState(0);
@@ -62,28 +62,27 @@ const GioHang = () => {
   const [tienGiamVoucher, setTienGiamVoucher] = useState(0);
   const [tienGiamDiem, setTienGiamDiem] = useState(0);
 
-  const [detailAddress, setDetailAddress] = useState(hoaDonOnline.DiaChi.split(',')[0] || '');
+  const [detailAddress, setDetailAddress] = useState(
+    hoaDonOnline.DiaChi.split(",")[0] || ""
+  );
   const dispatch = useDispatch();
-  //const [errors, setErrors] = useState({}); 
+  //const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
-  const [errors, setErrors] = useState({
-    TenKhachHang: '',
-    SDT: '',
-    Email: '',
-    DiaChi: '',
-    IdPhuongThucThanhToan:'',
-    selectedProvince: '',
-    selectedDistrict: ''
-  });
+  const [massagename, setmassagename] = useState(true);
+  const [massagesdt, setmassagesdt] = useState(true);
+  const [massageemail, setmassageemail] = useState(true);
+  const [massageprovince, setmassageprovince] = useState(true);
+  const [massageDistrict, setmassageDistrict] = useState(true);
+  const [massagedcct, setmassagedcct] = useState(true);
+  const [massagepttt, setmassagepttt] = useState(true);
   const [availableVouchers, setAvailableVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [shippingCost, setShippingCost] = useState(30000); // Default to 30000
-  
+
   useEffect(() => {
-    console.log("DSSPGIOHANG: ",dsspgiohangs);
-    
-    const chiTietSanPhamGioHangs = dsspgiohangs.map(spgh => ({
+    console.log("DSSPGIOHANG: ", dsspgiohangs);
+    const chiTietSanPhamGioHangs = dsspgiohangs.map((spgh) => ({
       IDCTSP: spgh.id,
       SoLuongMua: spgh.soluongmua,
       GiaBan: spgh.giaban,
@@ -91,179 +90,184 @@ const GioHang = () => {
       TenSanPham: spgh.tensp,
       TenMauSac: spgh.tenms,
       TenKichKo: spgh.tenkc,
-      //giaTriKhuyenMai: spgh.giatrikhuyenmai ?? 0,  
-  }));
-  setHoaDonOnline(prevState => ({
-    ...prevState,
-    SanPhams: chiTietSanPhamGioHangs,
-    SoDiemSuDung: soDiemSuDung
-}));
-  },[dsspgiohangs, soDiemSuDung])
- 
-useEffect(() => {
-  fetchAvailableVouchers();
-}, []);
-
-const fetchAvailableVouchers = async () => {
-  try {
-    const response = await axios.get(`https://localhost:7095/api/Voucher/GetAllAvaiableVoucher`);
-    console.log(response);
-    
-    const voucherOptions = response.data.vouchers.map(voucher => ({
-      value: voucher.id,
-      label: `${voucher.ten} - Với đơn ${voucher.soTienCan.toLocaleString()}`,
-      isDisabled: voucher.soTienCan > tongTien,
-      ...voucher
+      //giaTriKhuyenMai: spgh.giatrikhuyenmai ?? 0,
     }));
-    setAvailableVouchers(voucherOptions);
-  } catch (error) {
-    console.error('Error fetching vouchers:', error);
-    toast.error('Không thể tải danh sách voucher');
-  }
-};
+    setHoaDonOnline((prevState) => ({
+      ...prevState,
+      SanPhams: chiTietSanPhamGioHangs,
+      SoDiemSuDung: soDiemSuDung,
+    }));
+  }, [dsspgiohangs, soDiemSuDung]);
 
-useEffect(() => {
-  const updatedVouchers = availableVouchers.map(voucher => ({
-    ...voucher,
-    isDisabled: voucher.soTienCan > tongTien
-  }));
-  setAvailableVouchers(updatedVouchers);
-}, [tongTien]);
-const handleVoucherChange = (selectedOption) => {
-  setSelectedVoucher(selectedOption);
-  calculateTotalPrice();
-};
-const handleClickDiemTichLuy = () => {
-  setIsDiemTichLuy(!isDiemTichLuy);
-  calculateTotalPrice();
-};
-useEffect(() => {
-  calculateTotalPrice();
-}, [isDiemTichLuy, selectedVoucher, shippingCost]);
-const calculateTotalPrice = (currentShippingCost = shippingCost) => {
-  let total = tongTienBanDau;
-  total += currentShippingCost;
+  useEffect(() => {
+    fetchAvailableVouchers();
+  }, []);
 
-  // Rest of the calculation logic remains the same
-  if (selectedVoucher) {
-    const tienGiamVoucher = selectedVoucher.hinhThucGiamGia === 0
-      ? selectedVoucher.giaTri
-      : total * (selectedVoucher.giaTri / 100);
-    total -= tienGiamVoucher;
-    setTienGiamVoucher(tienGiamVoucher);
-  } else {
-    setTienGiamVoucher(0);
-  }
+  const fetchAvailableVouchers = async () => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7095/api/Voucher/GetAllAvaiableVoucher`
+      );
+      console.log(response);
 
-  if (isDiemTichLuy && user.diemTich) {
-    const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
-    const tienGiamDiem = maxDiemSuDung * 100;
-    total -= tienGiamDiem;
-    setTienGiamDiem(tienGiamDiem);
-    setSoDiemSuDung(maxDiemSuDung);
-  } else {
-    setTienGiamDiem(0);
-    setSoDiemSuDung(0);
-  }
+      const voucherOptions = response.data.vouchers.map((voucher) => ({
+        value: voucher.id,
+        label: `${voucher.ten} - Với đơn ${voucher.soTienCan.toLocaleString()}`,
+        isDisabled: voucher.soTienCan > tongTien,
+        ...voucher,
+      }));
+      setAvailableVouchers(voucherOptions);
+    } catch (error) {
+      console.error("Error fetching vouchers:", error);
+      toast.error("Không thể tải danh sách voucher");
+    }
+  };
 
-  setTongTien(total);
-};
-const validateInput = (id, value) => {
-  let error = "";
-  switch (id) {
-    case "TenKhachHang":
-      if (!value.trim()) {
-        error = "Tên khách hàng không được để trống";
-      }
-      break;
-    case "SDT":
-      if (value === "") {
-        error = "Số điện thoại không được để trống";
-      }
-      break;
-    case "Email":
-      if (value === "") {
-        error = "Email phải điền đầy đủ";
-      }
-      break;
-    case "DiaChi":
-      if(value === "") {
-        error = "Địa chỉ phải điền đầy đủ";
-      }
-      break;
-    case "selectedProvince":
-      const Province = 'pleaseSelect'; // Ví dụ giá trị mặc định
-      if (value === null || value === undefined) {
-          error = "Vui lòng chọn quận/huyện";
-      }
-      break;
-    case "selectedDistrict":
-      const defaultDistrict = 'pleaseSelect'; // Ví dụ giá trị mặc định
-      if (value === null || value === undefined) {
-          error = "Vui lòng chọn quận/huyện";
-      }
-      break;
-      default:
-      break;
-  }
-  return error;
-};
+  useEffect(() => {
+    const updatedVouchers = availableVouchers.map((voucher) => ({
+      ...voucher,
+      isDisabled: voucher.soTienCan > tongTien,
+    }));
+    setAvailableVouchers(updatedVouchers);
+  }, [tongTien]);
+  const handleVoucherChange = (selectedOption) => {
+    setSelectedVoucher(selectedOption);
+    calculateTotalPrice();
+  };
+  const handleClickDiemTichLuy = () => {
+    setIsDiemTichLuy(!isDiemTichLuy);
+    calculateTotalPrice();
+  };
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [isDiemTichLuy, selectedVoucher, shippingCost]);
+  const calculateTotalPrice = (currentShippingCost = shippingCost) => {
+    let total = tongTienBanDau;
+    total += currentShippingCost;
+
+    // Rest of the calculation logic remains the same
+    if (selectedVoucher) {
+      const tienGiamVoucher =
+        selectedVoucher.hinhThucGiamGia === 0
+          ? selectedVoucher.giaTri
+          : total * (selectedVoucher.giaTri / 100);
+      total -= tienGiamVoucher;
+      setTienGiamVoucher(tienGiamVoucher);
+    } else {
+      setTienGiamVoucher(0);
+    }
+
+    if (isDiemTichLuy && user.diemTich) {
+      const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
+      const tienGiamDiem = maxDiemSuDung * 100;
+      total -= tienGiamDiem;
+      setTienGiamDiem(tienGiamDiem);
+      setSoDiemSuDung(maxDiemSuDung);
+    } else {
+      setTienGiamDiem(0);
+      setSoDiemSuDung(0);
+    }
+
+    setTongTien(total);
+  };
+  // const validateInput = (id, value) => {
+  //   let error = "";
+  //   switch (id) {
+  //     case "TenKhachHang":
+  //       if (!value.trim()) {
+  //         error = "Tên khách hàng không được để trống";
+  //       }
+  //       break;
+  //     case "SDT":
+  //       if (value === "") {
+  //         error = "Số điện thoại không được để trống";
+  //       }
+  //       break;
+  //     case "Email":
+  //       if (value === "") {
+  //         error = "Email phải điền đầy đủ";
+  //       }
+  //       break;
+  //     case "DiaChi":
+  //       if (value === "") {
+  //         error = "Địa chỉ phải điền đầy đủ";
+  //       }
+  //       break;
+  //     case "selectedProvince":
+  //       const Province = "pleaseSelect"; // Ví dụ giá trị mặc định
+  //       if (value === null || value === undefined) {
+  //         error = "Vui lòng chọn quận/huyện";
+  //       }
+  //       break;
+  //     case "selectedDistrict":
+  //       const defaultDistrict = "pleaseSelect"; // Ví dụ giá trị mặc định
+  //       if (value === null || value === undefined) {
+  //         error = "Vui lòng chọn quận/huyện";
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return error;
+  // };
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
       return a.check ? -1 : 1;
     });
+    GetallKhuyenMai();
     setdsspgiohangs(sortedProducts);
     getLoaiSanPhamBanHang1();
-    const total = dsspgiohang
-      .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
-      .reduce((sum, product) => sum + product.giaban * product.soluongmua, 0);
-    setTongTien(total);
-    setTongTienBanDau(total);
+    // const total = dsspgiohang
+    //   .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
+    //   .reduce(
+    //     (sum, product) => sum + product.giatrithuc * product.soluongmua,
+    //     0
+    //   );
+    // setTongTien(total);
+    // setTongTienBanDau(total);
     // getLoaiSanPhamBanHang2();
     if (user.id !== undefined) {
       getDiaChiKhachHang();
     }
   }, [dsspgiohang, load]);
 
-  useEffect(() => {
-    
-  },[]);
+  useEffect(() => {}, []);
 
- 
   const applyVoucher = (totalPrice, voucher) => {
     if (!voucher || totalPrice < voucher.soTienCan) {
       setTienGiamVoucher(0);
       setTongTien(totalPrice);
       return;
     }
-    const tienGiam = voucher.hinhThucGiamGia === 0
-      ? voucher.giaTri
-      : totalPrice * (voucher.giaTri / 100);
+    const tienGiam =
+      voucher.hinhThucGiamGia === 0
+        ? voucher.giaTri
+        : totalPrice * (voucher.giaTri / 100);
     setTienGiamVoucher(tienGiam);
     setTongTien(totalPrice - tienGiam);
   };
-  
+
   const resetForm = () => {
     setHoaDonOnline({
-      TenKhachHang: '',
-      SDT: '',
-      Email: '',
-      DiaChi: '',
+      TenKhachHang: "",
+      SDT: "",
+      Email: "",
+      DiaChi: "",
       SanPhams: [],
-      IdVoucher: '',
-      GhiChu: '',
+      IdVoucher: "",
+      GhiChu: "",
       TrangThaiGiaoHang: 2,
-      TienShip: 30000, 
-      IdPhuongThucThanhToan: 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c',
-      IdKhachHang: '',
+      TienShip: 30000,
+      IdPhuongThucThanhToan: "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c",
+      IdKhachHang: "",
       SoDiemSuDung: 0,
-      TongTienHoaDon: 0
+      TongTienHoaDon: 0,
     });
     setModalData(null);
     setSelectedProvince(null);
     setSelectedDistrict(null);
-    setDetailAddress('');
+    setDetailAddress("");
     setVoucher(null);
     setSoDiemSuDung(0);
     setIsDiemTichLuy(false);
@@ -272,14 +276,14 @@ const validateInput = (id, value) => {
     setTongTien(0);
     setTongTienBanDau(0);
     setSelectedVoucher(null);
-  }
+  };
   const combineAddress = (detailAddress, province, district) => {
     // Loại bỏ các giá trị null, undefined hoặc chuỗi rỗng và ghép chúng lại bằng dấu phẩy
     return [detailAddress, district?.label, province?.label]
       .filter(Boolean) // Chỉ giữ các giá trị có thật
-      .join(', ');     // Ghép các giá trị với dấu phẩy
+      .join(", "); // Ghép các giá trị với dấu phẩy
   };
-  
+
   const getDiaChiKhachHang = async () => {
     try {
       var res = await axios.get(
@@ -309,67 +313,44 @@ const validateInput = (id, value) => {
       setdistricts(datatam);
     } catch (error) {}
   };
-  
-  
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-     // Nếu đang thay đổi địa chỉ chi tiết
-     if (id === 'DiaChi') {
-      setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
-      setHoaDonOnline((prevHoaDonOnline) => ({
-          ...prevHoaDonOnline,
-          DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
-      }));
-  } else {
-      setHoaDonOnline((prevHoaDonOnline) => ({
-          ...prevHoaDonOnline,
-          [id]: value
-      }));
-    const error = validateInput(id, value);
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [id]: error,
-    }));
-  }
-  };
+
+  // const handleInputChange = (e) => {
+  //   const { id, value } = e.target;
+  //   // Nếu đang thay đổi địa chỉ chi tiết
+  //   if (id === "DiaChi") {
+  //     setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
+  //     setHoaDonOnline((prevHoaDonOnline) => ({
+  //       ...prevHoaDonOnline,
+  //       DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
+  //     }));
+  //   } else {
+  //     setHoaDonOnline((prevHoaDonOnline) => ({
+  //       ...prevHoaDonOnline,
+  //       [id]: value,
+  //     }));
+  //     // const error = validateInput(id, value);
+  //   }
+  // };
+
   const handleProvinceChange = (selectedOption) => {
+    console.log(selectedOption);
+    if (massageprovince === false) {
+      if (selectedOption !== "") {
+        setmassageprovince(true);
+      }
+    }
     setSelectedProvince(selectedOption);
-    // const newShippingCost = selectedOption.label === "Hà Nội" ? 30000 : 100000;
-    // setShippingCost(newShippingCost);
-    setHoaDonOnline((prevHoaDonOnline) => ({
-      ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedOption, selectedDistrict), // Không giữ lại địa chỉ cũ
-      //TienShip: newShippingCost
-    }));
-    const newShippingCost = selectedOption.label === "Hà Nội" ? 30000 : 100000;
-    setShippingCost(newShippingCost);
-    setHoaDonOnline((prevHoaDonOnline) => ({
-      ...prevHoaDonOnline,
-      TienShip: newShippingCost
-    }));
-    // const error = validateInput('selectedProvince', selectedOption);
-    // setErrors((prevErrors) => ({
-    //   ...prevErrors,
-    //   selectedProvince: error,
-    // }));
     getLoaiSanPhamBanHang2(selectedOption.value);
     setSelectedDistrict(null); // Reset district khi thay đổi tỉnh/thành phố
-    calculateTotalPrice(newShippingCost);
   };
 
   const handleDistrictChange = (selectedOption) => {
+    if (massageDistrict === false) {
+      if (selectedOption !== "") {
+        setmassageDistrict(true);
+      }
+    }
     setSelectedDistrict(selectedOption);
-    setHoaDonOnline((prevHoaDonOnline) => ({
-      ...prevHoaDonOnline,
-      DiaChi: combineAddress(detailAddress, selectedProvince, selectedOption) // Không giữ lại địa chỉ cũ
-  }));
-
-  // const error = validateInput('selectedDistrict', selectedOption);
-  // setErrors((prevErrors) => ({
-  //   ...prevErrors,
-  //   selectedDistrict: error,
-  // }));
-  
   };
   const Hanleonclickthemspkhac = () => {
     navigate("/cuahang");
@@ -426,110 +407,230 @@ const validateInput = (id, value) => {
       toast.error(`Gặp lỗi: ${error.response.data}`);
     }
   };
-  
 
- 
- 
   const openConfirmationModal = () => {
-    const selectedProducts = dsspgiohangs.filter(sp => sp.check);
+    const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
     if (selectedProducts.length === 0) {
       toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
       return;
-    } 
+    }
+
+    let a = true;
+    if (hoaDonOnline.TenKhachHang.trim() === "") {
+      setmassagename(false);
+      a = false;
+    }
+    if (!validatesdt(hoaDonOnline.SDT)) {
+      setmassagesdt(false);
+      a = false;
+    }
+    if (selectedProvince === null) {
+      setmassageprovince(false);
+      a = false;
+    }
+    if (selectedDistrict === null) {
+      setmassageDistrict(false);
+      a = false;
+    }
+    if (hoaDonOnline.DiaChi.trim() === "") {
+      setmassagedcct(false);
+      a = false;
+    }
+    if (!validateEmail(hoaDonOnline.Email)) {
+      setmassageemail(false);
+      a = false;
+    }
     // if (hoaDonOnline.TenKhachHang === '' || hoaDonOnline.SDT === '' || hoaDonOnline.Email === '' || hoaDonOnline.DiaChi === '') {
     //   toast.error("Vui lòng chọn đẩy đủ thông tin");
     //   return;
     // }
-    
-  
-    const hoaDonOnlineSubmit = {
-      ...hoaDonOnline,
-      TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
-      SDT: user.sdt || hoaDonOnline.SDT,
-      Email: user.email || hoaDonOnline.Email,
-      DiaChi: dckh.find(dc => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
-      IdVoucher: selectedVoucher ? selectedVoucher.value : null,//voucher?.id || null,
-      SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
-      TienShip: shippingCost || 0,
-      TongTienHoaDon: tongTien,
-      SanPhams: selectedProducts.map(sp => ({
-        IDCTSP: sp.id,
-        SoLuongMua: sp.soluongmua,
-        GiaBan: sp.giaban,
-        Anh: sp.anh,
-        TenSanPham: sp.tensp,
-        TenKichCo: sp.tenkc,
-        TenMauSac: sp.tenms
-      })),
-      IdKhachHang: user.id,
-    };
-    const newErrors = {
-      TenKhachHang: validateInput('TenKhachHang', hoaDonOnlineSubmit.TenKhachHang),
-      SDT: validateInput( 'SDT',hoaDonOnlineSubmit.SDT),
-      Email: validateInput('Email', hoaDonOnlineSubmit.Email ),
-      DiaChi: validateInput('DiaChi', hoaDonOnlineSubmit.DiaChi),
-      IdPhuongThucThanhToan: validateInput('IdPhuongThucThanhToan', hoaDonOnlineSubmit.IdPhuongThucThanhToan),
-      // selectedDistrict: validateInput('selectedDistrict', hoaDonOnlineSubmit.selectedDistrict),
-      // selectedProvince: validateInput('selectedProvince', hoaDonOnlineSubmit.selectedProvince),
-    };
-    setErrors(newErrors);
-    const hasError = Object.values(newErrors).some(error => error !== "");
-    if (hasError) {
-      return; 
+    if (a === true) {
+      const hoaDonOnlineSubmit = {
+        ...hoaDonOnline,
+        TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
+        SDT: user.sdt || hoaDonOnline.SDT,
+        Email: user.email || hoaDonOnline.Email,
+        DiaChi:
+          dckh.find((dc) => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
+        IdVoucher: selectedVoucher ? selectedVoucher.value : null, //voucher?.id || null,
+        SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
+        TienShip: shippingCost || 0,
+        TongTienHoaDon: tongTien,
+        SanPhams: selectedProducts.map((sp) => ({
+          IDCTSP: sp.id,
+          SoLuongMua: sp.soluongmua,
+          GiaBan: sp.giaban,
+          Anh: sp.anh,
+          TenSanPham: sp.tensp,
+          TenKichCo: sp.tenkc,
+          TenMauSac: sp.tenms,
+        })),
+        IdKhachHang: user.id,
+      };
+      // const newErrors = {
+      //   TenKhachHang: validateInput(
+      //     "TenKhachHang",
+      //     hoaDonOnlineSubmit.TenKhachHang
+      //   ),
+      //   SDT: validateInput("SDT", hoaDonOnlineSubmit.SDT),
+      //   Email: validateInput("Email", hoaDonOnlineSubmit.Email),
+      //   DiaChi: validateInput("DiaChi", hoaDonOnlineSubmit.DiaChi),
+      //   IdPhuongThucThanhToan: validateInput(
+      //     "IdPhuongThucThanhToan",
+      //     hoaDonOnlineSubmit.IdPhuongThucThanhToan
+      //   ),
+      //   // selectedDistrict: validateInput('selectedDistrict', hoaDonOnlineSubmit.selectedDistrict),
+      //   // selectedProvince: validateInput('selectedProvince', hoaDonOnlineSubmit.selectedProvince),
+      // };
+      // const hasError = Object.values(newErrors).some((error) => error !== "");
+      // if (hasError) {
+      //   return;
+      // }
+      const additionalInfo = {
+        tongTienBanDau: tongTienBanDau,
+        tienGiamVoucher: tienGiamVoucher,
+        tienGiamDiem: tienGiamDiem,
+        soDiemSuDung: soDiemSuDung,
+      };
+      setModalData({ ...hoaDonOnlineSubmit, ...additionalInfo });
+      setIsModalOpen(true);
+      console.log("isModalOpen:", isModalOpen);
     }
-    const additionalInfo = {
-      tongTienBanDau: tongTienBanDau,
-      tienGiamVoucher: tienGiamVoucher,
-      tienGiamDiem: tienGiamDiem,
-      soDiemSuDung: soDiemSuDung,
-    };
-    setModalData({ ...hoaDonOnlineSubmit, ...additionalInfo });
-    setIsModalOpen(true);
-    console.log("isModalOpen:", isModalOpen);
   };
   const HandleDatHang = async () => {
     try {
-      
-      const selectedProducts = dsspgiohangs.filter(sp => sp.check);
-      const apiUrl = modalData.IdPhuongThucThanhToan === 'f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c'
-        ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
-        : "https://localhost:7095/api/HoaDon/create-order";
-  
+      const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
+      const apiUrl =
+        modalData.IdPhuongThucThanhToan ===
+        "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+          ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
+          : "https://localhost:7095/api/HoaDon/create-order";
+
       const res = await axios.post(apiUrl, modalData);
-  
+
       if (res.data?.payUrl) {
-        window.open(res.data.payUrl, '_blank');
+        window.open(res.data.payUrl, "_blank");
       }
-  
+
       if (res.data) {
         toast.success("Đặt hàng thành công");
+
         //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
-        selectedProducts.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
+        selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
+
         setload(!load);
-       
-        
-        
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
-  
+
       resetForm();
+
       setIsModalOpen(false);
-  
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
-      toast.error(`Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`);
+      toast.error(
+        `Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`
+      );
     }
   };
-  
+
   const handlePaymentMethodChange = (event) => {
     setHoaDonOnline((prevState) => ({
       ...prevState,
       IdPhuongThucThanhToan: event.target.value,
-   
     }));
   };
 
+  const GetallKhuyenMai = async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/KhuyenMai/getallkhuyenmai`
+      );
+      console.log("hahah", res.data);
+      console.log("hahahaaa", dsspgiohang);
+      const dsspgh = dsspgiohang.map((p) => {
+        const km = res.data.find((d) => d.idChiTietSanPham === p.id);
+        if (km) {
+          let tongtien;
+          switch (km.trangThai) {
+            case 0:
+              tongtien = p.giaban - km.giaTri;
+              break;
+            case 1:
+              tongtien = (p.giaban * km.giaTri) / 100;
+              break;
+            case 2:
+              tongtien = km.giaTri;
+              break;
+            case 3:
+              tongtien = p.giaban - (p.giaban * km.giaTri) / 100;
+              break;
+            // Thêm các trường hợp khác nếu cần
+            default:
+              tongtien = "default_value"; // Giá trị mặc định nếu không khớp với case nào
+              break;
+          }
+
+          return {
+            ...p,
+            giatrithuc: tongtien, // Thêm giá trị khuyến mãi
+          };
+        } else {
+          return { ...p, giatrithuc: p.giaban };
+        }
+      });
+      console.log("danh sach moi", dsspgh);
+      setdsspgiohangs(dsspgh);
+
+      const total = dsspgh
+        .filter((product) => product.check === true) // Lọc các sản phẩm có check = true
+        .reduce(
+          (sum, product) => sum + product.giatrithuc * product.soluongmua,
+          0
+        );
+      console.log("toong tien ", total);
+
+      setTongTien(total);
+      setTongTienBanDau(total);
+    } catch (error) {}
+  };
+  const validatesdt = (sdt) => {
+    return String(sdt)
+      .toLowerCase()
+      .match(/^(0)([0-9]){9,9}$/);
+  };
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "TenKhachHang" && massagename === false) {
+      if (value.trim() !== "") {
+        setmassagename(true);
+      }
+    }
+    if (name === "Email" && massageemail === false) {
+      if (validateEmail(value)) {
+        setmassageemail(true);
+      }
+    }
+    if (name === "SDT" && massagesdt === false) {
+      if (validatesdt(value)) {
+        setmassagesdt(true);
+      }
+    }
+    if (name === "DiaChi" && massagedcct === false) {
+      if (value.trim() !== "") {
+        setmassagedcct(true);
+      }
+    }
+    setHoaDonOnline({ ...hoaDonOnline, [name]: value });
+  };
   return (
     <div className="GioHang pb-4">
       <div className="cart-container">
@@ -583,7 +684,9 @@ const validateInput = (id, value) => {
                           value={sp.soluongmua}
                         />
                       </td>
-                      <td>{(sp.giaban * sp.soluongmua).toLocaleString()} VND</td>
+                      <td>
+                        {(sp.giatrithuc * sp.soluongmua).toLocaleString()} VND
+                      </td>
                       <td>
                         <BiX
                           onClick={() => HandleOnclickDeletesp(sp)}
@@ -615,46 +718,43 @@ const validateInput = (id, value) => {
             </p>
             <div className="mb-3">
               {user && user.diemTich > 0 && (
-                        <div className="d-flex align-items-center">
-                          <span className="me-3">Điểm hiện tại: { user.diemTich } </span>
-                            <input 
-                              type="checkbox"
-                              id="diem-tich-luy-switch"
-                              checked={isDiemTichLuy}
-                              onChange={handleClickDiemTichLuy}
-                            />
-                        </div>
-                      )
-              }
-
+                <div className="d-flex align-items-center">
+                  <span className="me-3">Điểm hiện tại: {user.diemTich} </span>
+                  <input
+                    type="checkbox"
+                    id="diem-tich-luy-switch"
+                    checked={isDiemTichLuy}
+                    onChange={handleClickDiemTichLuy}
+                  />
+                </div>
+              )}
             </div>
             <div className="voucher-selection">
-          <label>Chọn Voucher:</label>
-          <Select
-            value={selectedVoucher}
-            onChange={handleVoucherChange}
-            options={availableVouchers}
-            placeholder="Chọn voucher"
-            isClearable
-            isOptionDisabled={(option) => option.isDisabled}
-          />
-      
+              <label>Chọn Voucher:</label>
+              <Select
+                value={selectedVoucher}
+                onChange={handleVoucherChange}
+                options={availableVouchers}
+                placeholder="Chọn voucher"
+                isClearable
+                isOptionDisabled={(option) => option.isDisabled}
+              />
+            </div>
 
-        </div>
-           
-          {/* <p>
+            {/* <p>
             Voucher sử dụng: {voucher ? `${voucher.ten} - ${voucher.giaTri}` : 'Không có voucher'}
           </p> */}
 
-           
-            <p>Giảm giá: -{(tienGiamVoucher + tienGiamDiem).toLocaleString()} VND</p>
+            <p>
+              Giảm giá: -{(tienGiamVoucher + tienGiamDiem).toLocaleString()} VND
+            </p>
             <p>Phí vận chuyển: {shippingCost.toLocaleString()} VND</p>
             {/* <div className="discount-code">
               <input type="text" placeholder="Nhập mã khuyến mãi nếu có" />
               <button>SỬ DỤNG</button>
             </div> */}
             <hr className="my-3" />
-            <h5>Tổng cộng: {(tongTien).toLocaleString() } VND</h5>
+            <h5>Tổng cộng: {tongTien.toLocaleString()} VND</h5>
             <hr className="my-3" />
           </div>
         </div>
@@ -705,7 +805,7 @@ const validateInput = (id, value) => {
                   onClick={() => setShows(true)}
                   className="w-25 mx-auto d-flex"
                   style={{ cursor: "pointer" }}
-                > 
+                >
                   <div>+</div>
                   <div>Thêm mới địa chỉ</div>
                 </div>
@@ -721,48 +821,51 @@ const validateInput = (id, value) => {
               </div>
               <label>Họ và tên (*)</label>
               <input
-                id="TenKhachHang"
+                name="TenKhachHang"
                 type="text"
-                value={ hoaDonOnline.TenKhachHang || ''}
+                value={hoaDonOnline.TenKhachHang || ""}
                 onChange={handleInputChange}
                 placeholder="Họ và tên"
-                required
-                isInvalid={!!errors.TenKhachHang}
               />
-                {errors.TenKhachHang && <div className="text-danger">{errors.TenKhachHang}</div>}
+              <label hidden={massagename} className=" text-danger">
+                Tên không được để trống !
+              </label>
+
               <label>Email</label>
               <input
-                id="Email"
+                name="Email"
                 type="email"
-                value={ hoaDonOnline.Email || ''}
+                value={hoaDonOnline.Email || ""}
                 onChange={handleInputChange}
                 placeholder="Email"
-                required
-                isInvalid={!!errors.Email}
               />
-              {errors.Email && <div className="text-danger">{errors.Email}</div>}
+
+              <label hidden={massageemail} className=" text-danger">
+                Email không đúng định dạng!
+              </label>
               <label>Điện thoại (*)</label>
               <input
-                id="SDT"
+                name="SDT"
                 type="text"
-                value={ hoaDonOnline.SDT || ''}
+                value={hoaDonOnline.SDT || ""}
                 onChange={handleInputChange}
                 placeholder="Điện thoại"
-                required
-                isInvalid={!!errors.SDT}
               />
-             {errors.SDT && <div className="text-danger">{errors.SDT}</div>}
+
+              <label hidden={massagesdt} className=" text-danger">
+                Số điện thoại không đúng định dạng!
+              </label>
               <label>Địa chỉ (*)</label>
               <input
-                id="DiaChi" 
-                type="text" 
-                value={ hoaDonOnline.DiaChi.split(',')[0] || ''} 
-                onChange={handleInputChange} 
-                placeholder="Địa chỉ" 
-                required 
-                isInvalid={!!errors.DiaChi}
-                />
-               {errors.DiaChi && <div className="text-danger">{errors.DiaChi}</div>}
+                name="DiaChi"
+                type="text"
+                value={hoaDonOnline.DiaChi.split(",")[0] || ""}
+                onChange={handleInputChange}
+                placeholder="Địa chỉ"
+              />
+              <label hidden={massagedcct} className=" text-danger">
+                Địa chỉ chi tiêt !
+              </label>
 
               <label>Tỉnh/ Thành phố</label>
               <Select
@@ -770,9 +873,10 @@ const validateInput = (id, value) => {
                 onChange={handleProvinceChange}
                 options={provinces}
                 placeholder="Chọn Tỉnh/ Thành phố"
-                isInvalid={!!errors.selectedProvince}
               />
-              {errors.selectedProvince && <div className="text-danger">{errors.selectedProvince}</div>}
+              <label hidden={massageprovince} className=" text-danger">
+                Chọn thành phố !
+              </label>
               <label>Quận Huyện</label>
               <Select
                 value={selectedDistrict}
@@ -780,11 +884,17 @@ const validateInput = (id, value) => {
                 options={districts}
                 placeholder="Chọn Quận Huyện"
                 isDisabled={!selectedProvince}
-                isInvalid={!!errors.selectedDistrict}
               />
-              {errors.selectedDistrict && <div className="text-danger">{errors.selectedDistrict}</div>}
+              <label hidden={massageDistrict} className=" text-danger">
+                Chọn quận huyện !
+              </label>
               <label>Ghi chú cho hóa đơn</label>
-              <textarea id="GhiChu" value={ hoaDonOnline.GhiChu || ''} onChange={handleInputChange} placeholder="Ghi chú cho hóa đơn"></textarea>
+              <textarea
+                name="GhiChu"
+                value={hoaDonOnline.GhiChu || ""}
+                onChange={handleInputChange}
+                placeholder="Ghi chú cho hóa đơn"
+              ></textarea>
               {/* <div className="checkbox-group">
               <label>
                 <input type="checkbox" /> Giao hàng tại địa chỉ khác
@@ -799,34 +909,36 @@ const validateInput = (id, value) => {
         <div className="payment-method">
           <h5>PHƯƠNG THỨC THANH TOÁN</h5>
           <div className="payment-options">
-          <label>
-          <input 
-          id="payment-method"
-          type="radio" 
-          name="payment-method"
-          value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
-          onChange={(e) => handlePaymentMethodChange(e)}
-          defaultChecked 
-           /> 
-          Thanh toán khi nhận hàng (COD)
-        </label>
-        <p>
-          Cảm ơn quý khách đã mua sắm tại SHOP MAN
-          <br />
-          **Lưu ý: Mã giảm giá không áp dụng cho các sản phẩm đang khuyến mãi
-          <br />
-          Để ship nhanh trong ngày, vui lòng gọi (028) 36 222 000 để được hướng dẫn
-        </p>
-        <label>
-          <input 
-           id="payment-method"
-           type="radio" 
-           name="payment-method"
-          value="fab870b4-7a7d-403a-a855-b7431a3c9252" 
-          onChange={(e) => handlePaymentMethodChange(e)}
-          /> 
-          Thanh toán qua TÀI KHOẢN NGÂN HÀNG
-        </label>
+            <label>
+              <input
+                id="payment-method"
+                type="radio"
+                name="payment-method"
+                value="f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+                onChange={(e) => handlePaymentMethodChange(e)}
+                defaultChecked
+              />
+              Thanh toán khi nhận hàng (COD)
+            </label>
+            <p>
+              Cảm ơn quý khách đã mua sắm tại SHOP MAN
+              <br />
+              **Lưu ý: Mã giảm giá không áp dụng cho các sản phẩm đang khuyến
+              mãi
+              <br />
+              Để ship nhanh trong ngày, vui lòng gọi (028) 36 222 000 để được
+              hướng dẫn
+            </p>
+            <label>
+              <input
+                id="payment-method"
+                type="radio"
+                name="payment-method"
+                value="fab870b4-7a7d-403a-a855-b7431a3c9252"
+                onChange={(e) => handlePaymentMethodChange(e)}
+              />
+              Thanh toán qua TÀI KHOẢN NGÂN HÀNG
+            </label>
 
             <p>
               Khi chuyển khoản, quý khách vui lòng nhập nội dung chuyển khoản:
@@ -850,7 +962,10 @@ const validateInput = (id, value) => {
             </p>
             <p>Cảm ơn quý khách đã mua sắm tại Oldsailor.com.vn</p>
           </div>
-          {errors.IdPhuongThucThanhToan && <div className="text-danger">{errors.IdPhuongThucThanhToan}</div>}
+
+          <label hidden={massageDistrict} className=" text-danger">
+            Phương thức thanh toán !
+          </label>
           <button
             className="complete-order-button"
             style={{ borderRadius: "5px" }}
@@ -858,8 +973,8 @@ const validateInput = (id, value) => {
           >
             ĐẶT HÀNG
           </button>
-        
-           {isModalOpen && (
+
+          {isModalOpen && (
             <ConfirmationModal
               show={isModalOpen}
               onHide={() => setIsModalOpen(false)}
@@ -869,7 +984,7 @@ const validateInput = (id, value) => {
           )}
         </div>
       </div>
-     
+
       {/* <ModalDangNhap show={shows} setShow={setShows} /> */}
       <ModalThemDiaChiMoi
         show={shows}

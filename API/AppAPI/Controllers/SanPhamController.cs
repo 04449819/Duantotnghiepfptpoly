@@ -273,12 +273,20 @@ namespace AppAPI.Controllers
                     MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                     KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                     DonGia = cthd.DonGia,
-                    SoLuongHoan = _dbcontext.hoanhangsanphams
-                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1 ) // Lọc theo trạng thái hoàn hàng
+//<<<<<<< HEAD
+//                    SoLuongHoan = _dbcontext.Hoanhangsanphams
+//						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+//                        .Sum(hhsp => hhsp.SoLuong),
+//                    // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
+//                    DiaChiKhachHang = _dbcontext.Hoanhangsanphams
+//						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+//=======
+                    SoLuongHoan = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1 ) // Lọc theo trạng thái hoàn hàng
                         .Sum(hhsp => hhsp.SoLuong),
                     // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
-                    DiaChiKhachHang = _dbcontext.hoanhangsanphams
-                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1) // Lọc theo trạng thái hoàn hàng
+                    DiaChiKhachHang = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID && hhsp.TrangThaiHoanHang == 1) // Lọc theo trạng thái hoàn hàng
                         .Select(hhsp => hhsp.Diachikhachhang)
                         .FirstOrDefault()
                 })
@@ -312,12 +320,13 @@ namespace AppAPI.Controllers
                     MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                     KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                     DonGia = cthd.DonGia,
-                    SoLuongHoan = _dbcontext.hoanhangsanphams
-                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
+                    SoLuongHoan = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
                         .Sum(hhsp => hhsp.SoLuong),
                     // Lấy địa chỉ khách hàng từ bảng hoàn sản phẩm
-                    DiaChiKhachHang = _dbcontext.hoanhangsanphams
-                        .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
+                    DiaChiKhachHang = _dbcontext.Hoanhangsanphams
+						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
+//>>>>>>> f4bee67bb1ab2db2440d814a46166acfc7aebbfa
                         .Select(hhsp => hhsp.Diachikhachhang)
                         .FirstOrDefault()
                 })
@@ -387,8 +396,8 @@ namespace AppAPI.Controllers
                         DonGia = cthd.DonGia,
                         SoLuong = cthd.SoLuong,
                         // Thêm thông tin về hoàn hàng nếu có
-                        Hoanhangsanpham = _dbcontext.hoanhangsanphams
-                            .Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
+                        Hoanhangsanpham = _dbcontext.Hoanhangsanphams
+							.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
                             .Select(hhsp => new
                             {
                                 hhsp.ID,

@@ -18,7 +18,7 @@ import axios from "axios";
 
 const ReactSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [toggled, setToggled] = useState(false);
+  // const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
   const navigate = useNavigate();
   const dispath = useDispatch();
@@ -94,8 +94,8 @@ const ReactSideBar = () => {
         >
           <Sidebar
             collapsed={collapsed}
-            toggled={toggled}
-            onBackdropClick={() => setToggled(false)}
+            // toggled={toggled}
+            // onBackdropClick={() => setToggled(false)}
             onBreakPoint={setBroken}
             breakPoint="md"
             style={{ position: "fixed", zIndex: 2 }}
@@ -437,7 +437,7 @@ const ReactSideBar = () => {
                 {broken && (
                   <button
                     className="sb-button"
-                    onClick={() => setToggled(!toggled)}
+                    // onClick={() => setToggled(!toggled)}
                   >
                     Toggle
                   </button>

@@ -436,45 +436,78 @@ namespace AppAPI.Controllers
 
         }
         #region khuyenmaiKien
-  //      [HttpPut("addkhuyenmaitoCTSP")]
+        [HttpGet("getallkhuyenmai")]
+        public async Task<IActionResult> GetAllKhuyenMai()
+        {
+			try
+			{
+				var activePromotions = await (
+					from a in _dbcontext.KhuyenMais
+					where a.NgayApDung <= DateTime.Now && a.NgayKetThuc >= DateTime.Now
+					join b in _dbcontext.KhuyenMaiCTSanPhams on a.ID equals b.IdKhuyenMai
+					select new
+					{
+						IdChiTietSanPham = b.IdChiTietSanPham,
+						IdKhuyenMai = a.ID,
+						GiaTri = a.GiaTri,
+						Ten = a.Ten,
+						NgayApDung = a.NgayApDung,
+						NgayKetThuc = a.NgayKetThuc,
+						MoTa = a.MoTa,
+						TrangThai = a.TrangThai
+					}
+				).ToListAsync();
+
+				return Ok(activePromotions);
+			}
+			catch (Exception ex)
+			{
+				// Log exception (you can use a logger service if you have one)
+				// _logger.LogError(ex, "Error while fetching promotions.");
+				throw;  // Or return a custom error response
+			}
+
+
+		}
+		//      [HttpPut("addkhuyenmaitoCTSP")]
 		//public async Task<IActionResult> AddkhuyenmaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP,string idkhuyenmai)
 		//{
-			//if (IDCTSP == null || !IDCTSP.Any())
-			//{
-			//	return BadRequest("Danh sách IDCTSP rỗng hoặc null");
-			//}
+		//if (IDCTSP == null || !IDCTSP.Any())
+		//{
+		//	return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+		//}
 
-			//foreach (var id in IDCTSP)
-			//{
-			//		var dt = await _dbcontext.ChiTietSanPhams.FindAsync(id.id);
-			//		if (dt != null)
-			//		{
-			//			if(id.trangthai == true)
-			//			{
-			//				dt.IDKhuyenMai = Guid.Parse(idkhuyenmai);
-			//			}
-			//			else
-			//			{
-			//				dt.IDKhuyenMai = Guid.Parse("B2B70D39-0658-422B-93B1-C054B374B232");
-			//			}
-			//			_dbcontext.ChiTietSanPhams.Update(dt);
-   //                     _dbcontext.SaveChanges();
-			//		}
-			//		else
-			//		{
-			//			return NotFound($"Sản phẩm chi tiết với ID {id} không tồn tại.");
-			//		}
-			//}
+		//foreach (var id in IDCTSP)
+		//{
+		//		var dt = await _dbcontext.ChiTietSanPhams.FindAsync(id.id);
+		//		if (dt != null)
+		//		{
+		//			if(id.trangthai == true)
+		//			{
+		//				dt.IDKhuyenMai = Guid.Parse(idkhuyenmai);
+		//			}
+		//			else
+		//			{
+		//				dt.IDKhuyenMai = Guid.Parse("B2B70D39-0658-422B-93B1-C054B374B232");
+		//			}
+		//			_dbcontext.ChiTietSanPhams.Update(dt);
+		//                     _dbcontext.SaveChanges();
+		//		}
+		//		else
+		//		{
+		//			return NotFound($"Sản phẩm chi tiết với ID {id} không tồn tại.");
+		//		}
+		//}
 
-	
 
-			//// Lưu các thay đổi vào database
-			//await _dbcontext.SaveChangesAsync();
 
-			//return Ok("Update thành công.");
-		
+		//// Lưu các thay đổi vào database
+		//await _dbcontext.SaveChangesAsync();
 
-	  //  }
+		//return Ok("Update thành công.");
+
+
+		//  }
 		#endregion
 	}
 

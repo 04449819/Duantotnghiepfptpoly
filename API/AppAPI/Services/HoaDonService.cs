@@ -1599,14 +1599,14 @@ namespace AppAPI.Services
                 context.SaveChanges();
 
                 // Cập nhật trạng thái hoàn hàng trong bảng Hoanhangsanpham
-                var danhSachHoanHang = context.hoanhangsanphams
-                    .Where(hh => hh.ChiTietHoaDon.IDHoaDon == idhd && hh.TrangThaiHoanHang == 1)
+                var danhSachHoanHang = context.Hoanhangsanphams
+					.Where(hh => hh.ChiTietHoaDon.IDHoaDon == idhd && hh.TrangThaiHoanHang == 1)
                     .ToList();
 
                 foreach (var hoanhang in danhSachHoanHang)
                 {
                     hoanhang.TrangThaiHoanHang = 2; // Đặt trạng thái hoàn tất
-                    context.hoanhangsanphams.Update(hoanhang);
+                    context.Hoanhangsanphams.Update(hoanhang);
                 }
                 context.SaveChanges(); // Lưu các thay đổi trong bảng Hoanhangsanpham
 

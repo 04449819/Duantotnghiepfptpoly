@@ -46,7 +46,7 @@ namespace AppAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var hoanhangsanpham = await _context.hoanhangsanphams.FindAsync(id);
+            var hoanhangsanpham = await _context.Hoanhangsanphams.FindAsync(id);
             if (hoanhangsanpham == null)
             {
                 return NotFound();

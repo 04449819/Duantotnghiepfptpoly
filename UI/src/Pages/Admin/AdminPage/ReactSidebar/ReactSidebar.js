@@ -11,12 +11,10 @@ import { LogOutTaiKhoan } from "../../../../Rudux/Reducer/taiKhoanSlice";
 import Swal from "sweetalert2";
 import { AiFillSignal } from "react-icons/ai";
 import { FaAddressBook } from "react-icons/fa";
-import { FaBell } from 'react-icons/fa';
+import { FaBell } from "react-icons/fa";
 import axios from "axios";
 
-
 const ReactSideBar = () => {
-  const [emailUser, setemailUser] = useState("");
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
@@ -33,9 +31,11 @@ const ReactSideBar = () => {
   useEffect(() => {
     // Fetch dữ liệu hóa đơn từ backend hoặc từ một nguồn dữ liệu khác
     const fetchData = async () => {
-      const response = await axios.get('https://localhost:7095/api/HoaDon/GetAllHDCho');
+      const response = await axios.get(
+        "https://localhost:7095/api/HoaDon/GetAllHDCho"
+      );
       console.log(response.data);
-      
+
       setHoaDons(response.data);
     };
     fetchData();
@@ -243,9 +243,8 @@ const ReactSideBar = () => {
                         marginTop: "22px",
                       }}
                     />
-                    
                   </div>
-                  
+
                   <div
                     className="col-1"
                     style={{
@@ -256,7 +255,6 @@ const ReactSideBar = () => {
                       left: "1400px",
                     }}
                   >
-                    
                     <div
                       className="col-1"
                       style={{
@@ -266,26 +264,45 @@ const ReactSideBar = () => {
                         left: "1400px",
                         display: "flex",
                         alignItems: "center",
-                        gap: "15px"
+                        gap: "15px",
                       }}
                     >
-                      <div className="dropdown position-relative"
-                      onMouseEnter={() => setShowList(true)}
-                      onMouseLeave={() => setShowList(false)}
+                      <div
+                        className="dropdown position-relative"
+                        onMouseEnter={() => setShowList(true)}
+                        onMouseLeave={() => setShowList(false)}
                       >
-                        <FaBell 
-                          
+                        <FaBell
                           style={{ cursor: "pointer", fontSize: "1.2rem" }}
                         />
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
+                        <span
+                          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          style={{ fontSize: "0.6rem" }}
+                        >
                           {hoaDons.length}
-
                         </span>
                         {showList && (
-                          <ul className="dropdown-menu show" style={{ position: "absolute", top: "100%", left: -150, minWidth: "200px" }}>
-                            <p style={{marginLeft: "10px"}}>Danh sách hóa đơn chờ</p>
-                            {hoaDons.map(hd => (
-                              <li key={hd.id}><a className="dropdown-item" href="/admin/quanlyhoadon">{hd.maHD}</a></li>
+                          <ul
+                            className="dropdown-menu show"
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              left: -150,
+                              minWidth: "200px",
+                            }}
+                          >
+                            <p style={{ marginLeft: "10px" }}>
+                              Danh sách hóa đơn chờ
+                            </p>
+                            {hoaDons.map((hd) => (
+                              <li key={hd.id}>
+                                <a
+                                  className="dropdown-item"
+                                  href="/admin/quanlyhoadon"
+                                >
+                                  {hd.maHD}
+                                </a>
+                              </li>
                             ))}
                           </ul>
                         )}
@@ -293,9 +310,15 @@ const ReactSideBar = () => {
 
                       <span
                         className="User"
-                        style={{ fontSize: "18px", display: "flex", alignItems: "center" }}
+                        style={{
+                          fontSize: "18px",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
                       >
-                        {user.ten.length < 6 ? user.ten : `${user.ten.substring(0, 6)}`}
+                        {user.ten.length < 6
+                          ? user.ten
+                          : `${user.ten.substring(0, 6)}`}
 
                         <NavDropdown
                           id="nav-dropdown-dark-example"
@@ -313,7 +336,6 @@ const ReactSideBar = () => {
                         </NavDropdown>
                       </span>
                     </div>
-
 
                     {/* <span
                       className="User"
@@ -343,7 +365,6 @@ const ReactSideBar = () => {
               </div>
             </div>
 
-            
             <div
               style={{
                 padding: "16px 24px",

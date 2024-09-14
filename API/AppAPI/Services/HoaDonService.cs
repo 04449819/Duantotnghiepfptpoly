@@ -1256,15 +1256,22 @@ namespace AppAPI.Services
 
         public List<HoaDon> TimKiemVaLocHoaDon(string ten, int? loc)
         {
-            string tenLowerCase = ten.ToLower();
-            ////    List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%")).ToList();
-            //    string tenLowerCase = ten.ToLower();
-            //List<HoaDon> timkiem = reposHoaDon.GetAll()
-            //    .Where(p => EF.Functions.Like(p.TenNguoiNhan.ToLower(), $"%{tenLowerCase}%"))
-            //    .ToList();
+            if (string.IsNullOrEmpty(ten))
+            {
+                // Nếu không có tên tìm kiếm, trả về danh sách tất cả hóa đơn đã lọc
+                return loc.HasValue && loc.Value == 0
+                    ? reposHoaDon.GetAll().OrderBy(p => p.NgayTao).ToList()
+                    : loc.HasValue && loc.Value == 1
+                    ? reposHoaDon.GetAll().OrderByDescending(p => p.NgayTao).ToList()
+                    : reposHoaDon.GetAll().ToList();
+            }
+
+            string tenLowerCase = RemoveVietnameseSigns(ten.ToLower());
+
             List<HoaDon> timkiem = reposHoaDon.GetAll()
-                    .Where(p => RemoveVietnameseSigns(p.TenNguoiNhan.ToLower()).StartsWith(RemoveVietnameseSigns(tenLowerCase)))
-                            .ToList();
+                .Where(p => !string.IsNullOrEmpty(p.TenNguoiNhan) &&
+                            RemoveVietnameseSigns(p.TenNguoiNhan.ToLower()).Contains(tenLowerCase))
+                .ToList();
 
             // Sắp xếp nếu có yêu cầu
             if (loc == 0)
@@ -1281,9 +1288,12 @@ namespace AppAPI.Services
             // Trả về danh sách đã tìm kiếm mà không sắp xếp
             return timkiem;
         }
+
         // Hàm loại bỏ dấu tiếng Việt
         private string RemoveVietnameseSigns(string text)
         {
+            if (text == null) return string.Empty;
+
             text = text.Normalize(NormalizationForm.FormD);
             var sb = new StringBuilder();
 
@@ -1298,6 +1308,8 @@ namespace AppAPI.Services
 
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
+
+
 
         public bool UpdateGhiChuHD(Guid idhd, Guid idnv, int trangThai, string ghichu)
         {
@@ -1574,77 +1586,93 @@ namespace AppAPI.Services
         {
             try
             {
+                // Cập nhật thông tin Hóa Đơn
                 var hd = context.HoaDons.FirstOrDefault(c => c.ID == idhd);
-                hd.TrangThaiGiaoHang = 5;
+                if (hd == null)
+                {
+                    throw new InvalidOperationException($"Hóa đơn với ID {idhd} không tìm thấy.");
+                }
+
+                hd.TrangThaiGiaoHang = 5; // Trạng thái hoàn tất
                 hd.IDNhanVien = idnv;
-                hd.TongTien = 0;
                 context.HoaDons.Update(hd);
                 context.SaveChanges();
+
+                // Cập nhật trạng thái hoàn hàng trong bảng Hoanhangsanpham
+                var danhSachHoanHang = context.hoanhangsanphams
+                    .Where(hh => hh.ChiTietHoaDon.IDHoaDon == idhd && hh.TrangThaiHoanHang == 1)
+                    .ToList();
+
+                foreach (var hoanhang in danhSachHoanHang)
+                {
+                    hoanhang.TrangThaiHoanHang = 2; // Đặt trạng thái hoàn tất
+                    context.hoanhangsanphams.Update(hoanhang);
+                }
+                context.SaveChanges(); // Lưu các thay đổi trong bảng Hoanhangsanpham
 
                 // Cộng lại số lượng hàng
                 var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == idhd).ToList();
                 foreach (var hdct in lsthdct)
                 {
                     var ctsp = context.ChiTietSanPhams.FirstOrDefault(c => c.ID == hdct.IDCTSP);
-                    ctsp.SoLuong += hdct.SoLuong;
-                    context.ChiTietSanPhams.Update(ctsp);
-                    context.SaveChanges();
+                    if (ctsp != null)
+                    {
+                        ctsp.SoLuong += hdct.SoLuong;
+                        context.ChiTietSanPhams.Update(ctsp);
+                    }
                 }
+                context.SaveChanges(); // Lưu các thay đổi trong bảng ChiTietSanPham
 
                 // Cộng lại số lượng voucher nếu áp dụng
                 if (hd.IDVoucher != null)
                 {
                     var vc = context.Vouchers.FirstOrDefault(c => c.ID == hd.IDVoucher);
-                    vc.SoLuong += 1;
-                    context.Vouchers.Update(vc);
-                    context.SaveChanges();
+                    if (vc != null)
+                    {
+                        vc.SoLuong += 1;
+                        context.Vouchers.Update(vc);
+                        context.SaveChanges(); // Lưu thay đổi cho bảng Vouchers
+                    }
                 }
+
                 // Cộng lại điểm khách hàng dùng cho hóa đơn
                 var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idhd).ToList();
-                if (lstlstd.Count != 0)
+                if (lstlstd.Count > 0)
                 {
-                    var tieud = lstlstd.Where(c => c.TrangThai == 0).FirstOrDefault();
+                    var tieud = lstlstd.FirstOrDefault(c => c.TrangThai == 0);
                     if (tieud != null)
                     {
-                        //Cộng điểm kh
-                        var kh = context.KhachHangs.Where(c => c.IDKhachHang == tieud.IDKhachHang).FirstOrDefault();
-                        kh.DiemTich += tieud.Diem;
-                        context.KhachHangs.Update(kh);
-                        context.SaveChanges();
-                        //Thêm 1 lịch sử trả lại điểm cho đơn hoàn thành công
-                        LichSuTichDiem diemtra = new LichSuTichDiem()
+                        var kh = context.KhachHangs.FirstOrDefault(c => c.IDKhachHang == tieud.IDKhachHang);
+                        if (kh != null)
                         {
-                            ID = new Guid(),
-                            IDHoaDon = hd.ID,
-                            IDKhachHang = kh.IDKhachHang,
-                            Diem = tieud.Diem,
-                            TrangThai = 4,
-                            IDQuyDoiDiem = tieud.IDQuyDoiDiem,
-                        };
-                        context.LichSuTichDiems.Add(diemtra);
-                        context.SaveChanges();
-                        //if (lsthdct.Count == 2)
-                        //{
-                        //    context.LichSuTichDiems.Remove(tieud);
-                        //    context.SaveChanges();
-                        //}
-                        //else
-                        //{
-                        //    //Cập nhật tích điểm
-                        //    tieud.Diem = 0;
-                        //    context.LichSuTichDiems.Update(tieud);
-                        //    context.SaveChanges();
-                        //}
-                    }
+                            kh.DiemTich += tieud.Diem;
+                            context.KhachHangs.Update(kh);
+                            context.SaveChanges(); // Lưu thay đổi cho bảng KhachHangs
 
+                            var diemtra = new LichSuTichDiem
+                            {
+                                ID = Guid.NewGuid(),
+                                IDHoaDon = hd.ID,
+                                IDKhachHang = kh.IDKhachHang,
+                                Diem = tieud.Diem,
+                                TrangThai = 4, // Trạng thái điểm đã hoàn trả
+                                IDQuyDoiDiem = tieud.IDQuyDoiDiem,
+                            };
+                            context.LichSuTichDiems.Add(diemtra);
+                            context.SaveChanges(); // Lưu thay đổi cho bảng LichSuTichDiems
+                        }
+                    }
                 }
+
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Xử lý lỗi với thông báo chi tiết
+                throw new Exception("Có lỗi xảy ra khi cập nhật trạng thái hoàn hàng: " + ex.Message);
             }
         }
+
 
         public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
         {

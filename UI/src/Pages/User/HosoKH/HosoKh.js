@@ -194,7 +194,7 @@ return <FaExclamationCircle color="gray" title="Không xác định" />;
 
   const renderTrangThaiGiaoHang = (trangThai) => {
     const trangThaiGiaoHangDict = {
-      1: 'Đơn nháp',
+      10: 'chuẩn bị hàng',
       2: 'Chờ xác nhận',
       3: 'Đang giao hàng',
       6: 'Thành công',

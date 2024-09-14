@@ -12,6 +12,7 @@ import {
   setidloaisp,
 } from "../../../Rudux/Reducer/IDLoaiSPSlice";
 import { setchitietsp } from "../../../Rudux/Reducer/chitietsanphamonl";
+import { toast } from "react-toastify";
 const CuaHang = () => {
   const [showProductGroup, setShowProductGroup] = useState(false);
   const [showProductGroup1, setShowProductGroup1] = useState(false);
@@ -80,7 +81,8 @@ const CuaHang = () => {
   };
 
   useEffect(() => {
-    // console.log(loaisp);
+    // console.log(loaisp);\
+    // toast.info("hahahahaha");
     if (loaisp.title !== undefined) {
       setten(loaisp.title);
     } else {

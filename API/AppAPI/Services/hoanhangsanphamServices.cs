@@ -17,58 +17,77 @@ namespace AppAPI.Services
 
         public async Task<Hoanhangsanpham> CreateAsync(hoanhangviewmodel viewModel)
         {
-            // Tìm ChiTietHoaDon dựa trên ID
+            // Find ChiTietHoaDon based on ID
             var chiTietHoaDon = await _context.ChiTietHoaDons.FindAsync(viewModel.IdChiTietHoaDon);
             if (chiTietHoaDon == null)
             {
                 throw new InvalidOperationException("Chi tiết hóa đơn không tìm thấy.");
             }
 
-            if (viewModel.SoLuong <= 0 || viewModel.SoLuong > chiTietHoaDon.SoLuong)
+            // Check the quantity of the return
+            if (viewModel.SoLuong <= 0)
             {
-                throw new InvalidOperationException("Số lượng hoàn hàng không hợp lệ hoặc lớn hơn số lượng còn lại.");
+                throw new InvalidOperationException("Số lượng hoàn hàng phải lớn hơn 0.");
             }
+
+            // Find the associated HoaDon
             var hoaDon = await _context.HoaDons.FindAsync(chiTietHoaDon.IDHoaDon);
             if (hoaDon == null)
             {
                 throw new InvalidOperationException("Hóa đơn không tìm thấy.");
             }
-            var daHoanHang = await _context.hoanhangsanphams
-                     .Where(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1)
-                       .SumAsync(hh => hh.SoLuong);
 
-            if (daHoanHang >= chiTietHoaDon.SoLuong)
+            // Calculate total quantity returned
+            var totalReturnedQuantity = await _context.hoanhangsanphams
+                .Where(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID )
+                .SumAsync(hh => hh.SoLuong);
+
+            // Check if the quantity to be returned is valid
+            if (totalReturnedQuantity + viewModel.SoLuong > chiTietHoaDon.SoLuong)
             {
-                throw new InvalidOperationException("Sản phẩm đã được hoàn đủ số lượng.");
+                throw new InvalidOperationException("Số lượng hoàn hàng vượt quá số lượng còn lại.");
             }
 
+            // Find existing return record
+            var existingReturn = await _context.hoanhangsanphams
+                .FirstOrDefaultAsync(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1);
 
-            var diaChiKhachHang = hoaDon.DiaChi; // Địa chỉ khách hàng trong HoaDon
-
-            // Tìm HoaDon dựa trên ID trong ChiTietHoaDon
-
-
-            // Tạo đối tượng hoàn hàng
-            var hoanhangsanpham = new Hoanhangsanpham
+            if (existingReturn != null)
             {
-                ID = Guid.NewGuid(),
-                ChiTietHoaDon = chiTietHoaDon,
-                Diachikhachhang = diaChiKhachHang,
-                SoLuong = viewModel.SoLuong,
-                Ngayhoanhang = DateTime.UtcNow,
-                Mota = viewModel.MoTa,
-                TrangThaiHoanHang = 1
-            };
+                // Update existing return record
+                existingReturn.SoLuong += viewModel.SoLuong;
+                existingReturn.Mota = viewModel.MoTa; // Update description if needed
+                existingReturn.Ngayhoanhang = DateTime.UtcNow; // Update return date
+                _context.hoanhangsanphams.Update(existingReturn);
+            }
+            else
+            {
+                // Create a new return record
+                var diaChiKhachHang = hoaDon.DiaChi; // Customer address from HoaDon
 
+                var hoanhangsanpham = new Hoanhangsanpham
+                {
+                    ID = Guid.NewGuid(),
+                    ChiTietHoaDon = chiTietHoaDon,
+                    Diachikhachhang = diaChiKhachHang,
+                    SoLuong = viewModel.SoLuong,
+                    Ngayhoanhang = DateTime.UtcNow,
+                    Mota = viewModel.MoTa,
+                    TrangThaiHoanHang = 1
+                };
 
-            await _context.hoanhangsanphams.AddAsync(hoanhangsanpham);
+                await _context.hoanhangsanphams.AddAsync(hoanhangsanpham);
+            }
 
+            // Update the delivery status of the invoice if necessary
+            hoaDon.TrangThaiGiaoHang = 9;
 
-            // Lưu các thay đổi
+            // Save changes
             await _context.SaveChangesAsync();
 
-            return hoanhangsanpham;
-
+            // Return the updated or newly created return record
+            return existingReturn ?? await _context.hoanhangsanphams
+                .FirstOrDefaultAsync(hh => hh.ChiTietHoaDon.ID == chiTietHoaDon.ID && hh.TrangThaiHoanHang == 1);
         }
 
         public async Task<IEnumerable<Hoanhangsanpham>> GetAllAsync()

@@ -30,7 +30,6 @@ const ThongKe = () => {
   const [monthpie, setmonthpie] = useState(new Date().getMonth() + 1);
   const [yearpie, setYearpie] = useState(new Date().getFullYear());
 
-
   useEffect(() => {
     GetData(year);
     GetDatapie(monthpie, yearpie);
@@ -40,9 +39,12 @@ const ThongKe = () => {
       var res = await axios.get(
         `https://localhost:7095/api/HoaDon/getdarhboardHoaDon?year=${year}`
       );
-
-      const newData = res.data.map((item) => item.tongTien);
-      setdata(newData);
+      let datatam = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      console.log("dang can2", datatam);
+      const newData = res.data.map((item) => {
+        return (datatam[item.tenThang - 1] = item.tongTien);
+      });
+      setdata(datatam);
     } catch (error) {
       toast.error("năm không hợp lệ");
     }
@@ -81,18 +83,18 @@ const ThongKe = () => {
   };
   const barData = {
     labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "Tháng 1",
+      "Tháng 2",
+      "Tháng 3",
+      "Tháng 4",
+      "Tháng 5",
+      "Tháng 6",
+      "Tháng 7",
+      "Tháng 8",
+      "Tháng 9",
+      "Tháng 10",
+      "Tháng 11",
+      "Tháng 12",
     ],
     datasets: [
       {
@@ -150,7 +152,7 @@ const ThongKe = () => {
     labels: ["Khách offline", "Khách online", "No data"],
     datasets: [
       {
-        label: "My First Dataset",
+        label: "Tổng doanh thu",
         // data: [60, 100],
         data: datapie,
         backgroundColor: [
@@ -171,7 +173,7 @@ const ThongKe = () => {
       },
       title: {
         display: true,
-        text: "Distribution of Colors",
+        // text: "Distribution of Colors",
         align: "start", // Căn tiêu đề về bên trái
         font: {
           size: 16, // Kích thước font cho tiêu đề
@@ -194,11 +196,6 @@ const ThongKe = () => {
     },
     fontSize: 14, // Giảm kích thước chữ trong biểu đồ tròn
   };
-
-
-
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -226,7 +223,7 @@ const ThongKe = () => {
   // State cho dữ liệu doanh thu theo tháng
   const [revenueData, setRevenueData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(
-    String(new Date().getMonth() + 1).padStart(2, '0')
+    String(new Date().getMonth() + 1).padStart(2, "0")
   ); // Tháng hiện tại
   const [selectedYear, setSelectedYear] = useState(
     String(new Date().getFullYear())
@@ -248,9 +245,9 @@ const ThongKe = () => {
   }, [selectedMonth, selectedYear]);
 
   const handleMonthChange = (event) => {
-    let month = (event.target.value).slice(5, 7);
+    let month = event.target.value.slice(5, 7);
     setSelectedMonth(month);
-    let year = (event.target.value).slice(0, 4); // Ensure you're correctly slicing for year
+    let year = event.target.value.slice(0, 4); // Ensure you're correctly slicing for year
     setSelectedYear(year);
     setThanf(event.target.value);
   };
@@ -288,7 +285,7 @@ const ThongKe = () => {
           `https://localhost:7095/api/ThongKeSanPham/top10sanphamtrongna222m?year=2024`
         );
         setTopProducts(response.data);
-        console.log(response.data);
+        console.log("top 10 san pham day ne", response.data);
       } catch (error) {
         console.error("Error fetching top products:", error);
       }
@@ -301,7 +298,6 @@ const ThongKe = () => {
     <>
       <Container fluid>
         <Row>
-        
           <Col lg="4" sm="6">
             <Card className="card-stats">
               <Card.Body>
@@ -317,9 +313,7 @@ const ThongKe = () => {
                       />
                       <br />
                       {datangay !== null ? (
-                        <p>
-                          Doanh thu ngày {datangay} VNĐ
-                        </p>
+                        <p>Doanh thu ngày {datangay} VNĐ</p>
                       ) : (
                         datangay && <p>Loading...</p>
                       )}
@@ -333,7 +327,6 @@ const ThongKe = () => {
             <Card className="card-stats">
               <Card.Body>
                 <Row>
-
                   <div>
                     <h2>Doanh thu theo tháng</h2>
                     <label>Chọn tháng:</label>
@@ -384,11 +377,10 @@ const ThongKe = () => {
             </Card>
           </Col>
         </Row>
-        <Row >
+        <Row>
           <Col xl="8" className="mb-5 mb-xl-0">
             <Card className="shadow">
-              <Card.Header className="border-0">
-              </Card.Header>
+              <Card.Header className="border-0"></Card.Header>
               <Card.Body>
                 <div className="">
                   <div className="row">
@@ -413,19 +405,19 @@ const ThongKe = () => {
                       </div>
                     </div>
                     <div className="col-12" style={{ height: "400px" }}>
-                      <h1 style={{ textAlign: "center" }}>Doanh thu theo năm</h1>
+                      <h1 style={{ textAlign: "center" }}>
+                        Doanh thu các tháng theo năm
+                      </h1>
                       <Bar data={barData} options={barOptions} />
                     </div>
                   </div>
                 </div>
               </Card.Body>
-
             </Card>
           </Col>
           <Col xl="4" className="mb-4 mb-xl-0">
             <Card className="shadow">
-              <Card.Header className="border-0">
-              </Card.Header>
+              <Card.Header className="border-0"></Card.Header>
               <Card.Body>
                 <div className="">
                   <div className="row">
@@ -440,20 +432,22 @@ const ThongKe = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-9" style={{ width: "100%", textAlign: "center" }}>
-                      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Khách hàng</h1>
+                    <div
+                      className="col-9"
+                      style={{ width: "100%", textAlign: "center" }}
+                    >
+                      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
+                        Doanh thu tháng theo loại Khách hàng
+                      </h1>
                       <Pie data={pieData} options={pieOptions} />
                     </div>
                   </div>
                 </div>
               </Card.Body>
-
             </Card>
           </Col>
         </Row>
-        <Row>
-
-        </Row>
+        <Row></Row>
         <Row>
           <Card className="shadow">
             <Card.Header className="border-0">
@@ -468,28 +462,28 @@ const ThongKe = () => {
                 <table className="table-custom table align-items-center table-flush">
                   <thead className="thead-light">
                     <tr>
-                    <th scope="col">Tên sản phẩm</th>
+                      <th scope="col">Tên sản phẩm</th>
                       <th scope="col">số lượn đã bán</th>
                       <th scope="col">Doanh thu sản phẩm</th>
                       <th scope="col">Trạng Thái</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {topProducts && topProducts.map((product, index) => (
-                      <tr key={index}>
-                        <td>{product.tenSP}</td>
-                        <td>{product.soLuong}</td>
-                        <td>{product.doanhThu} VND</td>
-                        <td>{product.gia}</td>
-                      </tr>
-                    ))}
+                    {topProducts &&
+                      topProducts.map((product, index) => (
+                        <tr key={index}>
+                          <td>{product.tenSP}</td>
+                          <td>{product.soLuong}</td>
+                          <td>{product.doanhThu} VND</td>
+                          <td>{product.gia}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
             </Card.Body>
           </Card>
         </Row>
-
       </Container>
     </>
   );

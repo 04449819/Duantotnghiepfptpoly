@@ -79,7 +79,7 @@ const GioHang = () => {
   const [availableVouchers, setAvailableVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [shippingCost, setShippingCost] = useState(30000); // Default to 30000
-
+  const [thongtinkhachhang, setthongtinkhachhang] = useState({});
   useEffect(() => {
     console.log("DSSPGIOHANG: ", dsspgiohangs);
     const chiTietSanPhamGioHangs = dsspgiohangs.map((spgh) => ({
@@ -277,12 +277,6 @@ const GioHang = () => {
     setTongTienBanDau(0);
     setSelectedVoucher(null);
   };
-  const combineAddress = (detailAddress, province, district) => {
-    // Loại bỏ các giá trị null, undefined hoặc chuỗi rỗng và ghép chúng lại bằng dấu phẩy
-    return [detailAddress, district?.label, province?.label]
-      .filter(Boolean) // Chỉ giữ các giá trị có thật
-      .join(", "); // Ghép các giá trị với dấu phẩy
-  };
 
   const getDiaChiKhachHang = async () => {
     try {
@@ -290,6 +284,7 @@ const GioHang = () => {
         `https://localhost:7095/api/DiaChiKhachHang/getalldiachikh?id=${user.id}`
       );
       setdckh(res.data);
+      setthongtinkhachhang(res.data.find((p) => p.trangThai === 1));
     } catch (error) {}
   };
 
@@ -313,24 +308,6 @@ const GioHang = () => {
       setdistricts(datatam);
     } catch (error) {}
   };
-
-  // const handleInputChange = (e) => {
-  //   const { id, value } = e.target;
-  //   // Nếu đang thay đổi địa chỉ chi tiết
-  //   if (id === "DiaChi") {
-  //     setDetailAddress(value); // Cập nhật địa chỉ chi tiết trong state
-  //     setHoaDonOnline((prevHoaDonOnline) => ({
-  //       ...prevHoaDonOnline,
-  //       DiaChi: combineAddress(value, selectedProvince, selectedDistrict),
-  //     }));
-  //   } else {
-  //     setHoaDonOnline((prevHoaDonOnline) => ({
-  //       ...prevHoaDonOnline,
-  //       [id]: value,
-  //     }));
-  //     // const error = validateInput(id, value);
-  //   }
-  // };
 
   const handleProvinceChange = (selectedOption) => {
     console.log(selectedOption);
@@ -388,6 +365,8 @@ const GioHang = () => {
       );
       if (res.data !== "") {
         toast.success(`${res.data}`);
+        console.log("day la gi:", item);
+        setthongtinkhachhang(item);
         setload(!load);
       }
     } catch (error) {
@@ -414,44 +393,18 @@ const GioHang = () => {
       toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
       return;
     }
+    if (user.vaiTro === 1) {
+      // alert("haha");
+      console.log("thong tin kh", thongtinkhachhang);
 
-    let a = true;
-    if (hoaDonOnline.TenKhachHang.trim() === "") {
-      setmassagename(false);
-      a = false;
-    }
-    if (!validatesdt(hoaDonOnline.SDT)) {
-      setmassagesdt(false);
-      a = false;
-    }
-    if (selectedProvince === null) {
-      setmassageprovince(false);
-      a = false;
-    }
-    if (selectedDistrict === null) {
-      setmassageDistrict(false);
-      a = false;
-    }
-    if (hoaDonOnline.DiaChi.trim() === "") {
-      setmassagedcct(false);
-      a = false;
-    }
-    if (!validateEmail(hoaDonOnline.Email)) {
-      setmassageemail(false);
-      a = false;
-    }
-    // if (hoaDonOnline.TenKhachHang === '' || hoaDonOnline.SDT === '' || hoaDonOnline.Email === '' || hoaDonOnline.DiaChi === '') {
-    //   toast.error("Vui lòng chọn đẩy đủ thông tin");
-    //   return;
-    // }
-    if (a === true) {
       const hoaDonOnlineSubmit = {
         ...hoaDonOnline,
-        TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
-        SDT: user.sdt || hoaDonOnline.SDT,
+        TenKhachHang: thongtinkhachhang.tenKhachHang,
+        SDT: thongtinkhachhang.sdt,
         Email: user.email || hoaDonOnline.Email,
         DiaChi:
-          dckh.find((dc) => dc.trangThai === 1)?.diaChi || hoaDonOnline.DiaChi,
+          dckh.find((dc) => dc.trangThai === 1)?.diaChi ||
+          `${selectedProvince.label},${selectedDistrict.label},${hoaDonOnline.DiaChi}`,
         IdVoucher: selectedVoucher ? selectedVoucher.value : null, //voucher?.id || null,
         SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
         TienShip: shippingCost || 0,
@@ -467,25 +420,6 @@ const GioHang = () => {
         })),
         IdKhachHang: user.id,
       };
-      // const newErrors = {
-      //   TenKhachHang: validateInput(
-      //     "TenKhachHang",
-      //     hoaDonOnlineSubmit.TenKhachHang
-      //   ),
-      //   SDT: validateInput("SDT", hoaDonOnlineSubmit.SDT),
-      //   Email: validateInput("Email", hoaDonOnlineSubmit.Email),
-      //   DiaChi: validateInput("DiaChi", hoaDonOnlineSubmit.DiaChi),
-      //   IdPhuongThucThanhToan: validateInput(
-      //     "IdPhuongThucThanhToan",
-      //     hoaDonOnlineSubmit.IdPhuongThucThanhToan
-      //   ),
-      //   // selectedDistrict: validateInput('selectedDistrict', hoaDonOnlineSubmit.selectedDistrict),
-      //   // selectedProvince: validateInput('selectedProvince', hoaDonOnlineSubmit.selectedProvince),
-      // };
-      // const hasError = Object.values(newErrors).some((error) => error !== "");
-      // if (hasError) {
-      //   return;
-      // }
       const additionalInfo = {
         tongTienBanDau: tongTienBanDau,
         tienGiamVoucher: tienGiamVoucher,
@@ -495,6 +429,66 @@ const GioHang = () => {
       setModalData({ ...hoaDonOnlineSubmit, ...additionalInfo });
       setIsModalOpen(true);
       console.log("isModalOpen:", isModalOpen);
+    } else {
+      let a = true;
+      if (hoaDonOnline.TenKhachHang.trim() === "") {
+        setmassagename(false);
+        a = false;
+      }
+      if (!validatesdt(hoaDonOnline.SDT)) {
+        setmassagesdt(false);
+        a = false;
+      }
+      if (selectedProvince === null) {
+        setmassageprovince(false);
+        a = false;
+      }
+      if (selectedDistrict === null) {
+        setmassageDistrict(false);
+        a = false;
+      }
+      if (hoaDonOnline.DiaChi.trim() === "") {
+        setmassagedcct(false);
+        a = false;
+      }
+      if (!validateEmail(hoaDonOnline.Email)) {
+        setmassageemail(false);
+        a = false;
+      }
+      if (a === true) {
+        const hoaDonOnlineSubmit = {
+          ...hoaDonOnline,
+          TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
+          SDT: user.sdt || hoaDonOnline.SDT,
+          Email: user.email || hoaDonOnline.Email,
+          DiaChi:
+            dckh.find((dc) => dc.trangThai === 1)?.diaChi ||
+            `${selectedProvince.label},${selectedDistrict.label},${hoaDonOnline.DiaChi}`,
+          IdVoucher: selectedVoucher ? selectedVoucher.value : null, //voucher?.id || null,
+          SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
+          TienShip: shippingCost || 0,
+          TongTienHoaDon: tongTien,
+          SanPhams: selectedProducts.map((sp) => ({
+            IDCTSP: sp.id,
+            SoLuongMua: sp.soluongmua,
+            GiaBan: sp.giaban,
+            Anh: sp.anh,
+            TenSanPham: sp.tensp,
+            TenKichCo: sp.tenkc,
+            TenMauSac: sp.tenms,
+          })),
+          IdKhachHang: user.id,
+        };
+        const additionalInfo = {
+          tongTienBanDau: tongTienBanDau,
+          tienGiamVoucher: tienGiamVoucher,
+          tienGiamDiem: tienGiamDiem,
+          soDiemSuDung: soDiemSuDung,
+        };
+        setModalData({ ...hoaDonOnlineSubmit, ...additionalInfo });
+        setIsModalOpen(true);
+        console.log("isModalOpen:", isModalOpen);
+      }
     }
   };
   const HandleDatHang = async () => {
@@ -556,13 +550,13 @@ const GioHang = () => {
             case 0:
               tongtien = p.giaban - km.giaTri;
               break;
-            case 1:
+            case 3:
               tongtien = (p.giaban * km.giaTri) / 100;
               break;
             case 2:
               tongtien = km.giaTri;
               break;
-            case 3:
+            case 1:
               tongtien = p.giaban - (p.giaban * km.giaTri) / 100;
               break;
             // Thêm các trường hợp khác nếu cần
@@ -963,9 +957,7 @@ const GioHang = () => {
             <p>Cảm ơn quý khách đã mua sắm tại Oldsailor.com.vn</p>
           </div>
 
-          <label hidden={massageDistrict} className=" text-danger">
-            Phương thức thanh toán !
-          </label>
+          {/* <label className=" text-danger">Phương thức thanh toán !</label> */}
           <button
             className="complete-order-button"
             style={{ borderRadius: "5px" }}

@@ -382,6 +382,7 @@ namespace AppAPI.Controllers
                     hd.TienShip,
                     hd.GhiChu,
                     hd.TrangThaiGiaoHang,
+					hd.KhachHangID,
                     SanPhamDetails = hd.ChiTietHoaDons.Select(cthd => new
                     {
                         cthd.ID,

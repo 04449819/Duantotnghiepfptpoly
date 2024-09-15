@@ -101,46 +101,47 @@ namespace AppAPI.Controllers
         {
             try
             {
-                // Lấy danh sách hóa đơn cho năm chỉ định
+                // Lấy danh sách hóa đơn cho năm chỉ định và ID hóa đơn
                 var dshd = await _dbcontext.HoaDons
-                                            .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
-                                            .ToListAsync();
-
-                var listidhoadon = dshd.Select(hd => hd.ID).ToList();
+                    .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
+                    .Select(hd => hd.ID)
+                    .ToListAsync();
 
                 // Lấy chi tiết hóa đơn cho các hóa đơn
                 var listcthd = await _dbcontext.ChiTietHoaDons
-                                                .Where(ct => listidhoadon.Contains(ct.IDHoaDon))
-                                                .ToListAsync();
+                    .Where(ct => dshd.Contains(ct.IDHoaDon))
+                    .GroupBy(ct => ct.IDCTSP)
+                    .Select(g => new
+                    {
+                        IdChiTietSanPham = g.Key,
+                        TongTien = g.Sum(ct => ct.DonGia * ct.SoLuong),
+                        SoLuong = g.Sum(ct => ct.SoLuong)
+                    })
+                    .OrderByDescending(g => g.TongTien)
+                    .Take(10)
+                    .ToListAsync();
 
-                // Tính tổng doanh thu cho mỗi sản phẩm
-                var groupedChiTietHoaDons = listcthd.GroupBy(c => c.IDCTSP)
-                                                     .Select(g => new
-                                                     {
-                                                         IdChiTietSanPham = g.Key,
-                                                         TongTien = g.Sum(c => c.DonGia * c.SoLuong)
-                                                     })
-                                                     .ToList();
-
-                // Lấy top 10 sản phẩm bán chạy nhất
-                var sortedProducts = groupedChiTietHoaDons.OrderByDescending(g => g.TongTien)
-                                                            .Take(5)
-                                                            .ToList();
-
-                // Lấy thông tin sản phẩm
-                var topProductIds = sortedProducts.Select(p => p.IdChiTietSanPham).ToList();
-                var products = await _dbcontext.SanPhams
-                                                .Where(sp => topProductIds.Contains(sp.ID))
-                                                .ToListAsync();
+                // Lấy thông tin sản phẩm tương ứng
+                var topProductIds = listcthd.Select(p => p.IdChiTietSanPham).ToList();
+                var products = await _dbcontext.ChiTietSanPhams
+                    .Include(c => c.SanPham)
+                    .Where(c => topProductIds.Contains(c.ID))
+                    .ToListAsync();
 
                 // Tạo danh sách ViewModel từ dữ liệu lấy được
-                var top10SanPham = sortedProducts.Select(item => new ThongKeMSSanPhamTheoSoLuong
+                var top10SanPham = listcthd.Select(item =>
                 {
-                    idSanPham = item.IdChiTietSanPham,
-                    TenSP = products.FirstOrDefault(sp => sp.ID == item.IdChiTietSanPham)?.Ten ?? "Không tên",
-                    SoLuong = listcthd.Where(ct => ct.IDCTSP == item.IdChiTietSanPham).Sum(ct => ct.SoLuong),
-                    Gia = products.FirstOrDefault(sp => sp.ID == item.IdChiTietSanPham)?.TrangThai ?? 0,
-                    DoanhThu = item.TongTien
+                    var chiTietSanPham = products.FirstOrDefault(c => c.ID == item.IdChiTietSanPham);
+                    var sanPham = chiTietSanPham?.SanPham;
+
+                    return new ThongKeMSSanPhamTheoSoLuong
+                    {
+                        idSanPham = chiTietSanPham?.IDSanPham ?? Guid.Empty,
+                        TenSP = sanPham?.Ten ?? "Unknown",
+                        SoLuong = item.SoLuong,
+                        Gia = chiTietSanPham?.GiaBan ?? 0,
+                        DoanhThu = item.TongTien
+                    };
                 }).ToList();
 
                 return Ok(top10SanPham);
@@ -148,9 +149,11 @@ namespace AppAPI.Controllers
             catch (Exception ex)
             {
                 // Ghi log lỗi nếu cần
+                Console.WriteLine(ex.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
+
 
 
 

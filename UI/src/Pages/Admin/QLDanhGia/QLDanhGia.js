@@ -7,7 +7,7 @@ const QuanLyDanhGia = () => {
   const [danhGiaSelected, setDanhGiaSelected] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [phanHoi, setPhanHoi] = useState('');
-  const [filterOption, setFilterOption] = useState('all'); // 'all', 'responded', 'notResponded'
+  const [filterOption, setFilterOption] = useState('all'); 
 
   useEffect(() => {
     fetchDanhGia();
@@ -15,7 +15,9 @@ const QuanLyDanhGia = () => {
 
   const fetchDanhGia = async () => {
     try {
-      const response = await axios.get('https://localhost:7095/api/DanhGia/GetAll');
+      const response = await axios.get('https://localhost:7095/api/DanhGia/GetAllDanhGiaView');
+      console.log(response);  
+      
       setDanhSachDanhGia(response.data);
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -73,6 +75,8 @@ const QuanLyDanhGia = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>Tên khách hàng</th>
+            <th>Tên sản phẩm</th>
             <th>Bình Luận</th>
             <th>Sao</th>
             <th>Phản Hồi</th>
@@ -84,6 +88,8 @@ const QuanLyDanhGia = () => {
         <tbody>
           {filteredDanhGia.map((item) => (
             <tr key={item.id}>
+              <td>{item.tenKH}</td>
+              <td>{item.tenSanPham + ' - ' + item.kichCo + ' - ' + item.mauSac}</td>
               <td>{item.binhLuan}</td>
               <td>
                 {[...Array(5)].map((_, index) => (

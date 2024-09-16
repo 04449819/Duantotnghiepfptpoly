@@ -94,7 +94,16 @@ namespace AppAPI.Services
                     // Tìm khách hàng dựa trên SDT hoặc Email
                     khachHang = _ikhachHangService.GetByEmailOrSDT(chdvm.Email, chdvm.SDT);
                 }
-
+                if (chdvm.IdVoucher.HasValue)
+                {
+                    Voucher voucher = reposVoucher.GetById(chdvm.IdVoucher.Value);
+                    if (voucher != null && voucher.SoLuong > 0 && chdvm.TongTienHoaDon >= voucher.SoTienCan &&
+                        voucher.NgayApDung <= DateTime.Now && voucher.NgayKetThuc >= DateTime.Now)
+                    {
+                        voucher.SoLuong -= 1;
+                        reposVoucher.Update(voucher);
+                    }
+                }
 
                 HoaDon hoaDon = new HoaDon
                 {
@@ -121,17 +130,22 @@ namespace AppAPI.Services
 
                 foreach (var sp in chdvm.SanPhams)
                 {
-                    int giaBan = repsCTSanPham.GetById(sp.IDCTSP).GiaBan;
+                    var sanPham = repsCTSanPham.GetById(sp.IDCTSP);
                     ChiTietHoaDon chiTiet = new ChiTietHoaDon
                     {
                         ID = Guid.NewGuid(),
                         IDHoaDon = hoaDon.ID,
                         IDCTSP = sp.IDCTSP,
                         SoLuong = sp.SoLuongMua,
-                        DonGia = sp.SoLuongMua * giaBan,
+                        DonGia = sp.SoLuongMua * sanPham.GiaBan,
 
                         TrangThai = 1
                     };
+                    if (sanPham != null)
+                    {
+                        sanPham.SoLuong -= sp.SoLuongMua;
+                        repsCTSanPham.Update(sanPham);
+                    }
 
                     DanhGia ds = new DanhGia
                     {
@@ -219,7 +233,8 @@ namespace AppAPI.Services
                     }
 
                     var khachHang = context.KhachHangs.FirstOrDefault(kh => kh.SDT == hoaDonDTO.SDT || kh.Email == hoaDonDTO.Email);
-                    var quydoi = context.QuyDoiDiems.Find(Guid.Parse("16bd37c4-cef0-4e92-9bb5-511c43d99037"));
+                  //  var quydoi = context.QuyDoiDiems.Find(Guid.Parse("16bd37c4-cef0-4e92-9bb5-511c43d99037"));
+                    var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1);
 
                     // int tongTienSanPham = 0;
 
@@ -425,6 +440,17 @@ namespace AppAPI.Services
             using var transaction = await context.Database.BeginTransactionAsync();
             try
             {
+                if (chdvm.IdVoucher.HasValue)
+                {
+                    Voucher voucher = reposVoucher.GetById(chdvm.IdVoucher.Value);
+                    if (voucher != null && voucher.SoLuong > 0 && chdvm.TongTienHoaDon >= voucher.SoTienCan &&
+                        voucher.NgayApDung <= DateTime.Now && voucher.NgayKetThuc >= DateTime.Now)
+                    {
+                        voucher.SoLuong -= 1;
+                        reposVoucher.Update(voucher);
+                    }
+                }
+
                 var hoaDon = new HoaDon
                 {
                     ID = Guid.NewGuid(),
@@ -450,16 +476,21 @@ namespace AppAPI.Services
                 // Add ChiTietHoaDon
                 foreach (var sp in chdvm.SanPhams)
                 {
-                    int giaBan = context.ChiTietSanPhams.Find(sp.IDCTSP).GiaBan;
+                    var sanPham = context.ChiTietSanPhams.Find(sp.IDCTSP);
                     var chiTiet = new ChiTietHoaDon
                     {
                         ID = Guid.NewGuid(),
                         IDHoaDon = hoaDon.ID,
                         IDCTSP = sp.IDCTSP,
                         SoLuong = sp.SoLuongMua,
-                        DonGia = sp.SoLuongMua * giaBan,
+                        DonGia = sp.SoLuongMua * sanPham.GiaBan,
                         TrangThai = 1
                     };
+                    if (sanPham != null)
+                    {
+                        sanPham.SoLuong -= sp.SoLuongMua;
+                        repsCTSanPham.Update(sanPham);
+                    }
                     hoaDon.ChiTietHoaDons.Add(chiTiet);
 
                     var danhGia = new DanhGia

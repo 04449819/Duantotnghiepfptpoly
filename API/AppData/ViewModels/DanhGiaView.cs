@@ -12,6 +12,7 @@ namespace AppData.ViewModels
         public string? BinhLuan { get; set; }
         public int? Sao { get; set; }
         public int? TrangThai { get; set; }
+        public string? PhanHoi { get; set; }
         public string? ChatLieu { get; set; }
         public string? MauSac { get; set; }
         public string? KichCo { get; set; }

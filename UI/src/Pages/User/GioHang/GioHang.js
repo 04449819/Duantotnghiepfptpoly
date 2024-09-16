@@ -232,8 +232,6 @@ const GioHang = () => {
     }
   }, [dsspgiohang, load]);
 
-  useEffect(() => {}, []);
-
   const applyVoucher = (totalPrice, voucher) => {
     if (!voucher || totalPrice < voucher.soTienCan) {
       setTienGiamVoucher(0);

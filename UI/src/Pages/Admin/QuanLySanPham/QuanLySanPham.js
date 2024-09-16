@@ -5,10 +5,11 @@ import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ModalQLSP from "./ModalQLSP";
 import UpdateSanPham from "./UpdateSanPham";
 import ModalSuaSanPham from "./ModalSuaSanPham";
+import { Delete } from "../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 const QuanLySanPham = () => {
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(10000);
@@ -29,11 +30,13 @@ const QuanLySanPham = () => {
   const [dataCoAo, setdataCoAo] = useState([]);
 
   const [load, setload] = useState(false);
+  const dispath = useDispatch();
   useEffect(() => {
     getdata(page, 0);
     GetALLCoAo();
     getdatalsp();
     getdatacl();
+    // dispath(Delete());
   }, [load]);
   const getdatacl = async () => {
     try {
@@ -387,8 +390,7 @@ const QuanLySanPham = () => {
           </div>
           <div className="mb-3 ms-2">
             <Button
-
-             disabled={use.chucNang === "Admin" ? false : true}
+              disabled={use.chucNang === "Admin" ? false : true}
               variant="primary"
               onClick={() => setShow(1)}
             >

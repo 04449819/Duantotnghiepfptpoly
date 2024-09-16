@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./DanhSachSanPham.scss";
 import { Table } from "react-bootstrap";
 import { MdDelete } from "react-icons/md";
@@ -11,12 +11,42 @@ import {
   UpdateSoLuong,
 } from "../../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 import { SetLoading } from "../../../../Rudux/Reducer/LoadingSlice";
-const DanhSachSanPham = () => {
+const DanhSachSanPham = (props) => {
   const [inputsearch, setinputsearch] = useState("");
   const dispatch = useDispatch();
   const dataSanPhamGioHang = useSelector(
     (a) => a.sanPhamGioHang.SanPhamGioHang
   );
+  const dataSanPhamGioHang1 = useSelector((a) => a.sanPhamGioHang.HoaDons);
+  // useEffect(() => {
+  //   // let dataSanPhamGioHang2 = dataSanPhamGioHang1.find((a) => a.check === true);
+  //   // console.log(dataSanPhamGioHang1);
+  //   // let tonggiakm = 0;
+  //   // dataSanPhamGioHang1
+  //   //   .find((a) => a.check === true)
+  //   //   ?.SanPhamGioHang?.forEach((item) => {
+  //   //     console.log("đây là sp trong giỏ hàng", item);
+
+  //   //     if (item.trangthaikm === 0) {
+  //   //       tonggiakm += item.giaTriKhuyenMai * item.soLuongmua;
+  //   //     } else if (item.trangthaikm === 1) {
+  //   //       tonggiakm +=
+  //   //         ((item.giaBan * item.giaTriKhuyenMai) / 100) * item.soLuongmua;
+  //   //     } else if (item.trangthaikm === 2) {
+  //   //       tonggiakm += (item.giaBan - item.giaTriKhuyenMai) * item.soLuongmua;
+  //   //     } else if (item.trangthaikm === 3) {
+  //   //       tonggiakm +=
+  //   //         (item.giaBan - (item.giaBan * item.giaTriKhuyenMai) / 100) *
+  //   //         item.soLuongmua;
+  //   //     }
+  //   //   });
+
+  //   // tonggiakm = tonggiakm;
+
+  //   // console.log("Tổng giá khuyến mãi:", tonggiakm);
+
+  //   // props.setGiamkhuyemai(tonggiakm);
+  // }, [dataSanPhamGioHang1]);
   const HandleOnclickGetData = () => {
     // props.Getdata(inputsearch);
     dispatch(SetLoading(true));
@@ -80,61 +110,117 @@ const DanhSachSanPham = () => {
               <th>STT</th>
               <th>Tên sản phẩm</th>
               <th>Số lượng</th>
-              {/* <th>Tên màu</th>
-              <th>Kích cỡ</th> */}
+              <th>Tên màu</th>
+              <th>Kích cỡ</th>
               <th>Giá bán</th>
-              <th>Tổng giá</th>
               <th>Khuyến mãi</th>
+              <th>Tổng giá</th>
               <th>Img</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            {dataSanPhamGioHang.map((item, index) => {
-              if (!item) return null;
-              return (
-                <tr key={item.idCTSP}>
-                  <td>{index + 1}</td>
-                  <td>
-                    {item.tenSanPham + "-" + item.tenMau + "-" + item.kichCo}
-                  </td>
-                  <td>
-                    <input
-                      style={{ width: "80px" }}
-                      value={item.soLuongmua}
-                      type="number"
-                      onChange={(event) => handleOnChangeSoLuong(event, item)}
-                    />
-                  </td>
-                  {/* <td>{item.tenMau}</td>
-                  <td>{item.kichCo}</td> */}
-                  <td>
-                    {item.giaBan.toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </td>
-                  <td>
-                    {(item.giaBan * item.soLuongmua).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </td>
-                  <td>{item.giaTriKhuyenMai}</td>
-                  <td>
-                    <img src={item.duongDanAnh} />
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => HandleOnclicnkDelete(item)}
-                    >
-                      <MdDelete />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {dataSanPhamGioHang1
+              .find((a) => a.check === true)
+              ?.SanPhamGioHang?.map((item, index) => {
+                if (!item) return null;
+                return (
+                  <tr key={item.idCTSP}>
+                    <td>{index + 1}</td>
+                    <td>
+                      {item.tenSanPham + "-" + item.tenMau + "-" + item.kichCo}
+                    </td>
+                    <td>
+                      <input
+                        style={{ width: "80px" }}
+                        value={item.soLuongmua}
+                        type="number"
+                        onChange={(event) => handleOnChangeSoLuong(event, item)}
+                      />
+                    </td>
+                    <td>{item.tenMau}</td>
+                    <td>{item.kichCo}</td>
+                    <td>
+                      {item.giaBan.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
+
+                    <td>
+                      {item.trangthaikm === 0
+                        ? (
+                            item.giaTriKhuyenMai * item.soLuongmua
+                          ).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : item.trangthaikm === 1
+                        ? (
+                            ((item.giaBan * item.giaTriKhuyenMai) / 100) *
+                            item.soLuongmua
+                          ).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : item.trangthaikm === 2
+                        ? (
+                            (item.giaBan - item.giaTriKhuyenMai) *
+                            item.soLuongmua
+                          ).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : item.trangthaikm === 3
+                        ? (
+                            (item.giaBan -
+                              (item.giaBan * item.giaTriKhuyenMai) / 100) *
+                            item.soLuongmua
+                          ).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : 0}
+                    </td>
+                    <td>
+                      {(
+                        item.giaBan * item.soLuongmua -
+                        (item.trangthaikm === 0
+                          ? item.giaTriKhuyenMai * item.soLuongmua
+                          : item.trangthaikm === 1
+                          ? ((item.giaBan * item.giaTriKhuyenMai) / 100) *
+                            item.soLuongmua
+                          : item.trangthaikm === 2
+                          ? (item.giaBan - item.giaTriKhuyenMai) *
+                            item.soLuongmua
+                          : item.trangthaikm === 3
+                          ? (item.giaBan -
+                              (item.giaBan * item.giaTriKhuyenMai) / 100) *
+                            item.soLuongmua
+                          : 0)
+                      ).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
+                    <td>
+                      <img
+                        src={item.duongDanAnh}
+                        alt={item.tenSanPham}
+                        style={{ width: "100px" }}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => HandleOnclicnkDelete(item)}
+                      >
+                        <MdDelete />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </Table>
       </div>

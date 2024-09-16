@@ -1101,8 +1101,9 @@ namespace AppAPI.Services
 		{
             var activePromotions = from kmct in _context.KhuyenMaiCTSanPhams
 								   join km in _context.KhuyenMais on kmct.IdKhuyenMai equals km.ID
-								   where km.TrangThai == 1 && DateTime.Today > km.NgayApDung && DateTime.Today < km.NgayKetThuc
-								   select new { kmct.IdChiTietSanPham, km.GiaTri };
+								   //where km.TrangThai == 1 && DateTime.Today > km.NgayApDung && DateTime.Today < km.NgayKetThuc
+								   where DateTime.Today > km.NgayApDung && DateTime.Today < km.NgayKetThuc
+								   select new { kmct.IdChiTietSanPham, km.GiaTri,km.TrangThai };
 
             try
             {
@@ -1131,6 +1132,7 @@ namespace AppAPI.Services
 								  ngayTao = ctsp.NgayTao,
 								  trangThai = ctsp.TrangThai,
 								  giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
+                                  trangthaikm = (ap.TrangThai != null ? ap.TrangThai : -1),
 								  tenMau = ms.Ten,
 								  maMau = ms.Ma,
 								  maSP = ctsp.Ma,
@@ -1168,6 +1170,7 @@ namespace AppAPI.Services
 							  ngayTao = ctsp.NgayTao,
 							  trangThai = ctsp.TrangThai,
 							  giaTriKhuyenMai = (ap.GiaTri != null ? ap.GiaTri : 0),
+							  trangthaikm = (ap.TrangThai != null ? ap.TrangThai : -1),
 							  tenMau = ms.Ten,
 							  maMau = ms.Ma,
 							  maSP = ctsp.Ma,

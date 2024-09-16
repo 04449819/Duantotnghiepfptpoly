@@ -76,7 +76,7 @@ namespace AppAPI.Controllers
                                        on d.KhachHangID equals e.IDKhachHang
 									   join c in _dbcontext.ChiTietSanPhams
 									   on b.IDCTSP equals c.ID
-									   where c.IDSanPham == Idsp // Thay `someIdspValue` bằng giá trị bạn muốn lọc
+									   where c.IDSanPham == Idsp && a.TrangThai == 1 // Thay `someIdspValue` bằng giá trị bạn muốn lọc
 									   select new {
                                            tenkh = e.Ten,
 										   ngaydanhgia = a.NgayDanhGia,

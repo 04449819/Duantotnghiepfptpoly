@@ -757,31 +757,57 @@ namespace AppAPI.Controllers
 			var DSCTSP = await _dbcontext.ChiTietSanPhams
                 .Where(x => x.IDSanPham == idsp).ToListAsync();
 
-            var dsctspview = (from a in DSCTSP.Where(p => p.TrangThai != 0)
-                              select new
-                              {
-                                  id = a.ID,
-                                  idsp = a.IDSanPham,
-                                  tenchatlieu = Tenchatlieu,
+          //  var dsctspview = (from a in DSCTSP.Where(p => p.TrangThai != 0)
+          //                    select new
+          //                    {
+          //                        id = a.ID,
+          //                        idsp = a.IDSanPham,
+          //                        tenchatlieu = Tenchatlieu,
+								  //tencoao = tenCoAo,
+								  //mactsp = a.Ma,
+								  //GiaBan = a.GiaBan,
+          //                        SoLuong = a.SoLuong,
+								  ////khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
+								  //khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
+										//	   join km in _dbcontext.KhuyenMais
+										//	   on b.IdKhuyenMai equals km.ID
+										//	   where b.IdChiTietSanPham == a.ID
+										//			 && km.TrangThai == 1
+										//			 && km.NgayApDung < DateTime.Today
+										//			 && DateTime.Today < km.NgayKetThuc
+										//	   select km.GiaTri).FirstOrDefault(),
+								  //MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
+          //                        kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
+          //                        img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
+          //                        trangthai = a.TrangThai,
+          //                    }).ToList();
+			var dsctspview = (from a in DSCTSP.Where(p => p.TrangThai != 0)
+							  select new
+							  {
+								  id = a.ID,
+								  idsp = a.IDSanPham,
+								  tenchatlieu = Tenchatlieu,
 								  tencoao = tenCoAo,
 								  mactsp = a.Ma,
 								  GiaBan = a.GiaBan,
-                                  SoLuong = a.SoLuong,
+								  SoLuong = a.SoLuong,
 								  //khuyenMai = _dbcontext.KhuyenMais.Where(b => b.ID == a.IDKhuyenMai).Select(b=>b.GiaTri).FirstOrDefault(),
 								  khuyenMai = (from b in _dbcontext.KhuyenMaiCTSanPhams
 											   join km in _dbcontext.KhuyenMais
 											   on b.IdKhuyenMai equals km.ID
 											   where b.IdChiTietSanPham == a.ID
-													 && km.TrangThai == 1
 													 && km.NgayApDung < DateTime.Today
 													 && DateTime.Today < km.NgayKetThuc
-											   select km.GiaTri).FirstOrDefault(),
+											   select new {
+				                                   km.GiaTri,
+												   km.TrangThai,
+											   }).FirstOrDefault(),
 								  MauSac = _dbcontext.MauSacs.Where(b => b.ID == a.IDMauSac && b.TrangThai == 1).Select(b => b.Ma).FirstOrDefault(),
-                                  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
-                                  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
-                                  trangthai = a.TrangThai,
-                              }).ToList();
-            return Ok( dsctspview);
+								  kichco = _dbcontext.KichCos.Where(b => b.ID == a.IDKichCo && b.TrangThai == 1).Select(b => b.Ten).FirstOrDefault(),
+								  img = _dbcontext.Anhs.Where(b => b.IDChitietsanpham == a.ID && b.TrangThai == 1).Select(b => b.DuongDan),
+								  trangthai = a.TrangThai,
+							  }).ToList();
+			return Ok( dsctspview);
 		}
 
 

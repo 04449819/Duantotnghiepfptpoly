@@ -392,11 +392,16 @@ namespace AppAPI.Controllers
                 foreach (var item in IDCTSP)
                 {
                     var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
+                  
                     if (dt != null)
                     {
                         var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
                             .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
 
+                        var existingRecords = await _dbcontext.KhuyenMaiCTSanPhams
+                        .Where(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai))
+                        .ToListAsync();
+                        _dbcontext.KhuyenMaiCTSanPhams.RemoveRange(existingRecords);
                         if (existingRecord == null)
                         {
                             if (item.trangthai == true)
@@ -428,7 +433,7 @@ namespace AppAPI.Controllers
             }
            else
            {
-             return BadRequest();
+             return BadRequest("Kiểm tra lại thời gian chương trình khuyến mãi!");
            }  
 
             return Ok("Cập nhật thành công.");

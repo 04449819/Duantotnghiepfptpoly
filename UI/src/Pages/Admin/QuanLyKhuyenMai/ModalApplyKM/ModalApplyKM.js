@@ -209,13 +209,17 @@ function ModalApplyKM(props) {
           `https://localhost:7095/api/KhuyenMai/addkhuyenmaitoCTSP?idkhuyenmai=${props.item.id}`,
           listIDCTSP
         );
-        toast.success(res.data);
+        //toast.success(res.data);
+        toast.success("Đã lưu thay đổi");
         setdata([]);
         getDataSP(1);
         setpage(1);
         GetDataChitietSanPhamDaAD(props.item.id);
         dispatch(SetLoading(false));
       } catch (error) {
+        toast.error("Đã xảy ra lỗi");
+        console.log(res);
+        
         dispatch(SetLoading(false));
       }
     }, 3000);

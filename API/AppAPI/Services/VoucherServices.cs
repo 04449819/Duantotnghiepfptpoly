@@ -136,6 +136,23 @@ namespace AppAPI.Services
                 )
                 .ToList();
         }
+        public bool CheckStatusVouchers()
+        {
+            var now = DateTime.Now;
+
+            var expiredOrOutOfStockVouchers = context.Vouchers
+                .Where(x => x.SoLuong <= 0 || now < x.NgayApDung || now > x.NgayKetThuc);
+
+   
+            foreach (var voucher in expiredOrOutOfStockVouchers)
+            {
+                voucher.TrangThai = 0; 
+            }
+
+            context.SaveChanges();
+
+            return true; 
+        }
         #endregion
     }
 }

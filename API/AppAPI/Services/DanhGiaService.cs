@@ -232,6 +232,11 @@ namespace AppAPI.Services
                     // Không tìm thấy đánh giá với idCTHD tương ứng
                     return false;
                 }
+                if (danhGia.TrangThai == 1 )
+                {
+                    // Không tìm thấy đánh giá với idCTHD tương ứng
+                    return false;
+                }
 
                 // Cập nhật thông tin của danhGia
                 danhGia.BinhLuan = binhLuan;

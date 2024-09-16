@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './kk.scss';
 import FeedbackModal from './FeedbackModal';
 import ReturnModal from './ReturnModal';
-import CompletedOrderModal from './CompletedOrderModal'; // Import the new modal component
+import CompletedOrderModal from './CompletedOrderModal';
 import { toast } from 'react-toastify';
 
 const ModalHang = ({ isOpen, onClose, orderId }) => {
@@ -15,7 +15,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [feedbackStatus, setFeedbackStatus] = useState('');
   const [showReturnModal, setShowReturnModal] = useState(false);
-  const [showCompletedOrderModal, setShowCompletedOrderModal] = useState(false); // New state for completed order modal
+  const [showCompletedOrderModal, setShowCompletedOrderModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
 
   const renderTrangThaiGiaoHang = (trangThai) => {
     const trangThaiGiaoHangDict = {
-      1: 'Đơn nháp',
+      10: 'đang chuẩn bị hàng',
       2: 'Chờ xác nhận',
       3: 'Đang giao hàng',
       6: 'Thành công',
@@ -62,6 +62,17 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
     }
   };
 
+  const handleCancelOrder = async () => {
+    console.log(orderDetails.khachHangID);
+    try {
+      await axios.post(`https://localhost:7095/api/HoaDon/HuyHDkh?idhd=${orderId}&idkh=${orderDetails.khachHangID}`);
+      toast.success('Đơn hàng đã được hủy thành công!');
+      onClose(); // Đóng modal sau khi hủy thành công
+    } catch (error) {
+      toast.error('Hủy đơn hàng không thành công. Vui lòng thử lại.');
+    }
+  };
+
   const handleFeedbackModalClose = () => {
     setSelectedProduct(null);
   };
@@ -76,7 +87,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   };
 
   const handleViewCompletedOrder = () => {
-    setShowCompletedOrderModal(true); // Show the completed order modal
+    setShowCompletedOrderModal(true);
   };
 
   if (loading) return <div>Đang tải...</div>;
@@ -193,32 +204,42 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
           )}
         </Modal.Body>
         <Modal.Footer>
-  {orderDetails && (
-    <>
-      {(orderDetails.trangThaiGiaoHang === 5 || 
-        orderDetails.trangThaiGiaoHang === 6 || 
-        orderDetails.trangThaiGiaoHang === 4 ||
-        orderDetails.trangThaiGiaoHang === 9) && (
-        <>
-          {orderDetails.trangThaiGiaoHang === 5 || orderDetails.trangThaiGiaoHang === 6 ? (
-            <Button variant="primary" onClick={handleCompleteReturn}>
-              Hoàn Hàng
-            </Button>
-          ) : null}
-          {orderDetails.trangThaiGiaoHang >= 9 && (
-            <Button variant="info" onClick={handleViewCompletedOrder}>
-              Xem Đơn Hoàn
-            </Button>
+          {orderDetails && (
+            <>
+              {(orderDetails.trangThaiGiaoHang === 5 || 
+                orderDetails.trangThaiGiaoHang === 6 || 
+                orderDetails.trangThaiGiaoHang === 4 ||
+                orderDetails.trangThaiGiaoHang === 2 ||
+                orderDetails.trangThaiGiaoHang === 10 ||
+                orderDetails.trangThaiGiaoHang === 9) && (
+                <>
+                  {orderDetails.trangThaiGiaoHang === 5 || orderDetails.trangThaiGiaoHang === 6 ? (
+                    <Button variant="primary" onClick={handleCompleteReturn}>
+                      Hoàn Hàng
+                    </Button>
+                  ) : null}
+                  {(orderDetails.trangThaiGiaoHang === 5 || 
+                    orderDetails.trangThaiGiaoHang === 6 || 
+                    orderDetails.trangThaiGiaoHang === 4 ||
+                    orderDetails.trangThaiGiaoHang === 9) && (
+                    <Button variant="info" onClick={handleViewCompletedOrder}>
+                      Xem Đơn Hoàn
+                    </Button>
+                  )}
+                  {(orderDetails.trangThaiGiaoHang === 2 || 
+                    orderDetails.trangThaiGiaoHang === 10) && (
+                    <Button variant="danger" onClick={handleCancelOrder}>
+                      Hủy Đơn Hàng
+                    </Button>
+                  )}
+                </>
+              )}
+            </>
           )}
-        </>
-      )}
-    </>
-  )}
-  <Button variant="secondary" onClick={onClose}>
-    Đóng
-  </Button>
-</Modal.Footer>
-
+          <Button variant="secondary" onClick={onClose}>
+            Đóng
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {selectedProduct && (

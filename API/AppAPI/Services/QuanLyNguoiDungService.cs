@@ -288,12 +288,9 @@ namespace AppAPI.Services
 												join c in context.SanPhams on b.IDSanPham equals c.ID
 												join d in context.KichCos on b.IDKichCo equals d.ID
 												join e in context.MauSacs on b.IDMauSac equals e.ID
-                                                join f in context.KhuyenMaiCTSanPhams on b.ID equals f.IdChiTietSanPham
-                                                join g in context.KhuyenMais on f.IdKhuyenMai equals g.ID 
                                                 select new GioHangOnline()
 												{
 													    id = a.IDCTSP,
-                                                        giatrikhuyenmai = g.GiaTri, 
                                                         soluong = b.SoLuong,
 													    soluongmua = 1,
 													    giaban = b.GiaBan,

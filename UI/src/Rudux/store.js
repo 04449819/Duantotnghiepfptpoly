@@ -16,11 +16,15 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, taiKhoanSlice);
 const chitietsanpham = persistReducer(persistConfig, chitietsanphamonl);
+const GetSanPhamGioHangSlices = persistReducer(
+  persistConfig,
+  GetSanPhamGioHangSlice
+);
 const store = configureStore({
   reducer: {
     user: persistedReducer,
     getIDchitietsanpham: IDchitietsanphamSlice,
-    sanPhamGioHang: GetSanPhamGioHangSlice,
+    sanPhamGioHang: GetSanPhamGioHangSlices,
     Loading: LoadingSlice,
     setidloaisp: IDLoaiSPSlice,
     setchitietsp: chitietsanpham,

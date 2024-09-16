@@ -209,8 +209,8 @@ const HosoKh = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 1:
-        return <FaClipboard color="gray" title="Đơn nháp" />;
+      case 10:
+        return <FaClipboard color="gray" title="chuẩn bị hàng" />;
       case 2:
         return <FaHourglassHalf color="orange" title="Chờ xác nhận" />;
       case 3:

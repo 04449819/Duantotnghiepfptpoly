@@ -177,6 +177,12 @@ namespace AppAPI.Controllers
             var result = _iHoaDonService.HuyHD(idhd, idnv);
             return Ok(result);
         }
+        [HttpPut("HuyHDkh")]
+        public IActionResult HuyHDkh(Guid idhd, Guid idkh)
+        {
+            var result = _iHoaDonService.HuyHDkh(idhd, idkh);
+            return Ok(result);
+        }
         [HttpPut("GiaoThanhCong")]
         public IActionResult GiaoThanhCong(Guid idhd, Guid idnv)
         {

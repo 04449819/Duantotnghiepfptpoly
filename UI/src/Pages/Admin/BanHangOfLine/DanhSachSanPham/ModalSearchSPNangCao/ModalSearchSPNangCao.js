@@ -365,10 +365,10 @@ const ModalSearchSPNangCao = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Đóng
           </Button>
           <Button variant="primary" onClick={handleClose}>
-            Save Changes
+            Lưu
           </Button>
         </Modal.Footer>
       </Modal>

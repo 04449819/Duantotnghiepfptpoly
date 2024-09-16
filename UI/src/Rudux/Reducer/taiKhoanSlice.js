@@ -25,6 +25,7 @@ export const FetchData = createAsyncThunk(
         `https://localhost:7095/api/QuanLyNguoiDung/DangNhap?lg=${name}&password=${pass}`,
         dssp
       );
+      console.log("day là tttk", res.data);
       return res.data;
     } catch (error) {
       toast.error("chưa điền thông tin");
@@ -109,7 +110,8 @@ export const taiKhoanSlice = createSlice({
           ...p,
           check: false,
         }));
-        console.log(dssp);
+        console.log("dsbandau", action.payload.chiTietGioHang);
+        console.log("danh sách sản phẩm:", dssp);
         state.giohangonl = dssp;
         //   if (state.giohangonl.length > 0) {
         //     const dssptam = state.giohangonl.map((p) => {

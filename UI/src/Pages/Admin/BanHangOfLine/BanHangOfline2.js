@@ -7,17 +7,25 @@ import HoaDon from "./HoaDon/HoaDon";
 import { useDispatch, useSelector } from "react-redux";
 import { SetLoading } from "../../../Rudux/Reducer/LoadingSlice";
 import MyModalAdd from "../QuanLyKhachHang/FormThem";
+// import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import {
   AddHoaDon,
   ChonHoaDon,
   DeleteHoaDons,
+  SetCheckGiaoHang,
   SetDiaChiKhachHang,
+  SetDiaChiKhachHangg,
+  SetEmail,
   SetGiamKhuyeMai,
+  SetGiChu,
+  SetSDT,
+  SetTenKhachHang,
+  SetTienShip,
   SetTongTien,
   SetVoucher,
 } from "../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 // import Select from "react-select";
-import { Form } from "react-bootstrap";
+import { Form, Row, Col } from "react-bootstrap";
 const BanHangOfline2 = () => {
   const [search, setSearch] = useState("");
   //   const [name, setName] = useState("");
@@ -39,7 +47,7 @@ const BanHangOfline2 = () => {
   const [tongTien, setTongTien] = useState(0);
   const dispath = useDispatch();
   const [voucherchuan, setvoucherchuan] = useState("");
-
+  const [isGiaoHang, setIsGiaoHang] = useState(false);
   const HandleOnclickSearchKH = async () => {
     dispath(SetLoading(true));
     setTimeout(async () => {
@@ -85,7 +93,10 @@ const BanHangOfline2 = () => {
   //   // alert("da thay doi voucher", voucherchuan);
   // }, [voucherchuan]);
   useEffect(() => {
-    console.log("danh sách hóa đơn:", dshd);
+    console.log(
+      "hóa đơn cần thanh toán",
+      dshd?.find((p) => p.check === true)
+    );
     if (dshd.find((a) => a.check === true)?.SanPhamGioHang?.length > 0) {
       const totalSoSP = dshd
         .find((a) => a.check === true)
@@ -97,7 +108,6 @@ const BanHangOfline2 = () => {
         }, 0);
       setSoSP(totalSoSP);
       setTongGia(TongGiaSP);
-
       const tonggiakm = dshd
         .find((a) => a.check === true)
         ?.SanPhamGioHang?.reduce((acc, item) => {
@@ -119,7 +129,6 @@ const BanHangOfline2 = () => {
           }
           return acc;
         }, 0);
-
       // tonggiakm = tonggiakm;
       fetchAvailableVouchers(TongGiaSP, tonggiakm);
       setGiamkhuyemai(tonggiakm);
@@ -181,7 +190,8 @@ const BanHangOfline2 = () => {
   const HandleOngchangeStVoucher = (e) => {
     setvoucherchuan(e.target.value);
     console.log(e.target.value);
-    dispath(SetVoucher(e.target.value));
+    const datacantim = availableVouchers.find((p) => p.id === e.target.value);
+    dispath(SetVoucher(datacantim));
   };
   return (
     <div className="banhangofline">
@@ -244,149 +254,203 @@ const BanHangOfline2 = () => {
             }}
           >
             <div
-              className="BanHangof_khachhang mb-3"
+              className="BanHangof_khachhang mb-3 d-flex"
               style={{
                 border: "1px solid black",
                 borderRadius: "5px",
                 margin: "5px",
               }}
             >
-              <form className="form_khachhang_banhangofline">
-                <div className="banhangofline_title mt-3 mb-3">
-                  <h3 className="text-center">Thông tin khách hàng</h3>
-                </div>
-                <div className="mb-3 d-flex">
-                  <input
-                    type="text"
-                    className="form-control ms-2"
-                    placeholder="Email or SĐT"
-                    value={search}
-                    style={{ width: "36%" }}
-                    onChange={(event) => setSearch(event.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={HandleOnclickSearchKH}
-                    tabIndex="-1"
-                  >
-                    Tìm kiếm
-                  </button>
-                </div>
-                <div className="ThemKhachHang mb-3">
-                  <button
-                    className="btn btn-primary"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      handleShow();
-                    }}
-                  >
-                    + Thêm khách hàng
-                  </button>
-                </div>
-                <div>
-                  <div className="row">
-                    <div className="col-5">
-                      <input
-                        style={{ width: "99.5%" }}
-                        type="text"
-                        className="form-control ms-2"
-                        placeholder="Họ và tên"
-                        value={dshd?.find((p) => p.check === true)?.ten || ""}
-                        // onChange={(event) => setName(event.target.value)}
-                        readOnly={inputreadOnly}
-                      />
-                    </div>
-                    <div className="col-6">
-                      <input
-                        style={{ width: "91.5%" }}
-                        type="text"
-                        className="form-control ms-2"
-                        placeholder="Địa chỉ"
-                        value={
-                          dshd?.find((p) => p.check === true)?.diachi || ""
-                        }
-                        // onChange={(event) => setAddress(event.target.value)}
-                        readOnly={inputreadOnly}
-                      />
-                    </div>
+              <div className="w-50">
+                <form className="form_khachhang_banhangofline">
+                  <div className="banhangofline_title mt-3 mb-3">
+                    <h3 className="text-center">Thông tin khách hàng</h3>
                   </div>
-                  <div className="d-flex">
+                  <div className="mb-3 d-flex">
                     <input
                       type="text"
-                      className="form-control ms-2 mb-2 w-50"
-                      placeholder="Số điện thoại"
-                      value={dshd?.find((p) => p.check === true)?.sdt || ""}
-                      //   onChange={(event) => setPhone(event.target.value)}
-                      readOnly={inputreadOnly}
+                      className="form-control ms-2"
+                      placeholder="Email or SĐT"
+                      value={search}
+                      style={{ width: "36%" }}
+                      onChange={(event) => setSearch(event.target.value)}
                     />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={HandleOnclickSearchKH}
+                      tabIndex="-1"
+                    >
+                      Tìm kiếm
+                    </button>
+                  </div>
+                  <div className="ThemKhachHang mb-3">
+                    <button
+                      className="btn btn-primary"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleShow();
+                      }}
+                    >
+                      + Thêm khách hàng
+                    </button>
                   </div>
                   <div>
-                    <input
-                      type="text"
-                      className="form-control ms-2 mb-2 w-50"
-                      placeholder="Email"
-                      value={dshd?.find((p) => p.check === true)?.email || ""}
-                      //   onChange={(event) => SetEmail(event.target.value)}
-                      readOnly={inputreadOnly}
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div className="BanHangof_giohang" style={{ margin: "5px" }}>
-              <div className="BanHangof_giohang_thongtin">
-                <div
-                  style={{
-                    margin: "10px 20px",
-                    border: "1px solid rgb(209, 203, 203)",
-                    borderRadius: "5px",
-                  }}
-                >
-                  <div style={{ margin: "0px 20px" }}>
-                    <h3>Giỏ hàng</h3>
-                    <h6>Sản phẩm: {soSP} </h6>
-                    <h6>
-                      Giá:&nbsp;
-                      {dshd.find((a) => a.check === true)?.SanPhamGioHang
-                        ?.length > 0
-                        ? TongGia.toLocaleString("vi-VN") + " VNĐ"
-                        : giabandau.toLocaleString("vi-VN") + " VNĐ"}
-                      &nbsp;&nbsp;&nbsp; Giảm khuyến mãi:{" "}
-                      {dshd
-                        .find((a) => a.check === true)
-                        ?.giamkm.toLocaleString("vi-VN") + " VNĐ"}
-                    </h6>
-                    <div className="voucher-selection d-flex">
-                      <label className="mt-2">Chọn Voucher:</label>
-                      <Form.Select
-                        className="w-25 ms-2"
-                        aria-label="Default select example"
-                        value={voucherchuan}
-                        onChange={(e) => HandleOngchangeStVoucher(e)}
-                      >
-                        <option value="">Chọn voucher</option>
-                        {availableVouchers &&
-                          availableVouchers.map((voucher) => (
-                            <option
-                              disabled={voucher.check}
-                              key={voucher.id}
-                              value={voucher.id}
-                            >
-                              {`${voucher.ten}-${voucher.soTienCan}`}
-                            </option>
-                          ))}
-                      </Form.Select>
+                    <div className="row">
+                      <div className="col-5">
+                        <input
+                          style={{ width: "99.5%" }}
+                          type="text"
+                          className="form-control ms-2"
+                          placeholder="Họ và tên"
+                          value={dshd?.find((p) => p.check === true)?.ten || ""}
+                          onChange={(event) =>
+                            dispath(SetTenKhachHang(event.target.value))
+                          }
+                          // readOnly={inputreadOnly}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <input
+                          style={{ width: "91.5%" }}
+                          type="text"
+                          className="form-control ms-2"
+                          placeholder="Địa chỉ"
+                          value={
+                            dshd?.find((p) => p.check === true)?.diachi || ""
+                          }
+                          onChange={(event) =>
+                            dispath(SetDiaChiKhachHangg(event.target.value))
+                          }
+                        />
+                      </div>
                     </div>
-                    <h5>
-                      Tổng tiền:{" "}
-                      {dshd
-                        .find((a) => a.check === true)
-                        ?.tongtienn.toLocaleString("vi-VN") + " VNĐ"}
-                    </h5>
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        className="form-control ms-2 mb-2 w-50"
+                        placeholder="Số điện thoại"
+                        value={dshd?.find((p) => p.check === true)?.sdt || ""}
+                        onChange={(event) =>
+                          dispath(SetSDT(event.target.value))
+                        }
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        className="form-control ms-2 mb-2 w-50"
+                        placeholder="Email"
+                        value={dshd?.find((p) => p.check === true)?.email || ""}
+                        onChange={(event) =>
+                          dispath(SetEmail(event.target.value))
+                        }
+                        // readOnly={inputreadOnly}
+                      />
+                    </div>
+                  </div>
+                  <Row className="mb-3 ms-2 mt-3">
+                    <Col className="d-flex align-items-center">
+                      <span className="me-3">Giao hàng</span>
+                      <Form.Check
+                        type="switch"
+                        id="giao-hang-switch"
+                        checked={
+                          dshd?.find((p) => p.check === true)?.checkgiaohang
+                        }
+                        onChange={() => dispath(SetCheckGiaoHang())}
+                      />
+                    </Col>
+                  </Row>
+                  {dshd?.find((p) => p.check === true)?.checkgiaohang && (
+                    <div>
+                      <input
+                        type="number"
+                        className="form-control ms-2 mb-2 w-50"
+                        placeholder="Tiền ship"
+                        value={
+                          dshd?.find((p) => p.check === true)?.tienship || ""
+                        }
+                        onChange={(event) =>
+                          dispath(SetTienShip(event.target.value))
+                        }
+                      />
+                      <input
+                        type="text"
+                        className="form-control ms-2 mb-2 w-50"
+                        placeholder="Ghi chú"
+                        value={
+                          dshd?.find((p) => p.check === true)?.ghiChu || ""
+                        }
+                        onChange={(event) =>
+                          dispath(SetGiChu(event.target.value))
+                        }
+                      />
+                    </div>
+                  )}
+                </form>
+              </div>
+              <div className="w-50">
+                <div className="BanHangof_giohang_thongtin ">
+                  <div
+                    style={{
+                      margin: "10px 20px",
+                      // borderRadius: "5px",
+                    }}
+                  >
+                    <div style={{ margin: "0px 20px" }}>
+                      <h3 className="mb-3 text-center">Giỏ hàng</h3>
+                      <h6 className="mb-3">Sản phẩm: {soSP} </h6>
+                      <h6 className="mb-3">
+                        Giá:&nbsp;
+                        {dshd.find((a) => a.check === true)?.SanPhamGioHang
+                          ?.length > 0
+                          ? TongGia.toLocaleString("vi-VN") + " VNĐ"
+                          : giabandau.toLocaleString("vi-VN") + " VNĐ"}
+                        &nbsp;&nbsp;&nbsp; Giảm khuyến mãi:{" "}
+                        {dshd
+                          .find((a) => a.check === true)
+                          ?.giamkm.toLocaleString("vi-VN") + " VNĐ"}
+                      </h6>
+                      <div className="voucher-selection d-flex mb-3 mt-3">
+                        <label className="mt-2">Chọn Voucher:</label>
+                        <Form.Select
+                          className="w-50 ms-2"
+                          aria-label="Default select example"
+                          value={voucherchuan}
+                          onChange={(e) => HandleOngchangeStVoucher(e)}
+                        >
+                          <option value="">Chọn voucher</option>
+                          {availableVouchers &&
+                            availableVouchers.map((voucher) => (
+                              <option
+                                disabled={voucher.check}
+                                key={voucher.id}
+                                value={voucher.id}
+                              >
+                                {`${voucher.ten}-${voucher.soTienCan}`}
+                              </option>
+                            ))}
+                        </Form.Select>
+                      </div>
+                      <h6 className="mt-3 mb-3">
+                        Giảm Voucher:{" "}
+                        {dshd
+                          .find((a) => a.check === true)
+                          ?.giamvoucher.toLocaleString("vi-VN") + " VNĐ"}
+                      </h6>
+                      <h5 className="mt-5">
+                        Tổng tiền:{" "}
+                        {dshd
+                          .find((a) => a.check === true)
+                          ?.tongtienn.toLocaleString("vi-VN") + " VNĐ"}
+                      </h5>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="BanHangof_giohang" style={{ margin: "5px" }}>
               <div className="BanHangof_giohang_sanphamdamua">
                 <DanhSachSanPham setGiamkhuyemai={setGiamkhuyemai} />
               </div>

@@ -15,6 +15,10 @@ const initialState = {
       voucher: "",
       SanPhamGioHang: [],
       check: true,
+      tienship: 0,
+      checkgiaohang: false,
+      giamvoucher: 0,
+      ghiChu: "",
     },
   ],
   SanPhamGioHang: [],
@@ -77,6 +81,33 @@ export const GetSanPhamGioHangSlice = createSlice({
         return hoadon;
       });
     },
+    SetTenKhachHang: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, ten: action.payload } : hoadon
+      );
+    },
+    SetCheckGiaoHang: (state) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check
+          ? { ...hoadon, checkgiaohang: !hoadon.checkgiaohang }
+          : hoadon
+      );
+    },
+    SetDiaChiKhachHangg: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, diachi: action.payload } : hoadon
+      );
+    },
+    SetSDT: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, sdt: action.payload } : hoadon
+      );
+    },
+    SetEmail: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, email: action.payload } : hoadon
+      );
+    },
     SetGiamKhuyeMai: (state, action) => {
       state.HoaDons = state.HoaDons.map((hoadon) =>
         hoadon.check ? { ...hoadon, giamkm: action.payload } : hoadon
@@ -88,9 +119,40 @@ export const GetSanPhamGioHangSlice = createSlice({
       );
     },
     SetVoucher: (state, action) => {
+      console.log("idvoucher can tim", action.payload);
+
+      const { id, hinhThucGiamGia, giaTri } = action.payload;
+
+      state.HoaDons = state.HoaDons.map((hoadon) => {
+        if (hoadon.check) {
+          const giamVoucher =
+            hinhThucGiamGia === 1 ? (hoadon.tongtienn * giaTri) / 100 : giaTri;
+
+          return {
+            ...hoadon,
+            voucher: id,
+            giamvoucher: giamVoucher,
+            tongtienn: hoadon.tongtienn - giamVoucher,
+          };
+        }
+        return hoadon;
+      });
+    },
+
+    SetGiChu: (state, action) => {
       // alert("ok");
       state.HoaDons = state.HoaDons.map((hoadon) =>
-        hoadon.check ? { ...hoadon, voucher: action.payload } : hoadon
+        hoadon.check ? { ...hoadon, ghiChu: action.payload } : hoadon
+      );
+    },
+    SetTienShip: (state, action) => {
+      // alert("ok");
+      if (action.payload < 0) {
+        toast.error("Giá trị phải lớn hơn 0");
+        return;
+      }
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, tienship: action.payload } : hoadon
       );
     },
     Delete: (state) => {
@@ -108,6 +170,10 @@ export const GetSanPhamGioHangSlice = createSlice({
           giamkm: 0,
           tongtienn: 0,
           SanPhamGioHang: [],
+          tienship: 0,
+          ghiChu: "",
+          giamvoucher: 0,
+          checkgiaohang: false,
           check: true,
         };
         state.HoaDons.push(hoadon);
@@ -126,6 +192,10 @@ export const GetSanPhamGioHangSlice = createSlice({
           giamkm: 0,
           tongtienn: 0,
           SanPhamGioHang: [],
+          tienship: 0,
+          ghiChu: "",
+          giamvoucher: 0,
+          checkgiaohang: false,
           check: true,
         };
         state.HoaDons.push(hoadon1);
@@ -164,6 +234,10 @@ export const GetSanPhamGioHangSlice = createSlice({
               voucher: "",
               tongtienn: 0,
               SanPhamGioHang: [],
+              tienship: 0,
+              ghiChu: "",
+              giamvoucher: 0,
+              checkgiaohang: false,
               check: true,
             },
           ];
@@ -314,6 +388,13 @@ export const GetSanPhamGioHangSlice = createSlice({
 });
 export const {
   DeleteCTSP,
+  SetSDT,
+  SetCheckGiaoHang,
+  SetTienShip,
+  SetGiChu,
+  SetEmail,
+  SetTenKhachHang,
+  SetDiaChiKhachHangg,
   UpdateSoLuong,
   resetSanPhamGioHang,
   AddHoaDon,

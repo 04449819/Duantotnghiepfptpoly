@@ -1191,6 +1191,17 @@ namespace AppAPI.Services
                 context.HoaDons.Update(hd);
                 context.SaveChanges();
 
+                var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == idhd).ToList();
+                foreach (var hdct in lsthdct)
+                {
+                    var ctsp = context.ChiTietSanPhams.FirstOrDefault(c => c.ID == hdct.IDCTSP);
+                    if (ctsp != null)
+                    {
+                        ctsp.SoLuong += hdct.SoLuong;
+                        context.ChiTietSanPhams.Update(ctsp);
+                    }
+                }
+                context.SaveChanges();
                 // Cộng lại số lượng voucher nếu áp dụng
                 if (hd.IDVoucher != null)
                 {
@@ -1574,7 +1585,7 @@ namespace AppAPI.Services
                         repsCTSanPham.Update(CTsanPham);
                     }
                 }
-                else if (trangThai == 3)
+                else if (trangThai == 10)
                 {
                     foreach (var item in chitiethoadon)
                     {
@@ -1900,6 +1911,18 @@ namespace AppAPI.Services
                     context.Vouchers.Update(vc);
                     context.SaveChanges();
                 }
+                // Cộng lại số lượng hàng
+                var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == idhd).ToList();
+                foreach (var hdct in lsthdct)
+                {
+                    var ctsp = context.ChiTietSanPhams.FirstOrDefault(c => c.ID == hdct.IDCTSP);
+                    if (ctsp != null)
+                    {
+                        ctsp.SoLuong += hdct.SoLuong;
+                        context.ChiTietSanPhams.Update(ctsp);
+                    }
+                }
+                context.SaveChanges(); 
                 // Cộng lại tiêu điểm cho khách hàng
                 var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idhd).ToList();
                 if (lstlstd.Count != 0)

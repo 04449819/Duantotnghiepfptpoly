@@ -32,8 +32,8 @@ import {
 // import Select from "react-select";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import ModalXacNhanOffline from "./ModalXacNhanOffline/ModalXacNhanOffline";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+// import { jsPDF } from "jspdf";
+// import html2canvas from "html2canvas";
 const BanHangOfline2 = () => {
   const [search, setSearch] = useState("");
   //   const [name, setName] = useState("");
@@ -321,19 +321,19 @@ const BanHangOfline2 = () => {
       );
     }
   }
-  const handlePrintPDF = () => {
-    if (hoaDonRef.current) {
-      html2canvas(hoaDonRef.current).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save("hoa-don.pdf");
-      });
-    }
-  };
+  // const handlePrintPDF = () => {
+  //   if (hoaDonRef.current) {
+  //     html2canvas(hoaDonRef.current).then((canvas) => {
+  //       const imgData = canvas.toDataURL('image/png');
+  //       const pdf = new jsPDF();
+  //       const imgProps = pdf.getImageProperties(imgData);
+  //       const pdfWidth = pdf.internal.pageSize.getWidth();
+  //       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  //       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //       pdf.save("hoa-don.pdf");
+  //     });
+  //   }
+  // };
   return (
     <div className="banhangofline">
       <div className="row">

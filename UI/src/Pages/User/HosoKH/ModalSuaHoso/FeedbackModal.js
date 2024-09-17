@@ -12,7 +12,6 @@ const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
 
   useEffect(() => {
     
-    toast.success('Đánh giá đã được gửi thành công!');
     
   },[]);
   const handleSubmit = async () => {
@@ -52,7 +51,7 @@ const FeedbackModal = ({ show, onHide, productId, onSubmit }) => {
           setFeedback('');
           setRating(0);
         } else {
-          toast.error('Gửi đánh giá không thành công.');
+          toast.error('Bạn đã đánh giá sản phẩm này rồi !');
           onSubmit(false);
         }
       } else {

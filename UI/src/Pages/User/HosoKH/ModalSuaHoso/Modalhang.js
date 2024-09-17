@@ -65,7 +65,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   const handleCancelOrder = async () => {
     console.log(orderDetails.khachHangID);
     try {
-      await axios.post(`https://localhost:7095/api/HoaDon/HuyHDkh?idhd=${orderId}&idkh=${orderDetails.khachHangID}`);
+      await axios.put(`https://localhost:7095/api/HoaDon/HuyHDkh?idhd=${orderId}&idkh=${orderDetails.khachHangID}`);
       toast.success('Đơn hàng đã được hủy thành công!');
       onClose(); // Đóng modal sau khi hủy thành công
     } catch (error) {

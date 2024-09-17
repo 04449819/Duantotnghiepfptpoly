@@ -16,9 +16,9 @@ namespace AppAPI.Controllers
     {
         private readonly IThongKeSanPhamService service;
 
-		private readonly AssignmentDBContext _dbcontext = new AssignmentDBContext();
+        private readonly AssignmentDBContext _dbcontext = new AssignmentDBContext();
 
-	   public ThongKeSanPhamController(IThongKeSanPhamService service)
+        public ThongKeSanPhamController(IThongKeSanPhamService service)
         {
             this.service = service;
         }
@@ -27,75 +27,75 @@ namespace AppAPI.Controllers
         [HttpGet("top10sanphamtrongngay")]
         public async Task<IActionResult> GetTop10SanphamTrongNgay([FromQuery] DateTime date)
         {
-            var top = await service.Top10SanPhamTrongNgay(date);  
-            return Ok(top); 
+            var top = await service.Top10SanPhamTrongNgay(date);
+            return Ok(top);
         }
 
         // GET api/<ThongKeSanPhamController>/5
         [HttpGet("top10sanphamtrongthang")]
-        public async Task<IActionResult> GetTop10SanphamTrongThang([FromQuery]  int month, int year)
+        public async Task<IActionResult> GetTop10SanphamTrongThang([FromQuery] int month, int year)
         {
             var top = await service.Top10SanPhamTrongThang(month, year);
             return Ok(top);
         }
         // GET api/<ThongKeSanPhamController>/5
-  
 
 
-			[HttpGet("top10sanphamtrongnam")]
-			public async Task<IActionResult> GetTop10SanphamTrongNam(int year)
-			{
-				try
-				{
-					
-					var top10SanPham = new List<SanPham>();
 
-				
-					var dshd = await _dbcontext.HoaDons
-											  .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
-											  .ToListAsync();
+        [HttpGet("top10sanphamtrongnam")]
+        public async Task<IActionResult> GetTop10SanphamTrongNam(int year)
+        {
+            try
+            {
 
-				
-					var listidhoadon = dshd.Select(hd => hd.ID).ToList();
+                var top10SanPham = new List<SanPham>();
 
-				
-					var listcthd = await _dbcontext.ChiTietHoaDons
-												   .Where(ct => listidhoadon.Contains(ct.IDHoaDon))
-												   .ToListAsync();
 
-				
-					var groupedChiTietHoaDons = listcthd.GroupBy(c => c.IDCTSP)
-														.Select(g => new
-														{
-															IdChiTietSanPham = g.Key,
-															TongTien = g.Sum(c => c.DonGia)
-														})
-														.ToList();
+                var dshd = await _dbcontext.HoaDons
+                                          .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
+                                          .ToListAsync();
 
-					
-					var sortedProducts = groupedChiTietHoaDons.OrderByDescending(g => g.TongTien)
-															 .Take(10)
-															 .ToList();
 
-					
-					foreach (var item in sortedProducts)
-					{
-						var sanPham = await _dbcontext.SanPhams.FirstOrDefaultAsync(sp => sp.ID == item.IdChiTietSanPham);
-						if (sanPham != null)
-						{
-							top10SanPham.Add(sanPham);
-						}
-					}
+                var listidhoadon = dshd.Select(hd => hd.ID).ToList();
 
-				
-					return Ok(top10SanPham);
-				}
-				catch (Exception ex)
-				{
-				
-					return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
-				}
-			}
+
+                var listcthd = await _dbcontext.ChiTietHoaDons
+                                               .Where(ct => listidhoadon.Contains(ct.IDHoaDon))
+                                               .ToListAsync();
+
+
+                var groupedChiTietHoaDons = listcthd.GroupBy(c => c.IDCTSP)
+                                                    .Select(g => new
+                                                    {
+                                                        IdChiTietSanPham = g.Key,
+                                                        TongTien = g.Sum(c => c.DonGia)
+                                                    })
+                                                    .ToList();
+
+
+                var sortedProducts = groupedChiTietHoaDons.OrderByDescending(g => g.TongTien)
+                                                         .Take(10)
+                                                         .ToList();
+
+
+                foreach (var item in sortedProducts)
+                {
+                    var sanPham = await _dbcontext.SanPhams.FirstOrDefaultAsync(sp => sp.ID == item.IdChiTietSanPham);
+                    if (sanPham != null)
+                    {
+                        top10SanPham.Add(sanPham);
+                    }
+                }
+
+
+                return Ok(top10SanPham);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+        }
         [HttpGet("top10sanphamtrongna222m")]
         public async Task<IActionResult> GetTop10SanphamTrongNam1(int year)
         {

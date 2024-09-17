@@ -217,8 +217,7 @@ function ModalApplyKM(props) {
         GetDataChitietSanPhamDaAD(props.item.id);
         dispatch(SetLoading(false));
       } catch (error) {
-        toast.error("Đã xảy ra lỗi");
-        console.log(res);
+        toast.error("Đã xảy ra lỗi, vui lòng kiểm tra lại khuyến mãi");
         
         dispatch(SetLoading(false));
       }

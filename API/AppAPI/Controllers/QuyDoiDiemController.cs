@@ -66,5 +66,16 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        
+        [HttpGet("GetApplicableQuyDoiDiem")]
+        public IActionResult DeleteGetApplicableQuyDoiDiem()
+        {
+            var quyDoi = _quydoidiem.GetApplicableQuyDoiDiem();
+            if(quyDoi != null)
+            {
+                return Ok(quyDoi);
+            }
+            return BadRequest();
+        }
     }
 }

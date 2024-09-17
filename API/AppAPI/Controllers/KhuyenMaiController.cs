@@ -379,67 +379,105 @@ namespace AppAPI.Controllers
         [HttpPost("addkhuyenmaitoCTSP")]
         public async Task<IActionResult> AddKhuyenMaitoCTSP(List<KhuyenMaiModelVieww> IDCTSP, string idkhuyenmai)
         {
-            
-            var khuyenMai = await _dbcontext.KhuyenMais.FirstOrDefaultAsync(km => km.ID == Guid.Parse(idkhuyenmai));
-            var now = DateTime.Now;
-            if (khuyenMai != null && khuyenMai.NgayApDung <= now && khuyenMai.NgayKetThuc >= now)
+            if (string.IsNullOrWhiteSpace(idkhuyenmai) || !Guid.TryParse(idkhuyenmai, out Guid khuyenmaiGuid))
             {
-                if (IDCTSP == null || !IDCTSP.Any())
+                return BadRequest("ID khuyến mãi không hợp lệ.");
+            }
+
+            if (IDCTSP == null || !IDCTSP.Any())
+            {
+                return BadRequest("Danh sách IDCTSP rỗng hoặc null.");
+            }
+
+            var khuyenMai = await _dbcontext.KhuyenMais.FindAsync(khuyenmaiGuid);
+            if (khuyenMai == null)
+            {
+                return NotFound($"Không tìm thấy khuyến mãi với ID {idkhuyenmai}.");
+            }
+
+            var now = DateTime.Now;
+            if (khuyenMai.NgayApDung > now || khuyenMai.NgayKetThuc < now)
+            {
+                return BadRequest("Chương trình khuyến mãi không trong thời gian áp dụng.");
+            }
+
+            var updatedCount = 0;
+            var errors = new List<string>();
+
+            foreach (var item in IDCTSP)
+            {
+                if (item.id == Guid.Empty)
                 {
-                    return BadRequest("Danh sách IDCTSP rỗng hoặc null");
+                    errors.Add($"ID sản phẩm chi tiết không hợp lệ: {item.id}");
+                    continue;
                 }
 
-                foreach (var item in IDCTSP)
+                var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
+                if (dt == null)
                 {
-                    var dt = await _dbcontext.ChiTietSanPhams.FindAsync(item.id);
-                  
-                    if (dt != null)
-                    {
-                        var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
-                            .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai));
+                    errors.Add($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
+                    continue;
+                }
 
-                        var existingRecords = await _dbcontext.KhuyenMaiCTSanPhams
-                        .Where(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == Guid.Parse(idkhuyenmai))
-                        .ToListAsync();
-                        _dbcontext.KhuyenMaiCTSanPhams.RemoveRange(existingRecords);
-                        if (existingRecord == null)
-                        {
-                            if (item.trangthai == true)
-                            {
-                                KhuyenMaiCTSanPham kmctsp = new KhuyenMaiCTSanPham
-                                {
-                                    IdChiTietSanPham = dt.ID,
-                                    IdKhuyenMai = Guid.Parse(idkhuyenmai)
-                                };
-                                _dbcontext.KhuyenMaiCTSanPhams.Add(kmctsp);
-                            }
-                        }
-                        else
-                        {
-                            if (item.trangthai == false)
-                            {
-                                _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
-                            }
-                        }
-                    }
-                    else
+                // Kiểm tra xem CTSP có đang áp dụng khuyến mãi khác không
+                var existingActivePromotion = await _dbcontext.KhuyenMaiCTSanPhams
+                    .Join(_dbcontext.KhuyenMais,
+                        kmctsp => kmctsp.IdKhuyenMai,
+                        km => km.ID,
+                        (kmctsp, km) => new { KhuyenMaiCTSP = kmctsp, KhuyenMai = km })
+                    .FirstOrDefaultAsync(x =>
+                        x.KhuyenMaiCTSP.IdChiTietSanPham == dt.ID &&
+                        x.KhuyenMai.NgayApDung <= now &&
+                        x.KhuyenMai.NgayKetThuc >= now &&
+                        x.KhuyenMaiCTSP.IdKhuyenMai != khuyenmaiGuid);
+
+                if (existingActivePromotion != null)
+                {
+                    errors.Add($"Sản phẩm chi tiết với ID {item.id} đang áp dụng khuyến mãi khác (ID: {existingActivePromotion.KhuyenMaiCTSP.IdKhuyenMai}) còn hiệu lực.");
+                    continue;
+                }
+                if (khuyenMai.TrangThai == 0 || khuyenMai.TrangThai == 2) // Giảm bằng tiền mặt
+                {
+                    if (khuyenMai.GiaTri >= dt.GiaBan) // Nếu số tiền giảm >= giá bán
                     {
-                        return NotFound($"Sản phẩm chi tiết với ID {item.id} không tồn tại.");
+                        errors.Add($"Khuyến mãi cho sản phẩm chi tiết với ID {item.id} vượt quá giá bán, không thể thêm.");
+                        continue;
                     }
                 }
 
-                // Lưu các thay đổi vào database
+                var existingRecord = await _dbcontext.KhuyenMaiCTSanPhams
+                    .FirstOrDefaultAsync(kmctsp => kmctsp.IdChiTietSanPham == dt.ID && kmctsp.IdKhuyenMai == khuyenmaiGuid);
+
+                if (existingRecord == null && item.trangthai)
+                {
+                    _dbcontext.KhuyenMaiCTSanPhams.Add(new KhuyenMaiCTSanPham
+                    {
+                        IdChiTietSanPham = dt.ID,
+                        IdKhuyenMai = khuyenmaiGuid
+                    });
+                    updatedCount++;
+                }
+                else if (existingRecord != null && !item.trangthai)
+                {
+                    _dbcontext.KhuyenMaiCTSanPhams.Remove(existingRecord);
+                    updatedCount++;
+                }
+            }
+
+            if (updatedCount > 0)
+            {
                 await _dbcontext.SaveChangesAsync();
             }
-           else
-           {
-             return BadRequest("Kiểm tra lại thời gian chương trình khuyến mãi!");
-           }  
 
-            return Ok("Cập nhật thành công.");
+            if (errors.Any())
+            {
+                return BadRequest(new { Message = "Có lỗi xảy ra trong quá trình xử lý.", Errors = errors });
+            }
 
-
+            return Ok($"Đã cập nhật {updatedCount} bản ghi thành công.");
         }
+
+
         #region khuyenmaiKien
         [HttpGet("getallkhuyenmai")]
         public async Task<IActionResult> GetAllKhuyenMai()

@@ -56,24 +56,125 @@ namespace AppAPI.Services
         }
 
         #region Tung
-        public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO hoaDonDTO)
+        public bool CreateHoaDonOffline(CreateHoaDonOfflineDTO chd)
         {
 
             try
             {
+                KhachHang? khachHang = null;
+                // Kiểm tra dữ liệu đầu vào SDT và Email
+                if (chd.Email != null || chd.SDT != null)
+                {
+                    // Tìm khách hàng dựa trên SDT hoặc Email
+                    khachHang = _ikhachHangService.GetByEmailOrSDT(chd.Email, chd.SDT);
+                }
+                if (chd.IdVoucher.HasValue)
+                {
+                    Voucher voucher = reposVoucher.GetById(chd.IdVoucher.Value);
+                    if (voucher != null && voucher.SoLuong > 0 && chd.TongTienHoaDon >= voucher.SoTienCan &&
+                        voucher.NgayApDung <= DateTime.Now && voucher.NgayKetThuc >= DateTime.Now)
+                    {
+                        voucher.SoLuong -= 1;
+                        reposVoucher.Update(voucher);
+                    }
+                }
+
                 HoaDon hoaDon = new HoaDon
                 {
                     ID = Guid.NewGuid(),
                     ChiTietHoaDons = new List<ChiTietHoaDon>(),
-                    IDNhanVien = hoaDonDTO.IdNhanVien,
+                    KhachHangID = khachHang != null ? khachHang.IDKhachHang : null,
+                    //KhachHangID = null,
+                    IDVoucher = chd.IdVoucher,
+                    phuongThucTTID =  Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"), //chd.IdPhuongThucThanhToan,
+                    IDNhanVien = chd.IdNhanVien,
+                    TenNguoiNhan = chd.TenKhachHang,
+                    Email = chd.Email,
+                    DiaChi = chd.DiaChi,
+                    SDT = chd.SDT,
+                    MaHD = chd.Ma,
+                    GhiChu = chd.GhiChu,
+                    TienShip = chd.TienShip,
+                    LoaiHD = 1,
                     TrangThaiGiaoHang = 2,
                     NgayTao = DateTime.Now,
-                    GhiChu = "Hóa đơn chờ xử lý",
-                    MaHD = "HD" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
-                    LoaiHD = 1,
-                    phuongThucTTID = Guid.Parse("f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"),
+                    NgayThanhToan = DateTime.Now,
+                    //NgayNhanHang = DateTime.Now.AddDays(3),
+                    TongTien = chd.TongTienHoaDon
                 };
-                reposHoaDon.Add(hoaDon);
+
+                foreach (var sp in chd.SanPhams)
+                {
+
+                    // Tính lại đơn giá (vì nó có thể áp dụng km)
+                    var sanPham = repsCTSanPham.GetById(sp.IDCTSP);
+                    ChiTietHoaDon chiTiet = new ChiTietHoaDon
+                    {
+                        ID = Guid.NewGuid(),
+                        IDHoaDon = hoaDon.ID,
+                        IDCTSP = sp.IDCTSP,
+                        SoLuong = sp.SoLuongMua,
+                        DonGia = sp.SoLuongMua * sanPham.GiaBan,
+
+                        TrangThai = 1
+                    };
+
+
+                    DanhGia ds = new DanhGia
+                    {
+                        ID = chiTiet.ID,
+                        TrangThai = 0
+                    };
+                    reposDanhGia.Add(ds);
+
+                    hoaDon.ChiTietHoaDons.Add(chiTiet);
+                }
+                context.HoaDons.Add(hoaDon);
+                context.SaveChanges();
+
+                if (hoaDon.KhachHangID.HasValue)
+                {
+
+                    if (khachHang != null)
+                    {
+                        var quydoi = context.QuyDoiDiems.AsNoTracking().FirstOrDefault(q => q.TrangThai == 1);
+                        if (chd.SoDiemSuDung > 0)
+                        {
+                            LichSuTichDiem lichSuTichDiemMoi = new LichSuTichDiem
+                            {
+                                ID = Guid.NewGuid(),
+                                Diem = chd.SoDiemSuDung.HasValue ? chd.SoDiemSuDung.Value : 0,
+                                TrangThai = 0,
+                                IDKhachHang = khachHang.IDKhachHang,
+                                IDQuyDoiDiem = quydoi.ID,
+                                IDHoaDon = hoaDon.ID
+                            };
+
+                            khachHang.DiemTich -= lichSuTichDiemMoi.Diem;
+                            context.KhachHangs.Update(khachHang);
+                            reposLichSuTichDiem.Add(lichSuTichDiemMoi);
+                        }
+
+                        //if (chd.TongTienHoaDon > 0)
+                        //{
+                        //    LichSuTichDiem lichSuTichDiemMoi1 = new LichSuTichDiem
+                        //    {
+                        //        ID = Guid.NewGuid(),
+                        //        Diem = (int)(hoaDon.TongTien / quydoi.TiLeTichDiem),
+                        //        TrangThai = 1,
+                        //        IDKhachHang = khachHang.IDKhachHang,
+                        //        IDQuyDoiDiem = quydoi.ID,
+                        //        IDHoaDon = hoaDon.ID
+                        //    };
+
+                        //    khachHang.DiemTich += lichSuTichDiemMoi1.Diem;
+                        //    context.KhachHangs.Update(khachHang);
+                        //    reposLichSuTichDiem.Add(lichSuTichDiemMoi1);
+                        //}
+                    }
+
+                    context.SaveChanges();
+                }
                 return true;
             }
             catch (Exception)
@@ -141,11 +242,7 @@ namespace AppAPI.Services
 
                         TrangThai = 1
                     };
-                    if (sanPham != null)
-                    {
-                        sanPham.SoLuong -= sp.SoLuongMua;
-                        repsCTSanPham.Update(sanPham);
-                    }
+                 
 
                     DanhGia ds = new DanhGia
                     {
@@ -295,11 +392,7 @@ namespace AppAPI.Services
                         };
 
                         // Cập nhật số lượng sản phẩm        
-                        if (sanPham != null)
-                        {
-                            sanPham.SoLuong -= sp.SoLuongMua;
-                            repsCTSanPham.Update(sanPham);
-                        }
+                      
                         // Thêm đánh giá mới
                         DanhGia danhGia = new DanhGia
                         {

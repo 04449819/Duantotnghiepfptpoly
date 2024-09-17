@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./BanHangOfline.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ import {
   ChonHoaDon,
   DeleteHoaDons,
   SetCheckGiaoHang,
+  SetCheckDungDiem,
   SetDiaChiKhachHang,
   SetDiaChiKhachHangg,
   SetEmail,
@@ -23,9 +24,16 @@ import {
   SetTienShip,
   SetTongTien,
   SetVoucher,
+  SetSoDiemSuDung,
+  TinhTienGiamDiem,
+  GetQuyDoiDiem,
+  DeleteHoaDonDaThanhToan
 } from "../../../Rudux/Reducer/GetSanPhamGioHangSlice";
 // import Select from "react-select";
-import { Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
+import ModalXacNhanOffline from "./ModalXacNhanOffline/ModalXacNhanOffline";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 const BanHangOfline2 = () => {
   const [search, setSearch] = useState("");
   //   const [name, setName] = useState("");
@@ -48,6 +56,14 @@ const BanHangOfline2 = () => {
   const dispath = useDispatch();
   const [voucherchuan, setvoucherchuan] = useState("");
   const [isGiaoHang, setIsGiaoHang] = useState(false);
+  const nv = useSelector((nv) => nv.user.User);
+  const [modalData, setModalData] = useState(null);
+  const [isModalXacNhanOffline, setIsModalXacNhanOffline] = useState(false);
+  const quyDoiDiem = useSelector((state) => state.sanPhamGioHang.quyDoiDiem);
+  const [showHoaDon, setShowHoaDon] = useState(false);
+  const [completedOrder, setCompletedOrder] = useState(null);
+  const hoaDonRef = useRef(null);
+
   const HandleOnclickSearchKH = async () => {
     dispath(SetLoading(true));
     setTimeout(async () => {
@@ -83,6 +99,11 @@ const BanHangOfline2 = () => {
 
   const data = useSelector((item) => item.sanPhamGioHang.SanPhamGioHang);
   const dshd = useSelector((item) => item.sanPhamGioHang.HoaDons);
+  const hoaDonDaChon = dshd.find(a => a.check === true);
+  useEffect(() => {
+    dispath(GetQuyDoiDiem());
+    
+  }, [dispath]);
   useEffect(() => {
     dispath(SetGiamKhuyeMai(giamkhuyemai));
   }, [giamkhuyemai]);
@@ -90,8 +111,22 @@ const BanHangOfline2 = () => {
     dispath(SetTongTien(tongTien));
   }, [tongTien]);
   // useEffect(() => {
-  //   // alert("da thay doi voucher", voucherchuan);
+  //   //("da thay doi voucher", voucherchuan);
   // }, [voucherchuan]);
+
+  const calculateTotal = () => {
+    if (!hoaDonDaChon) return 'Không có hóa đơn được chọn';
+    
+    const total = hoaDonDaChon.checkgiaohang
+      ? Number(hoaDonDaChon.tongtienn) + Number(hoaDonDaChon.tienship)
+      : Number(hoaDonDaChon.tongtienn);
+    
+    return total.toLocaleString('vi-VN') + ' VNĐ';
+  };
+  const handleDungDiemChange = () => {
+    dispath(SetCheckDungDiem());
+    dispath(TinhTienGiamDiem());
+  };
   useEffect(() => {
     console.log(
       "hóa đơn cần thanh toán",
@@ -153,8 +188,7 @@ const BanHangOfline2 = () => {
     setSearch("");
   }, [dshd]);
 
-  // useEffect(() => {});
-
+  
   const HandleOnclickTaoHoaDon = () => {
     dispath(AddHoaDon());
   };
@@ -183,15 +217,122 @@ const BanHangOfline2 = () => {
       toast.error("Không thể tải danh sách voucher");
     }
   };
-  const handleVoucherChange = (selectedOption) => {
-    setSelectedVoucher(selectedOption);
-    // calculateTotalPrice();
-  };
+  // const handleVoucherChange = (selectedOption) => {
+  //   setSelectedVoucher(selectedOption);
+  //   // calculateTotalPrice();
+  // };
+  
   const HandleOngchangeStVoucher = (e) => {
     setvoucherchuan(e.target.value);
     console.log(e.target.value);
     const datacantim = availableVouchers.find((p) => p.id === e.target.value);
     dispath(SetVoucher(datacantim));
+  };
+
+  const openModalXacNhanOffline = () => {
+    const hoaDon = dshd.find((a) => a.check === true)
+    const createHoaDon = {
+      Ma: hoaDon.ma,
+      TenKhachHang: hoaDon.ten,
+      SDT: hoaDon.sdt,
+      Email: hoaDon.email,
+      DiaChi: hoaDon.diachi,
+      TienShip: hoaDon.checkgiaohang ? hoaDon.tienship : 0,
+      //IdPhuongThucThanhToan: "00000000-0000-0000-0000-000000000000", 
+      GhiChu: hoaDon.ghiChu,
+      IdNhanVien: nv.id ? nv.id : "", 
+      //IdKhachHang: "00000000-0000-0000-0000-000000000000", 
+      IdVoucher: voucherchuan ? voucherchuan : null,
+      SoDiemSuDung: 0, // Thay bằng số điểm sử dụng thực tế nếu có
+      SanPhams: hoaDon.SanPhamGioHang.map(sp => ({
+        IDCTSP: sp.idCTSP,
+        SoLuongMua: sp.soLuongmua,
+        GiaBan: sp.giaBan,
+        Anh: sp.duongDanAnh,
+        TenSanPham: sp.tenSanPham,
+        TenKichCo: sp.kichCo,
+        TenMauSac: sp.maMau,
+        GiaTriKhuyenMai: sp.giaTriKhuyenMai,
+        TrangThaiKhuyenMai: sp.trangthaikm,
+
+
+      })),
+      TongTienHoaDon: Number(hoaDon.tongtienn) + Number(hoaDon.tienship),
+    }
+    const additionalInfo = {
+      tongTienBanDau: TongGia,
+      tienGiamVoucher: hoaDon.giamvoucher,
+      tienGiamKhuyenMai: hoaDon.giamkm,
+      tongTien : hoaDon.tongtienn,
+      isGiaoHang: hoaDon.checkgiaohang,
+      checkdungdiem: hoaDon.checkdungdiem,
+      soDiemSuDung: hoaDon.soDiemSuDung,
+      tienGiamDiem: hoaDon.tienGiamDiem,
+      //tenVoucher: getVoucher(voucherchuan),
+      // tienGiamDiem: tienGiamDiem,
+      // soDiemSuDung: soDiemSuDung,
+    };
+    setModalData({ ...createHoaDon, ... additionalInfo });
+   
+   
+    
+    setIsModalXacNhanOffline(true);
+  }
+  const handleThanhToan = async () => {
+    try {
+      //const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
+      // const apiUrl =
+      //   modalData.IdPhuongThucThanhToan ===
+      //   "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
+      //     ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
+      //     : "https://localhost:7095/api/HoaDon/create-order";
+      const apiUrl ="https://localhost:7095/api/HoaDon/CreateHoaDonOffline";
+    
+
+      const res = await axios.post(apiUrl, modalData);
+
+      // if (res.data?.payUrl) {
+      //   window.open(res.data.payUrl, "_blank");
+      // }
+
+      if (res.data) {
+        toast.success("Đặt hàng thành công");
+          // Xóa hóa đơn đã thanh toán
+          const hoaDonDaThanhToan = dshd.find(hd => hd.check === true);
+          if (hoaDonDaThanhToan) {
+            dispath(DeleteHoaDonDaThanhToan(hoaDonDaThanhToan.ma));
+          }
+          setIsModalXacNhanOffline(false);
+          //setCompletedOrder(res.data); // Save the completed order data
+          //setShowHoaDon(true); // Show the HoaDon component
+        //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
+        //selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
+       // setload(!load);
+      } else {
+        toast.error(res.data.message || "Đặt hàng thất bại");
+      }
+
+
+      
+    } catch (error) {
+      console.error("Lỗi khi đặt hàng:", error);
+      toast.error(
+        `Gặp lỗi khi đặt hàng: ${error.response?.data || error.message}`
+      );
+    }
+  }
+  const handlePrintPDF = () => {
+    if (hoaDonRef.current) {
+      html2canvas(hoaDonRef.current).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save("hoa-don.pdf");
+      });
+    }
   };
   return (
     <div className="banhangofline">
@@ -307,7 +448,9 @@ const BanHangOfline2 = () => {
                           onChange={(event) =>
                             dispath(SetTenKhachHang(event.target.value))
                           }
-                          // readOnly={inputreadOnly}
+                          readOnly={inputreadOnly}
+                        
+
                         />
                       </div>
                       <div className="col-6">
@@ -322,6 +465,8 @@ const BanHangOfline2 = () => {
                           onChange={(event) =>
                             dispath(SetDiaChiKhachHangg(event.target.value))
                           }
+                          //readOnly={inputreadOnly}
+
                         />
                       </div>
                     </div>
@@ -334,6 +479,7 @@ const BanHangOfline2 = () => {
                         onChange={(event) =>
                           dispath(SetSDT(event.target.value))
                         }
+                        readOnly={inputreadOnly}
                       />
                     </div>
                     <div>
@@ -345,10 +491,11 @@ const BanHangOfline2 = () => {
                         onChange={(event) =>
                           dispath(SetEmail(event.target.value))
                         }
-                        // readOnly={inputreadOnly}
+                        readOnly={inputreadOnly}
                       />
                     </div>
                   </div>
+                  <div className="d-flex justify-content-between align-items-center mt-5">
                   <Row className="mb-3 ms-2 mt-3">
                     <Col className="d-flex align-items-center">
                       <span className="me-3">Giao hàng</span>
@@ -359,9 +506,38 @@ const BanHangOfline2 = () => {
                           dshd?.find((p) => p.check === true)?.checkgiaohang
                         }
                         onChange={() => dispath(SetCheckGiaoHang())}
+                        
+                        
                       />
                     </Col>
                   </Row>
+                  { dshd?.find((p) => p.check === true)?.sdt &&(
+                    <Row className="mb-3 ms-2 mt-3">
+                    <Col className="d-flex align-items-center">
+                      <span className="me-3">Điểm  tích: {dshd?.find((p) => p.check === true)?.diem || ""}</span>
+                      <Form.Check
+                        type="switch"
+                        id="dung-diem-switch"
+                        checked={
+                          dshd?.find((p) => p.check === true)?.checkdungdiem
+                        }
+                        onChange={handleDungDiemChange}
+                      />
+                    </Col>
+                  </Row>
+                  )}
+                  </div>
+                  {/* {dshd?.find((p) => p.check === true)?.checkdungdiem && (
+                    <div>
+                      <p className="ms-2 mb-2">
+                        Số điểm sử dụng: {dshd?.find((p) => p.check === true)?.soDiemSuDung || 0}
+                      </p>
+                      <p className="ms-2 mb-2">
+                        Tiền giảm: {dshd?.find((p) => p.check === true)?.tienGiamDiem?.toLocaleString("vi-VN") || 0} VNĐ
+                      </p>
+                    </div>
+                  )} */}
+                  
                   {dshd?.find((p) => p.check === true)?.checkgiaohang && (
                     <div>
                       <input
@@ -419,6 +595,7 @@ const BanHangOfline2 = () => {
                           aria-label="Default select example"
                           value={voucherchuan}
                           onChange={(e) => HandleOngchangeStVoucher(e)}
+                         
                         >
                           <option value="">Chọn voucher</option>
                           {availableVouchers &&
@@ -428,23 +605,62 @@ const BanHangOfline2 = () => {
                                 key={voucher.id}
                                 value={voucher.id}
                               >
-                                {`${voucher.ten}-${voucher.soTienCan}`}
+                                {`${voucher.ten}-${voucher.hinhThucGiamGia ? "%" : "VNĐ"}-${voucher.soTienCan}`}
                               </option>
+                              
                             ))}
                         </Form.Select>
                       </div>
-                      <h6 className="mt-3 mb-3">
+                      {/* <h6 className="mt-3 mb-3">
                         Giảm Voucher:{" "}
                         {dshd
                           .find((a) => a.check === true)
                           ?.giamvoucher.toLocaleString("vi-VN") + " VNĐ"}
-                      </h6>
-                      <h5 className="mt-5">
-                        Tổng tiền:{" "}
-                        {dshd
-                          .find((a) => a.check === true)
-                          ?.tongtienn.toLocaleString("vi-VN") + " VNĐ"}
-                      </h5>
+                      </h6> */}
+                       <h6 className="mt-3 mb-3">
+                          Giảm Voucher: {
+                            dshd
+                              .find((a) => a.check === true)
+                              ?.giamvoucher && dshd.find((a) => a.check === true).giamvoucher.toLocaleString("vi-VN") + " VNĐ"
+                          }
+                        </h6>
+                      { dshd?.find((p) => p.check === true)?.checkdungdiem && (
+                         <h6 className="mt-3 mb-3">
+                         Giảm điểm: {dshd.find((a) => a.check === true)?.tienGiamDiem?.toLocaleString("vi-VN") + " VNĐ"}
+                       </h6>
+                      )}
+                        <div className="d-flex justify-content-between align-items-center mt-5">
+                        {/* <h5>
+    Tổng tiền: {
+        
+        hoaDonDaChon ? (
+          (Number(hoaDonDaChon.tongtienn) + Number(hoaDonDaChon.tienship)).toLocaleString('vi-VN') + ' VNĐ'
+      ) : 'Không có hóa đơn được chọn'
+    }
+</h5> */}
+                <h5>Tổng tiền: {calculateTotal()}</h5>
+                <Button 
+                  onClick={openModalXacNhanOffline}
+                  disabled={!dshd.find((a) => a.check === true) || dshd.find((a) => a.check === true)?.SanPhamGioHang?.length === 0}
+                >
+                  Thanh toán
+                </Button>
+                {/* {showHoaDon && completedOrder && (
+        <div>
+          <HoaDon ref={hoaDonRef} hoaDon={completedOrder} />
+          <Button onClick={handlePrintPDF}>In hóa đơn PDF</Button>
+        </div>
+      )} */}
+
+              </div>
+              {isModalXacNhanOffline && (
+                <ModalXacNhanOffline
+                  show={isModalXacNhanOffline}
+                  onHide={() => setIsModalXacNhanOffline(false)}
+                  data={modalData || {}} 
+                  onConfirm={handleThanhToan}
+                />
+              )}
                     </div>
                   </div>
                 </div>

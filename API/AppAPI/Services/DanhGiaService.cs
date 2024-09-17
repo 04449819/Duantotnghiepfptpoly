@@ -227,9 +227,16 @@ namespace AppAPI.Services
                 DanhGia danhGia = reposDanhGia.GetAll().FirstOrDefault(p => p.ID == idCTHD);
 
                 // Kiểm tra danhGia có phải là null không
-                if (danhGia == null)    
+                if (danhGia == null)
                 {
                     // Không tìm thấy đánh giá với idCTHD tương ứng
+                    return false;
+                }
+
+                // Kiểm tra trạng thái của danhGia
+                if (danhGia.TrangThai == 1)
+                {
+                    // Đánh giá đã được thực hiện và không thể cập nhật
                     return false;
                 }
 
@@ -250,6 +257,7 @@ namespace AppAPI.Services
                 return false;
             }
         }
+
 
 
     }

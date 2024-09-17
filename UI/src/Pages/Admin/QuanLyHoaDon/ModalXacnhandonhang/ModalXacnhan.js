@@ -69,7 +69,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
 
   const handleCancel = async () => {
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/HuyHD?idhd=${billId}&idnv=${user.id}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=7&idnhanvien=${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

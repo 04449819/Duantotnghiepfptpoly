@@ -14,7 +14,7 @@ const ModalSearchSPChiTiet = (props) => {
   const [data, setdata] = useState([]);
   const [img, setimg] = useState("");
   const [giaBan, setGiaban] = useState();
-  const [khuyenmai, setKhuyenMai] = useState();
+  const [khuyenmai, setKhuyenMai] = useState("");
   const [soLuongsp, setSoluongsp] = useState();
   const [tensp, setTensp] = useState("");
   const [MauSac, setMauSac] = useState([]);
@@ -39,10 +39,33 @@ const ModalSearchSPChiTiet = (props) => {
       const res = await axios.get(
         `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${IDSanPham}`
       );
+      console.log("đây là dssp cần tìm", res.data);
       setdata(res.data);
       setimg(res.data[0].img[0]);
       setGiaban(res.data[0].giaBan);
-      setKhuyenMai(res.data[0].khuyenMai);
+      let a = "";
+      const khuyenMai = res.data[0]?.khuyenMai;
+      if (khuyenMai) {
+        switch (khuyenMai.trangThai) {
+          case 0:
+            a = khuyenMai.giaTri.toLocaleString("vi-VN") + " VNĐ";
+            break;
+          case 1:
+            a = `${khuyenMai.giaTri}%`;
+            break;
+          case 2:
+            a = `Đồng giá ${khuyenMai.toLocaleString("vi-VN") + " VNĐ"}`;
+            break;
+          case 3:
+            a = `Đồng giá ${khuyenMai.giaTri}%`;
+            break;
+          default:
+            a = "0";
+        }
+      } else {
+        a = "Không có khuyến mãi";
+      }
+      setKhuyenMai(a);
       setIDmua(res.data[0].id);
       setSoluongsp(res.data[0].soLuong);
 
@@ -73,7 +96,7 @@ const ModalSearchSPChiTiet = (props) => {
 
       setMauSac(MauSactam);
     } catch (error) {
-      console.error("There was an error fetching the data!", error);
+      console.error("gặp lỗi", error);
     }
   };
 
@@ -111,8 +134,35 @@ const ModalSearchSPChiTiet = (props) => {
     const datatam = data.find((a) => a.id === item.id);
     if (datatam) {
       // setimg(datatam.img[0]);
+      console.log("đây là datasp", datatam);
       setGiaban(datatam.giaBan);
-      setKhuyenMai(datatam.khuyenMai);
+      setSoluongsp(datatam.soLuong);
+      let a = "";
+      const khuyenMai = datatam?.khuyenMai;
+      if (khuyenMai) {
+        switch (khuyenMai.trangThai) {
+          case 0:
+            a = khuyenMai.giaTri.toLocaleString("vi-VN") + " VNĐ";
+            break;
+          case 1:
+            a = `${khuyenMai.giaTri}%`;
+            break;
+          case 2:
+            a = `Đồng giá ${khuyenMai.toLocaleString("vi-VN") + " VNĐ"}`;
+            break;
+          case 3:
+            a = `Đồng giá ${khuyenMai.giaTri}%`;
+            break;
+          default:
+            a = "0";
+        }
+      } else {
+        a = "Không có khuyến mãi";
+      }
+      setKhuyenMai(a);
+
+      console.log(a);
+      setKhuyenMai(a);
       setIDmua(datatam.id);
     }
   };
@@ -129,7 +179,6 @@ const ModalSearchSPChiTiet = (props) => {
       const checkMuaHang = kichthuoc.find((a) => a.trangthai === false);
       if (checkMuaHang && checkMuaHang.soluong > 0) {
         dispatch(FetchDataSanPhamGioHang(idmuaHang));
-        toast.success("Sản phẩm đã được thêm vào giỏ hàng");
         dispatch(SetLoading(false));
       } else {
         toast.error("Thêm sản phẩm thất bại");
@@ -240,7 +289,7 @@ const ModalSearchSPChiTiet = (props) => {
                     Số lượng: {soLuongsp} SP
                   </h6>
                   <h6 className="SPduocchon_body_content">
-                    khuyến mãi: {khuyenmai.toLocaleString("vi-VN") + " VNĐ"}
+                    khuyến mãi: {khuyenmai}
                   </h6>
                   <h5 className="SPduocchon_body_content">
                     giá bán:{" "}
@@ -265,7 +314,7 @@ const ModalSearchSPChiTiet = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>

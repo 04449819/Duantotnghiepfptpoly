@@ -3,7 +3,7 @@
   height: 680px;
   // padding: 10px !important;
   .banhangof_content {
-    .BanHangof_DSHoaDonCho{
+    .BanHangof_DSHoaDonCho {
       height: 340px;
       border: 1px solid black;
       margin-bottom: 5px;
@@ -13,17 +13,17 @@
     .HoaDonChoTable .table-danger {
       background-color: #f4d0d0; /* Adjust color for invoice with details */
     }
-    
+
     .HoaDonChoTable .selected-row {
       background-color: #e0e0e0; /* Adjust color for selected row */
       font-weight: bold;
       scale: 1.02;
     }
-   
+
     .BanHangof_giohang {
       height: 890px;
       .BanHangof_giohang_thongtin {
-        height: 17%;
+        height: 32%;
         border: 1px solid black;
         border-radius: 5px;
       }
@@ -35,6 +35,9 @@
       }
     }
   }
+  form.form_khachhang_banhangofline {
+    border-right: 1px solid black;
+  }
   .banhangof_hoadon {
     height: 1477px;
     border: 1px solid black;
@@ -45,6 +48,7 @@
       border-radius: 5px;
       .form_khachhang_banhangofline {
         margin: 5px 5px;
+        border: 1px solid black;
         input {
           width: 100%;
           margin: 10px 10px;
@@ -72,8 +76,6 @@
     }
   }
 }
-
-
 
 .title {
   text-align: center;

@@ -41,6 +41,7 @@ import ThanhToanThanhCong from "./Pages/User/ThanhToanThanhCong/ThanhToanThanhCo
 import XemhoXo from "./Pages/Admin/XemhoXo/XemhoXo";
 import HosoKh from "./Pages/User/HosoKH/HosoKh";
 import QuanLyDanhGia from "./Pages/Admin/QLDanhGia/QLDanhGia";
+import BanHangOfline2 from "./Pages/Admin/BanHangOfLine/BanHangOfline2";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -58,30 +59,44 @@ root.render(
             <Route path="/chitietsanpham" element={<ChiTietSanPhamKH />} />
             <Route path="/giohang" element={<GioHang />} />
             <Route path="/hosokh/:userId" element={<HosoKh />} />
-            <Route path="/thanhtoanthanhcong" element={<ThanhToanThanhCong />}></Route>
+            <Route
+              path="/thanhtoanthanhcong"
+              element={<ThanhToanThanhCong />}
+            ></Route>
           </Route>
 
           <Route path="/admin" element={<AdminPage />}>
-            <Route index element={<BanHangOfline />} />
-            <Route path="/admin/banhangofline" element={<BanHangOfline />} />
-            <Route path="/admin/quanlynhanvien" element={<QuanLyNhanVienPage />} />
+            <Route index element={<BanHangOfline2 />} />
+            <Route path="/admin/banhangofline" element={<BanHangOfline2 />} />
+            <Route
+              path="/admin/quanlynhanvien"
+              element={<QuanLyNhanVienPage />}
+            />
             <Route path="/admin/quanlysanpham" element={<QuanLySanPham />} />
             <Route path="/admin/quanlychatlieu" element={<QuanLyChatLieu />} />
             <Route path="/admin/quanlymausac" element={<MauSac />} />
             <Route path="/admin/quanlykichthuoc" element={<KichThuoc />} />
             <Route path="/admin/coao" element={<CoAo />} />
-            <Route path="/admin/quanlyloaisanpham" element={<QuanLyLoaiSanPham />} />
-            <Route path="/admin/quanlykhachhang" element={<QuanLyKhachHang />} />
+            <Route
+              path="/admin/quanlyloaisanpham"
+              element={<QuanLyLoaiSanPham />}
+            />
+            <Route
+              path="/admin/quanlykhachhang"
+              element={<QuanLyKhachHang />}
+            />
             <Route path="/admin/quanlydanhgia" element={<QuanLyDanhGia />} />
             <Route path="/admin/quanlydoidiem" element={<QuanLyDoiDiem />} />
             <Route path="/admin/quanlyvoucher" element={<QuanLyVoucher />} />
             <Route path="/admin/dashboard" element={<DashBoard />} />
-            <Route path="/admin/quanlykhuyenmai" element={<QuanLyKhuyenMai />} />
+            <Route
+              path="/admin/quanlykhuyenmai"
+              element={<QuanLyKhuyenMai />}
+            />
             <Route path="/admin/quanlyhoadon" element={<QuanLyHoaDon />} />
             <Route path="/admin/thongke" element={<ThongKe />} />
             <Route path="/admin/profile/:userId" element={<XemhoXo />} />
           </Route>
-
         </Routes>
       </BrowserRouter>
       <ToastContainer

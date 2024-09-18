@@ -136,46 +136,54 @@ const GioHang = () => {
     setIsDiemTichLuy(!isDiemTichLuy);
     calculateTotalPrice();
   };
-  const calculateTotalPrice = useCallback((currentShippingCost = shippingCost) => {
-    let total = dsspgiohangs.reduce((sum, product) => {
-      if (product.check) {
-        return sum + product.giatrithuc * product.soluongmua;
+  const calculateTotalPrice = useCallback(
+    (currentShippingCost = shippingCost) => {
+      let total = dsspgiohangs.reduce((sum, product) => {
+        if (product.check) {
+          return sum + product.giatrithuc * product.soluongmua;
+        }
+        return sum;
+      }, 0);
+      setTongTienGioHang(total);
+      total += currentShippingCost;
+
+      if (selectedVoucher) {
+        const tienGiamVoucher =
+          selectedVoucher.hinhThucGiamGia === 0
+            ? selectedVoucher.giaTri
+            : total * (selectedVoucher.giaTri / 100);
+        total -= tienGiamVoucher;
+        setTienGiamVoucher(tienGiamVoucher);
+      } else {
+        setTienGiamVoucher(0);
       }
-      return sum;
-    }, 0);
-    setTongTienGioHang(total);
-    total += currentShippingCost;
-  
-    if (selectedVoucher) {
-      const tienGiamVoucher =
-        selectedVoucher.hinhThucGiamGia === 0
-          ? selectedVoucher.giaTri
-          : total * (selectedVoucher.giaTri / 100);
-      total -= tienGiamVoucher;
-      setTienGiamVoucher(tienGiamVoucher);
-    } else {
-      setTienGiamVoucher(0);
-    }
-  
-    if (isDiemTichLuy && user.diemTich) {
-      const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
-      const tienGiamDiem = maxDiemSuDung * 100;
-      total -= tienGiamDiem;
-      setTienGiamDiem(tienGiamDiem);
-      setSoDiemSuDung(maxDiemSuDung);
-    } else {
-      setTienGiamDiem(0);
-      setSoDiemSuDung(0);
-    }
-  
-    setTongTien(total);
-    
-  }, [dsspgiohangs, selectedVoucher, isDiemTichLuy, user.diemTich, shippingCost]);
-  
+
+      if (isDiemTichLuy && user.diemTich) {
+        const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
+        const tienGiamDiem = maxDiemSuDung * 100;
+        total -= tienGiamDiem;
+        setTienGiamDiem(tienGiamDiem);
+        setSoDiemSuDung(maxDiemSuDung);
+      } else {
+        setTienGiamDiem(0);
+        setSoDiemSuDung(0);
+      }
+
+      setTongTien(total);
+    },
+    [dsspgiohangs, selectedVoucher, isDiemTichLuy, user.diemTich, shippingCost]
+  );
+
   useEffect(() => {
     calculateTotalPrice();
-  }, [calculateTotalPrice, dsspgiohangs, isDiemTichLuy, selectedVoucher, shippingCost]);
-  
+  }, [
+    calculateTotalPrice,
+    dsspgiohangs,
+    isDiemTichLuy,
+    selectedVoucher,
+    shippingCost,
+  ]);
+
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
@@ -456,6 +464,7 @@ const GioHang = () => {
     }
   };
   const HandleDatHang = async () => {
+    alert("okkkkkkk");
     try {
       const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
       const apiUrl =
@@ -472,7 +481,7 @@ const GioHang = () => {
 
       if (res.data) {
         toast.success("Đặt hàng thành công");
-
+        console.log("đây là ds sản phẩm cần xóa", selectedProducts);
         //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
         selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
 

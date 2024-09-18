@@ -140,19 +140,23 @@ namespace AppAPI.Services
         {
             var now = DateTime.Now;
 
+            // Lọc các voucher hết hạn, hết hàng, hoặc không thỏa mãn điều kiện về GiaTri và SoTienCan
             var expiredOrOutOfStockVouchers = context.Vouchers
-                .Where(x => x.SoLuong <= 0 || now < x.NgayApDung || now > x.NgayKetThuc);
+                .Where(x => x.SoLuong <= 0 || now < x.NgayApDung || now > x.NgayKetThuc
+                            || (x.HinhThucGiamGia == 0 && x.GiaTri > x.SoTienCan)) // Điều kiện mới
+                .ToList(); // Chuyển thành danh sách để dùng trong vòng lặp
 
-   
+            // Cập nhật trạng thái của các voucher không hợp lệ
             foreach (var voucher in expiredOrOutOfStockVouchers)
             {
-                voucher.TrangThai = 0; 
+                voucher.TrangThai = 0;
             }
 
             context.SaveChanges();
 
-            return true; 
+            return true;
         }
+
         #endregion
     }
 }

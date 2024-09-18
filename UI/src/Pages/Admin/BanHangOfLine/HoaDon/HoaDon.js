@@ -3,6 +3,8 @@ import QRCode from 'qrcode.react';
 
 const HoaDon = React.forwardRef(({ hoaDon  }, ref) => {
   console.log(hoaDon);
+  console.log("helo");
+  
   
   if (!hoaDon) return null;
   return (
@@ -44,10 +46,82 @@ const HoaDon = React.forwardRef(({ hoaDon  }, ref) => {
               {hoaDon?.SanPhams?.map((item, index) => (
                 <tr key={item?.IDCTSP}>
                   <td>{index + 1}</td>
+
                   <td>{item?.TenSanPham}</td>
-                  <td>{item?.GiaBan?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+
+                  {/* <td>{item?.GiaBan?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td> */}
+                  <td>
+                    {item.GiaTriKhuyenMai ? (
+                      <>
+                        
+                        
+                        {item.TrangThaiKhuyenMai === 0
+                              ? (
+                                  item.GiaBan - item.GiaTriKhuyenMai 
+                                ).toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })
+                              : item.TrangThaiKhuyenMai === 1
+                              ? (
+                                  (item.GiaBan - (item.GiaBan * item.GiaTriKhuyenMai) / 100)
+                                ).toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })
+                              : item.TrangThaiKhuyenMai === 2
+                              ? (
+                                  (item.GiaBan - item.GiaTriKhuyenMai)
+                                
+                                ).toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })
+                              : item.TrangThaiKhuyenMai === 3
+                              ? (
+                                  item.GiaBan - (item.GiaBan -
+                                    (item.GiaBan * item.GiaTriKhuyenMai) / 100) 
+                                ).toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })
+                              : 0}
+                      </>
+                    ) 
+                      : 
+                    (
+                      item.GiaBan?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                    )}
+                  
+                     
+                  </td>
+
+
+
                   <td>{item?.SoLuongMua}</td>
-                  <td>{(item?.GiaBan * item?.SoLuongMua)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+
+                  {/* <td>{(item?.GiaBan * item?.SoLuongMua)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td> */}
+                  <td>
+                      {(
+                        item.GiaBan * item.SoLuongMua -
+                        (item.TrangThaiKhuyenMai === 0
+                          ? item.GiaTriKhuyenMai * item.SoLuongMua
+                          : item.TrangThaiKhuyenMai === 1
+                          ? ((item.GiaBan * item.GiaTriKhuyenMai) / 100) *
+                            item.SoLuongMua
+                          : item.TrangThaiKhuyenMai === 2
+                          ? (item.GiaBan - item.GiaTriKhuyenMai) *
+                            item.SoLuongMua
+                          : item.TrangThaiKhuyenMai === 3
+                          ? (item.GiaBan -
+                              (item.GiaBan * item.GiaTriKhuyenMai) / 100) *
+                            item.SoLuongMua
+                          : 0)
+                      ).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
                 </tr>
               ))}
             </tbody>
@@ -56,7 +130,14 @@ const HoaDon = React.forwardRef(({ hoaDon  }, ref) => {
         <div className="mt-4">
           <p>Tổng Tiền hàng: {hoaDon?.tongTienBanDau?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
           {/* <p>Giảm giá: {(tienGiamVoucher + tienGiamDiem)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p> */}
-          <p>Giảm giá: </p>
+          <p>
+            Giảm giá: {(
+              Number(hoaDon?.tienGiamVoucher || 0) +
+              Number(hoaDon?.tienGiamDiem || 0) +
+              Number(hoaDon?.tienGiamKhuyenMai || 0)
+            ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+          </p>
+
           <p>Phí ship: {hoaDon?.TienShip?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
           <p className="font-bold">Tổng hóa đơn: {hoaDon?.TongTienHoaDon?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
         </div>

@@ -33,6 +33,28 @@ namespace AppAPI.Services
             return _allRepository.Add(quyDoiDiem);
         }
 
+        public bool CheckStatusQuyDoiDiem()
+        {
+            var now = DateTime.Now;
+
+           
+            var quyDoiNgoaiThoiGianApDung = context.QuyDoiDiems
+                .Where(x => now < x.ngayBatDau || now > x.ngayKetThuc)
+                .ToList(); 
+
+            
+            foreach (var quyDoi in quyDoiNgoaiThoiGianApDung)
+            {
+                quyDoi.TrangThai = 0;
+            }
+
+
+            context.SaveChanges();
+
+            return true;
+        }
+
+
         public bool Delete(Guid Id)
         {
             var quydoidiem = _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);

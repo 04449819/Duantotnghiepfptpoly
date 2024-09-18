@@ -26,6 +26,7 @@ const initialState = {
   ],
   SanPhamGioHang: [],
   quyDoiDiem: null,
+  diemTich: null,
   loadingdata: true,
   errordata: true,
 };
@@ -69,6 +70,22 @@ export const GetQuyDoiDiem = createAsyncThunk(
     try {
       const res = await axios.get(
         `https://localhost:7095/api/QuyDoiDiem/GetApplicableQuyDoiDiem`
+      );
+      console.log(res.data);
+      
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching QuyDoiDiem:", error);
+      throw error;
+    }
+  }
+);
+export const GetDiemTich = createAsyncThunk(
+  "featchdata/GetDiemTich",
+  async (idKhachHang) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/KhachHang/GetById?id=${idKhachHang}`
       );
       console.log(res.data);
       
@@ -221,16 +238,24 @@ export const GetSanPhamGioHangSlice = createSlice({
       state.HoaDons = state.HoaDons.map((hoadon) => {
           if (hoadon.check) {
               // Tính toán giảm giá mới
-              const newGiamVoucher = hinhThucGiamGia === 1 ? (hoadon.tongtienn * giaTri) / 100 : giaTri;
+              const newGiamVoucher = hinhThucGiamGia === 1 
+                  ? (hoadon.tongtienn * giaTri) / 100 
+                  : giaTri;
   
               // Trừ đi giảm giá cũ nếu có
               const oldGiamVoucher = hoadon.giamvoucher || 0; // Nếu chưa có giảm giá, mặc định là 0
+  
+              // Tính toán lại tổng tiền sau khi áp dụng voucher mới
+              const updatedTongtienn = hoadon.tongtienn - newGiamVoucher + oldGiamVoucher;
+  
+              // Đảm bảo rằng tổng tiền không bị âm
+              const finalTongtienn = Math.max(updatedTongtienn, 0);
   
               return {
                   ...hoadon,
                   voucher: id,
                   giamvoucher: newGiamVoucher,
-                  tongtienn: hoadon.tongtienn - newGiamVoucher + oldGiamVoucher,
+                  tongtienn: finalTongtienn, // Sử dụng tổng tiền cuối cùng đã giới hạn
               };
           }
           return hoadon;

@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 const initialState = {
   User: {},
   giohangonl: [],
+  quyDoiDiem: null,
+  diemTich: 0,
   loadingdata: true,
   errordata: true,
 };
@@ -32,11 +34,49 @@ export const FetchData = createAsyncThunk(
     }
   }
 );
+export const GetQuyDoiDiem = createAsyncThunk(
+  "featchdata/GetQuyDoiDiem",
+  async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/QuyDoiDiem/GetApplicableQuyDoiDiem`
+      );  
+      console.log(res.data);
+      
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching QuyDoiDiem:", error);
+      throw error;
+    }
+  }
+);
+export const GetDiemTich = createAsyncThunk(
+  "featchdata/GetDiemTich",
+  async (idKhachHang) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/KhachHang/GetById?id=${idKhachHang}`
+      );
+      console.log(res.data);
+      
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching QuyDoiDiem:", error);
+      throw error;
+    }
+  }
+);
 
 export const taiKhoanSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    getDiemTich: (state, action) => {
+      state.diemTich = action.payload;
+    },
+    setQuyDoiDiem: (state, action) => {
+      state.quyDoiDiem = action.payload;
+    },
     LogOutTaiKhoan: (state) => {
       state.User = {};
       state.giohangonl = [];
@@ -97,6 +137,12 @@ export const taiKhoanSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(GetDiemTich.fulfilled, (state, action) => {
+      state.diemTich = action.payload.diemTich; // Giả sử API trả về action.payload có thuộc tính diemTich
+    });
+    builder.addCase(GetQuyDoiDiem.fulfilled, (state, action) => {
+      state.quyDoiDiem = action.payload;
+    });
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(FetchData.pending, (state, action) => {
       state.loadingdata = true;
@@ -153,6 +199,8 @@ export const {
   checkspchitietspgiohang,
   SetDiachiChinhNhanHang,
   setnamekhachhang,
+  setQuyDoiDiem,  
+  getDiemTich,  
 } = taiKhoanSlice.actions;
 
 export const deleteAndFetch = (id, credentials) => async (dispatch) => {

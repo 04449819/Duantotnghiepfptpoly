@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Table } from 'react-bootstrap';
 import "./QuanLyVoucher.scss";
 import { toast } from "react-toastify";
 const QuanLyVoucher = () => {
@@ -21,7 +21,7 @@ const QuanLyVoucher = () => {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
   const tableRef = useRef(null);
-  const ROWS_PER_PAGE = 2;
+  const ROWS_PER_PAGE = 10;
   const [total, setTotal] = useState();
   const [errors, setErrors] = useState({
     ten: '',
@@ -51,9 +51,19 @@ const QuanLyVoucher = () => {
         ngayKetThuc: formattedDate
     });
 }
+useEffect(() => {
+  const setStatusVouchers = async () => {
+    try {
+      const res = await axios.get(`https://localhost:7095/api/Voucher/CheckStatusVouchers`);
+    } catch (error) {
+    
+    }
+  }
+  setStatusVouchers();
+}, []);
   const fetchVouchers = async (page, refresh = false) => {
     try {
-      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=1&pageSize=10`);
+      const res = await axios.get(`https://localhost:7095/api/Voucher?pageIndex=${page}&pageSize=${ROWS_PER_PAGE}`);
       const data = res.data;
   
       // Nếu refresh là true, thay thế dữ liệu hiện tại. Nếu không, thêm vào cuối.
@@ -129,6 +139,9 @@ const QuanLyVoucher = () => {
           error = "Giá trị phải là số lớn hơn 0";
         }else if (newVoucher.hinhThucGiamGia === '1' && value > 100) {
           error = "Giá trị phải nhỏ hơn hoặc bằng 100 khi chọn phần trăm";
+        }else if (newVoucher.hinhThucGiamGia === '0' && value > newVoucher.soTienCan) {
+          // Kiểm tra nếu hình thức giảm là trực tiếp và giá trị giảm > số tiền cần
+          error = "Giá trị giảm không được lớn hơn hoặc bằng số tiền yêu cầu";
         }
         break;
       case "ngayApDung":
@@ -246,6 +259,7 @@ const QuanLyVoucher = () => {
       });
       fetchVouchers(1, true);
       setPage(1); 
+      setShowModal(false);
     } catch (error) {
       console.error('Error creating/updating voucher:', error);
     }
@@ -446,20 +460,20 @@ const QuanLyVoucher = () => {
     <div className="table-container" ref={tableRef} style={{ height: '400px', overflowY: 'scroll' }}
     onScroll={handleScroll} >
     
-        <table className="table">
+        <Table className="table">
       
           <thead>
-            <tr>
-              <th>Tên</th>
-              <th>Hình thức giảm giá</th>
-              <th>Số tiền cần</th>
-              <th>Giá trị</th>
-              <th>Ngày áp dụng</th>
-              <th>Ngày kết thúc</th>
-              <th>Số lượng</th>
-              <th>Mô tả</th>
-              <th>Trạng thái</th>
-              <th >Hành động</th>
+            <tr className="table-header">
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Tên</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Hình thức giảm</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Số tiền cần</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Giá trị</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Ngày áp dụng</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Ngày kết thúc</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Số lượng</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Mô tả</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Trạng thái</th>
+            <th style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -480,21 +494,22 @@ const QuanLyVoucher = () => {
                   </button>
 
                 </td>
-                <td> <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
+                {/* <td> 
+                   <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
                   Xóa
-                </button>
-                {/* <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); handleCloseModal() }}>
+                </button> *
+                 <button className="btn btn-primary me-2" onClick={() => { handleEdit(voucher); handleCloseModal() }}>
                   Sửa
                 </button>
                 <button className="btn btn-danger" onClick={() => handleDelete(voucher.id)}>
                   Xóa
-                </button> */}
+                </button> *
                 
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
-        </table>    
+        </Table>    
       </div>
     </div>
   </div>

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   checkspchitietspgiohang,
   Deletechitietspgiohang,
+  GetQuyDoiDiem,
   LogOutTaiKhoan,
   SetDiachiChinhNhanHang,
   Updatespchitietspgiohang,
@@ -80,6 +81,9 @@ const GioHang = () => {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [shippingCost, setShippingCost] = useState(30000); // Default to 30000
   const [thongtinkhachhang, setthongtinkhachhang] = useState({});
+  const quyDoiDiem = useSelector((state) => state.user.quyDoiDiem);
+  // const diemTich = useSelector((state) => state.user.diemTich);
+  const [diemTich, setdiemTich] = useState(0);
   useEffect(() => {
     console.log("DSSPGIOHANG: ", dsspgiohangs);
     const chiTietSanPhamGioHangs = dsspgiohangs.map((spgh) => ({
@@ -100,9 +104,16 @@ const GioHang = () => {
   }, [dsspgiohangs, soDiemSuDung]);
 
   useEffect(() => {
+    setSelectedVoucher(null);
     fetchAvailableVouchers();
-  }, []);
+  }, [tongTienGioHang]);
 
+  useEffect(() => {
+    dispatch(GetQuyDoiDiem());
+    // dispatch(getDiemTich(user?.id));
+    // console.log("HIHIHIH",diemTich.diemTich);
+    
+  }, [dispatch]);
   const fetchAvailableVouchers = async () => {
     try {
       const response = await axios.get(
@@ -110,8 +121,8 @@ const GioHang = () => {
       );
       const voucherOptions = response.data.vouchers.map((voucher) => ({
         value: voucher.id,
-        label: `${voucher.ten} - Với đơn ${voucher.soTienCan.toLocaleString()}`,
-        isDisabled: voucher.soTienCan > tongTien,
+        label: `${voucher.ten} -${voucher.hinhThucGiamGia ? '%' : 'VND'}- Với đơn ${voucher.soTienCan.toLocaleString()}`,
+        isDisabled: voucher.soTienCan > tongTienGioHang,
         ...voucher,
       }));
       setAvailableVouchers(voucherOptions);
@@ -120,7 +131,20 @@ const GioHang = () => {
       toast.error("Không thể tải danh sách voucher");
     }
   };
+  const getDiemTichLuy = async (idKhachHang) => {
+ 
+    try {
+      const res = await axios.get(`https://localhost:7095/api/KhachHang/GetById?id=${idKhachHang}`);
+      setdiemTich(res.data.diemTich);
 
+    } catch (error) {
+     
+    }
+  
+};
+useEffect(() => {
+  getDiemTichLuy(user?.id);
+}, [user?.id]);
   useEffect(() => {
     const updatedVouchers = availableVouchers.map((voucher) => ({
       ...voucher,
@@ -136,7 +160,7 @@ const GioHang = () => {
     setIsDiemTichLuy(!isDiemTichLuy);
     calculateTotalPrice();
   };
-  const calculateTotalPrice = useCallback((currentShippingCost = shippingCost) => {
+  const calculateTotalPrice = useCallback(() => {
     let total = dsspgiohangs.reduce((sum, product) => {
       if (product.check) {
         return sum + product.giatrithuc * product.soluongmua;
@@ -144,7 +168,7 @@ const GioHang = () => {
       return sum;
     }, 0);
     setTongTienGioHang(total);
-    total += currentShippingCost;
+   
   
     if (selectedVoucher) {
       const tienGiamVoucher =
@@ -157,25 +181,79 @@ const GioHang = () => {
       setTienGiamVoucher(0);
     }
   
-    if (isDiemTichLuy && user.diemTich) {
-      const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
-      const tienGiamDiem = maxDiemSuDung * 100;
+    if (isDiemTichLuy && diemTich > 0) {
+      // const maxDiemSuDung = Math.min(user?.diemTich, Math.floor(total / 100));
+      // const tienGiamDiem = maxDiemSuDung * 100;
+      // total -= tienGiamDiem;
+      // setTienGiamDiem(tienGiamDiem);
+      // setSoDiemSuDung(maxDiemSuDung);
+      // console.log("tien giam diem: ", maxDiemSuDung);
+
+      const maxDiemSuDung = Math.min(diemTich, Math.floor(total / quyDoiDiem?.tiLeTieuDiem));
+      const tienGiamDiem = maxDiemSuDung * quyDoiDiem?.tiLeTieuDiem;
       total -= tienGiamDiem;
       setTienGiamDiem(tienGiamDiem);
       setSoDiemSuDung(maxDiemSuDung);
+      console.log("tien giam diem: ", maxDiemSuDung);
+      
     } else {
       setTienGiamDiem(0);
       setSoDiemSuDung(0);
     }
-  
+
     setTongTien(total);
     
-  }, [dsspgiohangs, selectedVoucher, isDiemTichLuy, user.diemTich, shippingCost]);
+  }, [dsspgiohangs, selectedVoucher, isDiemTichLuy, user?.diemTich]);
   
   useEffect(() => {
     calculateTotalPrice();
   }, [calculateTotalPrice, dsspgiohangs, isDiemTichLuy, selectedVoucher, shippingCost]);
-  
+  // const calculateTotalPrice = useCallback(() => {
+  //   let total = dsspgiohangs.reduce((sum, product) => {
+  //     if (product.check) {
+  //       return sum + product.giatrithuc * product.soluongmua;
+  //     }
+  //     return sum;
+  //   }, 0);
+
+  //   if (selectedVoucher) {
+  //     const tienGiamVoucher =
+  //       selectedVoucher.hinhThucGiamGia === 0
+  //         ? selectedVoucher.giaTri
+  //         : total * (selectedVoucher.giaTri / 100);
+  //     total -= tienGiamVoucher;
+  //     setTienGiamVoucher(tienGiamVoucher);
+  //   } else {
+  //     setTienGiamVoucher(0);
+  //   }
+  //   // console.log("ádasdsa",quyDoiDiem);
+    
+  //   if (isDiemTichLuy && quyDoiDiem) {
+  //     const maxDiemSuDung = Math.min(user?.diemTich, Math.floor(total / quyDoiDiem.tiLeTieuDiem));
+  //     const tienGiamDiem = maxDiemSuDung * quyDoiDiem.tiLeTieuDiem;
+  //     total -= tienGiamDiem;
+  //     setTienGiamDiem(tienGiamDiem);
+  //     setSoDiemSuDung(maxDiemSuDung);
+  //     console.log("tien giam diem: ", maxDiemSuDung);
+  //   } else {
+  //     setSoDiemSuDung(0);
+  //     setTienGiamDiem(0);
+  //   }
+  //   //   if (isDiemTichLuy && user?.diemTich) {
+  // //     const maxDiemSuDung = Math.min(user?.diemTich, Math.floor(total / 100));
+  // //     const tienGiamDiem = maxDiemSuDung * 100;
+  // //     total -= tienGiamDiem;
+  // //     setTienGiamDiem(tienGiamDiem);
+  // //     setSoDiemSuDung(maxDiemSuDung);
+  // //     console.log("tien giam diem: ", maxDiemSuDung);
+
+  //   setTongTien(total);
+  //   setTongTienGioHang(total + shippingCost);
+  // }, [dsspgiohangs, selectedVoucher, soDiemSuDung, quyDoiDiem, user?.diemTich, shippingCost]);
+
+  // useEffect(() => {
+  //   calculateTotalPrice();
+  // }, [calculateTotalPrice]);
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
@@ -193,24 +271,12 @@ const GioHang = () => {
     // setTongTien(total);
     // setTongTienBanDau(total);
     // getLoaiSanPhamBanHang2();
-    if (user.id !== undefined) {
+    if (user?.id !== undefined) {
       getDiaChiKhachHang();
     }
   }, [dsspgiohang, load]);
 
-  const applyVoucher = (totalPrice, voucher) => {
-    if (!voucher || totalPrice < voucher.soTienCan) {
-      setTienGiamVoucher(0);
-      setTongTien(totalPrice);
-      return;
-    }
-    const tienGiam =
-      voucher.hinhThucGiamGia === 0
-        ? voucher.giaTri
-        : totalPrice * (voucher.giaTri / 100);
-    setTienGiamVoucher(tienGiam);
-    setTongTien(totalPrice - tienGiam);
-  };
+  
 
   const resetForm = () => {
     setHoaDonOnline({
@@ -245,7 +311,7 @@ const GioHang = () => {
   const getDiaChiKhachHang = async () => {
     try {
       var res = await axios.get(
-        `https://localhost:7095/api/DiaChiKhachHang/getalldiachikh?id=${user.id}`
+        `https://localhost:7095/api/DiaChiKhachHang/getalldiachikh?id=${user?.id}`
       );
       setdckh(res.data);
       setthongtinkhachhang(res.data.find((p) => p.trangThai === 1));
@@ -297,10 +363,10 @@ const GioHang = () => {
     navigate("/cuahang");
   };
   const HandleOnclickDeletesp = async (sp) => {
-    if (user && user.sdt !== "" && user.vaiTro === 1) {
+    if (user && user?.sdt !== "" && user?.vaiTro === 1) {
       try {
         const res = await axios.delete(
-          `https://localhost:7095/api/GioHang/deleteSaningiohangct?idnguoidung=${user.id}&idsp=${sp.id}`
+          `https://localhost:7095/api/GioHang/deleteSaningiohangct?idnguoidung=${user?.id}&idsp=${sp.id}`
         );
         dispath(Deletechitietspgiohang(sp));
         toast.success(res.data);
@@ -357,7 +423,7 @@ const GioHang = () => {
       toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
       return;
     }
-    if (user.vaiTro === 1) {
+    if (user?.vaiTro === 1) {
       // alert("haha");
       console.log("thong tin kh", thongtinkhachhang);
 
@@ -365,7 +431,7 @@ const GioHang = () => {
         ...hoaDonOnline,
         TenKhachHang: thongtinkhachhang.tenKhachHang,
         SDT: thongtinkhachhang.sdt,
-        Email: user.email || hoaDonOnline.Email,
+        Email: user?.email || hoaDonOnline.Email,
         DiaChi:
           dckh.find((dc) => dc.trangThai === 1)?.diaChi ||
           `${selectedProvince.label},${selectedDistrict.label},${hoaDonOnline.DiaChi}`,
@@ -381,8 +447,10 @@ const GioHang = () => {
           TenSanPham: sp.tensp,
           TenKichCo: sp.tenkc,
           TenMauSac: sp.tenms,
+          GiaTriSauKhuyenMai: sp.giatrithuc,
+          TrangThaiKhuyenMai: sp.trangthaikm,
         })),
-        IdKhachHang: user.id,
+        IdKhachHang: user?.id,
       };
       const additionalInfo = {
         tongTienBanDau: tongTienGioHang,
@@ -422,16 +490,16 @@ const GioHang = () => {
       if (a === true) {
         const hoaDonOnlineSubmit = {
           ...hoaDonOnline,
-          TenKhachHang: user.ten || hoaDonOnline.TenKhachHang,
-          SDT: user.sdt || hoaDonOnline.SDT,
-          Email: user.email || hoaDonOnline.Email,
+          TenKhachHang: user?.ten || hoaDonOnline.TenKhachHang,
+          SDT: user?.sdt || hoaDonOnline.SDT,
+          Email: user?.email || hoaDonOnline.Email,
           DiaChi:
             dckh.find((dc) => dc.trangThai === 1)?.diaChi ||
-            `${selectedProvince.label},${selectedDistrict.label},${hoaDonOnline.DiaChi}`,
+            `${selectedProvince?.label},${selectedDistrict?.label},${hoaDonOnline.DiaChi}`,
           IdVoucher: selectedVoucher ? selectedVoucher.value : null, //voucher?.id || null,
           SoDiemSuDung: isDiemTichLuy ? soDiemSuDung : 0,
           TienShip: shippingCost || 0,
-          TongTienHoaDon: tongTien,
+          TongTienHoaDon: Number(tongTien) + Number(shippingCost),
           SanPhams: selectedProducts.map((sp) => ({
             IDCTSP: sp.id,
             SoLuongMua: sp.soluongmua,
@@ -440,8 +508,10 @@ const GioHang = () => {
             TenSanPham: sp.tensp,
             TenKichCo: sp.tenkc,
             TenMauSac: sp.tenms,
+            GiaTriSauKhuyenMai: sp.giatrithuc,
+            TrangThaiKhuyenMai: sp.trangthaikm,
           })),
-          IdKhachHang: user.id,
+          IdKhachHang: user?.id,
         };
         const additionalInfo = {
           tongTienBanDau: tongTienGioHang,
@@ -455,9 +525,28 @@ const GioHang = () => {
       }
     }
   };
+  const handleDeleteCTSP = async (sp) => {
+    if (user && user?.sdt !== "" && user?.vaiTro === 1) {
+      try {
+        const res = await axios.delete(
+          `https://localhost:7095/api/GioHang/deleteSaningiohangct?idnguoidung=${user?.id}&idsp=${sp.id}`
+        );
+        dispath(Deletechitietspgiohang(sp));
+        
+      } catch (error) {
+       
+      }
+    } else {
+      dispath(Deletechitietspgiohang(sp));
+    }
+  };
   const HandleDatHang = async () => {
     try {
       const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
+      console.log("user",user);
+      
+      console.log("selectedProducts:", selectedProducts);
+      
       const apiUrl =
         modalData.IdPhuongThucThanhToan ===
         "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
@@ -472,17 +561,14 @@ const GioHang = () => {
 
       if (res.data) {
         toast.success("Đặt hàng thành công");
-
-        //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
-        selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
-
+        selectedProducts.forEach( async (sp) => handleDeleteCTSP(sp));
         setload(!load);
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
-
+      getDiemTichLuy(user?.id);
       resetForm();
-
+    
       setIsModalOpen(false);
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
@@ -546,7 +632,6 @@ const GioHang = () => {
           (sum, product) => sum + product.giatrithuc * product.soluongmua,
           0
         );
-      console.log("toong tien ", total);
 
       setTongTien(total);
       setTongTienGioHang(total);
@@ -629,12 +714,33 @@ const GioHang = () => {
                           </div>
                         </div>
                       </td>
+
                       <td>
-                        {sp.giaban.toLocaleString("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        })}
+                      {sp.giatrithuc === sp.giaban ? (
+                          // Nếu giatrithuc = giaban thì chỉ hiển thị giaban
+                          <span>{sp?.giaban?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}</span>
+                        ) : (
+                          // Nếu giatrithuc < giaban thì dùng thẻ del cho giaban và hiển thị giatrithuc
+                          <div>
+                            <del>{sp?.giaban?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</del>
+                            <br />
+                            <span>{sp?.giatrithuc?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</span>
+                          </div>
+                        )}
+                                                
+
                       </td>
+
+
                       <td>
                         <input
                           onChange={(event) => Handleonchangesp(event, sp)}
@@ -675,15 +781,37 @@ const GioHang = () => {
               })}
             </p>
             <div className="mb-3">
-              {user && user.diemTich > 0 && (
-                <div className="d-flex align-items-center">
-                  <span className="me-3">Điểm hiện tại: {user.diemTich} </span>
-                  <input
-                    type="checkbox"
-                    id="diem-tich-luy-switch"
-                    checked={isDiemTichLuy}
-                    onChange={handleClickDiemTichLuy}
-                  />
+              {user && (
+                // <div className="d-flex align-items-center">
+                //   <span className="me-3">Điểm hiện tại: {user?.diemTich} </span>
+                //   <input
+                //     type="checkbox"
+                //     id="diem-tich-luy-switch"
+                //     checked={isDiemTichLuy}
+                //     onChange={handleClickDiemTichLuy}
+                //   />
+                // </div>
+                <div className="mb-3">
+                  {user && diemTich > 0 && (
+
+                    <div className="d-flex align-items-center">
+                     {!isDiemTichLuy ? (
+                        <span className="me-3">Điểm hiện tại: {diemTich}</span>
+                      ) : (
+                        <span className="me-3">Điểm hiện tại: {(Number(diemTich) - Number(soDiemSuDung))}</span>
+                      )}
+                      {/* <span className="me-3">Điểm hiện tại: {diemTich} </span> */}
+
+                      <input
+                        type="checkbox"
+                        id="diem-tich-luy-switch"
+                        checked={isDiemTichLuy}
+                        onChange={handleClickDiemTichLuy}
+                      />
+
+
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -712,7 +840,8 @@ const GioHang = () => {
               <button>SỬ DỤNG</button>
             </div> */}
             <hr className="my-3" />
-            <h5>Tổng cộng: {tongTien.toLocaleString()} VND</h5>
+            {/* <h5>Tổng cộng: {tongTien.toLocaleString()} VND</h5> */}
+            <h5>Tổng cộng: {(Number(tongTien) + Number(shippingCost)).toLocaleString()} VND</h5>
             <hr className="my-3" />
           </div>
         </div>
@@ -720,7 +849,7 @@ const GioHang = () => {
       <div className="checkout-container mt-5">
         <div className="customer-info">
           <h3>THÔNG TIN KHÁCH HÀNG</h3>
-          {user && user.vaiTro === 1 ? (
+          {user && user?.vaiTro === 1 ? (
             <div className="mt-4">
               {dckh &&
                 dckh.map((p) => (

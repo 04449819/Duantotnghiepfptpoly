@@ -11,5 +11,6 @@ namespace AppAPI.IServices
         public QuyDoiDiem GetById(Guid Id);
         public List<QuyDoiDiem> GetAll();
         public QuyDoiDiem GetApplicableQuyDoiDiem();
+        public bool CheckStatusQuyDoiDiem();
     }
 }

@@ -77,5 +77,15 @@ namespace AppAPI.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("CheckStatusQuyDoiDiem")]
+        public IActionResult CheckStatusQuyDoiDiem()
+        {
+            var quyDoi = _quydoidiem.CheckStatusQuyDoiDiem();
+            if (quyDoi != null)
+            {
+                return Ok(quyDoi);
+            }
+            return BadRequest();
+        }
     }
 }

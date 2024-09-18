@@ -31,7 +31,7 @@ const QuanLyKhuyenMai = () => {
   const [total, setTotal] = useState();
   const [page, setPage] = useState(1);
   const tableRef = useRef(null);
-  const ROWS_PER_PAGE = 3;
+  const ROWS_PER_PAGE = 8;
 
   useEffect(() => {
     fetchPromotions(page, false);
@@ -470,7 +470,7 @@ const QuanLyKhuyenMai = () => {
       <div
         className="table-container"
         ref={tableRef}
-        style={{ height: "200px", overflowY: "scroll", marginTop: "40px" }}
+        style={{ height: "400px", overflowY: "scroll", marginTop: "40px" }}
         onScroll={handleScroll}
       >
         <table className="table">
@@ -510,12 +510,12 @@ const QuanLyKhuyenMai = () => {
                   >
                     <IoHammerSharp />
                   </button>
-                  <button
+                  {/* <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(promotion.id)}
                   >
                     <MdDelete />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

@@ -15,6 +15,10 @@ import { FaBell } from "react-icons/fa";
 import { VscFeedback } from "react-icons/vsc";
 import { FaStar } from 'react-icons/fa';
 import axios from "axios";
+import { FontAwesomeIcon  } from "@fortawesome/react-fontawesome";
+import { faTicket } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
+import { MdDiscount } from "react-icons/md";
+import { MdPublishedWithChanges } from "react-icons/md";
 
 const ReactSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -198,21 +202,23 @@ const ReactSideBar = () => {
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlydoidiem" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<MdPublishedWithChanges style={{ color: "blue", size: "20px" }} />}
                   >
                     Quản lý đổi điểm
                   </MenuItem>
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlyvoucher" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FontAwesomeIcon icon={faTicket} style={{ color: "blue", size: "20px" }} />}
                   >
+                    
                     Quản lý voucher
                   </MenuItem>
+                  
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlykhuyenmai" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<MdDiscount style={{ color: "blue", size: "20px" }} />}
                   >
                     Quản lý khuyến mãi
                   </MenuItem>

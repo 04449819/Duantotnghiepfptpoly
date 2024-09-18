@@ -32,6 +32,7 @@ namespace AppAPI.Services
         AssignmentDBContext context = new AssignmentDBContext();
         private readonly ILogger<HoaDonService> _logger;
         private readonly IGioHangServices _iGioHangServices;
+        private readonly IChiTietGioHangServices _ichiTietGioHangServices;
         private readonly IMomoPaymentService _momoPaymentService;
         private readonly IKhachHangService _ikhachHangService;
 
@@ -52,6 +53,7 @@ namespace AppAPI.Services
             _momoPaymentService = momoPaymentService;
             context = new AssignmentDBContext();
             _iGioHangServices = new GioHangServices();
+            _ichiTietGioHangServices = new ChiTietGioHangServices();
             _ikhachHangService = new KhachHangService();
         }
 
@@ -195,6 +197,7 @@ namespace AppAPI.Services
                     // Tìm khách hàng dựa trên SDT hoặc Email
                     khachHang = _ikhachHangService.GetByEmailOrSDT(chdvm.Email, chdvm.SDT);
                 }
+
                 if (chdvm.IdVoucher.HasValue)
                 {
                     Voucher voucher = reposVoucher.GetById(chdvm.IdVoucher.Value);
@@ -205,7 +208,7 @@ namespace AppAPI.Services
                         reposVoucher.Update(voucher);
                     }
                 }
-
+               
                 HoaDon hoaDon = new HoaDon
                 {
                     ID = Guid.NewGuid(),
@@ -270,7 +273,7 @@ namespace AppAPI.Services
                                 Diem = chdvm.SoDiemSuDung.HasValue ? chdvm.SoDiemSuDung.Value : 0,
                                 TrangThai = 0,
                                 IDKhachHang = khachHang.IDKhachHang,
-                                IDQuyDoiDiem = quydoi.ID,
+                                IDQuyDoiDiem = quydoi?.ID,
                                 IDHoaDon = hoaDon.ID
                             };
 
@@ -299,7 +302,7 @@ namespace AppAPI.Services
 
                     context.SaveChanges();
                 }
-
+            
                 return true;
             }
             catch (Exception)

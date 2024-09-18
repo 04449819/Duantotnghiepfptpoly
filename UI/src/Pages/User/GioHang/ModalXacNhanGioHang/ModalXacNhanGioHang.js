@@ -1,14 +1,34 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Table } from "react-bootstrap";
 
 const ConfirmationModal = ({ show, onHide, data, onConfirm }) => {
+  console.log("Xác nhận", data);
+  
+  const [voucherName, setVoucherName] = useState('');
+
+    useEffect(() => {
+      const fetchVoucherName = async () => {
+        if (data?.IdVoucher) {
+          try {
+            const response = await axios.get(`https://localhost:7095/api/Voucher/${data?.IdVoucher}`);
+            setVoucherName(response.data.ten);
+          } catch (error) {
+            console.error('Error fetching voucher name:', error);
+            setVoucherName('Không thể tải tên voucher');
+          }
+        }
+      };
+  
+      fetchVoucherName();
+    }, [data?.IdVoucher]);
   if (!show) return null;
   if (!data) return null;
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Xác nhận đơn hàng</Modal.Title>
+        <Modal.Title>Xác nhận đặt hàng</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {/* Thông tin khách hàng */}
@@ -25,7 +45,8 @@ const ConfirmationModal = ({ show, onHide, data, onConfirm }) => {
         <div className="mb-3">
           <h5>Thông tin thanh toán và vận chuyển</h5>
           <p><strong>Phương thức thanh toán:</strong> {data?.IdPhuongThucThanhToan === "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c" ? 'COD' : 'CK'}</p>
-          <p><strong>Mã voucher:</strong> {data?.IdVoucher || 'Không áp dụng'}</p>
+          {/* <p><strong>Mã voucher:</strong> {data?.IdVoucher || 'Không áp dụng'}</p> */}
+          <p><strong>Voucher:</strong> {voucherName || 'Không áp dụng'}</p>
           <p><strong>Tiền ship:</strong> {data?.TienShip?.toLocaleString()} VND</p>
           {/* <p><strong>Trạng thái giao hàng:</strong> {data?.TrangThaiGiaoHang === 2 ? 'Đang giao' : 'Chưa xác định'}</p> */}
         </div>
@@ -50,8 +71,54 @@ const ConfirmationModal = ({ show, onHide, data, onConfirm }) => {
                   <td>{index + 1}</td>
                   <td>{sp.TenSanPham}</td>
                   <td>{sp.SoLuongMua}</td>
-                  <td>{sp.GiaBan.toLocaleString()} VND</td>
-                  <td>{(sp.GiaBan * sp.SoLuongMua).toLocaleString()} VND</td>
+
+                  {/* <td>{sp.GiaBan.toLocaleString()} VND</td> */}
+                  <td>
+                  {sp.GiaTriSauKhuyenMai === sp.GiaBan ? (
+                          // Nếu giatrithuc = GiaBan thì chỉ hiển thị GiaBan
+                          <span>{sp?.GiaBan?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}</span>
+                        ) : (
+                          // Nếu giatrithuc < giaban thì dùng thẻ del cho giaban và hiển thị giatrithuc
+                          <div>
+                            <del>{sp?.GiaBan?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</del>
+                            <br />
+                            <span>{sp?.GiaTriSauKhuyenMai?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</span>
+                          </div>
+                        )}
+                  </td>
+                  {/* <td>
+                  {sp.GiaTriSauKhuyenMai === sp.GiaBan ? (
+                          // Nếu giatrithuc = GiaBan thì chỉ hiển thị GiaBan
+                          <span>{sp?.GiaBan?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}</span>
+                        ) : (
+                          // Nếu giatrithuc < GiaBan thì dùng thẻ del cho GiaBan và hiển thị giatrithuc
+                          <div>
+                            <del>{sp?.GiaBan?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</del>
+                            <br />
+                            <span>{sp?.GiaTriSauKhuyenMai?.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}</span>
+                          </div>
+                        )}
+                  </td> */}
+                  <td>{(sp.GiaTriSauKhuyenMai * sp.SoLuongMua).toLocaleString()} VND</td>
+                  {/* <td>    {(sp.GiaTriSauKhuyenMai * sp.SoLuongMua).toLocaleString()} VND</td> */}
                   <td><img src={sp.Anh} alt={sp.TenSanPham} style={{ width: '50px' }} /></td>
                 </tr>
               ))

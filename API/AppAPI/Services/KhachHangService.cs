@@ -175,7 +175,6 @@ namespace AppAPI.Services
         public KhachHang? GetByEmailOrSDT(string email, string sdt)
         {
             return _dbContext.KhachHangs.FirstOrDefault(c =>
-                (sdt != null && c.SDT == sdt) ||
                 (email != null && c.Email == email)
             );
         }

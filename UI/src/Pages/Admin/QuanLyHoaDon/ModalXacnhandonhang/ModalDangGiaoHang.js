@@ -141,7 +141,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId, loading1, setLoad
             <p><strong>Địa chỉ:</strong> {billInfo.diaChi}</p>
             <p><strong>Số điện thoại:</strong> {billInfo.sdt}</p>
             <p><strong>Email:</strong> {billInfo.email}</p>
-
+            <p><strong>Ngày tạo:</strong> {new Date(billInfo.ngayTao).toLocaleDateString('vi-VN')}</p>
             <h4>Chi Tiết Sản Phẩm</h4>
             {productDetails.length > 0 ? (
               <table className="table">
@@ -150,6 +150,7 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId, loading1, setLoad
                     <th>Ảnh</th>
                     <th>Tên Sản Phẩm</th>
                     <th>Đơn Giá</th>
+                    <th>Kích cỡ</th>
                     <th>Số Lượng</th>
                   </tr>
                 </thead>
@@ -165,7 +166,8 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId, loading1, setLoad
                       </td>
                       <td>{product.tenSanPham}</td>
                       <td>{product.giaban}</td>
-                      <td>{product.soLuonga}</td>
+                      <td>{product.kichCo}</td>
+                      <td>{product.soLuong}</td>
                     </tr>
                   ))}
                 </tbody>

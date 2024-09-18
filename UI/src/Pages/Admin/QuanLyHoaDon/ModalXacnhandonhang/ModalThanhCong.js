@@ -155,7 +155,6 @@ function ModalThanhCong({ show, onClose, billId }) {
                     <th>Tên sản phẩm</th>
                     <th>Màu sắc</th>
                     <th>Kích cỡ</th>
-                    <th>Đơn giá</th>
                     <th>Số lượng</th>
                   </tr>
                 </thead>
@@ -164,18 +163,18 @@ function ModalThanhCong({ show, onClose, billId }) {
                     <tr key={product.id}>
                       <td>
                         <img
-                          src={product.anhSanPham}
-                          alt={product.tenSanPham}
+                          src={product.anhSanPham || 'default-image-url'} // Xử lý trường hợp hình ảnh thiếu
+                          alt={product.tenSanPham || 'Không có tên'}
                           style={{ width: '150px', height: '150px' }}
                         />
                       </td>
-                      <td>{product.tenSanPham}</td>
-                      <td>{product.mauSac}</td>
-                      <td>{product.kichCo}</td>
-                      <td>{product.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                      <td>{product.soLuongHoan}</td>
+                      <td>{product.tenSanPham || 'Không có tên'}</td>
+                      <td>{product.mauSac || 'N/A'}</td>
+                      <td>{product.kichCo || 'N/A'}</td>
+                      <td>{product.soLuongHoan || 0}</td>
                     </tr>
                   ))}
+
                 </tbody>
               </table>
             ) : (

@@ -53,7 +53,6 @@ const QuanLyHoaDon = () => {
 
       // Tính toán số lượng đơn hàng chưa xác nhận
       
-      
     } catch (error) {
       console.error("Có lỗi khi fetch hóa đơn:", error);
       setError("Có lỗi khi fetch hóa đơn: " + error.message);

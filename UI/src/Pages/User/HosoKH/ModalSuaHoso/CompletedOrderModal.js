@@ -55,7 +55,7 @@ const CompletedOrderModal = ({ show, onHide, orderId }) => {
                     <p>Số lượng hoàn: {item.soLuongHoan || '0'}</p>
                     <p>Địa chỉ khách hàng: {item.diaChiKhachHang || 'Không có địa chỉ'}</p>
                     <p className="price">
-                      {item.donGia !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
+                      {item.giaban !== undefined ? item.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                     </p>
                   </div>
                 </div>

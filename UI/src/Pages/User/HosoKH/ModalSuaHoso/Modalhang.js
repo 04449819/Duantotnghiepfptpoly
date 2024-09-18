@@ -147,7 +147,7 @@ const ModalHang = ({ isOpen, onClose, orderId, setload, load }) => {
                       />
                       <div className="order-item-details">
                         <p><strong>{item.tenSanPham}</strong></p>
-                        <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuonga || 'Không có số lượng'}</p>
+                        <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuong || 'Không có số lượng'}</p>
                         <p className="price">
                             {item.giaban !== undefined ? item.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                         </p>

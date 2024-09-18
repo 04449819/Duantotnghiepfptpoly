@@ -98,27 +98,19 @@ namespace AppAPI.Controllers
             }
         }
         [HttpGet("top10sanphamtrongna222m")]
-        public async Task<IActionResult> GetTop10SanphamTrongNam1(int year , int month)
+        public async Task<IActionResult> GetTop10SanphamTrongNam1(int year)
         {
             try
             {
-                // Kiểm tra tính hợp lệ của tháng
-                if (month < 1 || month > 12)
-                {
-                    return BadRequest("Tháng không hợp lệ. Vui lòng cung cấp tháng từ 1 đến 12.");
-                }
-
-                // Lấy danh sách hóa đơn cho năm và tháng chỉ định
-                var dshd = await _dbcontext.HoaDons
-                    .Where(p => p.NgayThanhToan.HasValue &&
-                                p.NgayThanhToan.Value.Year == year &&
-                                p.NgayThanhToan.Value.Month == month)
-                    .Select(hd => hd.ID)
+                // Lấy danh sách hóa đơn cho năm chỉ định
+                var danhSachHoaDons = await _dbcontext.HoaDons
+                    .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
+                    .Select(hd => hd.ID) // Chỉ cần ID hóa đơn
                     .ToListAsync();
 
                 // Lấy chi tiết hóa đơn cho các hóa đơn
                 var listcthd = await _dbcontext.ChiTietHoaDons
-                    .Where(ct => dshd.Contains(ct.IDHoaDon))
+                    .Where(ct => danhSachHoaDons.Contains(ct.IDHoaDon))
                     .GroupBy(ct => ct.IDCTSP)
                     .Select(g => new
                     {
@@ -131,7 +123,7 @@ namespace AppAPI.Controllers
                     .ToListAsync();
 
                 // Lấy thông tin sản phẩm tương ứng
-                var topProductIds = listcthd.Select(p => p.IdChiTietSanPham).ToList();
+                var topProductIds = listcthd.Select(item => item.IdChiTietSanPham).ToList();
                 var products = await _dbcontext.ChiTietSanPhams
                     .Include(c => c.SanPham)
                     .Where(c => topProductIds.Contains(c.ID))
@@ -161,12 +153,7 @@ namespace AppAPI.Controllers
                 Console.WriteLine(ex.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, "Lỗi máy chủ nội bộ");
             }
+
         }
-
-
-
-
-
-
     }
 }

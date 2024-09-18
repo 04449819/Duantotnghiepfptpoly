@@ -23,7 +23,7 @@ function ModalApplyKM(props) {
   const getDataSP = async (page) => {
     try {
       const res = await axios.get(
-        `https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=${page}&productsPerPage=6`
+        `https://localhost:7095/api/SanPham/getAllSPBanHang?currentPage=${page}&productsPerPage=10000`
       );
       if (res.data.sanPham.length > 0) {
         const dataTam = res.data.sanPham.map((item) => {
@@ -83,23 +83,23 @@ function ModalApplyKM(props) {
     }
   };
 
-    // const getDataCTSPXoa = async (idsp) => {
-    //   try {
-    //     const res = await axios.get(
-    //       `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${idsp}`
-    //     );
-    //     if (res.data && res.data.length > 0) {
-    //       res.data.map((item) => {
-    //         const CTSP = dataCTSP.find((p) => p.id === item.id);
-    //         if (CTSP) {
-    //           setdataCTSP((prevDataCTSP) =>
-    //             prevDataCTSP.filter((item) => item.id !== CTSP.id)
-    //           );
-    //         }
-    //       });
-    //     }
-    //   } catch (error) {}
-    // };
+  // const getDataCTSPXoa = async (idsp) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `https://localhost:7095/api/SanPham/getChiTietSPBanHangbyIDsp?idsp=${idsp}`
+  //     );
+  //     if (res.data && res.data.length > 0) {
+  //       res.data.map((item) => {
+  //         const CTSP = dataCTSP.find((p) => p.id === item.id);
+  //         if (CTSP) {
+  //           setdataCTSP((prevDataCTSP) =>
+  //             prevDataCTSP.filter((item) => item.id !== CTSP.id)
+  //           );
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {}
+  // };
 
   const GetDataChitietSanPhamDaAD = async (idsp) => {
     //https://localhost:7095/api/SanPham/GetChiTietSanPhamByIDKM?id=e107cc6d-5a68-4d5b-836e-4d70b088dd1f
@@ -144,13 +144,13 @@ function ModalApplyKM(props) {
           // Sửa
           const dataTamCTSP = dataCTSP.filter((p) => p.idsp !== item1.id);
           setdataCTSP(dataTamCTSP);
-          
+
           //  getDataCTSPXoa(item1.id);
           // const dataTamm = dataCTSP.map((p) => {
-            // if (p.idsp === item1.id) {
-            //   return { ...p, check: false };
-            // }
-            //return p;
+          // if (p.idsp === item1.id) {
+          //   return { ...p, check: false };
+          // }
+          //return p;
           //});
           //setdataCTSP(dataTamm);
         }
@@ -218,7 +218,7 @@ function ModalApplyKM(props) {
         dispatch(SetLoading(false));
       } catch (error) {
         toast.error("Đã xảy ra lỗi, vui lòng kiểm tra lại khuyến mãi");
-        
+
         dispatch(SetLoading(false));
       }
     }, 3000);
@@ -250,18 +250,22 @@ function ModalApplyKM(props) {
               <thead
                 style={{
                   position: "absolute",
-                  top: "0px",
+                  top: "24px",
+                  left: "187px",
                   backgroundColor: "gray",
+                  color: "black !important",
                 }}
               >
                 <tr>
-                  <th style={{ width: "89px", color: "white" }}>Check</th>
-                  <th style={{ width: "74px", color: "white" }}> STT</th>
-                  <th style={{ width: "332px", color: "white" }}>
+                  <th style={{ height: "50px", width: "89px", color: "black" }}>
+                    Check
+                  </th>
+                  <th style={{ width: "72px", color: "black" }}> STT</th>
+                  <th style={{ width: "366px", color: "black" }}>
                     Tên sản phẩm
                   </th>
-                  <th style={{ width: "137px", color: "white" }}>Trạng thái</th>
-                  <th style={{ width: "126px", color: "white" }}>Hành động</th>
+                  <th style={{ width: "140px", color: "black" }}>Trạng thái</th>
+                  <th style={{ width: "96px", color: "black" }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -322,19 +326,20 @@ function ModalApplyKM(props) {
                 <thead
                   style={{
                     position: "absolute",
-                    top: "565px",
+                    top: "480px",
+                    height: "50px",
                     backgroundColor: "gray",
                   }}
                 >
                   <tr>
-                    <th>Check</th>
-                    <th>STT</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá bán</th>
-                    <th>Số lượng</th>
+                    <th style={{ height: "50px", width: "87px" }}>Check</th>
+                    <th style={{ width: "72px" }}>STT</th>
+                    <th style={{ width: "137px" }}>Tên sản phẩm</th>
+                    <th style={{ width: "97px" }}>Giá bán</th>
+                    <th style={{ width: "105px" }}>Số lượng</th>
                     <th style={{ width: "104px" }}>Màu sắc</th>
-                    <th style={{ width: "102px" }}>Kích cỡ</th>
-                    <th style={{ width: "125px" }}>img</th>
+                    <th style={{ width: "105px" }}>Kích cỡ</th>
+                    <th style={{ width: "106px" }}>img</th>
                     <th style={{ width: "150px" }}>Trạng thái</th>
                   </tr>
                 </thead>

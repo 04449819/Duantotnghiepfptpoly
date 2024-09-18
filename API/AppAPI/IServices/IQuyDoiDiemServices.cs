@@ -10,5 +10,6 @@ namespace AppAPI.IServices
         public bool Delete(Guid Id);
         public QuyDoiDiem GetById(Guid Id);
         public List<QuyDoiDiem> GetAll();
+        public QuyDoiDiem GetApplicableQuyDoiDiem();
     }
 }

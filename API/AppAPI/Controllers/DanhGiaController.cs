@@ -102,10 +102,10 @@ namespace AppAPI.Controllers
             if (danhGia != null) return Ok(danhGia);
             return Ok();
         }
-        [HttpGet("GetAll")]
-        public  IActionResult GetAll()
+        [HttpGet("GetAllDanhGiaView")]
+        public  IActionResult GetAllDanhGiaView()
         {
-            var danhGia =  _danhGiaService.GetAll();
+            var danhGia =  _danhGiaService.GetAllDanhGiaView();
             return Ok(danhGia);
         }
         [HttpPut("GuiPhanHoi/{idDanhGia}")]

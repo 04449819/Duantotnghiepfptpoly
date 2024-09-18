@@ -156,7 +156,7 @@ const QuanLyNhanVienPage = () => {
                      <td   style={{ color: item.trangThai === 1 ? "green" : "red" }}>{ item.trangThai == 0 ? "Đã nghỉ việc" : "Đang làm việc"}</td>
                     {
                       <td>
-                        <button onClick={() => handleClickEdit(item.id)} className="edit">Edit</button>
+                        <button onClick={() => handleClickEdit(item.id)} className="edit">sửa</button>
                       </td>
                     }
                   </tr>

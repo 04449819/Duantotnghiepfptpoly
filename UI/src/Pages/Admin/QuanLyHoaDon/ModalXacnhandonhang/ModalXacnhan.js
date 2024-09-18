@@ -155,7 +155,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
                         />
                       </td>
                       <td>{product.tenSanPham}</td>
-                      <td>{product.donGiaa}</td>
+                      <td>{product.giaban}</td>
                       <td>{product.soLuonga}</td>
                     </tr>
                   ))}

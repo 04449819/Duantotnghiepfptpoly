@@ -164,8 +164,8 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId, loading1, setLoad
                         />
                       </td>
                       <td>{product.tenSanPham}</td>
-                      <td>{product.donGia}</td>
-                      <td>{product.soLuong}</td>
+                      <td>{product.giaban}</td>
+                      <td>{product.soLuonga}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from 'react-redux';
 
-function ModalHoanThanhCong({ show, onClose, billId }) {
+function ModalThanhCong({ show, onClose, billId }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -172,7 +172,7 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
                       <td>{product.tenSanPham}</td>
                       <td>{product.mauSac}</td>
                       <td>{product.kichCo}</td>
-                      <td>{product.donGiaa.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                      <td>{product.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                       <td>{product.soLuongHoan}</td>
                     </tr>
                   ))}
@@ -221,4 +221,4 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
   );
 }
 
-export default ModalHoanThanhCong;
+export default ModalThanhCong;

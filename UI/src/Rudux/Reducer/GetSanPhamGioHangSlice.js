@@ -10,6 +10,7 @@ const initialState = {
       sdt: "",
       diachi: "",
       email: "",
+      diem: 0,
       giamkm: 0,
       tongtienn: 0,
       voucher: "",
@@ -17,11 +18,14 @@ const initialState = {
       check: true,
       tienship: 0,
       checkgiaohang: false,
+      checkdungdiem: false,
       giamvoucher: 0,
       ghiChu: "",
+      soDiemSuDung: 0,
     },
   ],
   SanPhamGioHang: [],
+  quyDoiDiem: null,
   loadingdata: true,
   errordata: true,
 };
@@ -59,10 +63,55 @@ export const GetChiTietHoaDonByIdHoaDon = createAsyncThunk(
   }
 );
 
+export const GetQuyDoiDiem = createAsyncThunk(
+  "featchdata/GetQuyDoiDiem",
+  async () => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7095/api/QuyDoiDiem/GetApplicableQuyDoiDiem`
+      );
+      console.log(res.data);
+      
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching QuyDoiDiem:", error);
+      throw error;
+    }
+  }
+);
+
+
 export const GetSanPhamGioHangSlice = createSlice({
   name: "SanPhamGioHang",
   initialState,
   reducers: {
+    TinhTienGiamDiem: (state) => {
+      if (!state.quyDoiDiem) return;
+      
+      state.HoaDons = state.HoaDons.map((hoadon) => {
+        if (hoadon.check && hoadon.checkdungdiem) {
+          const maxTienGiam = hoadon.tongtienn; // Số tiền tối đa có thể giảm
+          const maxDiemSuDung = Math.floor(maxTienGiam / state.quyDoiDiem.tiLeTieuDiem); // Số điểm tối đa có thể sử dụng
+          const diemSuDung = Math.min(hoadon.diem, maxDiemSuDung); // Sử dụng tất cả điểm có sẵn hoặc số điểm tối đa có thể sử dụng
+          const tienGiam = diemSuDung * state.quyDoiDiem.tiLeTieuDiem;
+          const tongTienSauGiam = hoadon.tongtienn - tienGiam;
+          
+          return {
+            ...hoadon,
+            soDiemSuDung: diemSuDung,
+            tienGiamDiem: tienGiam,
+            tongtienn: tongTienSauGiam
+          };
+        }
+        return hoadon;
+      });
+    },
+    DeleteHoaDonDaThanhToan: (state, action) => {
+      state.HoaDons = state.HoaDons.filter(hoadon => hoadon.ma !== action.payload);
+      if (state.HoaDons.length > 0) {
+        state.HoaDons[0].check = true;
+      }
+    },
     SetDiaChiKhachHang: (state, action) => {
       if (state.HoaDons.length < 1) {
         toast.error("Bạn chưa có hóa đơn chờ");
@@ -76,6 +125,7 @@ export const GetSanPhamGioHangSlice = createSlice({
             sdt: action.payload.khachhang.sdt,
             diachi: action.payload.diaChi,
             email: action.payload.khachhang.email,
+            diem: action.payload.khachhang.diemTich
           };
         }
         return hoadon;
@@ -92,6 +142,33 @@ export const GetSanPhamGioHangSlice = createSlice({
           ? { ...hoadon, checkgiaohang: !hoadon.checkgiaohang }
           : hoadon
       );
+    },
+    SetDiemKhachHang: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, diem: action.payload } : hoadon
+      );
+    },
+    // SetCheckDungDiem: (state) => {
+    //   state.HoaDons = state.HoaDons.map((hoadon) =>
+    //     hoadon.check
+    //       ? { ...hoadon, checkdungdiem: !hoadon.checkdungdiem }
+    //       : hoadon
+    //   );
+    // },
+    SetCheckDungDiem: (state) => {
+      state.HoaDons = state.HoaDons.map((hoadon) => {
+        if (hoadon.check) {
+          const newCheckDungDiem = !hoadon.checkdungdiem;
+          return { 
+            ...hoadon, 
+            checkdungdiem: newCheckDungDiem,
+            soDiemSuDung: newCheckDungDiem ? hoadon.diem : 0,
+            tienGiamDiem: 0,
+            tongtienn: newCheckDungDiem ? hoadon.tongtienn : (hoadon.tongtienn + (hoadon.tienGiamDiem || 0))
+          };
+        }
+        return hoadon;
+      });
     },
     SetDiaChiKhachHangg: (state, action) => {
       state.HoaDons = state.HoaDons.map((hoadon) =>
@@ -118,26 +195,48 @@ export const GetSanPhamGioHangSlice = createSlice({
         hoadon.check ? { ...hoadon, tongtienn: action.payload } : hoadon
       );
     },
+    // SetVoucher: (state, action) => {
+    //   console.log("idvoucher can tim", action.payload);
+
+    //   const { id, hinhThucGiamGia, giaTri } = action.payload;
+
+    //   state.HoaDons = state.HoaDons.map((hoadon) => {
+    //     if (hoadon.check) {
+    //       const giamVoucher =
+    //         hinhThucGiamGia === 1 ? (hoadon.tongtienn * giaTri) / 100 : giaTri;
+
+    //       return {
+    //         ...hoadon,
+    //         voucher: id,
+    //         giamvoucher: giamVoucher,
+    //         tongtienn: hoadon.tongtienn - giamVoucher,
+    //       };
+    //     }
+    //     return hoadon;
+    //   });
+    // },
     SetVoucher: (state, action) => {
-      console.log("idvoucher can tim", action.payload);
-
       const { id, hinhThucGiamGia, giaTri } = action.payload;
-
+  
       state.HoaDons = state.HoaDons.map((hoadon) => {
-        if (hoadon.check) {
-          const giamVoucher =
-            hinhThucGiamGia === 1 ? (hoadon.tongtienn * giaTri) / 100 : giaTri;
-
-          return {
-            ...hoadon,
-            voucher: id,
-            giamvoucher: giamVoucher,
-            tongtienn: hoadon.tongtienn - giamVoucher,
-          };
-        }
-        return hoadon;
+          if (hoadon.check) {
+              // Tính toán giảm giá mới
+              const newGiamVoucher = hinhThucGiamGia === 1 ? (hoadon.tongtienn * giaTri) / 100 : giaTri;
+  
+              // Trừ đi giảm giá cũ nếu có
+              const oldGiamVoucher = hoadon.giamvoucher || 0; // Nếu chưa có giảm giá, mặc định là 0
+  
+              return {
+                  ...hoadon,
+                  voucher: id,
+                  giamvoucher: newGiamVoucher,
+                  tongtienn: hoadon.tongtienn - newGiamVoucher + oldGiamVoucher,
+              };
+          }
+          return hoadon;
       });
-    },
+  },
+    
 
     SetGiChu: (state, action) => {
       // alert("ok");
@@ -155,6 +254,12 @@ export const GetSanPhamGioHangSlice = createSlice({
         hoadon.check ? { ...hoadon, tienship: action.payload } : hoadon
       );
     },
+    
+    SetSoDiemSuDung: (state, action) => {
+      state.HoaDons = state.HoaDons.map((hoadon) =>
+        hoadon.check ? { ...hoadon, soDiemSuDung: action.payload } : hoadon
+      );
+    },
     Delete: (state) => {
       state.HoaDons = [];
     },
@@ -166,6 +271,7 @@ export const GetSanPhamGioHangSlice = createSlice({
           sdt: "",
           diachi: "",
           email: "",
+          diem: 0,
           voucher: "",
           giamkm: 0,
           tongtienn: 0,
@@ -174,7 +280,9 @@ export const GetSanPhamGioHangSlice = createSlice({
           ghiChu: "",
           giamvoucher: 0,
           checkgiaohang: false,
+          checkdungdiem: false,
           check: true,
+          soDiemSuDung: 0,
         };
         state.HoaDons.push(hoadon);
       } else if (state.HoaDons.length <= 4) {
@@ -188,6 +296,7 @@ export const GetSanPhamGioHangSlice = createSlice({
           sdt: "",
           diachi: "",
           email: "",
+          diem: 0,
           voucher: "",
           giamkm: 0,
           tongtienn: 0,
@@ -196,7 +305,9 @@ export const GetSanPhamGioHangSlice = createSlice({
           ghiChu: "",
           giamvoucher: 0,
           checkgiaohang: false,
+          checkdungdiem: false,
           check: true,
+          soDiemSuDung: 0,
         };
         state.HoaDons.push(hoadon1);
       } else {
@@ -230,6 +341,7 @@ export const GetSanPhamGioHangSlice = createSlice({
               sdt: "",
               diachi: "",
               email: "",
+              diem: 0,
               giamkm: 0,
               voucher: "",
               tongtienn: 0,
@@ -238,7 +350,9 @@ export const GetSanPhamGioHangSlice = createSlice({
               ghiChu: "",
               giamvoucher: 0,
               checkgiaohang: false,
+              checkdungdiem: false,
               check: true,
+              soDiemSuDung: 0,
             },
           ];
         }
@@ -296,7 +410,11 @@ export const GetSanPhamGioHangSlice = createSlice({
     resetSanPhamGioHang: (state) => {
       state.SanPhamGioHang = [];
     },
+   
+  
   },
+  
+
   extraReducers: (builder) => {
     builder.addCase(GetChiTietHoaDonByIdHoaDon.fulfilled, (state, action) => {
       state.SanPhamGioHang = action.payload;
@@ -384,12 +502,17 @@ export const GetSanPhamGioHangSlice = createSlice({
       state.loadingdata = false;
       state.errordata = true;
     });
+    builder.addCase(GetQuyDoiDiem.fulfilled, (state, action) => {
+      state.quyDoiDiem = action.payload;
+    });
   },
 });
 export const {
   DeleteCTSP,
   SetSDT,
+  SetDiemKhachHang,
   SetCheckGiaoHang,
+  SetCheckDungDiem,
   SetTienShip,
   SetGiChu,
   SetEmail,
@@ -405,5 +528,10 @@ export const {
   SetGiamKhuyeMai,
   SetTongTien,
   SetVoucher,
+  SetSoDiemSuDung,
+  TinhTienGiamDiem,
+  DeleteHoaDonDaThanhToan,
+
+
 } = GetSanPhamGioHangSlice.actions;
 export default GetSanPhamGioHangSlice.reducer;

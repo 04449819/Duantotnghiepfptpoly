@@ -136,7 +136,7 @@ const ReactSideBar = () => {
                   <MenuItem
                     component={<Link to="/admin/quanlynhanvien" />}
                     icon={
-                      <FaAddressBook style={{ color: "blue", size: "40px" }} />
+                      <AiOutlineShoppingCart style={{ color: "blue", size: "40px" }} />
                     }
                     hidden={user.chucNang !== "Admin" ? true : false}
                   >
@@ -150,15 +150,15 @@ const ReactSideBar = () => {
                   </MenuItem>
                   <hr />
                   <SubMenu
-                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                     label="Quản lý Sản phẩm"
                   >
                     <MenuItem
-  component={<Link to="/admin/quanlysanpham" />}
-  icon={<AiOutlineShoppingCart style={{ color: "blue", fontSize: "40px" }} />}
->
-  Sản phẩm
-</MenuItem>
+                      component={<Link to="/admin/quanlysanpham" />}
+                      icon={<AiOutlineShoppingCart style={{ color: "blue", fontSize: "20px" }} />}
+                    >
+                      Sản phẩm
+                    </MenuItem>
 
                     <MenuItem
                       component={<Link to="/admin/quanlychatlieu" />}
@@ -168,19 +168,19 @@ const ReactSideBar = () => {
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlyloaisanpham" />}
-                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                     >
                       Loại sản phẩm
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlymausac" />}
-                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                     >
                       Màu sắc
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlykichthuoc" />}
-                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
                     >
                       Kích thước
                     </MenuItem>
@@ -194,11 +194,12 @@ const ReactSideBar = () => {
 
                   <hr />
                   <MenuItem
-                    component={<Link to="/admin/quanlykhachhang" />}
-                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
-                  >
-                    Quản lý Khách hàng
-                  </MenuItem>
+  component={<Link to="/admin/quanlykhachhang" />}
+  icon={<FaAddressBook style={{ color: "blue", fontSize: "20px" }} />}
+>
+  Quản lý Khách hàng
+</MenuItem>
+
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlydoidiem" />}

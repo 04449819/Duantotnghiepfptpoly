@@ -14,6 +14,8 @@
     "chart.js": "^4.4.3",
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.263.1",
     "mdb-react-ui-kit": "^8.0.0",

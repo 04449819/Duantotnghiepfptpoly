@@ -396,6 +396,7 @@ namespace AppAPI.Controllers
                         KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                         DonGiaa = cthd.DonGia,
                         SoLuonga = cthd.SoLuong,
+						giaban = cthd.ChiTietSanPham.GiaBan,
                         // Thêm thông tin về hoàn hàng nếu có
                         Hoanhangsanpham = _dbcontext.Hoanhangsanphams
 							.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)

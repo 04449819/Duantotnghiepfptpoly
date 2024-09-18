@@ -457,7 +457,7 @@ namespace AppAPI.Services
                         IDHoaDon = hoaDon.ID,
                         IDCTSP = sp.IDCTSP,
                         SoLuong = sp.SoLuongMua,
-                        DonGia = giaBan,
+                        DonGia = sp.SoLuongMua * giaBan,
                         TrangThai = 1
                     };
                     hoaDon.ChiTietHoaDons.Add(chiTiet);

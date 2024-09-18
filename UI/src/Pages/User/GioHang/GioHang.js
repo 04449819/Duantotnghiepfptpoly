@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineUser } from "react-icons/ai";
@@ -35,7 +35,7 @@ const GioHang = () => {
   const [districts, setdistricts] = useState([]);
   const [dckh, setdckh] = useState([]);
   const [tongTien, setTongTien] = useState(0);
-  const [tongTienBanDau, setTongTienBanDau] = useState(0);
+  const [tongTienGioHang, setTongTienGioHang] = useState(0);
   const [load, setload] = useState(false);
   const [datakm, setdatakm] = useState([]);
   const [hoaDonOnline, setHoaDonOnline] = useState({
@@ -108,8 +108,6 @@ const GioHang = () => {
       const response = await axios.get(
         `https://localhost:7095/api/Voucher/GetAllAvaiableVoucher`
       );
-      console.log(response);
-
       const voucherOptions = response.data.vouchers.map((voucher) => ({
         value: voucher.id,
         label: `${voucher.ten} - Với đơn ${voucher.soTienCan.toLocaleString()}`,
@@ -138,78 +136,54 @@ const GioHang = () => {
     setIsDiemTichLuy(!isDiemTichLuy);
     calculateTotalPrice();
   };
+  const calculateTotalPrice = useCallback(
+    (currentShippingCost = shippingCost) => {
+      let total = dsspgiohangs.reduce((sum, product) => {
+        if (product.check) {
+          return sum + product.giatrithuc * product.soluongmua;
+        }
+        return sum;
+      }, 0);
+      setTongTienGioHang(total);
+      total += currentShippingCost;
+
+      if (selectedVoucher) {
+        const tienGiamVoucher =
+          selectedVoucher.hinhThucGiamGia === 0
+            ? selectedVoucher.giaTri
+            : total * (selectedVoucher.giaTri / 100);
+        total -= tienGiamVoucher;
+        setTienGiamVoucher(tienGiamVoucher);
+      } else {
+        setTienGiamVoucher(0);
+      }
+
+      if (isDiemTichLuy && user.diemTich) {
+        const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
+        const tienGiamDiem = maxDiemSuDung * 100;
+        total -= tienGiamDiem;
+        setTienGiamDiem(tienGiamDiem);
+        setSoDiemSuDung(maxDiemSuDung);
+      } else {
+        setTienGiamDiem(0);
+        setSoDiemSuDung(0);
+      }
+
+      setTongTien(total);
+    },
+    [dsspgiohangs, selectedVoucher, isDiemTichLuy, user.diemTich, shippingCost]
+  );
+
   useEffect(() => {
     calculateTotalPrice();
-  }, [isDiemTichLuy, selectedVoucher, shippingCost]);
-  const calculateTotalPrice = (currentShippingCost = shippingCost) => {
-    let total = tongTienBanDau;
-    total += currentShippingCost;
+  }, [
+    calculateTotalPrice,
+    dsspgiohangs,
+    isDiemTichLuy,
+    selectedVoucher,
+    shippingCost,
+  ]);
 
-    // Rest of the calculation logic remains the same
-    if (selectedVoucher) {
-      const tienGiamVoucher =
-        selectedVoucher.hinhThucGiamGia === 0
-          ? selectedVoucher.giaTri
-          : total * (selectedVoucher.giaTri / 100);
-      total -= tienGiamVoucher;
-      setTienGiamVoucher(tienGiamVoucher);
-    } else {
-      setTienGiamVoucher(0);
-    }
-
-    if (isDiemTichLuy && user.diemTich) {
-      const maxDiemSuDung = Math.min(user.diemTich, Math.floor(total / 100));
-      const tienGiamDiem = maxDiemSuDung * 100;
-      total -= tienGiamDiem;
-      setTienGiamDiem(tienGiamDiem);
-      setSoDiemSuDung(maxDiemSuDung);
-    } else {
-      setTienGiamDiem(0);
-      setSoDiemSuDung(0);
-    }
-
-    setTongTien(total);
-  };
-  // const validateInput = (id, value) => {
-  //   let error = "";
-  //   switch (id) {
-  //     case "TenKhachHang":
-  //       if (!value.trim()) {
-  //         error = "Tên khách hàng không được để trống";
-  //       }
-  //       break;
-  //     case "SDT":
-  //       if (value === "") {
-  //         error = "Số điện thoại không được để trống";
-  //       }
-  //       break;
-  //     case "Email":
-  //       if (value === "") {
-  //         error = "Email phải điền đầy đủ";
-  //       }
-  //       break;
-  //     case "DiaChi":
-  //       if (value === "") {
-  //         error = "Địa chỉ phải điền đầy đủ";
-  //       }
-  //       break;
-  //     case "selectedProvince":
-  //       const Province = "pleaseSelect"; // Ví dụ giá trị mặc định
-  //       if (value === null || value === undefined) {
-  //         error = "Vui lòng chọn quận/huyện";
-  //       }
-  //       break;
-  //     case "selectedDistrict":
-  //       const defaultDistrict = "pleaseSelect"; // Ví dụ giá trị mặc định
-  //       if (value === null || value === undefined) {
-  //         error = "Vui lòng chọn quận/huyện";
-  //       }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   return error;
-  // };
   useEffect(() => {
     const sortedProducts = [...dsspgiohang].sort((a, b) => {
       if (a.check === b.check) return 0;
@@ -272,7 +246,7 @@ const GioHang = () => {
     setTienGiamVoucher(0);
     setTienGiamDiem(0);
     setTongTien(0);
-    setTongTienBanDau(0);
+    setTongTienGioHang(0);
     setSelectedVoucher(null);
   };
 
@@ -419,7 +393,7 @@ const GioHang = () => {
         IdKhachHang: user.id,
       };
       const additionalInfo = {
-        tongTienBanDau: tongTienBanDau,
+        tongTienBanDau: tongTienGioHang,
         tienGiamVoucher: tienGiamVoucher,
         tienGiamDiem: tienGiamDiem,
         soDiemSuDung: soDiemSuDung,
@@ -478,7 +452,7 @@ const GioHang = () => {
           IdKhachHang: user.id,
         };
         const additionalInfo = {
-          tongTienBanDau: tongTienBanDau,
+          tongTienBanDau: tongTienGioHang,
           tienGiamVoucher: tienGiamVoucher,
           tienGiamDiem: tienGiamDiem,
           soDiemSuDung: soDiemSuDung,
@@ -490,6 +464,7 @@ const GioHang = () => {
     }
   };
   const HandleDatHang = async () => {
+    alert("okkkkkkk");
     try {
       const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
       const apiUrl =
@@ -506,7 +481,7 @@ const GioHang = () => {
 
       if (res.data) {
         toast.success("Đặt hàng thành công");
-
+        console.log("đây là ds sản phẩm cần xóa", selectedProducts);
         //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
         selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
 
@@ -583,7 +558,7 @@ const GioHang = () => {
       console.log("toong tien ", total);
 
       setTongTien(total);
-      setTongTienBanDau(total);
+      setTongTienGioHang(total);
     } catch (error) {}
   };
   const validatesdt = (sdt) => {
@@ -703,7 +678,7 @@ const GioHang = () => {
             <h5>THÔNG TIN CHUNG</h5>
             <p>
               Tổng giỏ hàng:{" "}
-              {tongTienBanDau.toLocaleString("vi-VN", {
+              {tongTienGioHang.toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
               })}

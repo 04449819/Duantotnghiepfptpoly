@@ -52,6 +52,11 @@ namespace AppAPI.Services
            return _allRepository.GetAll();
         }
 
+        public QuyDoiDiem GetApplicableQuyDoiDiem()
+        {
+            return _allRepository.GetAll().FirstOrDefault(x => x.TrangThai == 1);
+        }
+
         public QuyDoiDiem GetById(Guid Id)
         {
             return _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);

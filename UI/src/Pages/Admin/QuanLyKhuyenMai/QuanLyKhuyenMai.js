@@ -31,7 +31,7 @@ const QuanLyKhuyenMai = () => {
   const [total, setTotal] = useState();
   const [page, setPage] = useState(1);
   const tableRef = useRef(null);
-  const ROWS_PER_PAGE = 2;
+  const ROWS_PER_PAGE = 3;
 
   useEffect(() => {
     fetchPromotions(page, false);

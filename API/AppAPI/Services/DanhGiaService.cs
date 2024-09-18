@@ -39,11 +39,35 @@ namespace AppAPI.Services
                 .Include(x => x.ChiTietHoaDon)
                 .ToListAsync();
         }
-        public  List<DanhGia> GetAll()
+        public  List<DanhGiaView> GetAllDanhGiaView()
         {
-            return  _context.DanhGias
-                .Include(x => x.ChiTietHoaDon)
-                .ToList();
+            var lstdgv = (from dg in _context.DanhGias where dg.TrangThai == 1
+						  join cthd in _context.ChiTietHoaDons on dg.ID equals cthd.ID 
+                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                          join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+                          join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                          join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
+                          join kh in _context.KhachHangs on hd.KhachHangID equals kh.IDKhachHang
+                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+
+                          select new DanhGiaView
+                          {
+                              ID = dg.ID,
+                              BinhLuan = dg.BinhLuan,
+                              Sao = dg.Sao,
+                              PhanHoi = dg.phanHoi,
+                              NgayDanhGia = dg.NgayDanhGia,
+                              TrangThai = dg.TrangThai,
+                              ChatLieu = cl.Ten,
+                              MauSac = ms.Ten,
+                              TenKH = kh.Ten,
+                              KichCo = kc.Ten,
+                              TenSanPham = sp.Ten + " " + cl.Ten + " " + ms.Ten      
+
+                          }
+                          ).ToList();
+            return lstdgv;
         }
         public async Task<bool> ReplyPhanHoi(Guid idCTHD, string phanHoi)
         {

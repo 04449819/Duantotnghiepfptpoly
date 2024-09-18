@@ -107,6 +107,12 @@ namespace AppAPI.Controllers
             var vouchers = _services.GetAllAvaiableVoucher();
             return Ok(new { vouchers });
         }
+        [HttpGet("CheckStatusVouchers")]
+        public async Task<IActionResult> CheckStatusVouchers()
+        {
+            var vouchers = _services.CheckStatusVouchers();
+            return Ok(new { vouchers });
+        }
 
         #endregion
 

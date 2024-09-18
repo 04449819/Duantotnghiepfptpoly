@@ -12,6 +12,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   const user = useSelector(state => state.user.User); // Get user info from Redux
 
   useEffect(() => {
+    console.log(billId);
     if (show && billId) {
       fetchBillInfo();
     }
@@ -45,6 +46,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   };
 
   const handleConfirm = async () => {
+  
     try {
       const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=10&idnhanvien=${user.id}`, {
         method: 'PUT',
@@ -131,6 +133,8 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
             <p><strong>Số điện thoại:</strong> {billInfo.sdt}</p>
             <p><strong>Email:</strong> {billInfo.email}</p>
 
+            <p><strong>Ngày tạo:</strong> {new Date(billInfo.ngayTao).toLocaleDateString('vi-VN')}</p>
+
             <h4>Chi tiết sản phẩm</h4>
             {productDetails.length > 0 ? (
               <table className="table">
@@ -139,6 +143,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
                     <th>Ảnh</th>
                     <th>Tên sản phẩm</th>
                     <th>Đơn giá</th>
+                    <th>kích cỡ</th>
                     <th>Số lượng</th>
                   </tr>
                 </thead>
@@ -153,7 +158,8 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
                         />
                       </td>
                       <td>{product.tenSanPham}</td>
-                      <td>{product.donGia}</td>
+                      <td>{product.giaban}</td>
+                      <td>{product.kichCo}</td>
                       <td>{product.soLuong}</td>
                     </tr>
                   ))}

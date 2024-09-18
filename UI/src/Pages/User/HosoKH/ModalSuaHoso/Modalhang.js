@@ -8,7 +8,7 @@ import ReturnModal from './ReturnModal';
 import CompletedOrderModal from './CompletedOrderModal';
 import { toast } from 'react-toastify';
 
-const ModalHang = ({ isOpen, onClose, orderId }) => {
+const ModalHang = ({ isOpen, onClose, orderId, setload, load }) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,6 +19,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+   
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(`https://localhost:7095/api/SanPham/getAllSPBanHa222ng?hoaDonId=${orderId}`);
@@ -73,6 +74,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
     }
   };
 
+
   const handleFeedbackModalClose = () => {
     setSelectedProduct(null);
   };
@@ -102,52 +104,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         <Modal.Body>
           {orderDetails ? (
             <div className="modal-content">
-              {/* Stepper */}
-              <div className="stepper">
-                {/* Steps */}
-                {orderDetails.trangThaiGiaoHang >= 2 && (
-                  <div className="stepper__step stepper__step--finish">
-                    <div className="stepper__step-icon">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 8v8m4-4H8"></path>
-                      </svg>
-                    </div>
-                    <div className="stepper__step-text">Đã xác nhận thông tin</div>
-                    <div className="stepper__step-date">
-                      {orderDetails.ngayThanhToan ? new Date(orderDetails.ngayTao).toLocaleDateString() + ' ' + new Date(orderDetails.ngayThanhToan).toLocaleTimeString() : 'Chưa xác nhận'}
-                    </div>
-                  </div>
-                )}
-                {orderDetails.trangThaiGiaoHang >= 3 && (
-                  <div className="stepper__step stepper__step--finish">
-                    <div className="stepper__step-icon">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 15l4 4L19 7"></path>
-                      </svg>
-                    </div>
-                    <div className="stepper__step-text">Ngày giao hàng</div>
-                    <div className="stepper__step-date">
-                      {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() + ' ' + new Date(orderDetails.ngayNhanHang).toLocaleTimeString() : 'Chưa nhận'}
-                    </div>
-                  </div>
-                )}
-                {orderDetails.trangThaiGiaoHang >= 6 && (
-                  <div className="stepper__step stepper__step--finish">
-                    <div className="stepper__step-icon">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 4l2.5 7h7.5l-6 4.5 2.5 7.5-6-4.5-6 4.5L8.5 16 2 8.5h7.5z"></path>
-                      </svg>
-                    </div>
-                    <div className="stepper__step-text">Đơn hàng đã hoàn thành</div>
-                    <div className="stepper__step-date">
-                      {orderDetails.ngayHoanThanh ? new Date(orderDetails.ngayThanhToan).toLocaleDateString() + ' ' + new Date(orderDetails.ngayHoanThanh).toLocaleTimeString() : 'Chưa hoàn thành'}
-                    </div>
-                  </div>
-                )}
-                <div className="stepper__line">
-                  <div className="stepper__line-foreground" style={{ width: `${(orderDetails.trangThaiGiaoHang / 6) * 100}%` }}></div>
-                </div>
-              </div>
+
 
               {/* Order Details */}
               <div className="order-info">
@@ -157,7 +114,13 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
                     <p><strong>Mã HD:</strong> {orderDetails.maHD}</p>
                     <p><strong>Ngày Tạo:</strong> {new Date(orderDetails.ngayTao).toLocaleDateString()}</p>
                     <p><strong>Ngày Thanh Toán:</strong> {orderDetails.ngayThanhToan ? new Date(orderDetails.ngayThanhToan).toLocaleDateString() : 'Chưa thanh toán'}</p>
-                    <p><strong>Ngày Nhận:</strong> {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() : 'Chưa nhận hàng'}</p>
+
+                    {orderDetails.trangThaiGiaoHang === 6 ||
+                      orderDetails.trangThaiGiaoHang === 8 ||
+                      orderDetails.trangThaiGiaoHang === 9 ||
+                      orderDetails.trangThaiGiaoHang === 5 ? (
+                      <p><strong>Ngày Nhận:</strong> {orderDetails.ngayNhanHang ? new Date(orderDetails.ngayNhanHang).toLocaleDateString() : 'Chưa nhận hàng'}</p>
+                    ) : null}
                     <p><strong>Trạng Thái Giao Hàng:</strong> {renderTrangThaiGiaoHang(orderDetails.trangThaiGiaoHang)}</p>
                     <p><strong>Tên Người Nhận:</strong> {orderDetails.tenNguoiNhan}</p>
                   </div>
@@ -186,7 +149,7 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
                         <p><strong>{item.tenSanPham}</strong></p>
                         <p>Phân loại hàng: {item.mauSac || 'Không có màu sắc'} | Size: {item.kichCo || 'Không có kích cỡ'} | Số lượng: {item.soLuong || 'Không có số lượng'}</p>
                         <p className="price">
-                          {item.donGia !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
+                            {item.giaban !== undefined ? item.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                         </p>
                         {orderDetails.trangThaiGiaoHang === 6 && (
                           <Button onClick={() => handleFeedbackClick(item)}>Đánh Giá</Button>
@@ -206,34 +169,39 @@ const ModalHang = ({ isOpen, onClose, orderId }) => {
         <Modal.Footer>
           {orderDetails && (
             <>
-              {(orderDetails.trangThaiGiaoHang === 5 || 
-                orderDetails.trangThaiGiaoHang === 6 || 
+              {(orderDetails.trangThaiGiaoHang === 5 ||
+                orderDetails.trangThaiGiaoHang === 6 ||
                 orderDetails.trangThaiGiaoHang === 4 ||
                 orderDetails.trangThaiGiaoHang === 2 ||
                 orderDetails.trangThaiGiaoHang === 10 ||
                 orderDetails.trangThaiGiaoHang === 9) && (
-                <>
-                  {orderDetails.trangThaiGiaoHang === 5 || orderDetails.trangThaiGiaoHang === 6 ? (
-                    <Button variant="primary" onClick={handleCompleteReturn}>
-                      Hoàn Hàng
-                    </Button>
-                  ) : null}
-                  {(orderDetails.trangThaiGiaoHang === 5 || 
-                    orderDetails.trangThaiGiaoHang === 6 || 
-                    orderDetails.trangThaiGiaoHang === 4 ||
-                    orderDetails.trangThaiGiaoHang === 9) && (
-                    <Button variant="info" onClick={handleViewCompletedOrder}>
-                      Xem Đơn Hoàn
-                    </Button>
-                  )}
-                  {(orderDetails.trangThaiGiaoHang === 2 || 
-                    orderDetails.trangThaiGiaoHang === 10) && (
-                    <Button variant="danger" onClick={handleCancelOrder}>
-                      Hủy Đơn Hàng
-                    </Button>
-                  )}
-                </>
-              )}
+                  <>
+                   {
+  (orderDetails.trangThaiGiaoHang === 5 || orderDetails.trangThaiGiaoHang === 6) &&
+  new Date(orderDetails.ngayNhanHang) >= new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) ? (
+    <Button variant="primary" onClick={handleCompleteReturn}>
+      Hoàn Hàng
+    </Button>
+  ) : null
+}
+
+
+                    {(orderDetails.trangThaiGiaoHang === 5 ||
+                      orderDetails.trangThaiGiaoHang === 6 ||
+                      orderDetails.trangThaiGiaoHang === 4 ||
+                      orderDetails.trangThaiGiaoHang === 9) && (
+                        <Button variant="info" onClick={handleViewCompletedOrder}>
+                          Xem Đơn Hoàn
+                        </Button>
+                      )}
+                    {(orderDetails.trangThaiGiaoHang === 2 ||
+                      orderDetails.trangThaiGiaoHang === 10) && (
+                        <Button variant="danger" onClick={handleCancelOrder}>
+                          Hủy Đơn Hàng
+                        </Button>
+                      )}
+                  </>
+                )}
             </>
           )}
           <Button variant="secondary" onClick={onClose}>

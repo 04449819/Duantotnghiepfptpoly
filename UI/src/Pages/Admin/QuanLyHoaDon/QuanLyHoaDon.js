@@ -8,7 +8,7 @@ import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
 import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
 import ModalXacNhanHoan from "./ModalXacnhandonhang/ModalXacNhanHoan";
 import ModalXacNhaHang from "./ModalXacnhandonhang/ModalXacNhaHang";
-import ModalHoanThanhCong from "./ModalXacnhandonhang/ModalHoanThanhCong";
+import ModalThanhCong from "./ModalXacnhandonhang/ModalThanhCong";
 import { toast } from "react-toastify";
 
 const QuanLyHoaDon = () => {
@@ -52,10 +52,7 @@ const QuanLyHoaDon = () => {
       setError(null);
 
       // Tính toán số lượng đơn hàng chưa xác nhận
-      const unconfirmedOrders = response.data.filter(
-        (order) => order.trangThaiGiaoHang === 2
-      );
-      setUnconfirmedOrderCount(unconfirmedOrders.length);
+      
     } catch (error) {
       console.error("Có lỗi khi fetch hóa đơn:", error);
       setError("Có lỗi khi fetch hóa đơn: " + error.message);
@@ -192,11 +189,6 @@ const QuanLyHoaDon = () => {
   return (
     <div className="invoice-management">
       <h2>Quản lý Hóa Đơn</h2>
-      <div className="notification-container">
-        {unconfirmedOrderCount > 0 && (
-          <div className="notification-dot">{unconfirmedOrderCount}</div>
-        )}
-      </div>
 
       <div className="search-bar">
         <input
@@ -272,7 +264,7 @@ const QuanLyHoaDon = () => {
                   ? formatCurrency(hoaDon.tongTien)
                   : "Chưa xác định"}
               </td>
-              <td>{hoaDon.LoaiHD ? "Off" : "On"}</td>
+              <td>{hoaDon.loaiHD === 0 ? "On" : "Off"}</td>
               <td>{hoaDon.ghiChu}</td>
               <td>
                 {hoaDon.trangThaiGiaoHang === 2 && (
@@ -361,7 +353,7 @@ const QuanLyHoaDon = () => {
         billId={selectedBillForXacNhaHang}
       />
 
-      <ModalHoanThanhCong
+      <ModalThanhCong
         show={showHoanHangThanhCongModal}
         onClose={() => setShowHoanHangThanhCongModal(false)}
         onConfirm={handleHoanThanhCongConfirm}

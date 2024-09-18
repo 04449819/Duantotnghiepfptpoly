@@ -25,6 +25,7 @@ const store = configureStore({
     user: persistedReducer,
     getIDchitietsanpham: IDchitietsanphamSlice,
     sanPhamGioHang: GetSanPhamGioHangSlices,
+    // sanPhamGioHang: GetSanPhamGioHangSlice,
     Loading: LoadingSlice,
     setidloaisp: IDLoaiSPSlice,
     setchitietsp: chitietsanpham,

@@ -76,7 +76,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
     }
 
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=7&ghichu=${encodeURIComponent(cancelNote)}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
                       <td>{product.tenSanPham}</td>
                       <td>{product.mauSac}</td>
                       <td>{product.kichCo}</td>
-                      <td>{product.donGia}</td>
+                      <td>{product.giaban}</td>
                       <td>{product.soLuongHoan}</td>
                     </tr>
                   ))}
@@ -216,7 +216,7 @@ function ModalXacNhanHoan({ show, onClose, onConfirm, billId ,loading1 ,setLoadi
           </Button>
         )}
         <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+          Xác nhận hoàn hàng
         </Button>
       </Modal.Footer>
     </Modal>

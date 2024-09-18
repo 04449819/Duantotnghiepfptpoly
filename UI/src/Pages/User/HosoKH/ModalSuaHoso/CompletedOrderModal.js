@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CompletedOrderModal = ({ show, onHide, orderId }) => {
   const [completedOrderDetails, setCompletedOrderDetails] = useState(null);
@@ -16,6 +17,7 @@ const CompletedOrderModal = ({ show, onHide, orderId }) => {
       } catch (err) {
         console.error('Lỗi khi tải thông tin đơn hàng hoàn thành:', err); // Ghi lỗi ra console
         setError('Không thể tải thông tin đơn hàng hoàn thành.');
+        toast.error("đơn này chưa đc hoàn");
       } finally {
         setLoading(false); // Kết thúc tải
       }
@@ -53,7 +55,7 @@ const CompletedOrderModal = ({ show, onHide, orderId }) => {
                     <p>Số lượng hoàn: {item.soLuongHoan || '0'}</p>
                     <p>Địa chỉ khách hàng: {item.diaChiKhachHang || 'Không có địa chỉ'}</p>
                     <p className="price">
-                      {item.donGia !== undefined ? item.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
+                      {item.giaban !== undefined ? item.giaban.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có giá'}
                     </p>
                   </div>
                 </div>

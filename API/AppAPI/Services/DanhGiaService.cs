@@ -41,8 +41,8 @@ namespace AppAPI.Services
         }
         public  List<DanhGiaView> GetAllDanhGiaView()
         {
-            var lstdgv = (from dg in _context.DanhGias
-                          join cthd in _context.ChiTietHoaDons on dg.ID equals cthd.ID 
+            var lstdgv = (from dg in _context.DanhGias where dg.TrangThai == 1
+						  join cthd in _context.ChiTietHoaDons on dg.ID equals cthd.ID 
                           join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
                           join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
                           join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID

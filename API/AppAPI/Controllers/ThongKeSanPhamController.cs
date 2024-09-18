@@ -4,6 +4,7 @@ using AppData.ViewModels.SanPham;
 using AppData.ViewModels.ThongKe;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -101,15 +102,15 @@ namespace AppAPI.Controllers
         {
             try
             {
-                // Lấy danh sách hóa đơn cho năm chỉ định và ID hóa đơn
-                var dshd = await _dbcontext.HoaDons
+                // Lấy danh sách hóa đơn cho năm chỉ định
+                var danhSachHoaDons = await _dbcontext.HoaDons
                     .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
-                    .Select(hd => hd.ID)
+                    .Select(hd => hd.ID) // Chỉ cần ID hóa đơn
                     .ToListAsync();
 
                 // Lấy chi tiết hóa đơn cho các hóa đơn
                 var listcthd = await _dbcontext.ChiTietHoaDons
-                    .Where(ct => dshd.Contains(ct.IDHoaDon))
+                    .Where(ct => danhSachHoaDons.Contains(ct.IDHoaDon))
                     .GroupBy(ct => ct.IDCTSP)
                     .Select(g => new
                     {
@@ -122,7 +123,7 @@ namespace AppAPI.Controllers
                     .ToListAsync();
 
                 // Lấy thông tin sản phẩm tương ứng
-                var topProductIds = listcthd.Select(p => p.IdChiTietSanPham).ToList();
+                var topProductIds = listcthd.Select(item => item.IdChiTietSanPham).ToList();
                 var products = await _dbcontext.ChiTietSanPhams
                     .Include(c => c.SanPham)
                     .Where(c => topProductIds.Contains(c.ID))
@@ -137,7 +138,7 @@ namespace AppAPI.Controllers
                     return new ThongKeMSSanPhamTheoSoLuong
                     {
                         idSanPham = chiTietSanPham?.IDSanPham ?? Guid.Empty,
-                        TenSP = sanPham?.Ten ?? "Unknown",
+                        TenSP = sanPham?.Ten ?? "Không rõ",
                         SoLuong = item.SoLuong,
                         Gia = chiTietSanPham?.GiaBan ?? 0,
                         DoanhThu = item.TongTien
@@ -150,14 +151,9 @@ namespace AppAPI.Controllers
             {
                 // Ghi log lỗi nếu cần
                 Console.WriteLine(ex.ToString());
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Lỗi máy chủ nội bộ");
             }
+
         }
-
-
-
-
-
-
     }
 }

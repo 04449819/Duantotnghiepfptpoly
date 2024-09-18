@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from 'react-redux';
 
-function ModalHoanThanhCong({ show, onClose, billId }) {
+function ModalThanhCong({ show, onClose, billId }) {
   const [billInfo, setBillInfo] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +79,7 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
     }
 
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=7&ghichu=${encodeURIComponent(cancelNote)}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +155,6 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
                     <th>Tên sản phẩm</th>
                     <th>Màu sắc</th>
                     <th>Kích cỡ</th>
-                    <th>Đơn giá</th>
                     <th>Số lượng</th>
                   </tr>
                 </thead>
@@ -164,18 +163,18 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
                     <tr key={product.id}>
                       <td>
                         <img
-                          src={product.anhSanPham}
-                          alt={product.tenSanPham}
+                          src={product.anhSanPham || 'default-image-url'} // Xử lý trường hợp hình ảnh thiếu
+                          alt={product.tenSanPham || 'Không có tên'}
                           style={{ width: '150px', height: '150px' }}
                         />
                       </td>
-                      <td>{product.tenSanPham}</td>
-                      <td>{product.mauSac}</td>
-                      <td>{product.kichCo}</td>
-                      <td>{product.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                      <td>{product.soLuongHoan}</td>
+                      <td>{product.tenSanPham || 'Không có tên'}</td>
+                      <td>{product.mauSac || 'N/A'}</td>
+                      <td>{product.kichCo || 'N/A'}</td>
+                      <td>{product.soLuongHoan || 0}</td>
                     </tr>
                   ))}
+
                 </tbody>
               </table>
             ) : (
@@ -221,4 +220,4 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
   );
 }
 
-export default ModalHoanThanhCong;
+export default ModalThanhCong;

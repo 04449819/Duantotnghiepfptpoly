@@ -140,6 +140,7 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
                     <th>Ảnh</th>
                     <th>Tên sản phẩm</th>
                     <th>Đơn giá</th>
+                    <th>Kích cỡ</th>
                     <th>Số lượng</th>
                   </tr>
                 </thead>
@@ -154,7 +155,8 @@ function ModalXacNhaHang({ show, onClose, onConfirm, billId }) {
                         />
                       </td>
                       <td>{product.tenSanPham}</td>
-                      <td>{product.donGia}</td>
+                      <td>{product.giaban}</td>
+                      <td>{product.kichCo}</td>
                       <td>{product.soLuong}</td>
                     </tr>
                   ))}

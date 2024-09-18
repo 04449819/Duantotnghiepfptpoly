@@ -498,10 +498,10 @@ function ModalThemSanPhamChiTiet(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Đóng
           </Button>
           <Button variant="primary" onClick={handleSaveChange}>
-            Save Changes
+            Lưu
           </Button>
         </Modal.Footer>
       </Modal>

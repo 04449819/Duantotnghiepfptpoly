@@ -273,7 +273,8 @@ namespace AppAPI.Controllers
                     MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                     KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                     DonGia = cthd.DonGia,
-//<<<<<<< HEAD
+					giaban=cthd.ChiTietSanPham.GiaBan,
+//<<<<<<< HEAD			
 //                    SoLuongHoan = _dbcontext.Hoanhangsanphams
 //						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)
 //                        .Sum(hhsp => hhsp.SoLuong),
@@ -320,6 +321,7 @@ namespace AppAPI.Controllers
                     MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                     KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                     DonGia = cthd.DonGia,
+                    giaban = cthd.ChiTietSanPham.GiaBan,
                     SoLuongHoan = _dbcontext.Hoanhangsanphams
 						.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID) // Lọc theo trạng thái hoàn hàng
                         .Sum(hhsp => hhsp.SoLuong),
@@ -378,7 +380,7 @@ namespace AppAPI.Controllers
                     hd.SDT,
                     hd.Email,
                     hd.DiaChi,
-                    TongTien = hd.ChiTietHoaDons.Sum(cthd => cthd.DonGia * cthd.SoLuong),
+                    hd.TongTien,
                     hd.TienShip,
                     hd.GhiChu,
                     hd.TrangThaiGiaoHang,
@@ -396,6 +398,7 @@ namespace AppAPI.Controllers
                         KichCo = cthd.ChiTietSanPham.KichCo.Ten,
                         DonGia = cthd.DonGia,
                         SoLuong = cthd.SoLuong,
+						giaban = cthd.ChiTietSanPham.GiaBan,
                         // Thêm thông tin về hoàn hàng nếu có
                         Hoanhangsanpham = _dbcontext.Hoanhangsanphams
 							.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)

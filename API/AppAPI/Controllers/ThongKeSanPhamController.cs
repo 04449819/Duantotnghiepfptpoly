@@ -4,6 +4,7 @@ using AppData.ViewModels.SanPham;
 using AppData.ViewModels.ThongKe;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -97,13 +98,21 @@ namespace AppAPI.Controllers
             }
         }
         [HttpGet("top10sanphamtrongna222m")]
-        public async Task<IActionResult> GetTop10SanphamTrongNam1(int year)
+        public async Task<IActionResult> GetTop10SanphamTrongNam1(int year , int month)
         {
             try
             {
-                // Lấy danh sách hóa đơn cho năm chỉ định và ID hóa đơn
+                // Kiểm tra tính hợp lệ của tháng
+                if (month < 1 || month > 12)
+                {
+                    return BadRequest("Tháng không hợp lệ. Vui lòng cung cấp tháng từ 1 đến 12.");
+                }
+
+                // Lấy danh sách hóa đơn cho năm và tháng chỉ định
                 var dshd = await _dbcontext.HoaDons
-                    .Where(p => p.NgayThanhToan.HasValue && p.NgayThanhToan.Value.Year == year)
+                    .Where(p => p.NgayThanhToan.HasValue &&
+                                p.NgayThanhToan.Value.Year == year &&
+                                p.NgayThanhToan.Value.Month == month)
                     .Select(hd => hd.ID)
                     .ToListAsync();
 
@@ -137,7 +146,7 @@ namespace AppAPI.Controllers
                     return new ThongKeMSSanPhamTheoSoLuong
                     {
                         idSanPham = chiTietSanPham?.IDSanPham ?? Guid.Empty,
-                        TenSP = sanPham?.Ten ?? "Unknown",
+                        TenSP = sanPham?.Ten ?? "Không rõ",
                         SoLuong = item.SoLuong,
                         Gia = chiTietSanPham?.GiaBan ?? 0,
                         DoanhThu = item.TongTien
@@ -150,7 +159,7 @@ namespace AppAPI.Controllers
             {
                 // Ghi log lỗi nếu cần
                 Console.WriteLine(ex.ToString());
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Lỗi máy chủ nội bộ");
             }
         }
 

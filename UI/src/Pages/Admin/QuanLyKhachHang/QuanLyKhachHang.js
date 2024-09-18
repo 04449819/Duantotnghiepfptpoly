@@ -213,7 +213,7 @@ const QuanLyKhachHang = () => {
                           onClick={() => handleClickEdit(item.idKhachHang)}
                           className="edit"
                         >
-                          Edit
+                          Sửa
                         </button>
                       </td>
                     }

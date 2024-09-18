@@ -79,7 +79,7 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
     }
 
     try {
-      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=7&ghichu=${encodeURIComponent(cancelNote)}`, {
+      const response = await fetch(`https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=${billId}&idnv=${user.id}&trangThai=6&ghichu=${encodeURIComponent(cancelNote)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ function ModalHoanThanhCong({ show, onClose, billId }) {
                       <td>{product.tenSanPham}</td>
                       <td>{product.mauSac}</td>
                       <td>{product.kichCo}</td>
-                      <td>{product.donGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                      <td>{product.donGiaa.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                       <td>{product.soLuongHoan}</td>
                     </tr>
                   ))}

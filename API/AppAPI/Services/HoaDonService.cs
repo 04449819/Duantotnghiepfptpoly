@@ -457,7 +457,7 @@ namespace AppAPI.Services
                         IDHoaDon = hoaDon.ID,
                         IDCTSP = sp.IDCTSP,
                         SoLuong = sp.SoLuongMua,
-                        DonGia = sp.SoLuongMua * giaBan,
+                        DonGia = giaBan,
                         TrangThai = 1
                     };
                     hoaDon.ChiTietHoaDons.Add(chiTiet);
@@ -912,6 +912,7 @@ namespace AppAPI.Services
             //return reposHoaDon.GetAll();
             return context.HoaDons
                       .Include(h => h.ChiTietHoaDons)
+                      .OrderByDescending(h =>h.NgayTao)
                       .ToList();
         }
         //public ChiTietHoaDonQL GetCTHDByID(Guid idhd)
@@ -1488,7 +1489,7 @@ namespace AppAPI.Services
                         }
                     }
                     update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
-                    update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
+                    update.NgayNhanHang =  DateTime.Now ;
                 }
 
                 update.TrangThaiGiaoHang = trangThai;
@@ -1764,6 +1765,7 @@ namespace AppAPI.Services
             return context.HoaDons
                    //.Include(h => h.ChiTietHoaDons)
                    .Where(h => h.KhachHangID == idKhachHang)
+                   .OrderByDescending(h =>h.NgayTao)
                    .ToList();
         }
 

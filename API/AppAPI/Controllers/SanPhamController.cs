@@ -378,7 +378,7 @@ namespace AppAPI.Controllers
                     hd.SDT,
                     hd.Email,
                     hd.DiaChi,
-                    TongTien = hd.ChiTietHoaDons.Sum(cthd => cthd.DonGia * cthd.SoLuong),
+                    hd.TongTien,
                     hd.TienShip,
                     hd.GhiChu,
                     hd.TrangThaiGiaoHang,
@@ -394,8 +394,8 @@ namespace AppAPI.Controllers
                             .FirstOrDefault(),
                         MauSac = cthd.ChiTietSanPham.MauSac.Ten,
                         KichCo = cthd.ChiTietSanPham.KichCo.Ten,
-                        DonGia = cthd.DonGia,
-                        SoLuong = cthd.SoLuong,
+                        DonGiaa = cthd.DonGia,
+                        SoLuonga = cthd.SoLuong,
                         // Thêm thông tin về hoàn hàng nếu có
                         Hoanhangsanpham = _dbcontext.Hoanhangsanphams
 							.Where(hhsp => hhsp.ChiTietHoaDon.ID == cthd.ID)

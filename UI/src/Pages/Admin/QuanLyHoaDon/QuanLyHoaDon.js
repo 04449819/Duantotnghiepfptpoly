@@ -8,7 +8,7 @@ import ModalXacNhan from "./ModalXacnhandonhang/ModalXacnhan";
 import ModalDangGiaoHang from "./ModalXacnhandonhang/ModalDangGiaoHang";
 import ModalXacNhanHoan from "./ModalXacnhandonhang/ModalXacNhanHoan";
 import ModalXacNhaHang from "./ModalXacnhandonhang/ModalXacNhaHang";
-import ModalHoanThanhCong from "./ModalXacnhandonhang/ModalHoanThanhCong";
+import ModalThanhCong from "./ModalXacnhandonhang/ModalThanhCong";
 import { toast } from "react-toastify";
 
 const QuanLyHoaDon = () => {
@@ -361,7 +361,7 @@ const QuanLyHoaDon = () => {
         billId={selectedBillForXacNhaHang}
       />
 
-      <ModalHoanThanhCong
+      <ModalThanhCong
         show={showHoanHangThanhCongModal}
         onClose={() => setShowHoanHangThanhCongModal(false)}
         onConfirm={handleHoanThanhCongConfirm}

@@ -30,6 +30,7 @@ import {
   FaUndoAlt,
 } from "react-icons/fa"; // Thêm các biểu tượng ở đây
 import { toast } from "react-toastify";
+import { set } from "lodash";
 
 const HosoKh = () => {
   const { userId } = useParams();
@@ -190,6 +191,7 @@ const HosoKh = () => {
   };
 
   const handleCloseOrderModal = () => {
+    setload(!load)
     setOrderModalOpen(false);
     setSelectedOrder(null);
   };
@@ -257,7 +259,7 @@ const HosoKh = () => {
   };
 
   const shouldShowNgayNhanHang = (trangThai) => {
-    const hiddenStates = [1, 2, 3];
+    const hiddenStates = [10, 2, 3,7];
     return !hiddenStates.includes(trangThai);
   };
 
@@ -489,6 +491,8 @@ const HosoKh = () => {
             isOpen={orderModalOpen}
             onClose={handleCloseOrderModal}
             orderId={selectedOrder}
+            setload={setload}
+            load={load}
           />
         )}
 

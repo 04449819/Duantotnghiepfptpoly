@@ -15,6 +15,10 @@ import { FaBell } from "react-icons/fa";
 import { VscFeedback } from "react-icons/vsc";
 import { FaStar } from 'react-icons/fa';
 import axios from "axios";
+import { BsClipboard2Data } from "react-icons/bs";
+import { AiOutlineShoppingCart } from 'react-icons/ai'; // Thêm dòng này
+
+
 
 const ReactSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -124,7 +128,7 @@ const ReactSideBar = () => {
                   <hr /> */}
                   <MenuItem
                     component={<Link to="/admin/banhangofline" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Bán hàng
                   </MenuItem>
@@ -132,57 +136,57 @@ const ReactSideBar = () => {
                   <MenuItem
                     component={<Link to="/admin/quanlynhanvien" />}
                     icon={
-                      <FaAddressBook style={{ color: "blue", size: "20px" }} />
+                      <FaAddressBook style={{ color: "blue", size: "40px" }} />
                     }
                     hidden={user.chucNang !== "Admin" ? true : false}
                   >
                     Quản lý nhân viên
                   </MenuItem>
-                  <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlydanhgia" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<BsClipboard2Data style={{ color: "blue", size: "2em" }} />} // Thay đổi ở đây
                   >
-                    Quản lý đánh giá 
+                    Quản lý đánh giá
                   </MenuItem>
                   <hr />
                   <SubMenu
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     label="Quản lý Sản phẩm"
                   >
                     <MenuItem
-                      component={<Link to="/admin/quanlysanpham" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
-                    >
-                      sản phẩm
-                    </MenuItem>
+  component={<Link to="/admin/quanlysanpham" />}
+  icon={<AiOutlineShoppingCart style={{ color: "blue", fontSize: "40px" }} />}
+>
+  Sản phẩm
+</MenuItem>
+
                     <MenuItem
                       component={<Link to="/admin/quanlychatlieu" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     >
                       Chất liệu
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlyloaisanpham" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     >
                       Loại sản phẩm
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlymausac" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     >
                       Màu sắc
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/quanlykichthuoc" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     >
                       Kích thước
                     </MenuItem>
                     <MenuItem
                       component={<Link to="/admin/coao" />}
-                      icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                      icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                     >
                       Cổ áo
                     </MenuItem>
@@ -191,35 +195,35 @@ const ReactSideBar = () => {
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlykhachhang" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Quản lý Khách hàng
                   </MenuItem>
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlydoidiem" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Quản lý đổi điểm
                   </MenuItem>
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlyvoucher" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Quản lý voucher
                   </MenuItem>
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlykhuyenmai" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Quản lý khuyến mãi
                   </MenuItem>
                   <hr />
                   <MenuItem
                     component={<Link to="/admin/quanlyhoadon" />}
-                    icon={<FaHome style={{ color: "blue", size: "20px" }} />}
+                    icon={<FaHome style={{ color: "blue", size: "40px" }} />}
                   >
                     Quản lý hóa đơn
                   </MenuItem>
@@ -227,7 +231,7 @@ const ReactSideBar = () => {
                   <MenuItem
                     component={<Link to="/admin/thongke" />}
                     icon={
-                      <AiFillSignal style={{ color: "blue", size: "20px" }} />
+                      <AiFillSignal style={{ color: "blue", size: "40px" }} />
                     }
                   >
                     Thống kê
@@ -290,83 +294,83 @@ const ReactSideBar = () => {
                         gap: "15px",
                       }}
                     >
-        <div
-        className="notification-item"
-        onMouseEnter={() => setShowListDanhGia(true)}
-        onMouseLeave={() => setTimeout(() => setShowListDanhGia(false), 1000)} // Thêm độ trễ khi rời khỏi
-        style={{ position: "relative", padding: "10px" }}
-      >
-        <VscFeedback style={{ fontSize: "1.2rem", cursor: "pointer" , marginLeft: "-60px"}} />
-        <span
-          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style={{ fontSize: "0.6rem" , marginLeft: "-60px"}}
-        >
-          {danhGias.length}
-        </span>
-        {showListDanhGia && (
-          <ul
-            className="dropdown-menu show"
-            style={{
-              position: "absolute",
-              top: "100%",
-              right: 0,
-              minWidth: "200px",
-              zIndex: 1000,
-              left: "auto",
-            }}
-          >
-            <p style={{ margin: "10px" }}>Danh sách đánh giá</p>
-            {danhGias.map((dg) => (
-                <li key={dg.id}>
-                    <a className="dropdown-item" href="/admin/quanlydanhgia">
-                        {dg.binhLuan}
-                        <div className="star-rating">
-                            {[...Array(dg.sao)].map((_, index) => (
-                                <FaStar key={index} color="gold" size={10} />
+                      <div
+                        className="notification-item"
+                        onMouseEnter={() => setShowListDanhGia(true)}
+                        onMouseLeave={() => setTimeout(() => setShowListDanhGia(false), 1000)} // Thêm độ trễ khi rời khỏi
+                        style={{ position: "relative", padding: "10px" }}
+                      >
+                        <VscFeedback style={{ fontSize: "1.2rem", cursor: "pointer", marginLeft: "-60px" }} />
+                        <span
+                          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          style={{ fontSize: "0.6rem", marginLeft: "-60px" }}
+                        >
+                          {danhGias.length}
+                        </span>
+                        {showListDanhGia && (
+                          <ul
+                            className="dropdown-menu show"
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              right: 0,
+                              minWidth: "200px",
+                              zIndex: 1000,
+                              left: "auto",
+                            }}
+                          >
+                            <p style={{ margin: "10px" }}>Danh sách đánh giá</p>
+                            {danhGias.map((dg) => (
+                              <li key={dg.id}>
+                                <a className="dropdown-item" href="/admin/quanlydanhgia">
+                                  {dg.binhLuan}
+                                  <div className="star-rating">
+                                    {[...Array(dg.sao)].map((_, index) => (
+                                      <FaStar key={index} color="gold" size={10} />
+                                    ))}
+                                  </div>
+                                </a>
+                              </li>
                             ))}
-                        </div>
-                    </a>
-                </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div
-        className="notification-item"
-        onMouseEnter={() => setShowList(true)}
-        onMouseLeave={() => setTimeout(() => setShowList(false), 1000)} // Thêm độ trễ khi rời khỏi
-        style={{ position: "relative", padding: "10px" }}
-      >
-        <FaBell style={{ fontSize: "1.2rem", cursor: "pointer", marginLeft: "-55px"}} />
-        <span
-          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style={{ fontSize: "0.6rem" ,marginLeft: "-55px"}}
-        >
-          {hoaDons.length}
-        </span>
-        {showList && (
-          <ul
-            className="dropdown-menu show"
-            style={{
-              position: "absolute",
-              top: "100%",
-              right: 0,
-              minWidth: "200px",
-              zIndex: 1000,
-              left: "auto",
-            }}
-          >
-            <p style={{ margin: "10px" }}>Danh sách hóa đơn chờ</p>
-            {hoaDons.map((hd) => (
-              <li key={hd.id}>
-                <a className="dropdown-item" href="/admin/quanlyhoadon">
-                  {hd.maHD}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                          </ul>
+                        )}
+                      </div>
+                      <div
+                        className="notification-item"
+                        onMouseEnter={() => setShowList(true)}
+                        onMouseLeave={() => setTimeout(() => setShowList(false), 1000)} // Thêm độ trễ khi rời khỏi
+                        style={{ position: "relative", padding: "10px" }}
+                      >
+                        <FaBell style={{ fontSize: "1.2rem", cursor: "pointer", marginLeft: "-55px" }} />
+                        <span
+                          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          style={{ fontSize: "0.6rem", marginLeft: "-55px" }}
+                        >
+                          {hoaDons.length}
+                        </span>
+                        {showList && (
+                          <ul
+                            className="dropdown-menu show"
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              right: 0,
+                              minWidth: "200px",
+                              zIndex: 1000,
+                              left: "auto",
+                            }}
+                          >
+                            <p style={{ margin: "10px" }}>Danh sách hóa đơn chờ</p>
+                            {hoaDons.map((hd) => (
+                              <li key={hd.id}>
+                                <a className="dropdown-item" href="/admin/quanlyhoadon">
+                                  {hd.maHD}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
 
                       <span
                         className="User"
@@ -437,7 +441,7 @@ const ReactSideBar = () => {
                 {broken && (
                   <button
                     className="sb-button"
-                    // onClick={() => setToggled(!toggled)}
+                  // onClick={() => setToggled(!toggled)}
                   >
                     Toggle
                   </button>

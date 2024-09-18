@@ -158,9 +158,9 @@ function ModalDangGiaoHang({ show, onClose, onConfirm, billId, loading1, setLoad
                     <tr key={product.sanPhamId}>
                       <td>
                         <img
-                          src={product.anhSanPham} // Điều chỉnh URL nếu cần
+                          src={product.anhSanPham} // Adjust URL if needed
                           alt={product.tenSanPham}
-                          style={{ width: '150px', height: '150px' }} // Điều chỉnh kích thước nếu cần
+                          style={{ width: '150px', height: '150px' }} // Adjust size as needed
                         />
                       </td>
                       <td>{product.tenSanPham}</td>

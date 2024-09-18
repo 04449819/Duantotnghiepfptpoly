@@ -39,7 +39,7 @@ function GetQRChiTietSp(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
-            Save Changes
+            Lưu
           </Button>
         </Modal.Footer>
       </Modal>

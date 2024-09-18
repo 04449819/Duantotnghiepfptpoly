@@ -12,6 +12,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   const user = useSelector(state => state.user.User); // Get user info from Redux
 
   useEffect(() => {
+    console.log(billId);
     if (show && billId) {
       fetchBillInfo();
     }
@@ -45,6 +46,7 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
   };
 
   const handleConfirm = async () => {
+  
     try {
       const response = await fetch(`https://localhost:7095/api/HoaDon?idhoadon=${billId}&trangthai=10&idnhanvien=${user.id}`, {
         method: 'PUT',
@@ -153,8 +155,8 @@ function ModalXacnhan({ show, onClose, onConfirm, billId }) {
                         />
                       </td>
                       <td>{product.tenSanPham}</td>
-                      <td>{product.donGia}</td>
-                      <td>{product.soLuong}</td>
+                      <td>{product.donGiaa}</td>
+                      <td>{product.soLuonga}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -32,6 +32,7 @@ import {
 // import Select from "react-select";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import ModalXacNhanOffline from "./ModalXacNhanOffline/ModalXacNhanOffline";
+import { useReactToPrint } from "react-to-print";
 // import { jsPDF } from "jspdf";
 // import html2canvas from "html2canvas";
 const BanHangOfline2 = () => {
@@ -60,10 +61,9 @@ const BanHangOfline2 = () => {
   const [modalData, setModalData] = useState(null);
   const [isModalXacNhanOffline, setIsModalXacNhanOffline] = useState(false);
   const quyDoiDiem = useSelector((state) => state.sanPhamGioHang.quyDoiDiem);
-  const [showHoaDon, setShowHoaDon] = useState(false);
+  //const [showHoaDon, setShowHoaDon] = useState(false);
   const [completedOrder, setCompletedOrder] = useState(null);
-  const hoaDonRef = useRef(null);
-
+  const componentRef = useRef(null);
   const HandleOnclickSearchKH = async () => {
     dispath(SetLoading(true));
     setTimeout(async () => {
@@ -224,7 +224,6 @@ const BanHangOfline2 = () => {
   
   const HandleOngchangeStVoucher = (e) => {
     setvoucherchuan(e.target.value);
-    console.log(e.target.value);
     const datacantim = availableVouchers.find((p) => p.id === e.target.value);
     dispath(SetVoucher(datacantim));
   };
@@ -278,23 +277,14 @@ const BanHangOfline2 = () => {
     
     setIsModalXacNhanOffline(true);
   }
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "HoaDon",
+  });
   const handleThanhToan = async () => {
     try {
-      //const selectedProducts = dsspgiohangs.filter((sp) => sp.check);
-      // const apiUrl =
-      //   modalData.IdPhuongThucThanhToan ===
-      //   "f1fb9f0b-5db2-4e04-8ba3-84e96f0d820c"
-      //     ? "https://localhost:7095/api/HoaDon/CreateHoaDonOnline"
-      //     : "https://localhost:7095/api/HoaDon/create-order";
       const apiUrl ="https://localhost:7095/api/HoaDon/CreateHoaDonOffline";
-    
-
       const res = await axios.post(apiUrl, modalData);
-
-      // if (res.data?.payUrl) {
-      //   window.open(res.data.payUrl, "_blank");
-      // }
-
       if (res.data) {
         toast.success("Đặt hàng thành công");
           // Xóa hóa đơn đã thanh toán
@@ -303,11 +293,11 @@ const BanHangOfline2 = () => {
             dispath(DeleteHoaDonDaThanhToan(hoaDonDaThanhToan.ma));
           }
           setIsModalXacNhanOffline(false);
-          //setCompletedOrder(res.data); // Save the completed order data
+          setCompletedOrder(res.data); // Save the completed order data
+          console.log("Completed Order:", res.data);
+          handlePrint();
           //setShowHoaDon(true); // Show the HoaDon component
-        //modalData.SanPhams.forEach(sp => dispatch(Deletechitietspgiohang(sp)));
-        //selectedProducts.forEach((sp) => dispatch(Deletechitietspgiohang(sp)));
-       // setload(!load);
+       
       } else {
         toast.error(res.data.message || "Đặt hàng thất bại");
       }
@@ -321,19 +311,7 @@ const BanHangOfline2 = () => {
       );
     }
   }
-  // const handlePrintPDF = () => {
-  //   if (hoaDonRef.current) {
-  //     html2canvas(hoaDonRef.current).then((canvas) => {
-  //       const imgData = canvas.toDataURL('image/png');
-  //       const pdf = new jsPDF();
-  //       const imgProps = pdf.getImageProperties(imgData);
-  //       const pdfWidth = pdf.internal.pageSize.getWidth();
-  //       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  //       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-  //       pdf.save("hoa-don.pdf");
-  //     });
-  //   }
-  // };
+  
   return (
     <div className="banhangofline">
       <div className="row">
@@ -514,7 +492,11 @@ const BanHangOfline2 = () => {
                   { dshd?.find((p) => p.check === true)?.sdt &&(
                     <Row className="mb-3 ms-2 mt-3">
                     <Col className="d-flex align-items-center">
-                      <span className="me-3">Điểm  tích: {dshd?.find((p) => p.check === true)?.diem || ""}</span>
+                      {/* <span className="me-3">Điểm  tích: {dshd?.find((p) => p.check === true)?.diem || 0} {dshd?.find((p) => p.check === true)?.soDiemSuDung || 0}</span> */}
+                      <span className="me-3">
+  Điểm tích: {dshd?.find((p) => p.check === true)?.diem || 0} điểm, 
+  sử dụng: {dshd?.find((p) => p.check === true)?.soDiemSuDung || 0} điểm
+</span>
                       <Form.Check
                         type="switch"
                         id="dung-diem-switch"
@@ -583,10 +565,15 @@ const BanHangOfline2 = () => {
                           ?.length > 0
                           ? TongGia.toLocaleString("vi-VN") + " VNĐ"
                           : giabandau.toLocaleString("vi-VN") + " VNĐ"}
-                        &nbsp;&nbsp;&nbsp; Giảm khuyến mãi:{" "}
-                        {dshd
-                          .find((a) => a.check === true)
-                          ?.giamkm.toLocaleString("vi-VN") + " VNĐ"}
+
+                          {hoaDonDaChon && (
+                            <>
+                               &nbsp;&nbsp;&nbsp; Giảm khuyến mãi:{" "}
+                                {dshd
+                                .find((a) => a.check === true)
+                                ?.giamkm.toLocaleString("vi-VN") + " VNĐ"}
+                            </>
+                          )}
                       </h6>
                       <div className="voucher-selection d-flex mb-3 mt-3">
                         <label className="mt-2">Chọn Voucher:</label>
@@ -617,13 +604,15 @@ const BanHangOfline2 = () => {
                           .find((a) => a.check === true)
                           ?.giamvoucher.toLocaleString("vi-VN") + " VNĐ"}
                       </h6> */}
-                       <h6 className="mt-3 mb-3">
-                          Giảm Voucher: {
-                            dshd
-                              .find((a) => a.check === true)
-                              ?.giamvoucher && dshd.find((a) => a.check === true).giamvoucher.toLocaleString("vi-VN") + " VNĐ"
-                          }
-                        </h6>
+                       {hoaDonDaChon && (
+                         <h6 className="mt-3 mb-3">
+                         Giảm Voucher: {
+                           dshd
+                             .find((a) => a.check === true)
+                             ?.giamvoucher && dshd.find((a) => a.check === true).giamvoucher.toLocaleString("vi-VN") + " VNĐ"
+                         }
+                       </h6>
+                       )}
                       { dshd?.find((p) => p.check === true)?.checkdungdiem && (
                          <h6 className="mt-3 mb-3">
                          Giảm điểm: {dshd.find((a) => a.check === true)?.tienGiamDiem?.toLocaleString("vi-VN") + " VNĐ"}
@@ -645,12 +634,15 @@ const BanHangOfline2 = () => {
                 >
                   Thanh toán
                 </Button>
-                {/* {showHoaDon && completedOrder && (
-        <div>
-          <HoaDon ref={hoaDonRef} hoaDon={completedOrder} />
-          <Button onClick={handlePrintPDF}>In hóa đơn PDF</Button>
-        </div>
-      )} */}
+              
+                <div style={{ position: 'absolute', top: '-1000px', left: '-1000px' }}>
+                  {completedOrder && (
+                    <HoaDon
+                      ref={componentRef}
+                      hoaDon={modalData || {}}
+                    />
+                  )}
+                </div>
 
               </div>
               {isModalXacNhanOffline && (
